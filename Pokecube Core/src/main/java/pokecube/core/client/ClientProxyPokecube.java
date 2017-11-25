@@ -77,6 +77,7 @@ import pokecube.core.client.gui.blocks.GuiHealTable;
 import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.client.gui.blocks.GuiTMCreator;
 import pokecube.core.client.gui.blocks.GuiTradingTable;
+import pokecube.core.client.gui.watch.GuiPokeWatch;
 import pokecube.core.client.items.BerryTextureHandler;
 import pokecube.core.client.items.FossilTextureHandler;
 import pokecube.core.client.items.HeldItemTextureHandler;
@@ -114,28 +115,28 @@ import thut.core.client.render.particle.ParticleHandler;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ClientProxyPokecube extends CommonProxyPokecube
 {
-    private static BitSet            models      = new BitSet();
-    static boolean                   init        = true;
-    static boolean                   first       = true;
+    private static BitSet                     models      = new BitSet();
+    static boolean                            init        = true;
+    static boolean                            first       = true;
 
-    public static KeyBinding         nextMob;
-    public static KeyBinding         nextMove;
-    public static KeyBinding         previousMob;
-    public static KeyBinding         previousMove;
-    public static KeyBinding         mobBack;
-    public static KeyBinding         mobAttack;
-    public static KeyBinding         mobStance;
-    public static KeyBinding         mobMegavolve;
-    public static KeyBinding         noEvolve;
-    public static KeyBinding         mobMove1;
-    public static KeyBinding         mobMove2;
-    public static KeyBinding         mobMove3;
-    public static KeyBinding         mobMove4;
-    public static KeyBinding         mobUp;
-    public static KeyBinding         mobDown;
-    public static KeyBinding         throttleUp;
-    public static KeyBinding         throttleDown;
-    public static KeyBinding         arrangeGui;
+    public static KeyBinding                  nextMob;
+    public static KeyBinding                  nextMove;
+    public static KeyBinding                  previousMob;
+    public static KeyBinding                  previousMove;
+    public static KeyBinding                  mobBack;
+    public static KeyBinding                  mobAttack;
+    public static KeyBinding                  mobStance;
+    public static KeyBinding                  mobMegavolve;
+    public static KeyBinding                  noEvolve;
+    public static KeyBinding                  mobMove1;
+    public static KeyBinding                  mobMove2;
+    public static KeyBinding                  mobMove3;
+    public static KeyBinding                  mobMove4;
+    public static KeyBinding                  mobUp;
+    public static KeyBinding                  mobDown;
+    public static KeyBinding                  throttleUp;
+    public static KeyBinding                  throttleDown;
+    public static KeyBinding                  arrangeGui;
 
     private HashMap<ResourceLocation, Object> cubeRenders = new HashMap<ResourceLocation, Object>();
 
@@ -164,6 +165,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             if (pokemob != null) return new GuiPokedex(pokemob, player);
             return new GuiPokedex(null, player);
         }
+        if (guiID == Config.GUIPOKEWATCH_ID) { return new GuiPokeWatch(player); }
         if (guiID == Config.GUIPOKEMOB_ID)
         {
             IPokemob e = CapabilityPokemob
@@ -480,7 +482,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry.registerKeyBinding(mobDown = new KeyBinding("Pokemob Down", Keyboard.KEY_NONE, "Pokecube"));
 
         ClientRegistry.registerKeyBinding(throttleUp = new KeyBinding("Ride Speed Up", Keyboard.KEY_NONE, "Pokecube"));
-        ClientRegistry.registerKeyBinding(throttleDown = new KeyBinding("Ride Speed Down", Keyboard.KEY_NONE, "Pokecube"));
+        ClientRegistry
+                .registerKeyBinding(throttleDown = new KeyBinding("Ride Speed Down", Keyboard.KEY_NONE, "Pokecube"));
 
         ClientRegistry.registerKeyBinding(arrangeGui = new KeyBinding("Arrange Gui", Keyboard.KEY_NONE, "Pokecube"));
     }

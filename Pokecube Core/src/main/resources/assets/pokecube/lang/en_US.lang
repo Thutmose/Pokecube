@@ -19,6 +19,14 @@ type.dragon=dragon
 type.dark=dark
 type.fairy=fairy
 
+pokewatch.button.home=Home
+pokewatch.title.teleports=Teleport Locations
+pokewatch.title.blank=Blank Page
+pokewatch.title.baseradar=Secret Base Radar
+pokewatch.title.stats=Personal Stats
+pokewatch.title.start=PokéWatch Home
+item.pokewatch.name=PokéWatch
+
 item.nullBerry.name=Berry
 item.nullBerry.desc=Just a Berry, Pokémobs might eat it.
 
@@ -140,7 +148,6 @@ gui.pokemob.select=Select
 gui.pokemob.accept=Accept
 gui.pokemob.deny=Deny
 gui.pokemob.teleport=Teleports
-gui.pokedex.baseradar=Secret Base Radar
 
 pokecube.caught=%1$s §ahas been caught!
 pokecube.missed=%1$s §cbroke out!

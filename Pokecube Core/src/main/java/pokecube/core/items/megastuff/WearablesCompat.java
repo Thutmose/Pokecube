@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.client.models.ModelRing;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.items.megastuff.MegaCapability.RingChecker;
@@ -42,10 +43,71 @@ public class WearablesCompat
                 float partialTicks);
     }
 
-    public static Map<String, WearablesRenderer> renderers = Maps.newHashMap();
+    private static final ResourceLocation        WEARABLESKEY = new ResourceLocation("pokecube:wearable");
+
+    public static Map<String, WearablesRenderer> renderers    = Maps.newHashMap();
 
     static
     {
+        renderers.put("pokewatch", new WearablesRenderer()
+        {
+            // 2 layers of belt rendering for the different colours.
+            @SideOnly(Side.CLIENT)
+            private X3dModel         model;
+
+            // Textures for each belt layer.
+            private ResourceLocation strap;
+            private ResourceLocation watch;
+
+            @SideOnly(Side.CLIENT)
+            @Override
+            public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+            {
+                if (slot != EnumWearable.WRIST) return;
+                if (model == null)
+                {
+                    model = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/pokewatch.x3d"));
+                    strap = new ResourceLocation(PokecubeCore.ID, "textures/worn/megabelt_2.png");
+                    watch = new ResourceLocation(PokecubeCore.ID, "textures/worn/watch.png");
+                }
+                int brightness = wearer.getBrightnessForRender(partialTicks);
+                int[] col = new int[] { 255, 255, 255, 255, brightness };
+                float s, sy, sx, sz, dx, dy, dz;
+                dx = 0.f;
+                dy = .06f;
+                dz = -0.075f;
+                s = .65f;
+                sx = s;
+                sy = s;
+                sz = s * 1.5f;
+                GL11.glPushMatrix();
+                GL11.glTranslatef(dx, dy, dz);
+                GL11.glScalef(sx*0.75f, sy, sz);
+                GL11.glRotatef(-90, 1, 0, 0);
+                Minecraft.getMinecraft().renderEngine.bindTexture(strap);
+                EnumDyeColor ret = EnumDyeColor.GRAY;
+                if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
+                {
+                    int damage = stack.getTagCompound().getInteger("dyeColour");
+                    ret = EnumDyeColor.byDyeDamage(damage);
+                }
+                Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+                col[0] = colour.getRed();
+                col[2] = colour.getGreen();
+                col[1] = colour.getBlue();
+                model.getParts().get("strap").setRGBAB(col);
+                model.renderOnly("strap");
+                GL11.glPopMatrix();
+                GL11.glPushMatrix();
+                GL11.glTranslatef(dx, dy, dz);
+                GL11.glScalef(sx, sy, sz);
+                GL11.glRotatef(-90, 1, 0, 0);
+                Minecraft.getMinecraft().renderEngine.bindTexture(watch);
+                model.renderOnly("watch");
+                GL11.glPopMatrix();
+
+            }
+        });
         renderers.put("megaring", new WearablesRenderer()
         {
             // rings use own model, so only 1 layer here, ring model handles own
@@ -214,7 +276,11 @@ public class WearablesCompat
     {
         if (event.getObject() instanceof ItemMegawearable)
         {
-            event.addCapability(new ResourceLocation("pokecube:wearable"), new WearableMega());
+            event.addCapability(WEARABLESKEY, new WearableMega());
+        }
+        else if (event.getObject() == PokecubeItems.pokedex)
+        {
+            event.addCapability(WEARABLESKEY, new WearableWatch());
         }
     }
 
@@ -239,6 +305,57 @@ public class WearablesCompat
                 float partialTicks)
         {
             WearablesRenderer renderer = renderers.get(getVariant(stack));
+            if (renderer != null) renderer.renderWearable(slot, wearer, stack, partialTicks);
+        }
+
+        @Override
+        public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+        {
+            return capability == WEARABLE_CAP;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+        {
+            if (WEARABLE_CAP != null && capability == WEARABLE_CAP) return (T) this;
+            return null;
+        }
+
+        @Override
+        public void onPutOn(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
+                int subIndex)
+        {
+        }
+
+        @Override
+        public void onTakeOff(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
+                int subIndex)
+        {
+        }
+
+        @Override
+        public void onUpdate(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
+                int subIndex)
+        {
+        }
+    }
+
+    public static class WearableWatch implements thut.wearables.IActiveWearable, ICapabilityProvider
+    {
+
+        @Override
+        public thut.wearables.EnumWearable getSlot(ItemStack stack)
+        {
+            return stack.getItemDamage() == 8 ? thut.wearables.EnumWearable.WRIST : null;
+        }
+
+        @SideOnly(Side.CLIENT)
+        @Override
+        public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
+                float partialTicks)
+        {
+            WearablesRenderer renderer = renderers.get("pokewatch");
             if (renderer != null) renderer.renderWearable(slot, wearer, stack, partialTicks);
         }
 

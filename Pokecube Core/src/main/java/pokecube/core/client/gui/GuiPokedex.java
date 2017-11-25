@@ -9,14 +9,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -25,9 +22,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -38,7 +32,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -54,24 +47,17 @@ import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.PokecubeSerializer.TeleDest;
-import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 import thut.api.entity.IMobColourable;
-import thut.api.maths.Vector3;
-import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeDatabase;
 
 public class GuiPokedex extends GuiScreen
 {
     public static PokedexEntry                    pokedexEntry       = null;
-    public static Set<Coordinate>                 bases              = Sets.newHashSet();
-    public static float                           baseRange          = 64;
 
-    private static final int                      PAGECOUNT          = 5;
+    private static final int                      PAGECOUNT          = 4;
 
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
 
@@ -95,7 +81,6 @@ public class GuiPokedex extends GuiScreen
     private int                                   page               = 0;
     private int                                   index              = 0;
     private boolean                               mode               = false;
-    protected List<TeleDest>                      locations;
 
     int                                           prevX              = 0;
     int                                           prevY              = 0;
@@ -135,7 +120,6 @@ public class GuiPokedex extends GuiScreen
         packet.data.setBoolean("M", mode);
         packet.data.setString("F", pokedexEntry.getName());
         PokecubeMod.packetPipeline.sendToServer(packet);
-        locations = TeleportHandler.getTeleports(entityPlayer.getCachedUniqueIdString());
     }
 
     private boolean canEditPokemob()
@@ -166,7 +150,7 @@ public class GuiPokedex extends GuiScreen
      * @param yOffset */
     private void drawPage0(int xOffset, int yOffset)
     {
-        if (pokemob != null && pokemob.getPokedexNb() == pokedexEntry.getPokedexNb() && !mode)
+        if (pokemob != null && pokemob.getPokedexNb() == pokedexEntry.getPokedexNb())
         {
             int genderColor = 0xBBBBBB;
             String gender = "";
@@ -277,74 +261,6 @@ public class GuiPokedex extends GuiScreen
             int num = Pokedex.getInstance().getIndex(pokedexEntry) + 1;
             String level = "N. " + num;
             drawString(fontRendererObj, level, xOffset + 15, yOffset + 1, 0xffffff);
-            if (!mode)
-            {
-
-            }
-            else
-            {
-                GL11.glPushMatrix();
-                int j = (width - xSize) / 2;
-                int k = (height - ySize) / 2;
-                GL11.glTranslated(j + 185, k + 80, 0);
-                double xCoord = 0;
-                double yCoord = 0;
-                float zCoord = this.zLevel;
-                float maxU = 1;
-                float maxV = 1;
-                float minU = -1;
-                float minV = -1;
-                float r = 0;
-                float g = 1;
-                float b = 0;
-                float a = 1;
-                GlStateManager.disableTexture2D();
-                Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
-                vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-                vertexbuffer.pos((xCoord + minU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
-                vertexbuffer.pos((xCoord + maxU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
-                vertexbuffer.pos((xCoord + maxU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
-                vertexbuffer.pos((xCoord + minU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
-                tessellator.draw();
-                r = 1;
-                g = 0;
-                Vector3 here = Vector3.getNewVector().set(entityPlayer);
-                double angle = -entityPlayer.rotationYaw % 360 + 180;
-                GL11.glRotated(angle, 0, 0, 1);
-                for (Coordinate c : bases)
-                {
-                    Vector3 loc = Vector3.getNewVector().set(c.x + 0.5, c.y + 0.5, c.z + 0.5);
-                    GL11.glPushMatrix();
-                    Vector3 v = here.subtract(loc);
-                    v.reverse();
-                    double max = 30;
-                    double hDistSq = (v.x) * (v.x) + (v.z) * (v.z);
-                    float vDist = (float) Math.abs(v.y);
-                    v.set(v.normalize());
-                    a = ((64 - vDist) / baseRange);
-                    a = Math.min(a, 1);
-                    a = Math.max(a, 0.125f);
-                    double dist = max * Math.sqrt(hDistSq) / baseRange;
-                    v.scalarMultBy(dist);
-                    GL11.glTranslated(v.x, v.z, 0);
-                    xCoord = v.x;
-                    yCoord = v.y;
-                    vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-                    vertexbuffer.pos((xCoord + minU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
-                    vertexbuffer.pos((xCoord + maxU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
-                    vertexbuffer.pos((xCoord + maxU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
-                    vertexbuffer.pos((xCoord + minU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
-                    tessellator.draw();
-                    GL11.glPopMatrix();
-                }
-                GL11.glPopMatrix();
-                GlStateManager.enableTexture2D();
-                String mess = I18n.format("gui.pokedex.baseradar");
-                int width = fontRendererObj.getStringWidth(mess);
-                drawString(fontRendererObj, mess, xOffset - width / 2 + 70, yOffset + 105, 0x78C850);
-            }
-
         }
     }
 
@@ -592,23 +508,6 @@ public class GuiPokedex extends GuiScreen
         }
     }
 
-    /** Draws the teleport locations page
-     * 
-     * @param xOffset
-     * @param yOffset */
-    private void drawPage4(int xOffset, int yOffset)
-    {
-        if (locations.size() == 0) { return; }
-        TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-        if (location != null)
-        {
-            String loc = location.loc.toIntString();
-            loc = loc.replace(" ", "");
-            loc = fontRendererObj.trimStringToWidth(loc, 90);
-            drawString(fontRendererObj, loc, xOffset + 16, yOffset + 99 + 14 * index, PokeType.getType("fire").colour);
-        }
-    }
-
     @Override
     public void drawScreen(int i, int j, float f)
     {
@@ -650,10 +549,6 @@ public class GuiPokedex extends GuiScreen
         else if (page == 3)
         {
             drawPage3(xOffset, yOffset);
-        }
-        else if (page == 4)
-        {
-            drawPage4(xOffset, yOffset);
         }
         int nb = pokedexEntry != null ? pokedexEntry.getPokedexNb() : 0;
         PokeType type1 = pokemob != null && pokedexEntry == pokemob.getPokedexEntry() ? pokemob.getType1()
@@ -885,30 +780,6 @@ public class GuiPokedex extends GuiScreen
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
             PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
         }
-        else if (page == 4 && button == 3)
-        {
-            nicknameTextField.setEnabled(true);
-            nicknameTextField.setFocused(true);
-            GuiTeleport.instance().nextMove();
-            if (locations.size() > 0)
-            {
-                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                nicknameTextField.setText(location.getName());
-            }
-            nicknameTextField.setEnabled(true);
-        }
-        else if (page == 4 && button == 4)
-        {
-            nicknameTextField.setEnabled(true);
-            nicknameTextField.setFocused(true);
-            GuiTeleport.instance().previousMove();
-            if (locations.size() > 0)
-            {
-                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                nicknameTextField.setText(location.getName());
-            }
-            nicknameTextField.setEnabled(true);
-        }
         if (page == 0 && button >= 1 && button <= 5 || button == 5)
         {
             float volume = 0.2F;
@@ -949,26 +820,6 @@ public class GuiPokedex extends GuiScreen
                 pokemob.exchangeMoves(4, 5);
             }
         }
-        else if (page == 4)
-        {
-            if (index > 4) index = 0;
-            if (button == 6 && (index == 0 || index == 1))
-            {
-                index = index == 1 ? 0 : 1;
-            }
-            else if (button == 7 && (index == 1 || index == 2))
-            {
-                index = index == 1 ? 2 : 1;
-            }
-            else if (button == 8 && (index == 2 || index == 3))
-            {
-                index = index == 2 ? 3 : 2;
-            }
-            else if (button == 9 && (index == 4 || index == 3))
-            {
-                index = index == 3 ? 4 : 3;
-            }
-        }
         if (button == 11)
         {
             page = (page + 1) % PAGECOUNT;
@@ -982,19 +833,6 @@ public class GuiPokedex extends GuiScreen
                     nicknameTextField.setText("");
                     nicknameTextField.setEnabled(false);
                 }
-                if (page == 4)
-                {
-                    if (locations.size() > 0)
-                    {
-                        TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                        nicknameTextField.setText(location.getName());
-                    }
-                    else
-                    {
-                        nicknameTextField.setText("");
-                    }
-                    nicknameTextField.setEnabled(true);
-                }
             }
 
         }
@@ -1002,21 +840,6 @@ public class GuiPokedex extends GuiScreen
         {
             page = (page - 1) % PAGECOUNT;
             if (page < 0) page = PAGECOUNT - 1;
-
-            if (page == 4)
-            {
-                if (locations.size() > 0)
-                {
-                    TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                    nicknameTextField.setText(location.getName());
-                }
-                else
-                {
-                    nicknameTextField.setText("");
-                }
-                nicknameTextField.setEnabled(true);
-            }
-
             if (entityPlayer.getHeldItemMainhand() != null
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
@@ -1155,50 +978,12 @@ public class GuiPokedex extends GuiScreen
             nicknameTextField.setText("");
             nicknameTextField.setEnabled(false);
         }
-        if (page == 4)
-        {
-            if (locations.size() > 0)
-            {
-                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                nicknameTextField.setText(location.getName());
-            }
-            nicknameTextField.setEnabled(true);
-        }
     }
 
     @Override
     protected void keyTyped(char par1, int par2) throws IOException
     {
         if (isAltKeyDown()) return;
-        if (page == 4)
-        {
-            nicknameTextField.setEnabled(true);
-
-            if ((par2 == ClientProxyPokecube.nextMove.getKeyCode()
-                    || par2 == ClientProxyPokecube.previousMove.getKeyCode()))
-            {
-                GuiTeleport.instance().nextMove();
-                if (locations.size() > 0)
-                {
-                    TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                    nicknameTextField.setText(location.getName());
-                }
-                nicknameTextField.setEnabled(true);
-
-            }
-            else if (par2 == 28 && index == 0 || index == 4)
-            {
-                if (locations.size() > 0)
-                {
-                    Vector4 location = locations.get((GuiTeleport.instance().indexLocation) % locations.size()).loc;
-                    if (index == 0)
-                    {
-                        PacketPokedex.sendRenameTelePacket(nicknameTextField.getText(), location);
-                    }
-                    else if (index == 4) PacketPokedex.sendRemoveTelePacket(location);
-                }
-            }
-        }
         boolean b = nicknameTextField.textboxKeyTyped(par1, par2);
         boolean b2 = pokemobTextField.textboxKeyTyped(par1, par2) || pokemobTextField.isFocused();
         if (b2)
@@ -1233,11 +1018,11 @@ public class GuiPokedex extends GuiScreen
                 }
             }
         }
-        else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_LEFT && page != 4)
+        else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_LEFT)
         {
             handleGuiButton(2);
         }
-        else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_RIGHT && page != 4)
+        else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_RIGHT)
         {
             handleGuiButton(1);
         }

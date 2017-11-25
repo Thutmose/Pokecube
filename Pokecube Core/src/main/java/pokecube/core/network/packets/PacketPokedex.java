@@ -42,7 +42,6 @@ import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 import thut.api.maths.Vector3;
-import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
@@ -57,20 +56,20 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
 
     public static List<String> values    = Lists.newArrayList();
 
-    public static void sendRenameTelePacket(String newName, Vector4 location)
+    public static void sendRenameTelePacket(String newName, int index)
     {
         PacketPokedex packet = new PacketPokedex();
         packet.message = RENAME;
         packet.data.setString("N", newName);
-        location.writeToNBT(packet.data);
+        packet.data.setInteger("I", index);
         PokecubePacketHandler.sendToServer(packet);
     }
 
-    public static void sendRemoveTelePacket(Vector4 location)
+    public static void sendRemoveTelePacket(int index)
     {
         PacketPokedex packet = new PacketPokedex();
         packet.message = REMOVE;
-        location.writeToNBT(packet.data);
+        packet.data.setInteger("I", index);
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -79,7 +78,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         PacketPokedex packet = new PacketPokedex();
         packet.message = (byte) page;
         packet.data.setBoolean("M", mode);
-        packet.data.setString("F", selected.getName());
+        if (selected != null) packet.data.setString("F", selected.getName());
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -92,7 +91,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         PokecubePacketHandler.sendToServer(packet);
     }
 
-    public static void sendSecretBaseInfoPacket(EntityPlayer player)
+    public static void sendSecretBaseInfoPacket(EntityPlayer player, boolean watch)
     {
         PacketPokedex packet = new PacketPokedex();
         BlockPos pos = player.getPosition();
@@ -103,6 +102,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             list.appendTag(c.writeToNBT());
         }
         packet.data.setTag("B", list);
+        packet.data.setBoolean("M", watch);
         packet.data.setInteger("R", PokecubeCore.core.getConfig().baseRadarRange);
         packet.message = BASERADAR;
         PokecubePacketHandler.sendToClient(packet, player);
@@ -303,9 +303,10 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         }
         if (message.message == REMOVE)
         {
-            TeleDest location = new TeleDest(new Vector4(message.data));
-            TeleportHandler.unsetTeleport(location, player.getCachedUniqueIdString());
-            player.addChatMessage(new TextComponentString("Removed The location " + location.loc.toIntString()));
+            int index = message.data.getInteger("I");
+            TeleDest loc = TeleportHandler.getTeleport(player.getCachedUniqueIdString(), index);
+            TeleportHandler.unsetTeleport(index, player.getCachedUniqueIdString());
+            player.addChatMessage(new TextComponentString("Deleted " + loc.getName()));
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
             PacketDataSync.sendInitPacket(player, "pokecube-data");
             return;
@@ -313,27 +314,28 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         if (message.message == RENAME)
         {
             String name = message.data.getString("N");
-            Vector4 location = new Vector4(message.data);
-            TeleportHandler.renameTeleport(location, player.getCachedUniqueIdString(), name);
-            player.addChatMessage(
-                    new TextComponentString("Set The location " + location.toIntString() + " as " + name));
+            int index = message.data.getInteger("I");
+            TeleportHandler.renameTeleport(player.getCachedUniqueIdString(), index, name);
+            player.addChatMessage(new TextComponentString("Set teleport as " + name));
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
             PacketDataSync.sendInitPacket(player, "pokecube-data");
             return;
         }
         if (message.message == BASERADAR)
         {
+            boolean mode = message.data.getBoolean("M");
+            player.openGui(PokecubeCore.instance, mode ? Config.GUIPOKEDEX_ID : Config.GUIPOKEWATCH_ID,
+                    player.getEntityWorld(), 0, 0, 0);
             if (!message.data.hasKey("B") || !(message.data.getTag("B") instanceof NBTTagList)) return;
             NBTTagList list = (NBTTagList) message.data.getTag("B");
-            pokecube.core.client.gui.GuiPokedex.bases.clear();
+            pokecube.core.client.gui.watch.SecretBaseRadarPage.bases.clear();
             for (int i = 0; i < list.tagCount(); i++)
             {
                 NBTTagCompound tag = list.getCompoundTagAt(i);
                 Coordinate c = Coordinate.readNBT(tag);
-                pokecube.core.client.gui.GuiPokedex.bases.add(c);
+                pokecube.core.client.gui.watch.SecretBaseRadarPage.bases.add(c);
             }
-            pokecube.core.client.gui.GuiPokedex.baseRange = message.data.getInteger("R");
-            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
+            pokecube.core.client.gui.watch.SecretBaseRadarPage.baseRange = message.data.getInteger("R");
             return;
         }
         if (message.message == INSPECT)

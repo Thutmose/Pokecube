@@ -255,8 +255,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         pokedex.setCreativeTab(creativeTabPokecube);
         register(pokedex.setRegistryName(PokecubeMod.ID, "pokedex"), registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) for (int i = 0; i < 10; i++)
-            registerItemTexture(pokedex, i, new ModelResourceLocation("pokecube:pokedex", "inventory"));
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            for (int i = 0; i < 8; i++)
+                registerItemTexture(pokedex, i, new ModelResourceLocation("pokecube:pokedex", "inventory"));
+            registerItemTexture(pokedex, 8, new ModelResourceLocation("pokecube:pokewatch", "inventory"));
+        }
 
         megaring.setCreativeTab(creativeTabPokecube);
         register(megaring.setRegistryName(PokecubeMod.ID, "megaring"), registry);

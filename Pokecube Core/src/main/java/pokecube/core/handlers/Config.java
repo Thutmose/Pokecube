@@ -64,6 +64,7 @@ public class Config extends ConfigBase
     public static int                    GUIDISPLAYTELEPORTINFO_ID;
     public static int                    GUIPOKECENTER_ID;
     public static int                    GUIPOKEDEX_ID;
+    public static int                    GUIPOKEWATCH_ID;
     public static int                    GUIPOKEMOBSPAWNER_ID;
     public static int                    GUIPC_ID;
     public static int                    GUIPOKEMOB_ID;

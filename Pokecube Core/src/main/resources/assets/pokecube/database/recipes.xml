@@ -20,6 +20,11 @@
         <Input id="minecraft:book" key="B"/>
         <Input id="minecraft:redstone" key="R"/>
     </Recipe>
+    <Recipe map=" P ,R R, R ">//PokeWatch
+        <Output n="1" id="pokecube:pokedex" d="8"/>
+        <Input id="pokecube:pokedex" key="P"/>
+        <Input id="minecraft:rabbit_hide" key="R"/>
+    </Recipe>
     <Recipe map=" L ,L L,I I">//Saddle
         <Output n="1" id="minecraft:saddle"/>
         <Input id="minecraft:iron_ingot" key="I"/>

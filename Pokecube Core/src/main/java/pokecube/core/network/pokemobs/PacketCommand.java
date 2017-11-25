@@ -22,6 +22,7 @@ import pokecube.core.interfaces.pokemob.commandhandlers.AttackNothingHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.ChangeFormHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.MoveIndexHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.MoveToHandler;
+import pokecube.core.interfaces.pokemob.commandhandlers.StanceHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.SwapMovesHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 
@@ -39,6 +40,7 @@ public class PacketCommand implements IMessage, IMessageHandler<PacketCommand, I
             IHasCommands.COMMANDHANDLERS.put(Command.CHANGEFORM, ChangeFormHandler.class);
             IHasCommands.COMMANDHANDLERS.put(Command.CHANGEMOVEINDEX, MoveIndexHandler.class);
             IHasCommands.COMMANDHANDLERS.put(Command.MOVETO, MoveToHandler.class);
+            IHasCommands.COMMANDHANDLERS.put(Command.STANCE, StanceHandler.class);
             IHasCommands.COMMANDHANDLERS.put(Command.SWAPMOVES, SwapMovesHandler.class);
             IHasCommands.COMMANDHANDLERS.put(Command.TELEPORT, TeleportHandler.class);
         }

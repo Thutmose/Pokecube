@@ -4,24 +4,26 @@
 package pokecube.core.items;
 
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.events.handlers.SpawnHandler;
-import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
@@ -40,9 +42,29 @@ import thut.core.common.commands.CommandTools;
 /** @author Manchou */
 public class ItemPokedex extends Item
 {
+    private String watchName;
+
     public ItemPokedex()
     {
         super();
+    }
+
+    @Override
+    /** returns a list of items with the same ID, but different meta (eg: dye
+     * returns 16 items) */
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
+    {
+        if (tab != getCreativeTab()) return;
+        items.add(new ItemStack(this, 1, 0));
+        items.add(new ItemStack(this, 1, 8));
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        if (watchName == null) watchName = super.getUnlocalizedName(stack).replaceAll("pokedex", "pokewatch");
+        return stack.getItemDamage() == 8 ? watchName : super.getUnlocalizedName(stack);
     }
 
     // 1.11
@@ -58,7 +80,7 @@ public class ItemPokedex extends Item
         if (!world.isRemote) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(player), player.getEntityWorld());
         if (!player.isSneaking())
         {
-            showGui(player);
+            showGui(player, itemstack);
             return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
         }
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
@@ -102,45 +124,18 @@ public class ItemPokedex extends Item
             playerIn.sendMessage(message);
         }
 
-        if (!playerIn.isSneaking()) showGui(playerIn);
-        // else structureGenTest(playerIn, worldIn, pos, side);
+        if (!playerIn.isSneaking()) showGui(playerIn, stack);
         return EnumActionResult.FAIL;
     }
 
-    public void structureGenTest(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side)
-    {
-        Block b = worldIn.getBlockState(pos).getBlock();
-        // WorldServer world = (WorldServer) worldIn;
-        int c = -5;
-        int r = 60;
-        System.out.println(side);
-        if (b == Blocks.GOLD_BLOCK)
-        {
-
-        }
-        else if (b == Blocks.DIAMOND_BLOCK)
-        {
-            for (int i = -r; i < c; i++)
-                for (int j = 0; j < 100; j++)
-                    for (int k = -r; k < c; k++)
-                    {
-                        BlockPos pos2 = new BlockPos(i, 15, k);
-                        if ((pos2.getX() == -21 && pos2.getZ() == -21)) continue;
-                        worldIn.setBlockState(new BlockPos(i, j, k),
-                                j < 4 ? Blocks.GRASS.getDefaultState() : Blocks.AIR.getDefaultState());
-                    }
-        }
-    }
-
-    private void showGui(EntityPlayer player)
+    private void showGui(EntityPlayer player, ItemStack stack)
     {
         if (!PokecubeCore.isOnClientSide())
         {
             TerrainSegment s = TerrainManager.getInstance().getTerrainForEntity(player);
             PacketSyncTerrain.sendTerrain(player, s.chunkX, s.chunkY, s.chunkZ, s);
-            PacketPokedex.sendSecretBaseInfoPacket(player);
             PacketDataSync.sendInitPacket(player, "pokecube-stats");
-            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
+            PacketPokedex.sendSecretBaseInfoPacket(player, stack.getItemDamage() != 8);
             Entity entityHit = Tools.getPointedEntity(player, 16);
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityHit);
             if (pokemob != null) PokecubePlayerDataHandler.getInstance().getPlayerData(player)

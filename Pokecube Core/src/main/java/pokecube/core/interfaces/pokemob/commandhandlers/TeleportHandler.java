@@ -1,6 +1,5 @@
 package pokecube.core.interfaces.pokemob.commandhandlers;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -52,16 +51,17 @@ public class TeleportHandler implements IMobCommandHandler
         }
     }
 
-    public static void unsetTeleport(TeleDest teleport, String uuid)
+    public static void unsetTeleport(int index, String uuid)
     {
-        Iterator<TeleDest> dests = getTeleports(uuid).iterator();
-        while (dests.hasNext())
+        TeleDest dest = getTeleport(uuid, index);
+        List<TeleDest> list = getTeleports(uuid);
+        if (dest != null)
         {
-            TeleDest dest = dests.next();
-            if (dest.loc.withinDistance(MINDIST, teleport.loc))
-            {
-                dests.remove();
-            }
+            list.remove(dest);
+        }
+        for (int i = 0; i < list.size(); i++)
+        {
+            list.get(i).index = i;
         }
     }
 
@@ -71,17 +71,19 @@ public class TeleportHandler implements IMobCommandHandler
                 .getTeleIndex();
     }
 
+    public static TeleDest getTeleport(String uuid, int teleIndex)
+    {
+        List<TeleDest> list = getTeleports(uuid);
+        for (TeleDest dest : list)
+        {
+            if (dest.index == teleIndex) return dest;
+        }
+        return null;
+    }
+
     public static TeleDest getTeleport(String uuid)
     {
-        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData(PokecubePlayerData.class).getTeleDests();
-        int index = getTeleIndex(uuid);
-        TeleDest d = null;
-        if (list.size() > index)
-        {
-            d = list.get(index);
-        }
-        return d;
+        return getTeleport(uuid, getTeleIndex(uuid));
     }
 
     public static List<TeleDest> getTeleports(String uuid)
@@ -110,6 +112,7 @@ public class TeleportHandler implements IMobCommandHandler
                 else
                 {
                     set = true;
+                    teleport.index = dest.index;
                     dests.set(teleport);
                 }
             }
@@ -117,6 +120,11 @@ public class TeleportHandler implements IMobCommandHandler
         if (!set)
         {
             list.add(teleport);
+            teleport.index = list.size() - 1;
+        }
+        for (int i = 0; i < list.size(); i++)
+        {
+            list.get(i).index = i;
         }
     }
 
@@ -126,10 +134,9 @@ public class TeleportHandler implements IMobCommandHandler
         setTeleport(uuid, d);
     }
 
-    public static void renameTeleport(Vector4 v, String uuid, String customName)
+    public static void renameTeleport(String uuid, int index, String customName)
     {
-        TeleDest teleport = new TeleDest(v).setName(customName);
-        setTeleport(uuid, teleport);
+        getTeleport(uuid, index).setName(customName);
     }
 
     @Override

@@ -53,14 +53,14 @@ public class PokecubeSerializer
         {
             Vector4 loc = new Vector4(nbt);
             String name = nbt.getString("name");
-
-            return new TeleDest(loc).setName(name);
+            int index = nbt.getInteger("i");
+            return new TeleDest(loc).setName(name).setIndex(index);
         }
 
         public Vector4 loc;
         Vector3        subLoc;
-
         String         name;
+        public int     index;
 
         public TeleDest(Vector4 loc)
         {
@@ -90,10 +90,17 @@ public class PokecubeSerializer
             return this;
         }
 
+        public TeleDest setIndex(int index)
+        {
+            this.index = index;
+            return this;
+        }
+
         public void writeToNBT(NBTTagCompound nbt)
         {
             loc.writeToNBT(nbt);
             nbt.setString("name", name);
+            nbt.setInteger("i", index);
         }
     }
 

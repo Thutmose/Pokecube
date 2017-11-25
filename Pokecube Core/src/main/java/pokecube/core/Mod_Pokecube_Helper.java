@@ -10,6 +10,7 @@ import static pokecube.core.handlers.Config.GUIDISPLAYTELEPORTINFO_ID;
 import static pokecube.core.handlers.Config.GUIPC_ID;
 import static pokecube.core.handlers.Config.GUIPOKECENTER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEDEX_ID;
+import static pokecube.core.handlers.Config.GUIPOKEWATCH_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBAI_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBSPAWNER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOB_ID;
@@ -143,6 +144,7 @@ public class Mod_Pokecube_Helper
         GUIPOKEMOB_ID = 19;
         GUITMTABLE_ID = 20;
         GUIPOKEMOBAI_ID = 21;
+        GUIPOKEWATCH_ID = 22;
 
         Config config = PokecubeCore.core.getConfig();
 

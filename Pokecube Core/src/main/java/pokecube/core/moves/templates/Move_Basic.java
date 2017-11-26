@@ -613,7 +613,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             attackerMob.setHealth(Math.min(attackerMob.getMaxHealth(), attackerMob.getHealth() + toHeal));
         }
 
-        healRatio = (move.selfHealRatio) / 100;
+        healRatio = (getSelfHealRatio(attacker)) / 100;
         boolean canHeal = attackerMob.getHealth() < attackerMob.getMaxHealth();
         if (healRatio > 0 && canHeal)
         {

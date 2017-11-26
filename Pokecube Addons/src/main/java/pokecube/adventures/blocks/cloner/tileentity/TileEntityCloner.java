@@ -1,10 +1,13 @@
 package pokecube.adventures.blocks.cloner.tileentity;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.oredict.OreDictionary;
@@ -12,16 +15,42 @@ import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.block.BlockCloner;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredRecipe;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
+import thut.core.common.blocks.BlockRotatable;
 
 public class TileEntityCloner extends TileClonerBase
 {
-    public static int MAXENERGY = 256;
+    public static int MAXENERGY  = 256;
+    int[][]           sidedSlots = new int[6][];
 
     public TileEntityCloner()
     {
         /** 1 slot for output, 1 slot for gene input, 1 slot for egg input and 7
          * slots for supporting item input. */
         super(10, 9);
+        sidedSlots[EnumFacing.WEST.ordinal()] = new int[] { 0 };
+        sidedSlots[EnumFacing.NORTH.ordinal()] = new int[] { 1 };
+        for (int i = 0; i < 6; i++)
+        {
+            if (sidedSlots[i] == null)
+            {
+                sidedSlots[i] = new int[] { 2, 3, 4, 5, 6, 7, 8 };
+            }
+        }
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        IBlockState state = getWorld().getBlockState(getPos());
+        if (state.getBlock() instanceof BlockRotatable)
+        {
+            EnumFacing dir = state.getValue(BlockRotatable.FACING);
+            if (dir == EnumFacing.EAST || dir == EnumFacing.WEST) dir = dir.getOpposite();
+            int index = dir.getHorizontalIndex();
+            for (int i = 0; i < index; i++)
+                side = side.rotateAround(Axis.Y);
+        }
+        return sidedSlots[side.ordinal()];
     }
 
     @Override

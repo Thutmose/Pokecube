@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -34,11 +35,26 @@ import thut.lib.CompatWrapper;
 @InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityGeneExtractor extends TileClonerBase implements SimpleComponent
 {
+    int[][] sidedSlots = new int[6][];
+
     public TileEntityGeneExtractor()
     {
         /** 1 slot for object to extract genes from, 1 slot for gene container,
          * 1 slot for output, 1 slot for stabiliser. */
         super(4, 3);
+        for (int i = 0; i < 6; i++)
+        {
+            if (sidedSlots[i] == null)
+            {
+                sidedSlots[i] = new int[] { 0, 1, 2, 3 };
+            }
+        }
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        return sidedSlots[side.ordinal()];
     }
 
     @Override

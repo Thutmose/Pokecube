@@ -70,6 +70,16 @@ public class GuiPokeWatch extends GuiScreen
             super.drawScreen(mouseX, mouseY, partialTicks);
         }
 
+        protected void onPageOpened()
+        {
+
+        }
+
+        protected void onPageClosed()
+        {
+
+        }
+
         protected abstract String getTitle();
     }
 
@@ -107,7 +117,7 @@ public class GuiPokeWatch extends GuiScreen
         PAGELIST.add(StartPage.class);
         PAGELIST.add(TeleportsPage.class);
         PAGELIST.add(SecretBaseRadarPage.class);
-        PAGELIST.add(StatsPage.class);
+        PAGELIST.add(WikiPage.class);
     }
 
     final List<WatchPage>     pages = Lists.newArrayList();
@@ -133,12 +143,18 @@ public class GuiPokeWatch extends GuiScreen
         }
     }
 
+    public List<GuiButton> getButtons()
+    {
+        return buttonList;
+    }
+
     @Override
     public void initGui()
     {
         super.initGui();
         for (WatchPage page : pages)
             page.initGui();
+        pages.get(index).onPageOpened();
         int x = width / 2;
         int y = height / 2 - 5;
         String next = I18n.format("tile.pc.next");
@@ -170,23 +186,18 @@ public class GuiPokeWatch extends GuiScreen
     @Override
     public void handleInput() throws IOException
     {
-        // TODO Auto-generated method stub
         super.handleInput();
-        // pages.get(index).handleInput();
     }
 
     @Override
     public void handleKeyboardInput() throws IOException
     {
-        // TODO Auto-generated method stub
         super.handleKeyboardInput();
-        // pages.get(index).handleKeyboardInput();
     }
 
     @Override
     public void handleMouseInput() throws IOException
     {
-        // TODO Auto-generated method stub
         super.handleMouseInput();
         pages.get(index).handleMouseInput();
     }
@@ -223,19 +234,8 @@ public class GuiPokeWatch extends GuiScreen
         }
         if (old != index)
         {
-            Class<? extends WatchPage> pageClass = PAGELIST.get(index);
-            WatchPage page;
-            try
-            {
-                page = pageClass.getConstructor(GuiPokeWatch.class).newInstance(this);
-            }
-            catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException | NoSuchMethodException | SecurityException e)
-            {
-                page = new MissingPage(this);
-            }
-            page.initGui();
-            pages.set(index, page);
+            pages.get(old).onPageClosed();
+            pages.get(index).onPageOpened();
         }
         pages.get(index).actionPerformed(button);
     }

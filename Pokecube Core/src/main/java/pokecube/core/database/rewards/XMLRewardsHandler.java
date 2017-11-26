@@ -134,10 +134,10 @@ public class XMLRewardsHandler
 
         public static class FreeTranslatedReward implements IInspectReward
         {
-            final String key;
-            final String message;
-            final String tagKey;
-            final String langFile;
+            public final String key;
+            final String        message;
+            final String        tagKey;
+            final String        langFile;
 
             public FreeTranslatedReward(String key, String message, String tagKey, String langFile)
             {

@@ -405,6 +405,10 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, "User Stats", xOffset + 19, yOffset + 99, 0xFFFFFF);
 
         int count = KillStats.getNumberUniqueKilledBy(entityPlayer.getUniqueID());
+        if (mode)
+        {
+            count = KillStats.getTotalNumberOfPokemobKilledBy(entityPlayer.getUniqueID(), pokedexEntry);
+        }
         int count2 = KillStats.getTotalNumberKilledBy(entityPlayer.getUniqueID());
 
         drawString(fontRendererObj, "Kills", xOffset + 19, yOffset + 112, 0xFFFFFF);
@@ -412,12 +416,20 @@ public class GuiPokedex extends GuiScreen
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 112, 0xffffff);
 
         count = CaptureStats.getNumberUniqueCaughtBy(entityPlayer.getUniqueID());
+        if (mode)
+        {
+            count = CaptureStats.getTotalNumberOfPokemobCaughtBy(entityPlayer.getUniqueID(), pokedexEntry);
+        }
         count2 = CaptureStats.getTotalNumberCaughtBy(entityPlayer.getUniqueID());
         drawString(fontRendererObj, "Captures", xOffset + 19, yOffset + 126, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 126, 0xffffff);
 
         count = EggStats.getNumberUniqueHatchedBy(entityPlayer.getUniqueID());
+        if (mode)
+        {
+            count = EggStats.getTotalNumberOfPokemobHatchedBy(entityPlayer.getUniqueID(), pokedexEntry);
+        }
         count2 = EggStats.getTotalNumberHatchedBy(entityPlayer.getUniqueID());
         drawString(fontRendererObj, "Hatched", xOffset + 19, yOffset + 140, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,

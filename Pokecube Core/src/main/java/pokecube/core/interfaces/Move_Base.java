@@ -257,6 +257,11 @@ public abstract class Move_Base
         return this;
     }
 
+    public float getSelfHealRatio(IPokemob user)
+    {
+        return move.selfHealRatio;
+    }
+
     public Category getCategory(IPokemob user)
     {
         return getCategory();

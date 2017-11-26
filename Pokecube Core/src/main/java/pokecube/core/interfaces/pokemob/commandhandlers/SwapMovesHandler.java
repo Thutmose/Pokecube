@@ -22,12 +22,7 @@ public class SwapMovesHandler implements IMobCommandHandler
     @Override
     public void handleCommand(IPokemob pokemob)
     {
-        String[] moves = pokemob.getMoves();
-        String moveA = moves[indexA];
-        String moveB = moves[indexB];
-        moves[indexA] = moveB;
-        moves[indexB] = moveA;
-        pokemob.setMoves(moves);
+        pokemob.exchangeMoves(indexA, indexB);
     }
 
     @Override

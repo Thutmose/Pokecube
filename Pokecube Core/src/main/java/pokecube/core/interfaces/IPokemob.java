@@ -281,7 +281,7 @@ public interface IPokemob extends IMoveConstants
                 if (mods.isFlat()) actualStat += mods.getModifier(stat);
                 else actualStat *= mods.getModifier(stat);
             }
-            return (int) actualStat;
+            return (int) Math.max(1, actualStat);
         }
 
         public IStatsModifiers getModifiers(String name)

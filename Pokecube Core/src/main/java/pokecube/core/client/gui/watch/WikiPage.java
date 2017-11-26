@@ -43,23 +43,24 @@ public class WikiPage extends ListPage
         }
 
         @Override
-        public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_)
+        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_)
         {
+            
         }
 
         @Override
         public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY,
-                boolean isSelected)
+                boolean isSelected, float partialTicks)
         {
             ITextComponent itextcomponent = ITextComponent.Serializer.jsonToComponent(page);
             int n = 0;
-            for (ITextComponent comp : GuiUtilRenderComponents.splitText(itextcomponent, 120, parent.fontRendererObj,
+            for (ITextComponent comp : GuiUtilRenderComponents.splitText(itextcomponent, 120, parent.fontRenderer,
                     true, true))
             {
-                int py = y + parent.fontRendererObj.FONT_HEIGHT * n++;
+                int py = y + parent.fontRenderer.FONT_HEIGHT * n++;
                 if (py < (parent.watch.height - 160) / 2 + 20) continue;
                 if (py > (parent.watch.height - 160) / 2 + 120) continue;
-                parent.fontRendererObj.drawString(comp.getUnformattedText(), x, py, 0);
+                parent.fontRenderer.drawString(comp.getUnformattedText(), x, py, 0);
             }
         }
 

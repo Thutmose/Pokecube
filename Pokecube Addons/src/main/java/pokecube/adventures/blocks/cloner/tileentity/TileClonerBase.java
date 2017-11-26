@@ -2,6 +2,8 @@ package pokecube.adventures.blocks.cloner.tileentity;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -11,6 +13,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.crafting.PoweredProcess;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredProgress;
@@ -26,11 +32,16 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
     private PoweredProcess currentProcess = null;
     protected CraftMatrix  craftMatrix;
     private EntityPlayer   user;
+    IItemHandler[]         wrappers       = new IItemHandler[6];
 
     public TileClonerBase(int size, int output)
     {
         inventory = CompatWrapper.makeList(size);
         this.outputSlot = output;
+        for (EnumFacing side : EnumFacing.VALUES)
+        {
+            wrappers[side.ordinal()] = new SidedInvWrapper(this, side);
+        }
     }
 
     @Override
@@ -266,5 +277,20 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
     {
         return !isItemValidForSlot(index, stack);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+    {
+        if (facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) wrappers[facing.ordinal()];
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        if (facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return true;
+        return super.hasCapability(capability, facing);
     }
 }

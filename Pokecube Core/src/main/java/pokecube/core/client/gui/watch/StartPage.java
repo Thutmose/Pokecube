@@ -58,7 +58,9 @@ public class StartPage extends ListPage
             {
                 button.playPressSound(page.mc.getSoundHandler());
                 // Index plus 1 as 0 is the start page, and no button for it.
+                page.watch.pages.get(page.watch.index).onPageClosed();
                 page.watch.index = slotIndex + 1;
+                page.watch.pages.get(page.watch.index).onPageOpened();
             }
             return false;
         }

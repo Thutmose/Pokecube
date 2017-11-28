@@ -197,7 +197,7 @@ public class PokemobMoveRecipeParser implements IRecipeParser
                 }
                 else inputs.add(XMLRecipeHandler.getStack(xml));
             }
-            boolean failed = output == null;
+            boolean failed = !CompatWrapper.isValid(output);
             for (Object o : inputs)
                 failed = failed || o == null;
             if (failed) { throw new NullPointerException("output: " + output + " inputs: " + inputs); }

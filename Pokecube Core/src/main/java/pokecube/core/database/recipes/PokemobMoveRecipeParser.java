@@ -10,15 +10,16 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipe;
@@ -26,6 +27,7 @@ import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipeInput;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -38,30 +40,28 @@ public class PokemobMoveRecipeParser implements IRecipeParser
 
     private static class CustomShapessOreRecipe extends ShapelessOreRecipe
     {
-        public CustomShapessOreRecipe(ItemStack result, Object... recipe)
+        public CustomShapessOreRecipe(ResourceLocation name, ItemStack result, Object... recipe)
         {
-            super(result, new Object[0]);
+            super(name, result, new Object[0]);
             for (Object in : recipe)
             {
-                if (in instanceof ItemStack)
+                Ingredient ing = CraftingHelper.getIngredient(in);
+
+                if (in instanceof List)
                 {
-                    input.add(((ItemStack) in).copy());
+                    List<?> list = (List<?>) in;
+                    ItemStack[] stacks = new ItemStack[list.size()];
+                    for (int i = 0; i < stacks.length; i++)
+                    {
+                        stacks[i] = (ItemStack) list.get(i);
+                    }
+                    input.add(Ingredient.fromStacks(stacks));
                 }
-                else if (in instanceof Item)
+
+                if (ing != null)
                 {
-                    input.add(new ItemStack((Item) in));
-                }
-                else if (in instanceof Block)
-                {
-                    input.add(new ItemStack((Block) in));
-                }
-                else if (in instanceof String)
-                {
-                    input.add(OreDictionary.getOres((String) in));
-                }
-                else if (in instanceof List)
-                {
-                    input.add(in);
+                    input.add(ing);
+                    this.isSimple &= ing.isSimple();
                 }
                 else
                 {
@@ -201,7 +201,8 @@ public class PokemobMoveRecipeParser implements IRecipeParser
             for (Object o : inputs)
                 failed = failed || o == null;
             if (failed) { throw new NullPointerException("output: " + output + " inputs: " + inputs); }
-            this.recipe = new CustomShapessOreRecipe(output, inputs.toArray());
+            this.recipe = new CustomShapessOreRecipe(new ResourceLocation(PokecubeMod.ID, "loaded"), output,
+                    inputs.toArray());
         }
 
         @Override
@@ -213,14 +214,14 @@ public class PokemobMoveRecipeParser implements IRecipeParser
         public boolean attemptCraft(IPokemob attacker, Vector3 location)
         {
             World world = attacker.getEntity().getEntityWorld();
-            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
+            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().grow(1));
             if (!items.isEmpty())
             {
                 List<ItemStack> stacks = Lists.newArrayList();
                 Set<EntityItem> valid = Sets.newHashSet();
                 for (EntityItem item : items)
                 {
-                    ItemStack stack = item.getEntityItem();
+                    ItemStack stack = item.getItem();
                     if (CompatWrapper.isValid(stack))
                     {
                         stacks.add(stack);
@@ -245,13 +246,13 @@ public class PokemobMoveRecipeParser implements IRecipeParser
                     }
                     ItemStack stack = recipe.getCraftingResult(inventory);
                     EntityItem item = new EntityItem(world, location.x, location.y, location.z, stack);
-                    crafted = world.spawnEntityInWorld(item);
+                    crafted = world.spawnEntity(item);
                     for (ItemStack remain : recipe.getRemainingItems(inventory))
                     {
                         if (CompatWrapper.isValid(remain))
                         {
                             item = new EntityItem(world, location.x, location.y, location.z, remain);
-                            world.spawnEntityInWorld(item);
+                            world.spawnEntity(item);
                         }
                     }
                 }

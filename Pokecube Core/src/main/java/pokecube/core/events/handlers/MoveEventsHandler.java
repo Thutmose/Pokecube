@@ -40,8 +40,8 @@ import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -146,7 +146,7 @@ public class MoveEventsHandler
 
     public static boolean doDefaultFire(IPokemob attacker, Move_Base move, Vector3 location)
     {
-        if (move.getPWR() <= 0) return false;
+        if (move.getPWR() <= 0 || !PokecubeMod.core.getConfig().defaultFireActions) return false;
         World world = attacker.getEntity().getEntityWorld();
         Vector3 nextBlock = Vector3.getNewVector().set(attacker.getEntity()).subtractFrom(location).reverse().norm()
                 .addTo(location);
@@ -190,7 +190,7 @@ public class MoveEventsHandler
 
     public static boolean doDefaultElectric(IPokemob attacker, Move_Base move, Vector3 location)
     {
-        if (move.getPWR() < ELECTRICSTRONG) { return false; }
+        if (move.getPWR() < ELECTRICSTRONG || !PokecubeMod.core.getConfig().defaultElectricActions) { return false; }
 
         World world = attacker.getEntity().getEntityWorld();
         IBlockState state = location.getBlockState(world);
@@ -213,6 +213,7 @@ public class MoveEventsHandler
 
     public static boolean doDefaultIce(IPokemob attacker, Move_Base move, Vector3 location)
     {
+        if (!PokecubeMod.core.getConfig().defaultIceActions) return false;
         World world = attacker.getEntity().getEntityWorld();
         BlockPos pos = location.getPos();
         IBlockState state = location.getBlockState(world);
@@ -252,6 +253,7 @@ public class MoveEventsHandler
 
     public static boolean doDefaultWater(IPokemob attacker, Move_Base move, Vector3 location)
     {
+        if (!PokecubeMod.core.getConfig().defaultWaterActions) return false;
         World world = attacker.getEntity().getEntityWorld();
         IBlockState state = location.getBlockState(world);
         Vector3 prevBlock = Vector3.getNewVector().set(attacker.getEntity()).subtractFrom(location).norm()
@@ -329,7 +331,39 @@ public class MoveEventsHandler
         }
     }
 
-    private static MoveEventsHandler INSTANCE;
+    public static class ActionWrapper implements IMoveAction
+    {
+        final IMoveAction   wrapped;
+        private IMoveAction custom;
+        private boolean     checked = false;
+
+        public ActionWrapper(IMoveAction wrapped)
+        {
+            this.wrapped = wrapped;
+        }
+
+        @Override
+        public boolean applyEffect(IPokemob user, Vector3 location)
+        {
+            if (!checked)
+            {
+                checked = true;
+                custom = customActions.get(getMoveName());
+            }
+            boolean customApplied = custom.applyEffect(user, location);
+            return wrapped.applyEffect(user, location) || customApplied;
+        }
+
+        @Override
+        public String getMoveName()
+        {
+            return wrapped.getMoveName();
+        }
+    }
+
+    public static final Map<String, IMoveAction> customActions = Maps.newHashMap();
+
+    private static MoveEventsHandler             INSTANCE;
 
     public static MoveEventsHandler getInstance()
     {
@@ -338,6 +372,10 @@ public class MoveEventsHandler
 
     public static void register(IMoveAction move)
     {
+        if (!(move instanceof ActionWrapper))
+        {
+            move = new ActionWrapper(move);
+        }
         getInstance().actionMap.put(move.getMoveName(), move);
     }
 

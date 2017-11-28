@@ -157,20 +157,19 @@ public class AIMate extends AIBase
                 || pokemob.getMalesForBreeding().size() > 0) { return null; }
 
         float searchingLoveDist = 5F;
-        AxisAlignedBB bb = entity.getEntityBoundingBox().grow(searchingLoveDist, searchingLoveDist,
-                searchingLoveDist);// grow in 1.12
-        List<Entity> targetMates = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
-        {
-            @Override
-            public boolean apply(Entity input)
-            {
-                return input instanceof EntityAnimal && pokemob.canMate((EntityAnimal) input);
-            }
-        });
-        bb = entity.getEntityBoundingBox().grow(PokecubeMod.core.getConfig().maxSpawnRadius, 2 * searchingLoveDist,
-                PokecubeMod.core.getConfig().maxSpawnRadius);// grow
-                                                             // in
-                                                             // 1.12
+        AxisAlignedBB bb = makeBox(searchingLoveDist, searchingLoveDist, searchingLoveDist,
+                entity.getEntityBoundingBox());
+        List<Entity> targetMates = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb,
+                new Predicate<Entity>()
+                {
+                    @Override
+                    public boolean apply(Entity input)
+                    {
+                        return input instanceof EntityAnimal && pokemob.canMate((EntityAnimal) input);
+                    }
+                });
+        bb = makeBox(PokecubeMod.core.getConfig().maxSpawnRadius, searchingLoveDist,
+                PokecubeMod.core.getConfig().maxSpawnRadius, entity.getEntityBoundingBox());
         List<Entity> otherMobs = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
         {
             @Override
@@ -276,5 +275,10 @@ public class AIMate extends AIBase
                 loverMob.resetLoveStatus();
             }
         }
+    }
+
+    private AxisAlignedBB makeBox(double dx, double dy, double dz, AxisAlignedBB centre)
+    {
+        return centre.grow(dx, dy, dz);
     }
 }

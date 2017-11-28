@@ -23,6 +23,7 @@ import net.minecraftforge.registries.GameData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 public class XMLRecipeHandler
 {
@@ -57,7 +58,7 @@ public class XMLRecipeHandler
                     else inputs.add(getStack(xml));
                 }
             }
-            boolean failed = output == null;
+            boolean failed = !CompatWrapper.isValid(output);
             for (Object o : inputs)
                 failed = failed || o == null;
             if (failed) { throw new NullPointerException("output: " + output + " inputs: " + inputs); }
@@ -82,6 +83,7 @@ public class XMLRecipeHandler
     static
     {
         recipeParsers.put("default", new DefaultParser());
+        recipeParsers.put("move_effect", new PokemobMoveRecipeParser());
     }
 
     @XmlRootElement(name = "Recipes")

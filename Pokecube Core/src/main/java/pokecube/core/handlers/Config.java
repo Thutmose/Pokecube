@@ -127,6 +127,10 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public int                           mateMultiplier               = 1;
     @Configure(category = mobAI)
+    public float                         mateDensityWild              = 2;
+    @Configure(category = mobAI)
+    public float                         mateDensityPlayer            = 4;
+    @Configure(category = mobAI)
     public int                           breedingDelay                = 4000;
     @Configure(category = mobAI)
     /** Scaling factor for pokemob explosions */

@@ -159,7 +159,7 @@ public class AIMate extends AIBase
         float searchingLoveDist = 5F;
         AxisAlignedBB bb = entity.getEntityBoundingBox().grow(searchingLoveDist, searchingLoveDist,
                 searchingLoveDist);// grow in 1.12
-        List<Entity> list = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
+        List<Entity> targetMates = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
         {
             @Override
             public boolean apply(Entity input)
@@ -171,7 +171,7 @@ public class AIMate extends AIBase
                 PokecubeMod.core.getConfig().maxSpawnRadius);// grow
                                                              // in
                                                              // 1.12
-        List<Entity> list2 = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
+        List<Entity> otherMobs = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
         {
             @Override
             public boolean apply(Entity input)
@@ -179,16 +179,17 @@ public class AIMate extends AIBase
                 return input instanceof EntityAnimal && CapabilityPokemob.getPokemobFor(input) != null;
             }
         });
-        float multiplier = pokemob.isPlayerOwned() ? 3 : 2;
-        if (list2.size() >= PokecubeMod.core.getConfig().mobSpawnNumber * multiplier)
+        float multiplier = pokemob.isPlayerOwned() ? PokecubeMod.core.getConfig().mateDensityPlayer
+                : PokecubeMod.core.getConfig().mateDensityWild;
+        if (otherMobs.size() >= PokecubeMod.core.getConfig().mobSpawnNumber * multiplier)
         {
             pokemob.resetLoveStatus();
             return null;
         }
-        for (int i = 0; i < list.size(); i++)
+        for (int i = 0; i < targetMates.size(); i++)
         {
-            IPokemob entityanimal = CapabilityPokemob.getPokemobFor(list.get(i));
-            EntityAnimal animal = (EntityAnimal) list.get(i);
+            IPokemob entityanimal = CapabilityPokemob.getPokemobFor(targetMates.get(i));
+            EntityAnimal animal = (EntityAnimal) targetMates.get(i);
             if (entityanimal == this || entityanimal.getPokemonAIState(IMoveConstants.TAMED) != pokemob
                     .getPokemonAIState(IMoveConstants.TAMED) || !entityanimal.getPokedexEntry().breeds)
                 continue;
@@ -239,7 +240,7 @@ public class AIMate extends AIBase
     @Override
     public boolean shouldRun()
     {
-        if(!pokemob.isRoutineEnabled(AIRoutine.MATE)) return false;
+        if (!pokemob.isRoutineEnabled(AIRoutine.MATE)) return false;
         if (cooldown > 0) { return false; }
         if (pokemob.getLover() != null) if (pokemob.tryToBreed() && !pokemob.getLover().isDead) return true;
         if (pokemob.getPokemonAIState(IMoveConstants.MATING)) return true;

@@ -11,10 +11,12 @@ import net.minecraft.nbt.NBTTagList;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 
-/** Data which needs to be synced to clients about the player, this is
- * teleport information and starter status. */
+/** Data which needs to be synced to clients about the player, this is teleport
+ * information and starter status. */
 public class PokecubePlayerData extends PlayerData
 {
+    // TODO a way to share teleports.
+    // TODO a way to sort teleports into groups.
     ArrayList<TeleDest> telelocs = Lists.newArrayList();
     int                 teleIndex;
     boolean             hasStarter;

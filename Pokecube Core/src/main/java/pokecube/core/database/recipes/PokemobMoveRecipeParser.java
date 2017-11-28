@@ -1,9 +1,8 @@
 package pokecube.core.database.recipes;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.xml.namespace.QName;
 
@@ -20,6 +19,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipe;
@@ -38,6 +38,24 @@ public class PokemobMoveRecipeParser implements IRecipeParser
     private static final QName OREDICT    = new QName("oreDict");
     private static final QName SIZE       = new QName("n");
 
+    private static class WrappedSizedIngredient extends Ingredient
+    {
+        final Ingredient wrapped;
+        final int        size;
+
+        public WrappedSizedIngredient(Ingredient wrapped, int size)
+        {
+            this.wrapped = wrapped;
+            this.size = size;
+        }
+
+        @Override
+        public boolean apply(ItemStack arg)
+        {
+            return wrapped.apply(arg) && arg.getCount() == size;
+        }
+    }
+
     private static class CustomShapessOreRecipe extends ShapelessOreRecipe
     {
         public CustomShapessOreRecipe(ResourceLocation name, ItemStack result, Object... recipe)
@@ -45,22 +63,39 @@ public class PokemobMoveRecipeParser implements IRecipeParser
             super(name, result, new Object[0]);
             for (Object in : recipe)
             {
-                Ingredient ing = CraftingHelper.getIngredient(in);
+                int size = 1;
+                if (in instanceof ItemStack) size = ((ItemStack) in).getCount();
+
+                Ingredient ing = null;
 
                 if (in instanceof List)
                 {
                     List<?> list = (List<?>) in;
+                    list.removeIf(new Predicate<Object>()
+                    {
+                        @Override
+                        public boolean test(Object t)
+                        {
+                            return !CompatWrapper.isValid((ItemStack) t);
+                        }
+                    });
                     ItemStack[] stacks = new ItemStack[list.size()];
                     for (int i = 0; i < stacks.length; i++)
                     {
                         stacks[i] = (ItemStack) list.get(i);
+                        size = stacks[i].getCount();
                     }
-                    input.add(Ingredient.fromStacks(stacks));
+                    ing = Ingredient.fromStacks(stacks);
+                }
+                else
+                {
+                    if (size == 0) ing = null;
+                    else CraftingHelper.getIngredient(in);
                 }
 
                 if (ing != null)
                 {
-                    input.add(ing);
+                    input.add(new WrappedSizedIngredient(ing, size));
                     this.isSimple &= ing.isSimple();
                 }
                 else
@@ -77,56 +112,22 @@ public class PokemobMoveRecipeParser implements IRecipeParser
         }
 
         /** Used to check if a recipe matches current crafting inventory */
-        @SuppressWarnings("unchecked")
         @Override
-        public boolean matches(InventoryCrafting var1, World world)
+        public boolean matches(InventoryCrafting inv, World world)
         {
-            ArrayList<Object> required = new ArrayList<Object>(input);
-
-            for (int x = 0; x < var1.getSizeInventory(); x++)
+            int ingredientCount = 0;
+            List<ItemStack> items = Lists.newArrayList();
+            for (int i = 0; i < inv.getSizeInventory(); ++i)
             {
-                ItemStack slot = var1.getStackInSlot(x);
-
-                if (CompatWrapper.isValid(slot))
+                ItemStack itemstack = inv.getStackInSlot(i);
+                if (!itemstack.isEmpty())
                 {
-                    boolean inRecipe = false;
-                    Iterator<Object> req = required.iterator();
-
-                    while (req.hasNext())
-                    {
-                        boolean match = false;
-
-                        Object next = req.next();
-
-                        if (next instanceof ItemStack)
-                        {
-                            match = OreDictionary.itemMatches((ItemStack) next, slot, false)
-                                    && CompatWrapper.getStackSize(slot) == CompatWrapper.getStackSize((ItemStack) next);
-                        }
-                        else if (next instanceof List)
-                        {
-                            Iterator<ItemStack> itr = ((List<ItemStack>) next).iterator();
-                            while (itr.hasNext() && !match)
-                            {
-                                ItemStack test = itr.next();
-                                match = OreDictionary.itemMatches(test, slot, false)
-                                        && CompatWrapper.getStackSize(slot) == CompatWrapper.getStackSize(test);
-                            }
-                        }
-
-                        if (match)
-                        {
-                            inRecipe = true;
-                            required.remove(next);
-                            break;
-                        }
-                    }
-
-                    if (!inRecipe) { return false; }
+                    ++ingredientCount;
+                    items.add(itemstack);
                 }
             }
-
-            return required.isEmpty();
+            if (ingredientCount != this.input.size()) return false;
+            return RecipeMatcher.findMatches(items, this.input) != null;
         }
 
     }

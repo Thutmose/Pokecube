@@ -489,7 +489,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().aiDisableDistance, 512, this);
         }
-        if (!loaded)
+        //Only disable server side.
+        if (!loaded && !getEntityWorld().isRemote)
         {
             despawnEntity();
             return;

@@ -474,8 +474,8 @@ public class Tools
             if (EntitySelectors.NOT_SPECTATING.apply(entityplayer))
             {
                 double d0 = entityplayer.posX - location.x;
-                double d1 = entityplayer.posY - location.y;
-                double d2 = entityplayer.posZ - location.z;
+                double d1 = entityplayer.posZ - location.z;
+                double d2 = entityplayer.posY - location.y;
                 double dh = d0 * d0 + d1 * d1;
                 double dv = d2 * d2;
                 if (dh < dhm && dv < dvm) { return true; }

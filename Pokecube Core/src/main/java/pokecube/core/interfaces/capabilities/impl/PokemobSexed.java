@@ -24,6 +24,7 @@ public abstract class PokemobSexed extends PokemobStats
     @Override
     public boolean canMate(EntityAnimal entityAnimal)
     {
+        if (!isRoutineEnabled(AIRoutine.MATE)) return false;
         IPokemob otherMob = CapabilityPokemob.getPokemobFor(entityAnimal);
         if (otherMob != null)
         {

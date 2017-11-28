@@ -25,8 +25,8 @@ import pokecube.core.utils.Tools;
 
 public class XMLRecipeHandler
 {
-    public static Set<String>                recipeFiles = Sets.newHashSet();
-    public static Map<String, IRecipeParser> recipeParsers   = Maps.newHashMap();
+    public static Set<String>                recipeFiles   = Sets.newHashSet();
+    public static Map<String, IRecipeParser> recipeParsers = Maps.newHashMap();
 
     public static class DefaultParser implements IRecipeParser
     {
@@ -66,6 +66,7 @@ public class XMLRecipeHandler
     static
     {
         recipeParsers.put("default", new DefaultParser());
+        recipeParsers.put("move_effect", new PokemobMoveRecipeParser());
     }
 
     @XmlRootElement(name = "Recipes")
@@ -89,7 +90,8 @@ public class XMLRecipeHandler
         @XmlElement(name = "Input")
         public List<XMLRecipeInput> inputs    = Lists.newArrayList();
         @XmlAnyAttribute
-        public Map<QName, String> values = Maps.newHashMap();
+        public Map<QName, String>   values    = Maps.newHashMap();
+
         @Override
         public String toString()
         {

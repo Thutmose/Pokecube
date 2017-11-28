@@ -52,6 +52,7 @@ public class Config extends ConfigBase
     public static final String           database                     = "database";
     public static final String           world                        = "generation";
     public static final String           mobAI                        = "ai";
+    public static final String           moves                        = "moves";
     public static final String           misc                         = "misc";
     public static final String           client                       = "client";
     public static final String           advanced                     = "advanced";
@@ -119,11 +120,54 @@ public class Config extends ConfigBase
     @Configure(category = misc)
     public boolean                       berryBreeding                = true;
 
-    // AI Related settings
-    @Configure(category = mobAI)
+    // Move Use related settings
+    @Configure(category = moves)
     public double                        contactAttackDistance        = 0;
-    @Configure(category = mobAI)
+    @Configure(category = moves)
     public double                        rangedAttackDistance         = 16;
+    @Configure(category = moves)
+    /** Scaling factor for pokemob explosions */
+    public double                        blastStrength                = 100;
+    @Configure(category = moves)
+    /** Capped damage to players by pok�mobs */
+    public int                           maxWildPlayerDamage          = 10;
+    @Configure(category = moves)
+    /** Capped damage to players by pok�mobs */
+    public int                           maxOwnedPlayerDamage         = 10;
+    @Configure(category = moves)
+    /** Capped damage to players by pok�mobs */
+    public double                        wildPlayerDamageRatio        = 1;
+    @Configure(category = moves)
+    /** Capped damage to players by pok�mobs */
+    public double                        wildPlayerDamageMagic        = 0.1;
+    @Configure(category = moves)
+    /** Capped damage to players by pok�mobs */
+    public double                        ownedPlayerDamageRatio       = 1;
+    @Configure(category = moves)
+    /** Capped damage to players by pok�mobs */
+    public double                        ownedPlayerDamageMagic       = 0.1;
+    @Configure(category = moves)
+    /** Scaling factor for damage against not pokemobs */
+    public double                        pokemobToOtherMobDamageRatio = 1;
+    @Configure(category = moves)
+    /** Scaling factor for damage against NPCs */
+    public double                        pokemobToNPCDamageRatio      = 1;
+    @Configure(category = moves)
+    public int                           baseSmeltingHunger           = 100;
+    @Configure(category = moves)
+    public boolean                       onlyPokemobsDamagePokemobs   = false;
+    @Configure(category = moves)
+    public float                         playerToPokemobDamageScale   = 1;
+    @Configure(category = moves)
+    public boolean                       defaultFireActions           = true;
+    @Configure(category = moves)
+    public boolean                       defaultWaterActions          = true;
+    @Configure(category = moves)
+    public boolean                       defaultElectricActions       = true;
+    @Configure(category = moves)
+    public boolean                       defaultIceActions            = true;
+
+    // AI Related settings
     @Configure(category = mobAI)
     public int                           mateMultiplier               = 1;
     @Configure(category = mobAI)
@@ -132,9 +176,6 @@ public class Config extends ConfigBase
     public float                         mateDensityPlayer            = 4;
     @Configure(category = mobAI)
     public int                           breedingDelay                = 4000;
-    @Configure(category = mobAI)
-    /** Scaling factor for pokemob explosions */
-    public double                        blastStrength                = 100;
     @Configure(category = mobAI)
     public int                           eggHatchTime                 = 10000;
     @Configure(category = mobAI)
@@ -172,30 +213,6 @@ public class Config extends ConfigBase
      * damage */
     public int                           pokemobLifeSpan              = 8000;
     @Configure(category = mobAI)
-    /** Capped damage to players by pok�mobs */
-    public int                           maxWildPlayerDamage          = 10;
-    @Configure(category = mobAI)
-    /** Capped damage to players by pok�mobs */
-    public int                           maxOwnedPlayerDamage         = 10;
-    @Configure(category = mobAI)
-    /** Capped damage to players by pok�mobs */
-    public double                        wildPlayerDamageRatio        = 1;
-    @Configure(category = mobAI)
-    /** Capped damage to players by pok�mobs */
-    public double                        wildPlayerDamageMagic        = 0.1;
-    @Configure(category = mobAI)
-    /** Capped damage to players by pok�mobs */
-    public double                        ownedPlayerDamageRatio       = 1;
-    @Configure(category = mobAI)
-    /** Capped damage to players by pok�mobs */
-    public double                        ownedPlayerDamageMagic       = 0.1;
-    @Configure(category = mobAI)
-    /** Scaling factor for damage against not pokemobs */
-    public double                        pokemobToOtherMobDamageRatio = 1;
-    @Configure(category = mobAI)
-    /** Scaling factor for damage against NPCs */
-    public double                        pokemobToNPCDamageRatio      = 1;
-    @Configure(category = mobAI)
     /** Warning time before a wild pok�mob attacks a player */
     public int                           pokemobagressticks           = 100;
     @Configure(category = mobAI)
@@ -204,12 +221,6 @@ public class Config extends ConfigBase
     public boolean                       pokemobsDamagePlayers        = true;
     @Configure(category = mobAI)
     public boolean                       pokemobsDamageBlocks         = false;
-    @Configure(category = mobAI)
-    public int                           baseSmeltingHunger           = 100;
-    @Configure(category = mobAI)
-    public boolean                       onlyPokemobsDamagePokemobs   = false;
-    @Configure(category = mobAI)
-    public float                         playerToPokemobDamageScale   = 1;
     @Configure(category = mobAI)
     public float                         expFromDeathDropScale        = 1;
     @Configure(category = mobAI)

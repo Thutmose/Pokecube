@@ -117,7 +117,7 @@ public class MovesParser
 
         if (alwaysCrit)
         {
-
+            move.crit = 255;
         }
         else if (crit)
         {

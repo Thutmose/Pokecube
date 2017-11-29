@@ -384,10 +384,17 @@ public class AdvancedRocketryCompat
                             targetDim = Configuration.spaceDimId;
                             ISpaceObject object = SpaceObjectManager.getSpaceManager()
                                     .getSpaceStation(ItemStationChip.getUUID(stack));
-                            if(object!=null)
+                            if (object != null)
                             {
                                 pos.x = object.getSpawnLocation().x;
                                 pos.z = object.getSpawnLocation().z;
+                                int dimId = event.getEntity().world.provider.getDimension();
+                                DimensionProperties props = DimensionManager.getInstance()
+                                        .getDimensionProperties(dimId);
+                                int stationParent = object.getOrbitingPlanetId();
+                                int currentParent = props.isMoon() ? props.getParentPlanet()
+                                        : props.isStation() ? props.getParentPlanet() : dimId;
+                                if (currentParent != stationParent) targetDim = -1;
                             }
                             else
                             {

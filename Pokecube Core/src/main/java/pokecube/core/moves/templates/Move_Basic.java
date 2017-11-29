@@ -384,24 +384,29 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         int critcalRate = 16;
 
-        if (criticalLevel == 2)
+        if (criticalLevel == 1)
+        {
+            critcalRate = 16;
+        }
+        else if (criticalLevel == 2)
         {
             critcalRate = 8;
         }
-
-        if (criticalLevel == 3)
+        else if (criticalLevel == 3)
         {
             critcalRate = 4;
         }
-
-        if (criticalLevel == 4)
+        else if (criticalLevel == 4)
         {
             critcalRate = 3;
         }
-
-        if (criticalLevel == 5)
+        else if (criticalLevel == 5)
         {
             critcalRate = 2;
+        }
+        else
+        {
+            critcalRate = 1;
         }
 
         if (criticalLevel > 0 && rand.nextInt(critcalRate) == 0)

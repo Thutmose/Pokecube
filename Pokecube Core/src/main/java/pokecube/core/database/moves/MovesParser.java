@@ -111,8 +111,15 @@ public class MovesParser
 
     private static void parseCrit(String details, MoveEntry move)
     {
-        boolean crit = details != null && details.contains("Has an increased Critical Hit ratio");
-        if (crit)
+        boolean crit = details != null && (details.contains("Has an increased Critical Hit ratio")
+                || details.contains("Has high critical hit ratio"));
+        boolean alwaysCrit = details != null && details.contains("Always inflicts a Critical Hit");
+
+        if (alwaysCrit)
+        {
+
+        }
+        else if (crit)
         {
             move.crit = 2;
         }
@@ -135,7 +142,7 @@ public class MovesParser
             try
             {
                 move.power = Integer.parseInt(var);
-                System.out.println(entry.readableName + " " + var);
+                PokecubeMod.log(entry.readableName + " set to fixed damage of " + var);
             }
             catch (NumberFormatException e)
             {

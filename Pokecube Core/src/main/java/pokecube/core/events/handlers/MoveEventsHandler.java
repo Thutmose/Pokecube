@@ -315,7 +315,7 @@ public class MoveEventsHandler
                 checked = true;
                 custom = customActions.get(getMoveName());
             }
-            boolean customApplied = custom.applyEffect(user, location);
+            boolean customApplied = custom != null && custom.applyEffect(user, location);
             return wrapped.applyEffect(user, location) || customApplied;
         }
 

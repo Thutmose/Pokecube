@@ -70,10 +70,10 @@ public class MoveEntry implements IMoveConstants
     public byte                    change                   = CHANGE_NONE;
     public float                   chanceChance             = 0;
     public int[]                   attackerStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    public int                     attackerStatModProb      = 100;
+    public float                   attackerStatModProb      = 1;
     public int[]                   attackedStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    public int                     attackedStatModProb      = 100;
-    public float                   damageHealRatio          = 0;
+    public float                   attackedStatModProb      = 1;
+    public float                   damageHeal          = 0;
     public float                   selfHealRatio            = 0;
     private boolean                multiTarget;
     private boolean                notIntercepable;

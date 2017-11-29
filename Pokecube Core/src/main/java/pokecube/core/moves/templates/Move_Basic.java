@@ -384,24 +384,29 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         int critcalRate = 16;
 
-        if (criticalLevel == 2)
+        if (criticalLevel == 1)
+        {
+            critcalRate = 16;
+        }
+        else if (criticalLevel == 2)
         {
             critcalRate = 8;
         }
-
-        if (criticalLevel == 3)
+        else if (criticalLevel == 3)
         {
             critcalRate = 4;
         }
-
-        if (criticalLevel == 4)
+        else if (criticalLevel == 4)
         {
             critcalRate = 3;
         }
-
-        if (criticalLevel == 5)
+        else if (criticalLevel == 5)
         {
             critcalRate = 2;
+        }
+        else
+        {
+            critcalRate = 1;
         }
 
         if (criticalLevel > 0 && rand.nextInt(critcalRate) == 0)
@@ -578,31 +583,31 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         int damageDealt = beforeHealth - afterHealth;
 
-        healRatio = (packet.getMove().move.damageHealRatio) / 100;
+        healRatio = packet.getMove().move.damageHeal;
         damageRatio = packet.getMove().move.selfDamage;
         if (damageRatio > 0)
         {
             if (packet.getMove().move.selfDamageType == MoveEntry.TOTALHP)
             {
                 float max = attackerMob.getMaxHealth();
-                float diff = max * damageRatio / 100f;
+                float diff = max * damageRatio;
                 attackerMob.setHealth(max - diff);
             }
             if (packet.getMove().move.selfDamageType == MoveEntry.MISS && efficiency <= 0)
             {
                 float max = attackerMob.getMaxHealth();
-                float diff = max * damageRatio / 100f;
+                float diff = max * damageRatio;
                 attackerMob.attackEntityFrom(DamageSource.FALL, diff);
             }
             if (packet.getMove().move.selfDamageType == MoveEntry.DAMAGEDEALT)
             {
-                float diff = damageDealt * damageRatio / 100f;
+                float diff = damageDealt * damageRatio;
                 attackerMob.attackEntityFrom(DamageSource.FALL, diff);
             }
             if (packet.getMove().move.selfDamageType == MoveEntry.RELATIVEHP)
             {
                 float current = attackerMob.getHealth();
-                float diff = current * damageRatio / 100f;
+                float diff = current * damageRatio;
                 attackerMob.attackEntityFrom(DamageSource.FALL, diff);
             }
         }
@@ -613,7 +618,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             attackerMob.setHealth(Math.min(attackerMob.getMaxHealth(), attackerMob.getHealth() + toHeal));
         }
 
-        healRatio = (getSelfHealRatio(attacker)) / 100;
+        healRatio = (getSelfHealRatio(attacker));
         boolean canHeal = attackerMob.getHealth() < attackerMob.getMaxHealth();
         if (healRatio > 0 && canHeal)
         {

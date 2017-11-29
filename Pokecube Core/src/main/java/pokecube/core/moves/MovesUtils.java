@@ -596,19 +596,19 @@ public class MovesUtils implements IMoveConstants
         DefaultModifiers modifiers = affected.getModifiers().getDefaultMods();
         float[] mods = modifiers.values;
         float[] old = mods.clone();
-        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
             mods[1] = (byte) Math.max(-6, Math.min(6, mods[1] + stats[1]));
-        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
             mods[2] = (byte) Math.max(-6, Math.min(6, mods[2] + stats[2]));
-        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
             mods[3] = (byte) Math.max(-6, Math.min(6, mods[3] + stats[3]));
-        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
             mods[4] = (byte) Math.max(-6, Math.min(6, mods[4] + stats[4]));
-        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
             mods[5] = (byte) Math.max(-6, Math.min(6, mods[5] + stats[5]));
-        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
             mods[6] = (byte) Math.max(-6, Math.min(6, mods[6] + stats[6]));
-        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
             mods[7] = (byte) Math.max(-6, Math.min(6, mods[7] + stats[7]));
         boolean ret = false;
         byte[] diff = new byte[old.length];

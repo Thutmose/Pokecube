@@ -70,7 +70,6 @@ public class GuiBag extends GuiContainer
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
     {
         GL11.glColor4f(1f, 1f, 1f, 1f);
-
         mc.renderEngine.bindTexture(new ResourceLocation(PokecubeAdv.ID, "textures/gui/pcgui.png"));
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
@@ -92,6 +91,7 @@ public class GuiBag extends GuiContainer
     @Override
     public void drawScreen(int mouseX, int mouseY, float f)
     {
+        this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, f);
         textFieldSelectedBox.drawTextBox();
 

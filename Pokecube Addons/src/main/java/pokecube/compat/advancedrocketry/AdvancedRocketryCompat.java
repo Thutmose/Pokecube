@@ -1,23 +1,27 @@
 package pokecube.compat.advancedrocketry;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -37,7 +41,6 @@ import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.events.SpawnEvent;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -60,6 +63,11 @@ import zmaster587.libVulpes.util.Vector3F;
 
 public class AdvancedRocketryCompat
 {
+    private static class VacuumBreathers
+    {
+        Set<String> pokemobs = Sets.newHashSet();
+    }
+
     public static String       CUSTOMSPAWNSFILE;
 
     private static PrintWriter out;
@@ -87,26 +95,68 @@ public class AdvancedRocketryCompat
             {
                 temp.mkdirs();
             }
-            // TODO remove this once I get around to finializing
-            // File temp1 = new File(CUSTOMSPAWNSFILE);
-            // if (temp1.exists()) { return; }
-
-            List<String> spawns = Lists.newArrayList();
-            spawns.add("    <Spawn name=\"Lunatone\" overwrite=\"false\" "
-                    + "rate=\"0.01\" min=\"1\" max=\"2\" biomes=\"moon\"/>");
-            spawns.add("    <Spawn name=\"Solrock\" overwrite=\"false\" "
-                    + "rate=\"0.01\" min=\"1\" max=\"2\" biomes=\"moon\"/>");
-            spawns.add("    <Spawn name=\"Clefairy\" overwrite=\"false\" "
-                    + "rate=\"0.2\" min=\"4\" max=\"8\" biomes=\"moon\"/>");
+            List<String> list = Lists.newArrayList();
+            list.add("    <Spawn name=\"Lunatone\" overwrite=\"false\" "
+                    + "rate=\"0.01\" min=\"1\" max=\"2\" types=\"moon\"/>");
+            list.add("    <Spawn name=\"Solrock\" overwrite=\"false\" "
+                    + "rate=\"0.01\" min=\"1\" max=\"2\" types=\"moon\"/>");
+            list.add("    <Spawn name=\"Beldum\" overwrite=\"false\" "
+                    + "rate=\"0.01\" min=\"1\" max=\"2\" types=\"moon\"/>");
+            list.add("    <Spawn name=\"Minior\" overwrite=\"false\" "
+                    + "rate=\"0.01\" min=\"1\" max=\"2\" types=\"moon\"/>");
+            list.add("    <Spawn name=\"Clefairy\" overwrite=\"false\" "
+                    + "rate=\"0.2\" min=\"4\" max=\"6\" types=\"moon\"/>");
+            list.add("    <Spawn name=\"Deoxys\" overwrite=\"false\" "
+                    + "rate=\"0.0001\" min=\"1\" max=\"2\" types=\"space\"/>");
+            list.add("    <Spawn name=\"Rayquaza\" overwrite=\"false\" "
+                    + "rate=\"0.0001\" min=\"1\" max=\"1\" types=\"space\"/>");
             fwriter = new FileWriter(CUSTOMSPAWNSFILE);
             out = new PrintWriter(fwriter);
             out.println("<?xml version=\"1.0\"?>");
             out.println("<Spawns>");
-            for (String s : spawns)
+            for (String s : list)
                 out.println(s);
             out.println("</Spawns>");
             out.close();
             fwriter.close();
+
+            list.clear();
+            String fileName = CUSTOMSPAWNSFILE.replace("spawns.xml", "vacuumsafe.cfg");
+            temp = new File(fileName);
+            if (!temp.exists())
+            {
+                list.add("default_vacuumsafety.json");
+                fwriter = new FileWriter(fileName);
+                out = new PrintWriter(fwriter);
+                for (String s : list)
+                    out.println(s);
+                out.close();
+                fwriter.close();
+            }
+            list.clear();
+            list.add("clefairy");
+            list.add("clefable");
+            list.add("lunatone");
+            list.add("solrock");
+            list.add("deoxys");
+            list.add("beldum");
+            list.add("metang");
+            list.add("metagross");
+            list.add("metagrossmega");
+            list.add("rayquaza");
+            list.add("minior");
+            list.add("rayquazamega");
+            fileName = CUSTOMSPAWNSFILE.replace("spawns.xml", "default_vacuumsafety.json");
+            temp = new File(fileName);
+            fwriter = new FileWriter(fileName);
+            out = new PrintWriter(fwriter);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            VacuumBreathers defaults = new VacuumBreathers();
+            defaults.pokemobs.addAll(list);
+            out.println(gson.toJson(defaults));
+            out.close();
+            fwriter.close();
+
         }
         catch (IOException e)
         {
@@ -129,6 +179,7 @@ public class AdvancedRocketryCompat
     public static void ARCompat(FMLPreInitializationEvent evt)
     {
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.advancedrocketry.AdvancedRocketryCompat(evt));
+        PokecubeMod.log("Registered Advanced Rocketry Compat");
     }
 
     public AdvancedRocketryCompat(FMLPreInitializationEvent event)
@@ -137,10 +188,27 @@ public class AdvancedRocketryCompat
         Database.addSpawnData(CUSTOMSPAWNSFILE);
     }
 
+    private boolean canBreatheHere(PokedexEntry entry, World world, BlockPos pos)
+    {
+        try
+        {
+            IAtmosphere atmos;
+            atmos = (IAtmosphere) getAtmosphereType.invoke(getOxygenHandler.invoke(null, world.provider.getDimension()),
+                    pos);
+            if (!atmos.isBreathable() && !vacuumBreathers.contains(entry)) { return false; }
+        }
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+        {
+            PokecubeMod.log(Level.SEVERE, "Error checking whether " + entry + " can breathe " + world + " " + pos, e);
+        }
+        return true;
+    }
+
     @SubscribeEvent
     public void postpost(PostPostInit event)
     {
-        BiomeType.getBiome("Moon", true);
+        BiomeType.getBiome("moon", true);
+        BiomeType.getBiome("space", true);
         try
         {
             Class<?> atmosphereHandler = Class.forName("zmaster587.advancedRocketry.atmosphere.AtmosphereHandler");
@@ -160,17 +228,43 @@ public class AdvancedRocketryCompat
         {
             e.printStackTrace();
         }
-        Set<String> mobs = Sets.newHashSet();// TODO make this load from a file.
-        mobs.add("clefairy");
-        mobs.add("clefable");
-        mobs.add("lunatone");
-        mobs.add("solrock");
-        mobs.add("deoxys");
-        mobs.add("beldum");
-        mobs.add("rayquaza");
-        mobs.add("minior");
-        mobs.add("rayquazamega");
         megaray = Database.getEntry("rayquazamega");
+
+        Set<String> mobs = Sets.newHashSet();
+
+        try
+        {
+            String fileName = CUSTOMSPAWNSFILE.replace("spawns.xml", "vacuumsafe.cfg");
+            File temp = new File(fileName);
+            FileReader fileReader = new FileReader(temp);
+            BufferedReader reader = new BufferedReader(fileReader);
+            String line;
+            Gson gson = new GsonBuilder().create();
+            while ((line = reader.readLine()) != null)
+            {
+                fileName = CUSTOMSPAWNSFILE.replace("spawns.xml", line);
+                temp = new File(fileName);
+                if (temp.exists())
+                {
+                    FileReader jsonreader = new FileReader(temp);
+                    VacuumBreathers breathers = gson.fromJson(jsonreader, VacuumBreathers.class);
+                    if (breathers != null)
+                    {
+                        mobs.addAll(breathers.pokemobs);
+                    }
+                }
+                else
+                {
+                    PokecubeMod.log(Level.SEVERE, "No File found of name " + temp);
+                }
+            }
+            reader.close();
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.SEVERE, "Error reading configs for vacuum breathers", e);
+        }
+
         for (String s : mobs)
         {
             if (Database.getEntry(s) != null) vacuumBreathers.add(Database.getEntry(s));
@@ -180,17 +274,21 @@ public class AdvancedRocketryCompat
     @SubscribeEvent
     public void spawn(SpawnEvent.Check event) throws Exception
     {
-        if (!event.forSpawn) return;
         Biome biome = event.location.getBiome(event.world);
-        Biome moon = Biome.REGISTRY.getObject(new ResourceLocation("Moon"));
+        Biome moon = Biome.REGISTRY.getObject(new ResourceLocation("advancedrocketry:Moon"));
+        Vector3 v = event.location;
+        BlockPos pos = v.getPos();
+        World world = event.world;
+        if (moon == null)
+        {
+            moon = Biome.REGISTRY.getObject(new ResourceLocation("advancedrocketry:moon"));
+        }
         if (biome == moon)
         {
-            BiomeType moonType = BiomeType.getBiome("Moon", true);
+            BiomeType moonType = BiomeType.getBiome("moon", true);
             PokedexEntry dbe = event.entry;
             if (dbe.getSpawnData().isValid(moonType))
             {
-                Vector3 v = event.location;
-                World world = event.world;
                 SpawnCheck checker = new SpawnCheck(v, world);
                 SpawnBiomeMatcher match = null;
                 for (SpawnBiomeMatcher matcher : dbe.getSpawnData().matchers.keySet())
@@ -202,113 +300,44 @@ public class AdvancedRocketryCompat
                     }
                 }
                 if (((boolean) conditionsMatch.invoke(match, checker))) event.setResult(Result.ALLOW);
-                else event.setCanceled(true);
+                else if (!canBreatheHere(dbe, world, pos)) event.setCanceled(true);
             }
+            else if (!canBreatheHere(dbe, world, pos)) event.setCanceled(true);
+            return;
+        }
+        Biome space = Biome.REGISTRY.getObject(new ResourceLocation("advancedrocketry:Space"));
+        if (space == null)
+        {
+            space = Biome.REGISTRY.getObject(new ResourceLocation("advancedrocketry:space"));
+        }
+        if (biome == space)
+        {
+            BiomeType spaceType = BiomeType.getBiome("space", true);
+            PokedexEntry dbe = event.entry;
+            if (dbe.getSpawnData().isValid(spaceType))
+            {
+                SpawnCheck checker = new SpawnCheck(v, world);
+                SpawnBiomeMatcher match = null;
+                for (SpawnBiomeMatcher matcher : dbe.getSpawnData().matchers.keySet())
+                {
+                    if (matcher.validSubBiomes.contains(spaceType))
+                    {
+                        match = matcher;
+                        break;
+                    }
+                }
+                if (((boolean) conditionsMatch.invoke(match, checker))) event.setResult(Result.ALLOW);
+                else if (!canBreatheHere(dbe, world, pos)) event.setCanceled(true);
+            }
+            else if (!canBreatheHere(dbe, world, pos)) event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void spawn(SpawnEvent.Pick.Pre event) throws Exception
     {
-        Biome biome = event.location.getBiome(event.world);
-        Biome moon = Biome.REGISTRY.getObject(new ResourceLocation("Moon"));
-        if (biome == moon)
-        {
-            BiomeType moonType = BiomeType.getBiome("Moon", true);
-            if (moonmon.isEmpty())
-            {
-                for (PokedexEntry e : Database.spawnables)
-                {
-                    if (e.getSpawnData().isValid(moonType))
-                    {
-                        moonmon.add(e);
-                    }
-                }
-            }
-            event.setPick(null);
-            Collections.shuffle(moonmon);
-            int index = 0;
-            Vector3 v = event.getLocation();
-            World world = event.world;
-            PokedexEntry dbe = moonmon.get(index);
-            SpawnEntry entry = null;
-            SpawnCheck checker = new SpawnCheck(v, world);
-            SpawnBiomeMatcher match = null;
-            for (SpawnBiomeMatcher matcher : dbe.getSpawnData().matchers.keySet())
-            {
-                if (matcher.validSubBiomes.contains(moonType))
-                {
-                    entry = dbe.getSpawnData().matchers.get(matcher);
-                    match = matcher;
-                    break;
-                }
-            }
-            if (entry == null) return;
-            float weight = entryWeight.getFloat(entry);
-            if (!((boolean) conditionsMatch.invoke(match, checker))) weight = 0;
-            double random = Math.random();
-            int max = moonmon.size();
-            Vector3 vbak = v.copy();
-            while (weight <= random && index++ < max)
-            {
-                dbe = moonmon.get(index % moonmon.size());
-                for (SpawnBiomeMatcher matcher : dbe.getSpawnData().matchers.keySet())
-                {
-                    if (matcher.validSubBiomes.contains(moonType))
-                    {
-                        entry = dbe.getSpawnData().matchers.get(matcher);
-                        match = matcher;
-                        break;
-                    }
-                }
-                if (entry == null) continue;
-                weight = entryWeight.getFloat(entry);
-                if (!((boolean) conditionsMatch.invoke(match, checker))) weight = 0;
-                if (weight == 0) continue;
-                if (!dbe.flys() && random >= weight)
-                {
-                    if (!(dbe.swims() && v.getBlockMaterial(world) == Material.WATER))
-                    {
-                        v = Vector3.getNextSurfacePoint2(world, vbak, Vector3.secondAxisNeg, 20);
-                        if (v != null)
-                        {
-                            v.offsetBy(EnumFacing.UP);
-                            weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
-                        }
-                        else weight = 0;
-                    }
-                }
-                if (v == null)
-                {
-                    v = vbak.copy();
-                }
-            }
-            if (random > weight || v == null) return;
-            if (dbe.legendary)
-            {
-                int level = SpawnHandler.getSpawnLevel(world, v, dbe);
-                if (level < PokecubeMod.core.getConfig().minLegendLevel) { return; }
-            }
-            event.setLocation(v);
-            event.setPick(dbe);
-        }
-        else
-        {
-            if (event.getPicked() == null) return;
-            try
-            {
-                IAtmosphere atmos = (IAtmosphere) getAtmosphereType.invoke(
-                        getOxygenHandler.invoke(null, event.world.provider.getDimension()), event.location.getPos());
-                if (!atmos.isBreathable() && !vacuumBreathers.contains(event.getPicked()))
-                {
-                    event.setPick(null);
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
+        if (event.getPicked() == null) return;
+        if (!canBreatheHere(event.entry, event.world, event.location.getPos())) event.setPick(null);
     }
 
     @SubscribeEvent

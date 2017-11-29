@@ -69,6 +69,16 @@ public class AnimationMultiAnimations extends MoveAnimationBase
     @Override
     public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
+        int tick = info.currentTick;
+        for (int i = 0; i < components.size(); i++)
+        {
+            info.currentTick = tick;
+            WrappedAnimation toRun = components.get(i);
+            if (tick > toRun.start + toRun.wrapped.getDuration()) continue;
+            if (toRun.start > tick) continue;
+            info.currentTick = tick - toRun.start;
+            toRun.wrapped.clientAnimation(info, world, partialTick);
+        }
     }
 
     @Override

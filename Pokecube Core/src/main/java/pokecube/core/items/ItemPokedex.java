@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -15,8 +16,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
@@ -31,12 +34,10 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.network.packets.PacketPokedex;
-import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
-import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
+import thut.api.network.PacketHandler;
 import thut.core.common.commands.CommandTools;
 
 /** @author Manchou */
@@ -132,8 +133,9 @@ public class ItemPokedex extends Item
     {
         if (!PokecubeCore.isOnClientSide())
         {
-            TerrainSegment s = TerrainManager.getInstance().getTerrainForEntity(player);
-            PacketSyncTerrain.sendTerrain(player, s.chunkX, s.chunkY, s.chunkZ, s);
+            Chunk chunk = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition());
+            PacketHandler.sendTerrainToClient(player.getEntityWorld(), new ChunkPos(chunk.x, chunk.z),
+                    (EntityPlayerMP) player);
             PacketDataSync.sendInitPacket(player, "pokecube-stats");
             PacketPokedex.sendSecretBaseInfoPacket(player, stack.getItemDamage() != 8);
             Entity entityHit = Tools.getPointedEntity(player, 16);

@@ -9,15 +9,22 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent.Unload;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.moves.PokemobTerrainEffects;
 import thut.api.maths.Vector3;
+import thut.api.terrain.CapabilityTerrain.ITerrainProvider;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 import thut.lib.CompatParser.ClassFinder;
@@ -101,6 +108,43 @@ public class MoveAnimationHelper
         index = found;
     }
 
+    Map<BlockPos, TerrainSegment> terrainMap = Maps.newHashMap();
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void worldLoad(WorldEvent.Load evt)
+    {
+        if (!evt.getWorld().isRemote) return;
+        terrainMap.clear();
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void chunkUnload(ChunkEvent.Unload evt)
+    {
+        if (!evt.getWorld().isRemote) return;
+        for (int i = 0; i < 16; i++)
+        {
+            terrainMap.remove(new BlockPos(evt.getChunk().x, i, evt.getChunk().z));
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onCapabilityAttach(AttachCapabilitiesEvent<Chunk> event)
+    {
+        if (!event.getObject().getWorld().isRemote) return;
+        if (event.getCapabilities().containsKey(TerrainManager.TERRAINCAP))
+        {
+            ITerrainProvider provider = (ITerrainProvider) event.getCapabilities().get(TerrainManager.TERRAINCAP);
+            for (int i = 0; i < 16; i++)
+            {
+                terrainMap.put(new BlockPos(event.getObject().x, i, event.getObject().z),
+                        provider.getTerrainSegment(i));
+            }
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onRenderWorldPost(RenderFogEvent event)
@@ -110,8 +154,8 @@ public class MoveAnimationHelper
             if (index == -1) return;
             EntityPlayer player = Minecraft.getMinecraft().player;
             source.set(player);
-            GL11.glPushMatrix();
             int range = 4;
+            MutableBlockPos pos = new MutableBlockPos();
             for (int i = -range; i <= range; i++)
             {
                 for (int j = -range; j <= range; j++)
@@ -119,35 +163,29 @@ public class MoveAnimationHelper
                     for (int k = -range; k <= range; k++)
                     {
                         source.set(player);
-                        TerrainSegment segment = TerrainManager.getInstance().getTerrain(player.getEntityWorld(),
-                                player.posX + i * 16, player.posY + j * 16, player.posZ + k * 16);
+                        pos.setPos(player.chunkCoordX + i, player.chunkCoordY + j, player.chunkCoordZ + k);
+                        TerrainSegment segment = terrainMap.get(pos);
+                        if (segment == null) continue;
                         PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment.effectArr[index];
-                        if (teffect == null) continue;
+                        if (teffect == null || !teffect.hasEffects()) continue;
                         target.set(segment.getCentre());
-                        GL11.glPushMatrix();
                         source.set(target.subtractFrom(source));
-                        GL11.glTranslated(source.x, source.y, source.z);
                         // Clear out the jitteryness from rendering
                         double d0 = (-player.posX + player.lastTickPosX) * event.getRenderPartialTicks();
                         double d1 = (-player.posY + player.lastTickPosY) * event.getRenderPartialTicks();
                         double d2 = (-player.posZ + player.lastTickPosZ) * event.getRenderPartialTicks();
-                        source.set(d0, d1, d2);
+                        source.addTo(d0, d1, d2);
+                        GL11.glPushMatrix();
                         GL11.glTranslated(source.x, source.y, source.z);
                         teffect.renderTerrainEffects(event);
                         GL11.glPopMatrix();
                     }
                 }
             }
-            GL11.glPopMatrix();
         }
         catch (Throwable e)
         {
             e.printStackTrace();
         }
-    }
-
-    @SubscribeEvent
-    public void WorldUnloadEvent(Unload evt)
-    {
     }
 }

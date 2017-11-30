@@ -80,8 +80,8 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
     {
         EntityPlayer player;
         player = PokecubeCore.getPlayer(null);
-        TerrainSegment t = TerrainManager.getInstance().getTerrain(player.getEntityWorld(), message.x, message.y,
-                message.z);
+        TerrainSegment t = TerrainManager.getInstance().getTerrain(player.getEntityWorld(), message.x * 16,
+                message.y * 16, message.z * 16);
         PokemobTerrainEffects effect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
         for (int i = 0; i < 16; i++)
         {

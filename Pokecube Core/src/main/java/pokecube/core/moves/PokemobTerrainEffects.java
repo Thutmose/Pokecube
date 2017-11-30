@@ -211,7 +211,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
         return effects[effect];
     }
 
-    boolean hasEffects()
+    public boolean hasEffects()
     {
         boolean ret = false;
         for (int i = 1; i < 16; i++)

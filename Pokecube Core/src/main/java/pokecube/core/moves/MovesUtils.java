@@ -23,21 +23,17 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.database.moves.MoveEntry.Category;
-import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.StatModifiers;
 import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.moves.animations.EntityMoveUse;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PacketSyncModifier;
 import pokecube.core.utils.PokeType;
@@ -879,16 +875,7 @@ public class MovesUtils implements IMoveConstants
     public static void useMove(@Nonnull Move_Base move, @Nonnull Entity user, @Nullable Entity target,
             @Nonnull Vector3 start, @Nonnull Vector3 end)
     {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(user);
-        if (pokemob == null) return;
-        if (MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Init(pokemob, move, target)))
-        {
-            // Move Failed message here?
-            return;
-        }
-        EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
-        moveUse.setUser(user).setMove(move).setTarget(target).setStart(start).setEnd(end);
-        PokecubeCore.moveQueues.queueMove(moveUse);
+        move.ActualMoveUse(user, target, start, end);
     }
 
     @Deprecated

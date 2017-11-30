@@ -178,7 +178,6 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             animalchest = null;
         }
         this.pokeChest.addInventoryChangeListener(this);
-        this.handleArmourAndSaddle();
     }
 
     private int invSize()
@@ -189,13 +188,11 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     // 1.11
     public void onInventoryChanged(IInventory inventory)
     {
-        handleArmourAndSaddle();
     }
 
     // 1.10
     public void onInventoryChanged(InventoryBasic inventory)
     {
-        handleArmourAndSaddle();
     }
 
     @Override

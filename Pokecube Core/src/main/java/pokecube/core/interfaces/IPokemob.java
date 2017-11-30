@@ -279,7 +279,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
             float actualStat = 1;
             if (index < 6)
             {
-                int IV = pokemob.getIVs()[stat.ordinal()] - Byte.MIN_VALUE;
+                int IV = pokemob.getIVs()[stat.ordinal()];
                 int EV = pokemob.getEVs()[stat.ordinal()] - Byte.MIN_VALUE;
                 int level = pokemob.getLevel();
                 if (stat == Stats.HP)

@@ -48,6 +48,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
@@ -626,6 +627,31 @@ public class EventsHandler
                 return;
             }
 
+            // Check if favourte berry and sneaking, if so, do breeding stuff.
+            if (isOwner || player instanceof FakePlayer)
+            {
+                int fav = Nature.getFavouriteBerryIndex(pokemob.getNature());
+                if (PokecubeCore.instance.getConfig().berryBreeding
+                        && (player.isSneaking() || player instanceof FakePlayer) && entity.getAttackTarget() == null
+                        && held.getItem() instanceof ItemBerry && (fav == -1 || fav == held.getItemDamage()))
+                {
+                    if (!player.capabilities.isCreativeMode)
+                    {
+                        CompatWrapper.increment(held, -1);
+                        if (!CompatWrapper.isValid(held))
+                        {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                    CompatWrapper.nullStack);
+                        }
+                    }
+                    pokemob.setLoveTimer(0);
+                    entity.setAttackTarget(null);
+                    entity.getEntityWorld().setEntityState(entity, (byte) 18);
+                    evt.setCanceled(true);
+                    return;
+                }
+            }
+
             // Owner only interactions.
             if (isOwner)
             {
@@ -644,28 +670,6 @@ public class EventsHandler
                                         CompatWrapper.nullStack);
                             }
                         }
-                        evt.setCanceled(true);
-                        return;
-                    }
-                    int fav = Nature.getFavouriteBerryIndex(pokemob.getNature());
-                    // Check if favourte berry and sneaking, if so, do breeding
-                    // stuff.
-                    if (PokecubeCore.instance.getConfig().berryBreeding && player.isSneaking()
-                            && entity.getAttackTarget() == null && held.getItem() instanceof ItemBerry
-                            && (fav == -1 || fav == held.getItemDamage()))
-                    {
-                        if (!player.capabilities.isCreativeMode)
-                        {
-                            CompatWrapper.increment(held, -1);
-                            if (!CompatWrapper.isValid(held))
-                            {
-                                player.inventory.setInventorySlotContents(player.inventory.currentItem,
-                                        CompatWrapper.nullStack);
-                            }
-                        }
-                        pokemob.setLoveTimer(0);
-                        entity.setAttackTarget(null);
-                        entity.getEntityWorld().setEntityState(entity, (byte) 18);
                         evt.setCanceled(true);
                         return;
                     }
@@ -705,9 +709,7 @@ public class EventsHandler
                 }
 
                 // Check saddle for riding.
-                if (pokemob.getPokemonAIState(IMoveConstants.SADDLED) && !player.isSneaking()
-                        && !PokecubeCore.isOnClientSide()
-                        && (!CompatWrapper.isValid(held) || held.getItem() instanceof ItemPokedex)
+                if (!player.isSneaking() && !PokecubeCore.isOnClientSide() && !CompatWrapper.isValid(held)
                         && handleHmAndSaddle(player, pokemob))
                 {
                     entity.setJumping(false);
@@ -737,6 +739,7 @@ public class EventsHandler
             return false;
         }
         if (!entry.ridable || pokemob.getPokemonAIState(IPokemob.GUARDING)) return false;
+        if (!CompatWrapper.isValid(pokemob.getPokemobInventory().getStackInSlot(0))) return false;
         float scale = pokemob.getSize();
         return (entry.height * scale + entry.width * scale) > rider.width
                 && Math.max(entry.width, entry.length) * scale > rider.width * 1.8;

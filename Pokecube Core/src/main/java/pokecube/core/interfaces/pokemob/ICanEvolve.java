@@ -169,7 +169,6 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                         theMob.displayMessageToOwner(mess);
                         theMob.getMoveStats().newMoves.add(s);
                     }
-                    theMob.setPokemonAIState(LEARNINGMOVE, true);
                     PacketHandler.sendEntityUpdate(getEntity());
                     return theMob;
                 }

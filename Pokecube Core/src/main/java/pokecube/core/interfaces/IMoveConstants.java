@@ -92,11 +92,11 @@ public interface IMoveConstants extends IMoveNames
     /*
      * Flavours
      */
-    byte             SPICY                = 0;                // red
-    byte             DRY                  = 1;                // blue
-    byte             SWEET                = 2;                // pink
-    byte             BITTER               = 3;                // green
-    byte             SOUR                 = 4;                // yellow
+    byte             SPICY                = 0;                           // red
+    byte             DRY                  = 1;                           // blue
+    byte             SWEET                = 2;                           // pink
+    byte             BITTER               = 3;                           // green
+    byte             SOUR                 = 4;                           // yellow
 
     /** Is the pokemob currently sitting */
     static final int SITTING              = 1 << 0;
@@ -111,6 +111,7 @@ public interface IMoveConstants extends IMoveNames
     /** A Staying pokemon will act like a wild pokemon. */
     static final int STAYING              = 1 << 5;
     /** A sleeping pokemon will try to sit at its home location */
+    @NonPersistantAI
     static final int SLEEPING             = 1 << 6;
     /** Indicates that the pokemon is going to execute a utility move. */
     @NonPersistantAI
@@ -128,8 +129,9 @@ public interface IMoveConstants extends IMoveNames
     static final int IDLE                 = 1 << 11;
     /** Has the Pokemon been traded */
     static final int TRADED               = 1 << 12;
-    /** Does the pokemon have a saddle on it */
-    static final int SADDLED              = 1 << 13;
+    /** is the pokemob prevented from moving (ie from ingrain, etc) */
+    @NonPersistantAI
+    static final int NOPATHING            = 1 << 13;
     /** is the pokemon leaping, used for the leap AI */
     @NonPersistantAI
     static final int LEAPING              = 1 << 14;
@@ -145,8 +147,8 @@ public interface IMoveConstants extends IMoveNames
     /** Is the pokemob currently trying to mate */
     @NonPersistantAI
     static final int MATING               = 1 << 18;
-    /** does the pokemob have a new move to learn */
-    static final int LEARNINGMOVE         = 1 << 19;
+    /** FREE AI STATE */
+//    static final int FREEAISTATE         = 1 << 19;
     // /** is the pokemob currently pathing somewhere */
     @NonPersistantAI
     static final int PATHING              = 1 << 20;
@@ -169,20 +171,16 @@ public interface IMoveConstants extends IMoveNames
     /** is the pokemob megaevolved */
     static final int MEGAFORME            = 1 << 27;
     /** has the pokemob used a zmove this "battle" */
+    @NonPersistantAI
     static final int USEDZMOVE            = 1 << 28;
     /** should capture be denied for this pokemob. */
     static final int DENYCAPTURE          = 1 << 29;
     /** is the pokemob's movement being controlled. */
     @NonPersistantAI
-    static final int CONTROLLED          = 1 << 30;
-    
+    static final int CONTROLLED           = 1 << 30;
+
     public static enum AIRoutine
     {
-        GATHER,
-        STORE,
-        WANDER,
-        MATE,
-        FOLLOW,
-        AGRESSIVE;
+        GATHER, STORE, WANDER, MATE, FOLLOW, AGRESSIVE;
     }
 }

@@ -83,9 +83,9 @@ public abstract class PokemobStats extends PokemobGenes
             MinecraftForge.EVENT_BUS.post(lvlup);
             if (!lvlup.isCanceled())
             {
-                updateHealth(newLvl);
                 if (notifyLevelUp)
                 {
+                    updateHealth();
                     ItemStack held = getHeldItem();
                     if (!getEntity().isDead && (canEvolve(CompatWrapper.nullStack) || canEvolve(held)))
                     {

@@ -72,6 +72,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public void writeSpawnData(ByteBuf data)
     {
+        this.pokemobCap.updateHealth();
         this.onGenesChanged();
         pokemobCap.onGenesChanged();
         IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);

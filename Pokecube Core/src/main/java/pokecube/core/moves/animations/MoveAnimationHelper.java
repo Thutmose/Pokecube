@@ -82,14 +82,34 @@ public class MoveAnimationHelper
         return instance;
     }
 
+    final Vector3 source = Vector3.getNewVector();
+    final Vector3 target = Vector3.getNewVector();
+    final int     index;
+
+    public MoveAnimationHelper()
+    {
+        TerrainSegment dummy = new TerrainSegment(0, 0, 0);
+        int found = -1;
+        for (int i = 0; i < dummy.effectArr.length; i++)
+        {
+            if (dummy.effectArr[i] instanceof PokemobTerrainEffects)
+            {
+                found = i;
+                break;
+            }
+        }
+        index = found;
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onRenderWorldPost(RenderFogEvent event)
     {
         try
         {
+            if (index == -1) return;
             EntityPlayer player = Minecraft.getMinecraft().player;
-            Vector3 source = Vector3.getNewVector().set(player);
+            source.set(player);
             GL11.glPushMatrix();
             int range = 4;
             for (int i = -range; i <= range; i++)
@@ -101,12 +121,11 @@ public class MoveAnimationHelper
                         source.set(player);
                         TerrainSegment segment = TerrainManager.getInstance().getTerrain(player.getEntityWorld(),
                                 player.posX + i * 16, player.posY + j * 16, player.posZ + k * 16);
-                        PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment
-                                .geTerrainEffect("pokemobEffects");
+                        PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment.effectArr[index];
                         if (teffect == null) continue;
-                        Vector3 target = Vector3.getNewVector().set(segment.getCentre());
+                        target.set(segment.getCentre());
                         GL11.glPushMatrix();
-                        source.set(target.subtract(source));
+                        source.set(target.subtractFrom(source));
                         GL11.glTranslated(source.x, source.y, source.z);
                         // Clear out the jitteryness from rendering
                         double d0 = (-player.posX + player.lastTickPosX) * event.getRenderPartialTicks();

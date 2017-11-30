@@ -643,8 +643,8 @@ public class EventsHandler
             boolean saddleCheck = !player.isSneaking() && !PokecubeCore.isOnClientSide()
                     && (!CompatWrapper.isValid(held))
                     && (isOwner || (pokemob.getEntity() instanceof EntityMountablePokemob
-                            && ((EntityMountablePokemob) pokemob.getEntity()).canFitPassenger(player))
-                            && handleHmAndSaddle(player, pokemob));
+                            && ((EntityMountablePokemob) pokemob.getEntity()).canFitPassenger(player)))
+                    && handleHmAndSaddle(player, pokemob);
 
             // Check if favourte berry and sneaking, if so, do breeding stuff.
             if (isOwner || player instanceof FakePlayer)

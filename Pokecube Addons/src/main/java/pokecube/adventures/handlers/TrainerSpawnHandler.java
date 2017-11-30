@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
+import pokecube.adventures.events.TrainerSpawnEvent;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.database.Database;
 import pokecube.core.database.SpawnBiomeMatcher;
@@ -184,9 +185,17 @@ public class TrainerSpawnHandler
                 }
             }
             if (ttype == null) return;
+
             int level = SpawnHandler.getSpawnLevel(w, v, Database.getEntry(1));
             long time = System.nanoTime();
             EntityTrainer t = new EntityTrainer(w, ttype, level);
+
+            TrainerSpawnEvent event = new TrainerSpawnEvent(ttype, t, v.getPos(), w);
+            if (MinecraftForge.EVENT_BUS.post(event))
+            {
+                t.setDead();
+                return;
+            }
 
             double dt = (System.nanoTime() - time) / 1000000D;
             if (dt > 20) System.err.println(

@@ -33,6 +33,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import pokecube.adventures.events.TrainerSpawnEvent;
 import pokecube.compat.events.TransferDimension;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -268,6 +269,27 @@ public class AdvancedRocketryCompat
         for (String s : mobs)
         {
             if (Database.getEntry(s) != null) vacuumBreathers.add(Database.getEntry(s));
+        }
+    }
+
+    @SubscribeEvent
+    public void trainerSpawnEvent(TrainerSpawnEvent evt)
+    {
+        try
+        {
+            World world = evt.getWorld();
+            BlockPos pos = evt.getLocation();
+            IAtmosphere atmos;
+            atmos = (IAtmosphere) getAtmosphereType.invoke(getOxygenHandler.invoke(null, world.provider.getDimension()),
+                    pos);
+            if (!atmos.isBreathable())
+            {
+                evt.setCanceled(true);
+            }
+        }
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+        {
+            PokecubeMod.log(Level.SEVERE, "Error checking whether " + evt.getTrainer() + " can breathe ", e);
         }
     }
 

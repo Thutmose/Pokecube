@@ -52,8 +52,8 @@ import thut.api.entity.IHungrymob;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public interface IPokemob
-        extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob, IBreedingMob, IPathingMob, IHasCommands
+public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob,
+        IBreedingMob, IPathingMob, IHasCommands
 {
     @CapabilityInject(IPokemob.class)
     public static final Capability<IPokemob> POKEMOB_CAP = null;
@@ -280,14 +280,15 @@ public interface IPokemob
             if (index < 6)
             {
                 int IV = pokemob.getIVs()[stat.ordinal()];
-                int EV = pokemob.getEVs()[stat.ordinal()];
+                int EV = pokemob.getEVs()[stat.ordinal()] - Byte.MIN_VALUE;
                 int level = pokemob.getLevel();
                 if (stat == Stats.HP)
                 {
                     if (baseStat != 1)
                     {
-                        actualStat = level + 10 + (2 * baseStat + IV + EV / 4) / 100;
+                        actualStat = level + 10 + (2 * baseStat + IV + EV / 4) * level / 100;
                     }
+                    else actualStat = 1;
                 }
                 else
                 {

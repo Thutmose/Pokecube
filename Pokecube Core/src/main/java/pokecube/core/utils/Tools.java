@@ -303,14 +303,6 @@ public class Tools
         return health;
     }
 
-    // ADDED + 128 for java usbytes
-    public static int getHP(int BS, int IV, int EV, int level)
-    {
-        if (BS == 1) return 1;
-        int EP = MathHelper.floor((EV + 128) / 4);
-        return 10 + (MathHelper.floor((2 * BS) + IV + EP + 100) * level / 100);
-    }
-
     private static int getLevelFromTable(int index, int exp)
     {
         int level = 100;

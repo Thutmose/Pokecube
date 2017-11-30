@@ -99,7 +99,6 @@ public interface IHasMoves extends IHasStats
                 getMoveStats().newMoves.remove(move);
                 moves[3] = move;
                 setMoves(moves);
-                if (getMoveStats().newMoves.isEmpty()) this.setPokemonAIState(LEARNINGMOVE, false);
                 PacketHandler.sendEntityUpdate(getEntity());
             }
             else
@@ -160,7 +159,7 @@ public interface IHasMoves extends IHasStats
         String[] moves = getMoves();
 
         if (index >= 0 && index < 4) { return moves[index]; }
-        if (index == 4 && moves[3] != null && getPokemonAIState(IMoveConstants.LEARNINGMOVE))
+        if (index == 4 && moves[3] != null)
         {
             if (!getMoveStats().newMoves.isEmpty()) { return getMoveStats().newMoves
                     .get(getMoveStats().num % getMoveStats().newMoves.size()); }
@@ -253,7 +252,6 @@ public interface IHasMoves extends IHasStats
                             new TextComponentTranslation(MovesUtils.getUnlocalizedMove(moveName)));
                     thisMob.displayMessageToOwner(mess);
                     if (!getMoveStats().newMoves.contains(moveName)) getMoveStats().newMoves.add(moveName);
-                    setPokemonAIState(LEARNINGMOVE, true);
                     return;
                 }
             }

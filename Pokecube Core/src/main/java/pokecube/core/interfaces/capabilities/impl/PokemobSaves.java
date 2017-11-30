@@ -93,9 +93,8 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
                 {
                     this.getPokemobInventory().setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
                 }
-             //   dataManager.set(params.HELDITEM, this.getPokemobInventory().getStackInSlot(1));
+                this.setHeldItem(this.getPokemobInventory().getStackInSlot(1));
             }
-            handleArmourAndSaddle();
         }
         // Read Breeding tag
         if (!breedingTag.hasNoTags())

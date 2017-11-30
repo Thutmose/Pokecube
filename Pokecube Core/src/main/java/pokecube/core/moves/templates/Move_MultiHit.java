@@ -2,7 +2,17 @@ package pokecube.core.moves.templates;
 
 import java.util.Random;
 
-import pokecube.core.interfaces.IPokemob.MovePacket;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.Entity;
+import net.minecraftforge.common.MinecraftForge;
+import pokecube.core.PokecubeCore;
+import pokecube.core.events.MoveUse;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.moves.animations.EntityMoveUse;
+import thut.api.maths.Vector3;
 
 public class Move_MultiHit extends Move_Basic
 {
@@ -11,31 +21,48 @@ public class Move_MultiHit extends Move_Basic
         super(name);
     }
 
-    @Override
-    public void onAttack(MovePacket packet)
+    public int getCount(@Nonnull IPokemob user, @Nullable Entity target)
     {
-        int count = 2;
         int random = (new Random()).nextInt(6);
         switch (random)
         {
         case 1:
-            count = 2;
+            return 2;
         case 2:
-            count = 3;
+            return 3;
         case 3:
-            count = 3;
+            return 3;
         case 4:
-            count = 4;
+            return 4;
         case 5:
-            count = 5;
+            return 5;
         default:
-            count = 2;
+            return 2;
         }
-        for (int i = 0; i <= count; i++)
+    }
+
+    @Override
+    public void ActualMoveUse(@Nonnull Entity user, @Nullable Entity target, @Nonnull Vector3 start,
+            @Nonnull Vector3 end)
+    {
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(user);
+        if (pokemob == null) return;
+        int count = getCount(pokemob, target);
+        int duration = 5;
+        if (getAnimation(pokemob) != null)
         {
-            MovePacket second = new MovePacket(packet.attacker, packet.attacked, packet.attack, packet.attackType,
-                    packet.PWR, packet.criticalLevel, packet.statusChange, packet.changeAddition);
-            super.onAttack(second);
+            duration = getAnimation(pokemob).getDuration();
+        }
+        for (int i = 0; i < count; i++)
+        {
+            if (MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Init(pokemob, this, target)))
+            {
+                // Move Failed message here?
+                break;
+            }
+            EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
+            moveUse.setUser(user).setMove(this, i * duration).setTarget(target).setStart(start).setEnd(end);
+            PokecubeCore.moveQueues.queueMove(moveUse);
         }
     }
 }

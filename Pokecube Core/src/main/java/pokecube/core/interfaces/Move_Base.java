@@ -1,15 +1,21 @@
 package pokecube.core.interfaces;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.MinecraftForge;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.database.moves.MoveEntry.Category;
+import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
@@ -137,6 +143,14 @@ public abstract class Move_Base
     public int getPP()
     {
         return move.pp;
+    }
+
+    /** PRE getter
+     * 
+     * @return the precision of this move */
+    public int getPRE(IPokemob user, Entity target)
+    {
+        return move.accuracy;
     }
 
     /** PRE getter
@@ -270,6 +284,21 @@ public abstract class Move_Base
     public Category getCategory()
     {
         return Category.values()[move.category];
+    }
+
+    public void ActualMoveUse(@Nonnull Entity user, @Nullable Entity target, @Nonnull Vector3 start,
+            @Nonnull Vector3 end)
+    {
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(user);
+        if (pokemob == null) return;
+        if (MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Init(pokemob, this, target)))
+        {
+            // Move Failed message here?
+            return;
+        }
+        EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
+        moveUse.setUser(user).setMove(this).setTarget(target).setStart(start).setEnd(end);
+        PokecubeCore.moveQueues.queueMove(moveUse);
     }
 
     public void playSounds(Entity attacker, @Nullable Entity attacked, @Nullable Vector3 targetPos)

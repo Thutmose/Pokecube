@@ -1,20 +1,20 @@
 package pokecube.core.moves.templates;
 
-import pokecube.core.interfaces.IPokemob.MovePacket;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class Move_Doublehit extends Move_Basic
+import net.minecraft.entity.Entity;
+import pokecube.core.interfaces.IPokemob;
+
+public class Move_Doublehit extends Move_MultiHit
 {
     public Move_Doublehit(String name)
     {
         super(name);
     }
 
-    @Override
-    public void onAttack(MovePacket packet)
+    public int getCount(@Nonnull IPokemob user, @Nullable Entity target)
     {
-        MovePacket second = new MovePacket(packet.attacker, packet.attacked, packet.attack, packet.attackType,
-                packet.PWR, packet.criticalLevel, packet.statusChange, packet.changeAddition);
-        super.onAttack(packet);
-        super.onAttack(second);
+        return 2;
     }
 }

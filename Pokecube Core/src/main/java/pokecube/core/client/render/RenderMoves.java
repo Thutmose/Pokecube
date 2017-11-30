@@ -21,17 +21,18 @@ public class RenderMoves<T extends EntityMoveUse> extends Render<T>
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
+        if (entity.getStartTick() > 0) return;
         Move_Base move = entity.getMove();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x, (float) y, (float) z);
         IMoveAnimation animation;
         if (move != null && (animation = move.getAnimation(CapabilityPokemob.getPokemobFor(entity.getUser()))) != null
                 && entity.getUser() != null)
         {
+            GlStateManager.pushMatrix();
             MovePacketInfo info = entity.getMoveInfo();
+            GlStateManager.translate((float) x, (float) y, (float) z);
             animation.clientAnimation(info, Minecraft.getMinecraft().renderGlobal, partialTicks);
+            GlStateManager.popMatrix();
         }
-        GlStateManager.popMatrix();
     }
 
     @Override

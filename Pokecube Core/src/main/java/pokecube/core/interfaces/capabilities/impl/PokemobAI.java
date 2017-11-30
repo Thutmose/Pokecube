@@ -33,12 +33,6 @@ public abstract class PokemobAI extends PokemobEvolves
     @Override
     public boolean getPokemonAIState(int state)
     {
-
-        if (state == SADDLED)
-        {
-            handleArmourAndSaddle();
-        }
-
         return (dataManager.get(params.AIACTIONSTATESDW) & state) != 0;
     }
 
@@ -163,16 +157,6 @@ public abstract class PokemobAI extends PokemobEvolves
         if (aabb.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
         boolean collides = mainBox.doTileCollision(world, aabbs, Vector3.empty, getEntity(), diffs);
         return !collides;
-    }
-
-    protected void handleArmourAndSaddle()
-    {
-        if (getEntity() == null) return;
-        if (getEntity().getEntityWorld() != null && !getEntity().getEntityWorld().isRemote)
-        {
-            setPokemonAIState(SADDLED, CompatWrapper.isValid(getPokemobInventory().getStackInSlot(0)));
-            dataManager.set(params.HELDITEM, this.getPokemobInventory().getStackInSlot(1));
-        }
     }
 
     @Override

@@ -41,6 +41,8 @@ public class EntityMoveUse extends Entity
             DataSerializers.VARINT);
     static final DataParameter<Integer> TICK      = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
+    static final DataParameter<Integer> STARTTICK = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+            DataSerializers.VARINT);
     static final DataParameter<Integer> APPLYTICK = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
 
@@ -53,6 +55,13 @@ public class EntityMoveUse extends Entity
         super(worldIn);
         this.setSize(1f, 1f);
         this.ignoreFrustumCheck = true;
+    }
+
+    public EntityMoveUse setMove(Move_Base move, int tickOffset)
+    {
+        this.setMove(move);
+        getDataManager().set(STARTTICK, tickOffset);
+        return this;
     }
 
     public EntityMoveUse setMove(Move_Base move)
@@ -136,6 +145,11 @@ public class EntityMoveUse extends Entity
         return getEntityWorld().getEntityByID(getDataManager().get(TARGET));
     }
 
+    public int getStartTick()
+    {
+        return getDataManager().get(STARTTICK);
+    }
+
     public int getAge()
     {
         return getDataManager().get(TICK);
@@ -154,7 +168,13 @@ public class EntityMoveUse extends Entity
     @Override
     public void onUpdate()
     {
+        int start = getStartTick() - 1;
+        getDataManager().set(STARTTICK, start);
+        if (start > 0) return;
+
         int age = getAge() - 1;
+        getDataManager().set(TICK, age);
+
         if (getMove() == null || this.isDead || age < 0)
         {
             this.setDead();
@@ -191,7 +211,6 @@ public class EntityMoveUse extends Entity
         {
             this.setDead();
         }
-        getDataManager().set(TICK, age);
     }
 
     public MovePacketInfo getMoveInfo()
@@ -210,12 +229,14 @@ public class EntityMoveUse extends Entity
         if (!getEntityWorld().isRemote)
         {
             IPokemob userMob = CapabilityPokemob.getPokemobFor(user);
-            if (attack.move.isNotIntercepable())
+            Entity target = getTarget();
+            if (attack.move.isNotIntercepable() && target != null)
             {
-                MovesUtils.doAttack(attack.name, userMob, getTarget());
+                MovesUtils.doAttack(attack.name, userMob, target);
             }
             else
             {
+                if (attack.getPRE(userMob, target) == 0 && target != null) setEnd(Vector3.getNewVector().set(target));
                 MovesUtils.doAttack(attack.name, userMob, getEnd());
             }
         }
@@ -235,6 +256,7 @@ public class EntityMoveUse extends Entity
         this.getDataManager().register(TARGET, -1);
         this.getDataManager().register(TICK, 0);
         this.getDataManager().register(APPLYTICK, 0);
+        this.getDataManager().register(STARTTICK, 0);
     }
 
     @Override

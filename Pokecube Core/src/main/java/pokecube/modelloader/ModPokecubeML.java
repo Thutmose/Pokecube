@@ -125,7 +125,6 @@ public class ModPokecubeML implements IMobProvider
     {
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
         PokecubeTerrainChecker.init();
-        MoveAnimationHelper.Instance();
         Database.init();
         PokecubeMod.log("Registering Moves");
         MovesAdder.registerMoves();
@@ -236,6 +235,7 @@ public class ModPokecubeML implements IMobProvider
     @EventHandler
     private void postInit(FMLPostInitializationEvent evt)
     {
+        MoveAnimationHelper.Instance();
         proxy.postInit();
     }
 

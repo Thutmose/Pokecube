@@ -327,7 +327,7 @@ public class Pokecube extends Item implements IPokecube
         entity.targetLocation.clear();
         entity.forceSpawn = true;
 
-        if (PokecubeManager.isFilled(stack) && !thrower.isSneaking())
+        if (PokecubeManager.hasMob(stack) && !thrower.isSneaking())
         {
             entity.targetLocation.y = -1;
         }
@@ -353,11 +353,11 @@ public class Pokecube extends Item implements IPokecube
         boolean rightclick = target == thrower;
         if (rightclick) target = null;
 
-        if (target instanceof EntityLivingBase || PokecubeManager.isFilled(cube) || thrower.isSneaking()
+        if (target instanceof EntityLivingBase || PokecubeManager.hasMob(cube) || thrower.isSneaking()
                 || (thrower instanceof FakePlayer))
         {
             if (target instanceof EntityLivingBase) entity.targetEntity = (EntityLivingBase) target;
-            if (target == null && targetLocation == null && PokecubeManager.isFilled(cube))
+            if (target == null && targetLocation == null && PokecubeManager.hasMob(cube))
             {
                 targetLocation = Vector3.secondAxisNeg;
             }
@@ -403,7 +403,7 @@ public class Pokecube extends Item implements IPokecube
     @Override
     public boolean hasCustomEntity(ItemStack stack)
     {
-        return PokecubeManager.isFilled(stack);
+        return PokecubeManager.hasMob(stack);
     }
 
     /** This function should return a new entity to replace the dropped item.

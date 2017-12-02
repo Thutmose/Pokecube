@@ -122,7 +122,7 @@ public class EntityPokecube extends EntityPokecubeBase
         }
         this.setItem(entityItem);
         this.shootingEntity = shootingEntity;
-        if (PokecubeManager.isFilled(entityItem)) tilt = -2;
+        if (PokecubeManager.hasMob(entityItem)) tilt = -2;
     }
 
     @Override
@@ -344,7 +344,7 @@ public class EntityPokecube extends EntityPokecubeBase
             }
             if (tilt < 0 && !(targetEntity == null && targetLocation.isEmpty()))
             {
-                if (PokecubeManager.isFilled(getItem()))
+                if (PokecubeManager.hasMob(getItem()))
                 {
                     sendOut();
                 }
@@ -619,8 +619,9 @@ public class EntityPokecube extends EntityPokecubeBase
             }
             ItemStack mobStack = getItem().copy();
             if (!mobStack.hasTagCompound()) mobStack.setTagCompound(new NBTTagCompound());
-            mobStack.getTagCompound().setString(TagNames.MOBID, EntityList.getEntityString(mob));
-            NBTTagCompound mobTag = new NBTTagCompound();// EntityList.getKey(mob).toString()
+            String id = EntityList.getKey(mob).toString();
+            mobStack.getTagCompound().setString(TagNames.MOBID, id);
+            NBTTagCompound mobTag = new NBTTagCompound();
             mob.writeToNBT(mobTag);
             mobStack.getTagCompound().setTag(TagNames.OTHERMOB, mobTag);
             setItem(mobStack);

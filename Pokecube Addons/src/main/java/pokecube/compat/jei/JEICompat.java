@@ -19,6 +19,7 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
+import mezz.jei.config.Config.IngredientBlacklistType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -57,6 +58,8 @@ public class JEICompat implements IModPlugin
     public static final IIngredientHelper<PokedexEntry>   ingredientHelper         = new PokedexEntryIngredientHelper();
     public static final IIngredientRenderer<PokedexEntry> ingredientRendererInput  = new PokedexEntryIngredientRenderer();
     public static final IIngredientRenderer<PokedexEntry> ingredientRendererOutput = new PokedexEntryIngredientRenderer();
+
+    public static boolean                                 autoHideJEI              = true;
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
@@ -228,5 +231,13 @@ public class JEICompat implements IModPlugin
         }
 
         registry.register(PokedexEntry.class, relevant, ingredientHelper, ingredientRendererInput);
+        if (autoHideJEI)
+        {
+            for (PokedexEntry e : relevant)
+            {
+                mezz.jei.config.Config.addIngredientToConfigBlacklist(e, IngredientBlacklistType.ITEM,
+                        ingredientHelper);
+            }
+        }
     }
 }

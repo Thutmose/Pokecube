@@ -421,6 +421,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 NBTTagCompound mobTag = tag.getCompoundTag(TagNames.OTHERMOB);
                 ResourceLocation id = new ResourceLocation(tag.getString(TagNames.MOBID));
                 Entity newMob = EntityList.createEntityByIDFromName(id, getEntityWorld());
+                System.out.println(newMob+" "+id);
                 if (newMob != null && newMob instanceof EntityLivingBase)
                 {
                     newMob.readFromNBT(mobTag);
@@ -435,6 +436,9 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                     getEntityWorld().spawnEntity(newMob);
                     tag.removeTag(TagNames.MOBID);
                     tag.removeTag(TagNames.OTHERMOB);
+                    tag.removeTag("display");
+                    tag.removeTag("tilt");
+                    if(tag.hasNoTags()) getItem().setTagCompound(null);
                     entityDropItem(getItem(), 0.5f);
                     setReleased(newMob);
                     motionX = motionY = motionZ = 0;

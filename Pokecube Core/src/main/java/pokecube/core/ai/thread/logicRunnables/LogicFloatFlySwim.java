@@ -45,12 +45,13 @@ public class LogicFloatFlySwim extends LogicBase
 
     private void doSwim(Vector3 here)
     {
+        if (!(this.entity.isInWater() || this.entity.isInLava())) return;
         IPokemob pokemob = this.pokemob;
         IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
         if (transformed != null) pokemob = transformed;
         PokedexEntry entry = pokemob.getPokedexEntry();
         boolean isWaterMob = pokemob.getPokedexEntry().swims();
-        if (!isWaterMob && (this.entity.isInWater() || this.entity.isInLava()))
+        if (!isWaterMob)
         {
             if (this.entity.getRNG().nextFloat() < 0.8F)
             {

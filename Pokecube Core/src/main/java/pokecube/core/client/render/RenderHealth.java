@@ -173,7 +173,7 @@ public class RenderHealth
         while (!ridingStack.isEmpty())
         {
             entity = ridingStack.pop();
-            String entityID = EntityList.getEntityString(entity);
+            String entityID = EntityList.getKey(entity).toString();
             processing:
             {
                 float distance = passedEntity.getDistanceToEntity(viewPoint);

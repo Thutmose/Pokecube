@@ -39,6 +39,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                                {
                                                                    String id = EntityList.getEntityString(input);
                                                                    if (invalidIDs.contains(id)) return false;
+                                                                   id = EntityList.getKey(input).toString();
+                                                                   if (invalidIDs.contains(id)) return false;
                                                                    for (Class<?> clas : invalidClasses)
                                                                    {
                                                                        if (clas.isInstance(input)) return false;

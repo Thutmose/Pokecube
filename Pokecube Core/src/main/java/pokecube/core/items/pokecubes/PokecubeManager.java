@@ -118,6 +118,11 @@ public class PokecubeManager
         return (getPokedexNb(stack) != 0);
     }
 
+    public static boolean hasMob(ItemStack stack)
+    {
+        return stack.hasTagCompound() && stack.getTagCompound().hasKey(TagNames.OTHERMOB) || isFilled(stack);
+    }
+
     public static IPokemob itemToPokemob(ItemStack itemStack, World world)
     {
         if (!itemStack.hasTagCompound()) return null;

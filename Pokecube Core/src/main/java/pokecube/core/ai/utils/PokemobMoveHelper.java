@@ -4,6 +4,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.pathfinding.PathPoint;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
@@ -47,7 +48,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
         boolean water = entry.swims() && entity.isInWater();
         boolean air = entry.flys() || entry.floats();
 
-        if (!(air || water) || this.action != EntityMoveHelper.Action.MOVE_TO)
+        if (this.action != EntityMoveHelper.Action.MOVE_TO)
         {
             pokemob.setDirectionPitch(0);
             super.onUpdateMoveHelper();
@@ -55,18 +56,18 @@ public class PokemobMoveHelper extends EntityMoveHelper
         }
 
         this.action = EntityMoveHelper.Action.WAIT;
-        double d0 = this.posX - this.entity.posX;
-        double d1 = this.posZ - this.entity.posZ;
-        double d2 = this.posY - this.entity.posY;
-        double d3 = d0 * d0 + d2 * d2 + d1 * d1;
-        double d4 = d0 * d0 + d1 * d1;
+        double dx = this.posX - this.entity.posX;
+        double dy = this.posY - this.entity.posY;
+        double dz = this.posZ - this.entity.posZ;
+        double dr = dx * dx + dy * dy + dz * dz;
+        double dhoriz = dx * dx + dz * dz;
 
         pokemob.setDirectionPitch(0);
         entity.setMoveVertical(0);
         boolean shouldGoDown = false;
         boolean shouldGoUp = false;
         PathPoint p = null;
-        if (!entity.getNavigator().noPath() && Math.abs(d2) > 0.05)
+        if (!entity.getNavigator().noPath() && Math.abs(dy) > 0.05)
         {
             p = entity.getNavigator().getPath()
                     .getPathPointFromIndex(entity.getNavigator().getPath().getCurrentPathIndex());
@@ -83,38 +84,50 @@ public class PokemobMoveHelper extends EntityMoveHelper
             shouldGoDown = true;
         float length = pokemob.getPokedexEntry().length * pokemob.getSize();
         float dSize = Math.max(0.25f, entity.width * entity.width + length * length);
-        boolean skipped = d3 < dSize;
-        if (d3 < 2.500000277905201E-7D || skipped)
+        if (!entity.getNavigator().noPath())
+        {
+            BlockPos pos = entity.getPosition();
+            PathPoint p2 = entity.getNavigator().getPath().getFinalPathPoint();
+            if (p2 == p && pos.getX() == p2.x && (!(air || water) || pos.getY() == p2.y) && pos.getZ() == p2.z)
+            {
+                dSize = 1;
+            }
+        }
+        if (dr < dSize)
         {
             this.entity.setMoveForward(0.0F);
-            if (skipped && !entity.getNavigator().noPath())
+            if (!entity.getNavigator().noPath())
             {
                 entity.getNavigator().getPath()
                         .setCurrentPathIndex(entity.getNavigator().getPath().getCurrentPathIndex() + 1);
             }
             return;
         }
-        boolean upLadder = d2 > 0 && entity.isOnLadder();
-        if (upLadder || (d2 > entity.stepHeight && d4 <= 2 * speed))
-        {
-            this.entity.getJumpHelper().setJumping();
-        }
 
-        float f9 = (float) (MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
+        float f9 = (float) (MathHelper.atan2(dz, dx) * (180D / Math.PI)) - 90.0F;
         this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, 180.0F);
         float v = (float) (this.speed
                 * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
         if ((air && !entity.onGround && !entity.isInWater())) v *= PokecubeCore.core.getConfig().flyPathingSpeedFactor;
         else if (water) v *= PokecubeCore.core.getConfig().swimPathingSpeedFactor;
+
         if (shouldGoDown || shouldGoUp)
         {
-            entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
+            entity.rotationPitch = -(float) (Math.atan((float) (dy / Math.sqrt(dhoriz))) * 180 / Math.PI);
             pokemob.setDirectionPitch(entity.rotationPitch);
-            float up = -MathHelper.sin(entity.rotationPitch * (float) Math.PI / 180.0F);
+            float factor = 1;
+            if (water && dy < 0.5) factor = 2;
+            float up = -MathHelper.sin(entity.rotationPitch * (float) Math.PI / 180.0F) * factor;
             entity.setMoveVertical(up);
         }
         this.entity.setAIMoveSpeed(v);
-        if (d2 > (double) this.entity.stepHeight && d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.entity.width))
+
+        boolean upLadder = dy > 0 && entity.isOnLadder();
+        boolean jump = upLadder
+                || (dy > (double) this.entity.stepHeight && dhoriz < (double) Math.max(1.0F, this.entity.width))
+                || (dy > entity.stepHeight && dhoriz <= 2 * speed);
+
+        if (jump)
         {
             this.entity.getJumpHelper().setJumping();
             this.action = EntityMoveHelper.Action.JUMPING;

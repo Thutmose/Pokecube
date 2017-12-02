@@ -50,6 +50,8 @@ public class AIGuardEgg extends AIBase
         if (!list2.isEmpty())
         {
             egg = (EntityPokemobEgg) list2.get(0);
+            egg.mother = pokemob;
+            pokemob.getEntity().setAttackTarget(null);
         }
     }
 

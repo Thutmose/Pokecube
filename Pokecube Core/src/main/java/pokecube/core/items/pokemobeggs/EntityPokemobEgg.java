@@ -32,6 +32,7 @@ public class EntityPokemobEgg extends EntityLiving
     int               age                  = 0;
     int               lastIncubate         = 0;
     public int        hatch                = 0;
+    public IPokemob   mother               = null;
     Vector3           here                 = Vector3.getNewVector();
     private ItemStack eggCache             = null;
 
@@ -86,7 +87,11 @@ public class EntityPokemobEgg extends EntityLiving
             ItemStack itemstack = this.getHeldItemMainhand();
             int i = CompatWrapper.getStackSize(itemstack);
             EntityPlayer player = (EntityPlayer) e;
-            if (this.delayBeforeCanPickup <= 0 && (i <= 0 || player.inventory.addItemStackToInventory(itemstack)))
+            if (mother != null && mother.getOwner() != player)
+            {
+                mother.getEntity().setAttackTarget(player);
+            }
+            if ((i <= 0 || player.inventory.addItemStackToInventory(itemstack)))
             {
                 player.onItemPickup(this, i);
                 if (CompatWrapper.getStackSize(itemstack) <= 0)

@@ -286,6 +286,11 @@ public abstract class Move_Base
         return Category.values()[move.category];
     }
 
+    public boolean isSelfMove()
+    {
+        return (this.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0;
+    }
+
     public void ActualMoveUse(@Nonnull Entity user, @Nullable Entity target, @Nonnull Vector3 start,
             @Nonnull Vector3 end)
     {

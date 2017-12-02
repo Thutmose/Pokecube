@@ -39,11 +39,18 @@ public class AttackEntityHandler implements IMobCommandHandler
         {
             Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
             moveName = MovesUtils.getUnlocalizedMove(move.getName());
-            ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
-                    pokemob.getPokemonDisplayName(), target.getDisplayName(), new TextComponentTranslation(moveName));
-            pokemob.displayMessageToOwner(mess);
-            pokemob.getEntity().setAttackTarget((EntityLivingBase) target);
-            if (target instanceof EntityLiving) ((EntityLiving) target).setAttackTarget(pokemob.getEntity());
+            if(move.isSelfMove())
+            {
+                pokemob.executeMove(pokemob.getEntity(), null, 0);
+            }
+            else
+            {
+                ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
+                        pokemob.getPokemonDisplayName(), target.getDisplayName(), new TextComponentTranslation(moveName));
+                pokemob.displayMessageToOwner(mess);
+                pokemob.getEntity().setAttackTarget((EntityLivingBase) target);
+                if (target instanceof EntityLiving) ((EntityLiving) target).setAttackTarget(pokemob.getEntity());
+            }
         }
     }
 

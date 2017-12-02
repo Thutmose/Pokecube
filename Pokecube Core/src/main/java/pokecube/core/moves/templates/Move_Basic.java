@@ -155,7 +155,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         MovePacket packet = new MovePacket(attacker, attacked, name, move.type, getPWR(attacker, attacked), move.crit,
                 statusChange, changeAddition);
 
-        boolean self = (this.getAttackCategory() & CATEGORY_SELF) > 0;
+        boolean self = isSelfMove();
         boolean doAttack = true;
         if (!self) doAttack = attacked != attacker;
         if (doAttack) onAttack(packet);

@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,6 +25,7 @@ import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -34,6 +36,7 @@ import pokecube.adventures.ai.helper.AIStuffHolder;
 import pokecube.adventures.ai.tasks.AIBattle;
 import pokecube.adventures.ai.tasks.AIFindTarget;
 import pokecube.adventures.comands.Config;
+import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
@@ -41,15 +44,20 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.Defau
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.DefaultMessager;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
+import pokecube.core.ai.properties.IGuardAICapability;
+import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.Database;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.events.StructureEvent;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -189,10 +197,52 @@ public class PAEventsHandler
     public void livingHurtEvent(LivingHurtEvent evt)
     {
         IHasPokemobs pokemobHolder = CapabilityHasPokemobs.getHasPokemobs(evt.getEntityLiving());
-        if (pokemobHolder != null && pokemobHolder.getTarget() == null
-                && evt.getSource().getTrueSource() instanceof EntityLivingBase)
+        IHasMessages messages = CapabilityNPCMessages.getMessages(evt.getEntityLiving());
+        if (evt.getSource().getTrueSource() instanceof EntityLivingBase)
         {
-            pokemobHolder.setTarget((EntityLivingBase) evt.getSource().getTrueSource());
+            if (messages != null)
+            {
+                messages.sendMessage(MessageState.HURT, evt.getSource().getTrueSource(),
+                        evt.getEntityLiving().getDisplayName(), evt.getSource().getTrueSource().getDisplayName());
+                messages.doAction(MessageState.HURT, (EntityLivingBase) evt.getSource().getTrueSource());
+            }
+            if (pokemobHolder != null && pokemobHolder.getTarget() == null)
+            {
+                pokemobHolder.setTarget((EntityLivingBase) evt.getSource().getTrueSource());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void interactEvent(PlayerInteractEvent.EntityInteractSpecific evt)
+    {
+        if (evt.getWorld().isRemote) return;
+        String ID = "LastSuccessInteractEvent";
+        long time = evt.getTarget().getEntityData().getLong(ID);
+        if (time == evt.getTarget().getEntityWorld().getTotalWorldTime()) return;
+        processInteract(evt, evt.getTarget());
+        evt.getTarget().getEntityData().setLong(ID, evt.getTarget().getEntityWorld().getTotalWorldTime());
+    }
+
+    @SubscribeEvent
+    public void interactEvent(PlayerInteractEvent.EntityInteract evt)
+    {
+        if (evt.getWorld().isRemote) return;
+        String ID = "LastSuccessInteractEvent";
+        long time = evt.getTarget().getEntityData().getLong(ID);
+        if (time == evt.getTarget().getEntityWorld().getTotalWorldTime()) return;
+        processInteract(evt, evt.getTarget());
+        evt.getTarget().getEntityData().setLong(ID, evt.getTarget().getEntityWorld().getTotalWorldTime());
+    }
+
+    public void processInteract(PlayerInteractEvent evt, Entity target)
+    {
+        IHasMessages messages = CapabilityNPCMessages.getMessages(target);
+        if (messages != null)
+        {
+            messages.sendMessage(MessageState.INTERACT, evt.getEntityPlayer(), target.getDisplayName(),
+                    evt.getEntityPlayer().getDisplayName());
+            messages.doAction(MessageState.INTERACT, evt.getEntityPlayer());
         }
     }
 
@@ -271,6 +321,18 @@ public class PAEventsHandler
                     if (npc instanceof EntityTrainer)
                         mob.getAI().addAITask(new AIFindTarget(npc, EntityPlayer.class).setPriority(10));
                     stale.add(npc);
+
+                    IGuardAICapability guardCap = npc.getCapability(EventsHandler.GUARDAI_CAP, null);
+                    guardAI:
+                    if (guardCap != null)
+                    {
+                        for (EntityAITaskEntry taskentry : npc.tasks.taskEntries)
+                        {
+                            if (taskentry.action instanceof GuardAI) break guardAI;
+                        }
+                        GuardAI guard = new GuardAI(npc, guardCap);
+                        npc.tasks.addTask(1, guard);
+                    }
                     IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(npc);
                     TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc, true);
                     if (newType == null) continue;
@@ -314,8 +376,7 @@ public class PAEventsHandler
         DataParamHolder holder = new DataParamHolder(value);
         for (int i = 0; i < 6; i++)
         {
-            DataParameter<ItemStack> CUBE = EntityDataManager.<ItemStack> createKey(clazz,
-                    DataSerializers.ITEM_STACK);
+            DataParameter<ItemStack> CUBE = EntityDataManager.<ItemStack> createKey(clazz, DataSerializers.ITEM_STACK);
 
             holder.pokemobs[i] = CUBE;
         }

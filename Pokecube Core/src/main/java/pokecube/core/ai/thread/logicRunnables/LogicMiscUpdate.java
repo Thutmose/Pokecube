@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import pokecube.core.PokecubeItems;
@@ -95,7 +96,7 @@ public class LogicMiscUpdate extends LogicBase
         if (initHome)
         {
             initHome = false;
-            if (pokemob.getHome() != null)
+            if (!pokemob.getHome().equals(BlockPos.ORIGIN))
             {
                 TileEntity te = world.getTileEntity(pokemob.getHome());
                 if (te != null && te instanceof TileEntityNest)

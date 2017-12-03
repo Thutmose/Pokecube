@@ -42,7 +42,7 @@ public class RenderTarget<T extends EntityLivingBase> extends RenderLivingBase<E
             RenderHelper.disableStandardItemLighting();
             renderAll(0.1f);
             RenderHelper.enableStandardItemLighting();
-
+            GL11.glColor4f(1, 1, 1, 1);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_CULL_FACE);
             GL11.glPopAttrib();

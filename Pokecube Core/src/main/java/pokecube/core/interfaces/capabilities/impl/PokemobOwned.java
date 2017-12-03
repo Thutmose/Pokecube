@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,6 +33,7 @@ import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.events.SpawnEvent;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
@@ -91,13 +93,15 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public BlockPos getHome()
     {
-        return homePos;
+        if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
+        return guardCap.getPos();
     }
 
     @Override
     public float getHomeDistance()
     {
-        return homeDistance;
+        if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
+        return guardCap.getRoamDistance();
     }
 
     @Override
@@ -157,7 +161,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public boolean hasHomeArea()
     {
-        return homeDistance > 0;
+        return guardCap.getRoamDistance() > 0;
     }
 
     protected void initInventory()
@@ -349,9 +353,11 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public void setHome(int x, int y, int z, int distance)
     {
-        homePos = new BlockPos(x, y, z);
-        homeDistance = distance;
-        if (getEntity() instanceof EntityAnimal) ((EntityAnimal) getEntity()).setHomePosAndDistance(homePos, distance);
+        if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
+        guardCap.setPos(new BlockPos(x, y, z));
+        guardCap.setRoamDistance(distance);
+        if (getEntity() instanceof EntityAnimal)
+            ((EntityAnimal) getEntity()).setHomePosAndDistance(guardCap.getPos(), distance);
     }
 
     @Override
@@ -381,11 +387,8 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         {
             setOriginalOwnerUUID(e.getUniqueID());
         }
-        //////
-        //
-        // 1.12 should fire tamed trigger here.
-        //
-        //////
+        if (e instanceof EntityPlayerMP && getEntity() instanceof EntityAnimal)
+            CriteriaTriggers.TAME_ANIMAL.trigger((EntityPlayerMP) e, (EntityAnimal) getEntity());
     }
 
     @Override

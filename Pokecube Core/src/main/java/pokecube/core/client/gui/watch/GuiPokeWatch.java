@@ -127,6 +127,18 @@ public class GuiPokeWatch extends GuiScreen
     public GuiPokeWatch(EntityPlayer player)
     {
         this.player = player;
+    }
+
+    public List<GuiButton> getButtons()
+    {
+        return buttonList;
+    }
+
+    @Override
+    public void initGui()
+    {
+        super.initGui();
+        pages.clear();
         for (Class<? extends WatchPage> pageClass : PAGELIST)
         {
             WatchPage page;
@@ -141,17 +153,6 @@ public class GuiPokeWatch extends GuiScreen
             }
             pages.add(page);
         }
-    }
-
-    public List<GuiButton> getButtons()
-    {
-        return buttonList;
-    }
-
-    @Override
-    public void initGui()
-    {
-        super.initGui();
         for (WatchPage page : pages)
             page.initGui();
         pages.get(index).onPageOpened();
@@ -198,8 +199,8 @@ public class GuiPokeWatch extends GuiScreen
     @Override
     public void handleMouseInput() throws IOException
     {
-        super.handleMouseInput();
         pages.get(index).handleMouseInput();
+        super.handleMouseInput();
     }
 
     @Override

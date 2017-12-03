@@ -176,6 +176,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
 
         // Add in some vanilla-like AI classes
         this.guardAI = new GuardAI(entity, entity.getCapability(EventsHandler.GUARDAI_CAP, null));
+        this.guardCap = guardAI.capability;
         entity.tasks.addTask(5, this.guardAI);
         entity.tasks.addTask(5, this.utilMoveAI = new PokemobAIUtilityMove(this));
         if (entity instanceof EntityCreature) entity.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));

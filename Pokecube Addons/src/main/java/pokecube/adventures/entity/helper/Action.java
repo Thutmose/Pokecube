@@ -13,6 +13,7 @@ public class Action
 
     public void doAction(EntityPlayer target)
     {
+        if (command == null || command.trim().isEmpty()) return;
         String editedCommand = command;
         editedCommand = editedCommand.replace("@p", target.getGameProfile().getName());
         editedCommand = editedCommand.replace("'x'", target.posX + "");

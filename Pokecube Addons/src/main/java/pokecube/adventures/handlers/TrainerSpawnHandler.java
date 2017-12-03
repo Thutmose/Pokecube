@@ -136,7 +136,7 @@ public class TrainerSpawnHandler
                     return (NBTTagCompound) EventsHandler.storage.writeNBT(EventsHandler.GUARDAI_CAP, this, null);
                 }
             }
-            event.addCapability(new ResourceLocation("pokecube_adventures:GuardAI"), new Provider());
+            event.addCapability(new ResourceLocation("pokecube_adventures:guardai"), new Provider());
         }
     }
 

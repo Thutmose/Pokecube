@@ -19,6 +19,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
@@ -638,8 +639,7 @@ public class AIHungry extends AIBase
     // 0 is sunrise, 6000 noon, 12000 dusk, 18000 midnight, 23999
     public boolean isGoodSleepingSpot(ChunkCoordinate c)
     {
-        if (pokemob.getHome() == null
-                || (pokemob.getHome().getX() == 0 && pokemob.getHome().getY() == 0 & pokemob.getHome().getZ() == 0))
+        if (pokemob.getHome() == null || pokemob.getHome().equals(BlockPos.ORIGIN))
         {
             v1.set(entity);
             pokemob.setHome(v1.intX(), v1.intY(), v1.intZ(), 16);

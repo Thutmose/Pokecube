@@ -16,8 +16,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
+import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.thread.logicRunnables.LogicCollision;
 import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
@@ -238,8 +238,7 @@ public abstract class PokemobBase implements IPokemob
     protected UUID                 ownerID;
     protected UUID                 OTID;
 
-    int                            homeDistance;
-    BlockPos                       homePos;
+    protected IGuardAICapability   guardCap;
 
     List<AxisAlignedBB>            aabbs            = null;
     public Matrix3                 mainBox          = new Matrix3();

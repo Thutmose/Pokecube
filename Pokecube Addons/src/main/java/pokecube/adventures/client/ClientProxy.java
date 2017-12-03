@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +17,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -37,10 +35,10 @@ import pokecube.adventures.client.gui.GUIBiomeSetter;
 import pokecube.adventures.client.gui.GuiAFA;
 import pokecube.adventures.client.gui.GuiBag;
 import pokecube.adventures.client.gui.GuiDaycare;
-import pokecube.adventures.client.gui.GuiTrainerEdit;
 import pokecube.adventures.client.gui.cloner.GuiCloner;
 import pokecube.adventures.client.gui.cloner.GuiExtractor;
 import pokecube.adventures.client.gui.cloner.GuiSplicer;
+import pokecube.adventures.client.gui.trainer.GuiEditTrainer;
 import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.blocks.RenderCloner;
 import pokecube.adventures.client.render.entity.RenderTarget;
@@ -51,7 +49,6 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.core.PokecubeCore;
 import thut.api.maths.Vector3;
 
 public class ClientProxy extends CommonProxy
@@ -59,18 +56,8 @@ public class ClientProxy extends CommonProxy
     @Override
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
-        Entity entityHit = null;
-        RayTraceResult objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
-
-        if (objectClicked != null)
-        {
-            if (objectClicked.getBlockPos() != null)
-            {
-            }
-            entityHit = objectClicked.entityHit;
-        }
         BlockPos pos = new BlockPos(x, y, z);
-        if (guiID == PokecubeAdv.GUITRAINER_ID) { return new GuiTrainerEdit((EntityTrainer) entityHit); }
+        if (guiID == PokecubeAdv.GUITRAINER_ID) { return new GuiEditTrainer(world.getEntityByID(x)); }
         if (guiID == PokecubeAdv.GUIBAG_ID)
         {
             ContainerBag cont = new ContainerBag(player.inventory);

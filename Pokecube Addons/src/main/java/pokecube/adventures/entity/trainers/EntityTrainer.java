@@ -270,21 +270,12 @@ public class EntityTrainer extends EntityTrainerBase
     {
         if (getNavigator().getPath() != null && aiStates.getAIState(IHasNPCAIStates.STATIONARY))
         {
-            if (guardAI.capability.getPos().distanceSq(0, 0, 0) == 0)
+            if (guardAI.capability.getPos() == null || guardAI.capability.getPos().equals(BlockPos.ORIGIN))
             {
                 setStationary(false);
                 return;
             }
-            Vector3 loc = Vector3.getNewVector().set(getNavigator().getPath().getFinalPathPoint());
-            double d = (guardAI.capability.getPos().getX() - loc.x) * (guardAI.capability.getPos().getX() - loc.x)
-                    + (guardAI.capability.getPos().getZ() - loc.z) * (guardAI.capability.getPos().getZ() - loc.z);
-            double d1 = guardAI.capability.getRoamDistance() * guardAI.capability.getRoamDistance();
-            if (d > d1)
-            {
-                getNavigator().clearPathEntity();
-                getNavigator().tryMoveToXYZ(guardAI.capability.getPos().getX() + 0.5,
-                        guardAI.capability.getPos().getY(), guardAI.capability.getPos().getZ() + 0.5, 0.5);
-            }
+            guardAI.capability.setActiveTime(TimePeriod.fullDay);
         }
         super.onUpdate();
     }
@@ -313,6 +304,11 @@ public class EntityTrainer extends EntityTrainerBase
 
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
+        if (stack.getItem() instanceof ItemTrainer && player.capabilities.isCreativeMode)
+        {
+            player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, getEntityWorld(), getEntityId(), 0, 0);
+            return true;
+        }
         if (player.capabilities.isCreativeMode && player.isSneaking())
         {
             if (pokemobsCap.getType() != null && !getEntityWorld().isRemote
@@ -335,12 +331,6 @@ public class EntityTrainer extends EntityTrainerBase
             else if (CompatWrapper.isValid(player.getHeldItemMainhand())
                     && player.getHeldItemMainhand().getItem() == Items.STICK)
                 pokemobsCap.setTarget(player);
-
-            if (CompatWrapper.isValid(player.getHeldItemMainhand())
-                    && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
-            {
-                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, getEntityWorld(), getEntityId(), 0, 0);
-            }
         }
         else
         {
@@ -358,6 +348,7 @@ public class EntityTrainer extends EntityTrainerBase
                     }
                     pokemobsCap.friendlyCooldown = 2400;
                 }
+                return true;
             }
             else if (pokemobsCap.friendlyCooldown >= 0)
             {
@@ -370,7 +361,7 @@ public class EntityTrainer extends EntityTrainerBase
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override

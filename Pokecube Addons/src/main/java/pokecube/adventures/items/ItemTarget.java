@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,7 +22,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -34,8 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.ai.properties.IGuardAICapability;
+import pokecube.core.events.handlers.EventsHandler;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeType;
@@ -60,13 +60,21 @@ public class ItemTarget extends CompatItem
         if (!CompatWrapper.isValid(stack) || stack.getItem() != this) return;
         EntityPlayer playerIn = event.getEntityPlayer();
         Entity target = event.getTarget();
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(target);
-        if (stack.getItemDamage() == 1 && pokemob != null && pokemob.isPlayerOwned())
+        IGuardAICapability cap = target.getCapability(EventsHandler.GUARDAI_CAP, null);
+        if (stack.getItemDamage() == 1 && cap != null)
         {
-            if (stack.hasTagCompound() && playerIn == pokemob.getPokemonOwner())
+            boolean canSet = true;
+            if (target instanceof IEntityOwnable)
+            {
+                canSet = ((IEntityOwnable) target).getOwner() == playerIn;
+            }
+            if (stack.hasTagCompound() && canSet)
             {
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                pokemob.setHome(MathHelper.floor(pos.x), MathHelper.floor(pos.y), MathHelper.floor(pos.z), 16);
+                cap.setPos(new BlockPos(pos.x, pos.y, pos.z));
+                cap.setRoamDistance(playerIn.isSneaking() ? 1 : 16);
+                // TODO use a gui for this instead, and include settings like
+                // times for guarding.
                 // TODO localize this message.
                 playerIn.sendMessage(new TextComponentString("Set Home to " + pos));
                 event.setCanceled(true);

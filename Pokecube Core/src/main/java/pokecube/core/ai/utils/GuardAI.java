@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability.GuardState;
@@ -50,9 +51,9 @@ public class GuardAI extends EntityAIBase
         switch (capability.getState())
         {
         case RUNNING:
-            if (entity.getNavigator().noPath()
-                    || entity.getDistanceSq(capability.getPos()) < capability.getRoamDistance()
-                            * capability.getRoamDistance() / 2)
+            if (capability.getPos() == null || (entity.getNavigator().noPath()
+                    && entity.getDistanceSq(capability.getPos()) < capability.getRoamDistance()
+                            * capability.getRoamDistance() / 2))
             {
                 capability.setState(GuardState.COOLDOWN);
                 return true;
@@ -95,8 +96,6 @@ public class GuardAI extends EntityAIBase
         if (capability == null)
         {
             System.out.println(entity.getCapability(EventsHandler.GUARDAI_CAP, null));
-            // capability = entity.getCapability(EventsHandler.GUARDAI_CAP,
-            // null);
             return false;
         }
         if (null == entity || entity.isDead || capability.getActiveTime() == null
@@ -104,9 +103,11 @@ public class GuardAI extends EntityAIBase
         if (capability.getActiveTime() != TimePeriod.fullDay && !capability.getActiveTime()
                 .contains((int) (entity.getEntityWorld().getWorldTime() % 24000L))) { return false; }
         BlockPos pos = capability.getPos();
-        if (pos.getX() == 0 && pos.getY() == 0 && pos.getZ() == 0) return false;
+        if (pos.equals(BlockPos.ORIGIN)) return false;
         double distanceToGuardPointSq = entity.getDistanceSq(capability.getPos());
-        return (distanceToGuardPointSq > capability.getRoamDistance() * capability.getRoamDistance());
+        double maxDist = capability.getRoamDistance() * capability.getRoamDistance();
+        maxDist = Math.max(maxDist, entity.width);
+        return (distanceToGuardPointSq > maxDist);
     }
 
     @Override
@@ -124,5 +125,31 @@ public class GuardAI extends EntityAIBase
     public void updateTask()
     {
         super.updateTask();
+        if (capability.getState() == GuardState.RUNNING)
+        {
+            boolean hasPath = !entity.getNavigator().noPath();
+            double maxDist = capability.getRoamDistance() * capability.getRoamDistance();
+            maxDist = Math.max(maxDist, entity.width);
+            if (!hasPath)
+            {
+                double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
+                entity.getNavigator().tryMoveToXYZ(capability.getPos().getX() + 0.5, capability.getPos().getY(),
+                        capability.getPos().getZ() + 0.5, speed);
+            }
+            else
+            {
+                PathPoint end = entity.getNavigator().getPath().getFinalPathPoint();
+                BlockPos endPos = new BlockPos(end.x, end.y, end.z);
+                if (endPos.distanceSq(capability.getPos()) > maxDist)
+                {
+                    double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)
+                            .getAttributeValue();
+                    entity.getNavigator().tryMoveToXYZ(capability.getPos().getX() + 0.5, capability.getPos().getY(),
+                            capability.getPos().getZ() + 0.5, speed);
+                }
+            }
+            if (entity.getDistanceSq(capability.getPos()) < maxDist) capability.setState(GuardState.COOLDOWN);
+        }
+
     }
 }

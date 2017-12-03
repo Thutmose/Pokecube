@@ -46,6 +46,7 @@ public class CapabilityHasPokemobs
 
     public static IHasPokemobs getHasPokemobs(ICapabilityProvider entityIn)
     {
+        if (entityIn == null) return null;
         IHasPokemobs pokemobHolder = null;
         if (entityIn.hasCapability(HASPOKEMOBS_CAP, null))
             pokemobHolder = entityIn.getCapability(HASPOKEMOBS_CAP, null);
@@ -226,6 +227,11 @@ public class CapabilityHasPokemobs
             return true;
         }
 
+        default boolean isAgressive(Entity target)
+        {
+            return isAgressive();
+        }
+
         /** The distance to see for attacking players */
         default int getAgressDistance()
         {
@@ -341,7 +347,7 @@ public class CapabilityHasPokemobs
     public static class DefaultPokemobs implements IHasPokemobs, ICapabilitySerializable<NBTTagCompound>
     {
 
-        public static class DefeatEntry
+        public static class DefeatEntry implements Comparable<DefeatEntry>
         {
             public static DefeatEntry createFromNBT(NBTTagCompound nbt)
             {
@@ -351,8 +357,7 @@ public class CapabilityHasPokemobs
             }
 
             final String defeater;
-
-            final long   defeatTime;
+            long         defeatTime;
 
             public DefeatEntry(String defeater, long time)
             {
@@ -364,6 +369,25 @@ public class CapabilityHasPokemobs
             {
                 nbt.setString("player", defeater);
                 nbt.setLong("time", defeatTime);
+            }
+
+            @Override
+            public int hashCode()
+            {
+                return defeater.hashCode();
+            }
+
+            @Override
+            public boolean equals(Object other)
+            {
+                if (other instanceof DefeatEntry) { return ((DefeatEntry) other).defeater.equals(defeater); }
+                return false;
+            }
+
+            @Override
+            public int compareTo(DefeatEntry o)
+            {
+                return defeater.compareTo(o.defeater);
             }
         }
 
@@ -416,15 +440,8 @@ public class CapabilityHasPokemobs
             {
                 if (s.defeater.equals(name))
                 {
-                    if (resetTime > 0)
-                    {
-                        long diff = user.getEntityWorld().getTotalWorldTime() - s.defeatTime;
-                        if (diff > resetTime)
-                        {
-                            defeaters.remove(s);
-                            return false;
-                        }
-                    }
+                    long diff = user.getEntityWorld().getTotalWorldTime() - s.defeatTime;
+                    if (diff > resetTime) { return false; }
                     return true;
                 }
             }
@@ -546,8 +563,19 @@ public class CapabilityHasPokemobs
         public void onDefeated(Entity defeater)
         {
             if (hasDefeated(defeater)) return;
-            if (defeater != null) defeaters.add(
-                    new DefeatEntry(defeater.getCachedUniqueIdString(), user.getEntityWorld().getTotalWorldTime()));
+            if (defeater != null && defeater instanceof EntityPlayer)
+            {
+                DefeatEntry entry = new DefeatEntry(defeater.getCachedUniqueIdString(),
+                        user.getEntityWorld().getTotalWorldTime());
+                if (defeaters.contains(entry))
+                {
+                    defeaters.get(defeaters.indexOf(entry)).defeatTime = entry.defeatTime;
+                }
+                else
+                {
+                    defeaters.add(entry);
+                }
+            }
             if (rewards.getRewards() != null && defeater instanceof EntityPlayer)
             {
                 EntityPlayer player = (EntityPlayer) defeater;
@@ -572,7 +600,7 @@ public class CapabilityHasPokemobs
 
         public void checkDefeatAchievement(EntityPlayer player)
         {
-            if(!(user instanceof EntityTrainer)) return;
+            if (!(user instanceof EntityTrainer)) return;
             boolean leader = user instanceof EntityLeader;
             if (leader) Triggers.BEATLEADER.trigger((EntityPlayerMP) player, (EntityTrainer) user);
             else Triggers.BEATTRAINER.trigger((EntityPlayerMP) player, (EntityTrainer) user);

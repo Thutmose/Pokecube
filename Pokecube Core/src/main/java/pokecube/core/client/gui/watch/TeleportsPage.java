@@ -158,6 +158,10 @@ public class TeleportsPage extends ListPage
                     teleNames.get(i).setFocused(false);
                     ((TeleOption) list.getListEntry(i)).keyTyped(' ', Keyboard.KEY_RETURN);
                 }
+                else
+                {
+                    teleNames.get(i).mouseClicked(mouseX, mouseY, mouseButton);
+                }
             }
         }
     }

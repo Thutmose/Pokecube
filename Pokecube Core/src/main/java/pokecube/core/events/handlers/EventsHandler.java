@@ -955,7 +955,7 @@ public class EventsHandler
                     return (NBTTagCompound) storage.writeNBT(GUARDAI_CAP, this, null);
                 }
             }
-            event.addCapability(new ResourceLocation("pokecube:GuardAI"), new Provider());
+            event.addCapability(new ResourceLocation("pokecube:guardai"), new Provider());
         }
     }
 

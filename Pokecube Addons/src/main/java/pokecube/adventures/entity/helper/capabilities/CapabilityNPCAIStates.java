@@ -12,23 +12,22 @@ public class CapabilityNPCAIStates
 {
     @CapabilityInject(IHasNPCAIStates.class)
     public static final Capability<IHasNPCAIStates> AISTATES_CAP = null;
-    public static Storage                        storage;
+    public static Storage                           storage;
 
     public static IHasNPCAIStates getNPCAIStates(ICapabilityProvider entityIn)
     {
         IHasNPCAIStates pokemobHolder = null;
-        if (entityIn.hasCapability(AISTATES_CAP, null))
-            pokemobHolder = entityIn.getCapability(AISTATES_CAP, null);
+        if (entityIn.hasCapability(AISTATES_CAP, null)) pokemobHolder = entityIn.getCapability(AISTATES_CAP, null);
         else if (entityIn instanceof IHasNPCAIStates) return (IHasNPCAIStates) entityIn;
         return pokemobHolder;
     }
-    
+
     public static interface IHasNPCAIStates
     {
-        public static final int                    STATIONARY       = 1;
-        public static final int                    INBATTLE         = 2;
-        public static final int                    THROWING         = 4;
-        public static final int                    PERMFRIENDLY     = 8;
+        public static final int STATIONARY   = 1 << 0;
+        public static final int INBATTLE     = 1 << 1;
+        public static final int THROWING     = 1 << 2;
+        public static final int PERMFRIENDLY = 1 << 3;
 
         boolean getAIState(int state);
 
@@ -49,7 +48,8 @@ public class CapabilityNPCAIStates
         }
 
         @Override
-        public void readNBT(Capability<IHasNPCAIStates> capability, IHasNPCAIStates instance, EnumFacing side, NBTBase nbt)
+        public void readNBT(Capability<IHasNPCAIStates> capability, IHasNPCAIStates instance, EnumFacing side,
+                NBTBase nbt)
         {
             if (nbt instanceof NBTTagInt) instance.setTotalState(((NBTTagInt) nbt).getInt());
         }

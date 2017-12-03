@@ -18,6 +18,7 @@ public interface IGuardAICapability
     {
         private BlockPos readFromTag(NBTTagCompound tag)
         {
+            if (!tag.hasKey("x")) return null;
             return new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
         }
 

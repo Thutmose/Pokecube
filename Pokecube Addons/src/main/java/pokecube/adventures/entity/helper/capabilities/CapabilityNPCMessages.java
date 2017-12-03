@@ -61,9 +61,10 @@ public class CapabilityNPCMessages
             for (MessageState state : MessageState.values())
             {
                 String message = instance.getMessage(state);
-                if (message != null) messTag.setString(state.name(), message);
+                if (message != null && !message.isEmpty()) messTag.setString(state.name(), message);
                 Action action = instance.getAction(state);
-                if (action != null) actionTag.setString(state.name(), action.getCommand());
+                if (action != null && !action.getCommand().isEmpty())
+                    actionTag.setString(state.name(), action.getCommand());
             }
             nbt.setTag("messages", messTag);
             nbt.setTag("actions", actionTag);
@@ -108,7 +109,8 @@ public class CapabilityNPCMessages
         @Override
         public void sendMessage(MessageState state, Entity target, Object... args)
         {
-            if (target instanceof FakePlayer) return;
+            if (target instanceof FakePlayer || messages.get(state) == null || messages.get(state).trim().isEmpty())
+                return;
             target.sendMessage(new TextComponentTranslation(messages.get(state), args));
             if (PokecubeMod.debug) PokecubeMod.log(state + ": " + messages.get(state));
         }

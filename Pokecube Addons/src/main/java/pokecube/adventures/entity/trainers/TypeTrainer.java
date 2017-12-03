@@ -295,7 +295,7 @@ public class TypeTrainer
 
     public Map<SpawnBiomeMatcher, Float> matchers      = Maps.newHashMap();
     public boolean                       hasBag        = false;
-    public ItemStack                     bag;
+    public ItemStack                     bag           = CompatWrapper.nullStack;
     public boolean                       hasBelt       = false;
     private ResourceLocation             texture;
 

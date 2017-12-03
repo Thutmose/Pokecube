@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
@@ -39,7 +40,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                                {
                                                                    String id = EntityList.getEntityString(input);
                                                                    if (invalidIDs.contains(id)) return false;
-                                                                   id = EntityList.getKey(input).toString();
+                                                                   ResourceLocation eid = EntityList.getKey(input);
+                                                                   if (eid != null) id = eid.toString();
                                                                    if (invalidIDs.contains(id)) return false;
                                                                    for (Class<?> clas : invalidClasses)
                                                                    {

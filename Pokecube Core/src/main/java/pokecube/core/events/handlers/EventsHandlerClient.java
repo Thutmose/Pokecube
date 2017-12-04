@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -177,8 +179,8 @@ public class EventsHandlerClient
         EntityLiving entity = pokemob.getEntity();
         float size = 0;
         float mobScale = pokemob.getSize();
-        size = Math.max(pokemob.getPokedexEntry().width * mobScale,
-                Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
+        Vector3f dims = pokemob.getPokedexEntry().getModelSize();
+        size = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
         GL11.glPushMatrix();
         float zoom = (float) (12f / Math.sqrt(size));
         GL11.glScalef(-zoom, zoom, zoom);
@@ -270,13 +272,13 @@ public class EventsHandlerClient
                 controller.upInputDown = up;
                 controller.downInputDown = down;
                 controller.followOwnerLook = PokecubeMod.core.getConfig().riddenMobsTurnWithLook;
-                
-                if(GameSettings.isKeyDown(ClientProxyPokecube.throttleDown))
+
+                if (GameSettings.isKeyDown(ClientProxyPokecube.throttleDown))
                 {
                     controller.throttle -= 0.05;
                     controller.throttle = Math.max(controller.throttle, 0.01);
                 }
-                else if(GameSettings.isKeyDown(ClientProxyPokecube.throttleUp))
+                else if (GameSettings.isKeyDown(ClientProxyPokecube.throttleUp))
                 {
                     controller.throttle += 0.05;
                     controller.throttle = Math.min(controller.throttle, 1);

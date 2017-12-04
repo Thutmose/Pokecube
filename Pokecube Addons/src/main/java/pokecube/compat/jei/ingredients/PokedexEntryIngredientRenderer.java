@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
@@ -56,8 +58,8 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
             EntityLiving entity = pokemob.getEntity();
             float size = 0;
             float mobScale = pokemob.getSize();
-            size = Math.max(pokemob.getPokedexEntry().width * mobScale,
-                    Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
+            Vector3f dims = pokemob.getPokedexEntry().getModelSize();
+            size = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
             GL11.glPushMatrix();
             float zoom = (float) (12f / Math.pow(size, 0.7));
             GL11.glScalef(-zoom, zoom, zoom);

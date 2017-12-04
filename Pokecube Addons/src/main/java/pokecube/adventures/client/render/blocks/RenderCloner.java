@@ -1,5 +1,7 @@
 package pokecube.adventures.client.render.blocks;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -16,8 +18,7 @@ public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
 {
 
     @Override
-    public void render(TileEntityCloner te, double x, double y, double z, float partialTicks,
-            int destroyStage, float f)
+    public void render(TileEntityCloner te, double x, double y, double z, float partialTicks, int destroyStage, float f)
     {
         CraftMatrix matrix = te.getCraftMatrix();
         RecipeFossilRevive currentRecipe = null;
@@ -44,7 +45,9 @@ public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
         dy = 0.65f;
         dz = 0;
 
-        float max = Math.max(entry.width, entry.length);
+        float mobScale = pokemob.getSize();
+        Vector3f dims = pokemob.getPokedexEntry().getModelSize();
+        float max = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
 
         float scale = (float) (0.5f / Math.sqrt(max));
         GL11.glTranslatef(dx, offset + dy, dz);

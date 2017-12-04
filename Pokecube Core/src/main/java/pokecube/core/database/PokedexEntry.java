@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import javax.vecmath.Vector3f;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
@@ -799,6 +800,10 @@ public class PokedexEntry
 
     @CopyToGender
     public float                                width            = -1;
+
+    // This is the actual size of the model, if not null, will be used for
+    // scaling of rendering in guis, order is length, height, width
+    public Vector3f                             modelSize        = null;
 
     public PokedexEntry(int nb, String name)
     {
@@ -1749,5 +1754,14 @@ public class PokedexEntry
         {
             lvlUpMoves.remove(i);
         }
+    }
+
+    public Vector3f getModelSize()
+    {
+        if (modelSize == null)
+        {
+            modelSize = new Vector3f(length, height, width);
+        }
+        return modelSize;
     }
 }

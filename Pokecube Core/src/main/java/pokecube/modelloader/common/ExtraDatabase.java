@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.vecmath.Vector3f;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -45,7 +46,9 @@ public class ExtraDatabase
     public static class XMLDetails
     {
         @XmlElement(name = "RIDDENOFFSET")
-        String offset = "";
+        String offset     = "";
+        @XmlElement(name = "MODELSIZE")
+        String model_size = "";
         @XmlElement(name = "PARTICLEEFFECTS")
         String particles;
     }
@@ -185,21 +188,10 @@ public class ExtraDatabase
         }
     }
 
-    public static PokedexEntry apply(String xml, PokedexEntry entry)
+    public static PokedexEntry apply(XMLFile file, PokedexEntry entry)
     {
         try
         {
-            JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            XMLFile file = (XMLFile) unmarshaller.unmarshal(new StringReader(xml));
-            try
-            {
-                file.init(entry);
-            }
-            catch (Exception e)
-            {
-                PokecubeMod.log(Level.WARNING, xml + " " + entry, e);
-            }
             ProgressBar loading = ProgressManager.push("XML Files", file.entries.size());
             for (XMLPokedexEntry fileEntry : file.entries)
             {
@@ -244,9 +236,47 @@ public class ExtraDatabase
                             entry.passengerOffsets[i] = offsets.get(i);
                         }
                     }
+                    if (!file.details.model_size.isEmpty())
+                    {
+                        String[] vec = file.details.model_size.split(",");
+                        if (vec.length == 3)
+                        {
+                            entry.modelSize = new Vector3f(Float.parseFloat(vec[0]), Float.parseFloat(vec[1]),
+                                    Float.parseFloat(vec[2]));
+                        }
+                        else
+                        {
+                            throw new IllegalArgumentException(
+                                    "Wrong number of numbers for model_size, must be 1 or 3");
+                        }
+                    }
                 }
                 if (file.details.particles != null) entry.particleData = file.details.particles.split(":");
             }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return entry;
+    }
+
+    public static PokedexEntry apply(String xml, PokedexEntry entry)
+    {
+        try
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            XMLFile file = (XMLFile) unmarshaller.unmarshal(new StringReader(xml));
+            try
+            {
+                file.init(entry);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.WARNING, xml + " " + entry, e);
+            }
+            return apply(file, entry);
         }
         catch (Exception e)
         {

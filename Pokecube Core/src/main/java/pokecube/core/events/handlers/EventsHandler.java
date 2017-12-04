@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.vecmath.Vector3f;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -758,8 +760,8 @@ public class EventsHandler
         if (!entry.ridable || pokemob.getPokemonAIState(IPokemob.GUARDING)) return false;
         if (!CompatWrapper.isValid(pokemob.getPokemobInventory().getStackInSlot(0))) return false;
         float scale = pokemob.getSize();
-        return (entry.height * scale + entry.width * scale) > rider.width
-                && Math.max(entry.width, entry.length) * scale > rider.width * 1.8;
+        Vector3f dims = pokemob.getPokedexEntry().getModelSize();
+        return (dims.y * scale + dims.x * scale) > rider.width && Math.max(dims.x, dims.z) * scale > rider.width * 1.8;
     }
 
     private boolean handleHmAndSaddle(EntityPlayer entityplayer, IPokemob pokemob)

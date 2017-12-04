@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -1152,8 +1154,9 @@ public class GuiPokedex extends GuiScreen
 
             pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
 
-            size = Math.max(pokemob.getPokedexEntry().height, pokemob.getPokedexEntry().width);
-            size = Math.max(size, pokemob.getPokedexEntry().length);
+            float mobScale = pokemob.getSize();
+            Vector3f dims = pokemob.getPokedexEntry().getModelSize();
+            size = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
             j = (width - xSize) / 2;
             k = (height - ySize) / 2;
 

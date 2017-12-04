@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -283,7 +285,9 @@ public class GuiAnimate extends GuiScreen
         float zLevel = 800;
         GL11.glPushMatrix();
         GlStateManager.translate(xOffset + shift[0], yOffset + shift[1], zLevel);
-        double size = Math.max(1, Math.max(entry.height, Math.max(entry.width, entry.length)));
+        float mobScale = 1;
+        Vector3f dims = pokemob.getPokedexEntry().getModelSize();
+        double size = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
         double scale = 8 * this.scale / Math.sqrt(size);
 
         GL11.glScaled(scale, scale, scale);

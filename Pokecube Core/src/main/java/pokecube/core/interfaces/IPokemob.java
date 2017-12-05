@@ -276,7 +276,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
             }
         }
 
-        public int getStat(IHasStats pokemob, Stats stat, boolean modified)
+        public float getStat(IHasStats pokemob, Stats stat, boolean modified)
         {
             int index = stat.ordinal();
             byte nature = 0;
@@ -308,7 +308,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
                 if (mods.isFlat()) actualStat += mods.getModifier(stat);
                 else actualStat *= mods.getModifier(stat);
             }
-            return (int) actualStat;
+            return actualStat;
         }
 
         public IStatsModifiers getModifiers(String name)

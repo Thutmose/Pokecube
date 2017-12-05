@@ -313,8 +313,8 @@ public class LogicMiscUpdate extends LogicBase
             lastHadTargetTime = 100;
             reset = false;
         }
-        // If not angry, decrement last had target time, and if that is 0 or
-        // less, reset to no stat modifiers.
+
+        // If not angry, and not been so for a while, reset stat modifiers.
         if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
             if (lastHadTargetTime <= 0 && !reset)

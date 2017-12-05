@@ -424,8 +424,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             int moveAcc = packet.getMove().move.accuracy;
             if (moveAcc > 0)
             {
-                double accuracy = attacker.getModifiers().getDefaultMods().getModifier(Stats.ACCURACY);
-                double evasion = attacker.getModifiers().getDefaultMods().getModifier(Stats.EVASION);
+                double accuracy = attacker.getFloatStat(Stats.ACCURACY, true);
+                double evasion = targetPokemob.getFloatStat(Stats.EVASION, true);
                 double moveAccuracy = (moveAcc) / 100d;
 
                 double hitModifier = moveAccuracy * accuracy / evasion;

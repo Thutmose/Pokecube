@@ -175,7 +175,6 @@ public abstract class PokemobSexed extends PokemobStats
         setLoveTimer(rand.nextInt(600) - getBreedingDelay(null));
         setLover(null);
         setPokemonAIState(MATING, false);
-        setPokemonAIState(ANGRY, false);
         if (males != null) males.clear();
     }
 

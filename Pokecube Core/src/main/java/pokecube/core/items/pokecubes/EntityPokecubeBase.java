@@ -390,7 +390,6 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
             getEntityWorld().spawnEntityInWorld(entity);
             entity1.popFromPokecube();
-            entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
             entity1.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
             Entity owner = entity1.getPokemonOwner();

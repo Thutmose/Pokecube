@@ -4,9 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class EntityTarget extends EntityLiving
 {
@@ -31,11 +28,6 @@ public class EntityTarget extends EntityLiving
         {
             EntityLiving ent = (EntityLiving) source;
             ent.setAttackTarget(null);
-            IPokemob mob = CapabilityPokemob.getPokemobFor(ent);
-            if (mob != null)
-            {
-                mob.setPokemonAIState(IMoveConstants.ANGRY, false);
-            }
         }
         if (source != null && source.isSneaking())
         {

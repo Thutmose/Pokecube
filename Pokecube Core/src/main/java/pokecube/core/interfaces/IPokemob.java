@@ -134,10 +134,17 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
         void setModifier(Stats stat, float value);
 
-        /** Is this modifier saved with the pokemob
+        /** Is this modifier saved with the pokemob, and persists outside of
+         * battle
          * 
          * @return */
         boolean persistant();
+
+        default void reset()
+        {
+            for (Stats stat : Stats.values())
+                setModifier(stat, 0);
+        }
     }
 
     public static class StatModifiers
@@ -269,7 +276,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
             }
         }
 
-        public int getStat(IHasStats pokemob, Stats stat, boolean modified)
+        public float getStat(IHasStats pokemob, Stats stat, boolean modified)
         {
             int index = stat.ordinal();
             byte nature = 0;
@@ -301,7 +308,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
                 if (mods.isFlat()) actualStat += mods.getModifier(stat);
                 else actualStat *= mods.getModifier(stat);
             }
-            return (int) Math.max(1, actualStat);
+            return actualStat;
         }
 
         public IStatsModifiers getModifiers(String name)
@@ -309,15 +316,23 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
             return modifiers.get(name);
         }
 
-        @SuppressWarnings("unchecked")
         public <T extends IStatsModifiers> T getModifiers(String name, Class<T> type)
         {
-            return (T) modifiers.get(name);
+            return type.cast(modifiers.get(name));
         }
 
         public DefaultModifiers getDefaultMods()
         {
             return defaultmods;
+        }
+
+        public void outOfCombatReset()
+        {
+            defaultmods.reset();
+            for (IStatsModifiers mods : sortedModifiers)
+            {
+                if (!mods.persistant()) mods.reset();
+            }
         }
     }
 

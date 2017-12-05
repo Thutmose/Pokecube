@@ -75,9 +75,7 @@ public class AIAttack extends AIBase implements IAICombat
                     setPokemobAIState(this.pokemob, IMoveConstants.MATEFIGHT, false);
                     setPokemobAIState(pokemobTarget, IMoveConstants.MATEFIGHT, false);
                     addTargetInfo(attacker, null);
-                    pokemob.setPokemonAIState(IMoveConstants.ANGRY, false);
                     pokemobTarget.getEntity().setAttackTarget(null);
-                    pokemobTarget.setPokemonAIState(IMoveConstants.ANGRY, false);
                 }
             }
             else

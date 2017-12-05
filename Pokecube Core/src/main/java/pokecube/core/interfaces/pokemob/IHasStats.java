@@ -134,6 +134,11 @@ public interface IHasStats extends IHasEntry
      * @return the pokedex stats */
     default int getStat(Stats stat, boolean modified)
     {
+        return Math.max(1, (int) getModifiers().getStat(this, stat, modified));
+    }
+
+    default float getFloatStat(Stats stat, boolean modified)
+    {
         return getModifiers().getStat(this, stat, modified);
     }
 

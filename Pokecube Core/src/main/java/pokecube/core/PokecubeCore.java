@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -260,7 +261,11 @@ public class PokecubeCore extends PokecubeMod
     {
         Entity entity = null;
         Class<?> clazz = null;
-        if (entry == null || !registered.get(entry.getPokedexNb())) return null;
+        if (entry == null || !registered.get(entry.getPokedexNb()))
+        {
+            PokecubeMod.log(Level.WARNING, "Attempted to create unregistered mob, " + entry);
+            return null;
+        }
         try
         {
             PokedexEntry base = entry.base ? entry : entry.getBaseForme();
@@ -272,14 +277,8 @@ public class PokecubeCore extends PokecubeMod
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.WARNING, "Error creating " + entry + " " + clazz, e);
         }
-        if (entity == null)
-        {
-            System.err.println("Problem with entity with: " + entity);
-            System.err.println(clazz + " " + entry);
-        }
-
         if (entity != null)
         {
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);

@@ -17,7 +17,6 @@ import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
-import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -300,11 +299,12 @@ public class LogicMiscUpdate extends LogicBase
 
     private void checkAIStates()
     {
+        lastHadTargetTime--;
 
         int state = pokemob.getTotalAIState();
 
         // If angry and has no target, make it not angry.
-        if (getAIState(IPokemob.ANGRY, state) && entity.getAttackTarget() == null)
+        if (getAIState(IMoveConstants.ANGRY, state) && entity.getAttackTarget() == null && lastHadTargetTime <= 0)
         {
             pokemob.setPokemonAIState(ANGRY, false);
         }
@@ -317,12 +317,10 @@ public class LogicMiscUpdate extends LogicBase
         // less, reset to no stat modifiers.
         if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
-            lastHadTargetTime--;
             if (lastHadTargetTime <= 0 && !reset)
             {
                 reset = true;
-                for (Stats stat : Stats.values())
-                    pokemob.getModifiers().getDefaultMods().setModifier(stat, 0);
+                pokemob.getModifiers().outOfCombatReset();
                 pokemob.getMoveStats().reset();
             }
         }

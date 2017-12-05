@@ -247,7 +247,6 @@ public class AIFindTarget extends AIBase implements IAICombat
         // If target is dead, return false.
         if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead)
         {
-            setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
             addTargetInfo(entity, null);
             return false;
         }
@@ -262,7 +261,6 @@ public class AIFindTarget extends AIBase implements IAICombat
             if (owner != null && !stayOrGuard
                     && owner.getDistanceToEntity(entity) > PokecubeMod.core.getConfig().chaseDistance)
             {
-                setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
                 addTargetInfo(entity, null);
                 return false;
             }

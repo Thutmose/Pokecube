@@ -182,10 +182,9 @@ public class AICombatMovement extends AIBase
         IPokemob targ = CapabilityPokemob.getPokemobFor(target);
         if (targ != null)
         {
-            if (!targ.getPokemonAIState(IMoveConstants.ANGRY))
+            if (targ.getEntity().getAttackTarget() != attacker)
             {
                 targ.getEntity().setAttackTarget(attacker);
-                targ.setPokemonAIState(IMoveConstants.ANGRY, true);
             }
         }
         double d0 = this.attacker.posX - this.target.posX;

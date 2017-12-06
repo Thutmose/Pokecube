@@ -48,7 +48,7 @@ public class EntityTarget extends EntityLiving
     {
         time++;
         this.lastDamage = 0;
-        if (time > 100000) this.setDead();
+        if (time > 1000) this.setDead();
     }
 
 }

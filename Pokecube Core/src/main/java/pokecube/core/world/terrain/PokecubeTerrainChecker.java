@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
@@ -137,9 +138,10 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
             if (world instanceof WorldServer)
             {
                 WorldServer worldS = (WorldServer) world;
-                for (String key : structureSubbiomeMap.keySet())
+                IChunkGenerator generator = worldS.getChunkProvider().chunkGenerator;
+                if (generator != null) for (String key : structureSubbiomeMap.keySet())
                 {
-                    if (worldS.getChunkProvider().chunkGenerator.isInsideStructure(worldS, key, v.getPos()))
+                    if (generator.isInsideStructure(worldS, key, v.getPos()))
                     {
                         String mapping = structureSubbiomeMap.get(key);
                         BiomeType biome = BiomeType.getBiome(mapping, true);

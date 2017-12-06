@@ -56,15 +56,15 @@ public class WorldGenNests implements IWorldGenerator
     {
         int rX = rand.nextInt(20);
         int rZ = rand.nextInt(20);
-        int rY = rand.nextInt(300);
+        int rY = rand.nextInt(world.provider.getActualHeight());
         for (int i = 0; i < 16; i++)
         {
-            for (int j = 1; j < 256; j++)
+            for (int j = 1; j < world.provider.getActualHeight(); j++)
             {
                 for (int k = 0; k < 16; k++)
                 {
                     int x = ((i + rX) % 16) + chunkX * 16;
-                    int y = ((j + rY) % 256);
+                    int y = ((j + rY) % world.provider.getActualHeight());
                     int z = ((k + rZ) % 16) + chunkZ * 16;
                     BlockPos pos = new BlockPos(x, y, z);
                     IBlockState state = world.getBlockState(pos);
@@ -93,15 +93,15 @@ public class WorldGenNests implements IWorldGenerator
     {
         int rX = rand.nextInt(20);
         int rZ = rand.nextInt(20);
-        int rY = rand.nextInt(300);
+        int rY = rand.nextInt(world.provider.getActualHeight());
         for (int i = 0; i < 16; i++)
         {
-            for (int j = 1; j < 256; j++)
+            for (int j = 1; j < world.provider.getActualHeight(); j++)
             {
                 for (int k = 0; k < 16; k++)
                 {
                     int x = ((i + rX) % 16) + chunkX * 16;
-                    int y = ((j + rY) % 256);
+                    int y = ((j + rY) % world.provider.getActualHeight());
                     int z = ((k + rZ) % 16) + chunkZ * 16;
 
                     BlockPos pos = new BlockPos(x, y, z);

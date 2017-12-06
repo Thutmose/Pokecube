@@ -191,6 +191,7 @@ public class PokemobMoveRecipeParser implements IRecipeParser
                 if (xml.values.containsKey(OREDICT))
                 {
                     List<ItemStack> items = OreDictionary.getOres(xml.values.get(OREDICT));
+                    List<ItemStack> oreInputs = Lists.newArrayList();
                     for (ItemStack stack : items)
                     {
                         int size = 1;
@@ -198,8 +199,11 @@ public class PokemobMoveRecipeParser implements IRecipeParser
                         {
                             size = Integer.parseInt(xml.values.get(SIZE));
                         }
-                        if (CompatWrapper.isValid(stack)) CompatWrapper.setStackSize(stack, size);
+                        if (CompatWrapper.isValid(stack)) oreInputs.add(CompatWrapper.setStackSize(stack.copy(), size));
                     }
+                    if (!oreInputs.isEmpty()) inputs.add(oreInputs);
+                    else throw new IllegalArgumentException(
+                            "No Items found registered for ore name:" + xml.values.get(OREDICT));
                 }
                 else inputs.add(XMLRecipeHandler.getStack(xml));
             }

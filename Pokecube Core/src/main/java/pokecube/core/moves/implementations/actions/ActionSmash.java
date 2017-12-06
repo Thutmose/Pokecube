@@ -56,9 +56,9 @@ public class ActionSmash implements IMoveAction
             MinecraftForge.EVENT_BUS.post(evt);
             if (evt.isCanceled()) return false;
         }
-        count = (int) Math.max(0, Math.ceil(smashRock(user, location, true) * Math.pow((100 - level) / 100d, 3)))
-                * hungerValue;
-        if (count > 0)
+        int rocks = smashRock(user, location, true);
+        count = (int) Math.max(0, Math.ceil(rocks * Math.pow((100 - level) / 100d, 3))) * hungerValue;
+        if (rocks > 0)
         {
             smashRock(user, location, false);
             used = true;

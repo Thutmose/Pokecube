@@ -71,11 +71,10 @@ public class ItemTarget extends CompatItem
             if (stack.hasTagCompound() && canSet)
             {
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                cap.setPos(new BlockPos(pos.x, pos.y, pos.z));
+                cap.setPos(new BlockPos((int) (pos.x - 0.5), (int) (pos.y - 1), (int) (pos.z - 0.5)));
                 cap.setRoamDistance(playerIn.isSneaking() ? 1 : 16);
                 // TODO use a gui for this instead, and include settings like
                 // times for guarding.
-                // TODO localize this message.
                 playerIn.sendMessage(new TextComponentString("Set Home to " + pos));
                 event.setCanceled(true);
             }

@@ -7,7 +7,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AnimalChest extends InventoryBasic
 {
-
     public AnimalChest(String inventoryName, int slotCount)
     {
         super(inventoryName, false, slotCount);

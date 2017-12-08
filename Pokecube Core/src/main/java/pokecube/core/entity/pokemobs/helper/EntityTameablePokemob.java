@@ -38,13 +38,12 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import thut.api.entity.IMobColourable;
-import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityAnimal implements IInventoryChangedListener, IShearable,
-        IEntityOwnable, IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IJumpingMount, IPathingMob
+        IEntityOwnable, IMobColourable, IRangedAttackMob, IEntityAdditionalSpawnData, IJumpingMount, IPathingMob
 {
 
     protected boolean              looksWithInterest;

@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.client.gui.pokemob.GuiPokemobAI;
+import pokecube.core.client.gui.pokemob.GuiPokemobStorage;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
@@ -267,6 +268,10 @@ public class GuiPokemob extends GuiContainer
         {
             Minecraft.getMinecraft().displayGuiScreen(new GuiPokemobAI(playerInventory, pokemob, this));
         }
+        else if (guibutton.id == 4)
+        {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiPokemobStorage(playerInventory, pokemob, this));
+        }
     }
 
     @Override
@@ -352,6 +357,7 @@ public class GuiPokemob extends GuiContainer
         buttonList.add(new PokemobButton(2, width / 2 - xOffset + 2, height / 2 - yOffset, 20, 20, sit, pokemob));
         yOffset = 77;
         buttonList.add(new GuiButton(3, width / 2 - xOffset + 60, height / 2 - yOffset, 30, 10, "AI"));
+        buttonList.add(new GuiButton(4, width / 2 - xOffset + 30, height / 2 - yOffset, 30, 10, "ST"));
     }
 
     /** Called when the mouse is clicked.

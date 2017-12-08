@@ -186,7 +186,8 @@ public class TeleportHandler implements IMobCommandHandler
                         int toRemove = Math.min(needed, CompatWrapper.getStackSize(stack));
                         stack.splitStack(toRemove);
                         needed -= toRemove;
-                        if (CompatWrapper.isValid(stack)) pokemob.getPokemobInventory().setInventorySlotContents(i, stack);
+                        if (CompatWrapper.isValid(stack))
+                            pokemob.getPokemobInventory().setInventorySlotContents(i, stack);
                         else pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
                     }
                     if (needed <= 0) break;

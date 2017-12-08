@@ -1,15 +1,12 @@
 package pokecube.adventures.events;
 
-import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -20,17 +17,16 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.helper.AIStuffHolder;
 import pokecube.adventures.ai.tasks.AIBattle;
@@ -50,14 +46,11 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHas
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
-import pokecube.core.ai.properties.IGuardAICapability;
-import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.Database;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.events.StructureEvent;
-import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -288,7 +281,6 @@ public class PAEventsHandler
             return;
         DefaultPokemobs mobs = new DefaultPokemobs();
         DefaultRewards rewards = new DefaultRewards();
-        AIStuffHolder aiHolder = new AIStuffHolder((EntityLiving) event.getObject());
         rewards.getRewards().add(new ItemStack(Items.EMERALD));
         DefaultAIStates aiStates = new DefaultAIStates();
         DefaultMessager messages = new DefaultMessager();
@@ -297,54 +289,32 @@ public class PAEventsHandler
         event.addCapability(AICAP, aiStates);
         event.addCapability(MESSAGECAP, messages);
         event.addCapability(REWARDSCAP, rewards);
+        for (ICapabilityProvider p : event.getCapabilities().values())
+        {
+            if (p.hasCapability(IAIMob.THUTMOBAI, null)) return;
+        }
+        AIStuffHolder aiHolder = new AIStuffHolder((EntityLiving) event.getObject());
         event.addCapability(AISTUFFCAP, aiHolder);
-        if (!event.getObject().getEntityWorld().isRemote) needsAI.add((EntityLiving) event.getObject());
     }
 
-    private List<EntityLiving> needsAI = Lists.newArrayList();
-
     @SubscribeEvent
-    public void onTick(ServerTickEvent event)
+    public void onJoinWorld(EntityJoinWorldEvent event)
     {
-        if (!needsAI.isEmpty() && event.side == Side.SERVER && event.phase == Phase.END)
-        {
-            synchronized (needsAI)
-            {
-                List<EntityLiving> stale = Lists.newArrayList();
-                List<EntityLiving> toProcess = Lists.newArrayList(needsAI);
-                for (EntityLiving npc : toProcess)
-                {
-                    if (npc.ticksExisted == 0) continue;
-                    IAIMob mob = npc.getCapability(IAIMob.THUTMOBAI, null);
-                    mob.getAI().addAITask(new AIBattle(npc, !(npc instanceof EntityTrainer)).setPriority(0));
-                    mob.getAI().addAITask(new AIFindTarget(npc, EntityZombie.class).setPriority(20));
-                    if (npc instanceof EntityTrainer)
-                        mob.getAI().addAITask(new AIFindTarget(npc, EntityPlayer.class).setPriority(10));
-                    stale.add(npc);
-
-                    IGuardAICapability guardCap = npc.getCapability(EventsHandler.GUARDAI_CAP, null);
-                    guardAI:
-                    if (guardCap != null)
-                    {
-                        for (EntityAITaskEntry taskentry : npc.tasks.taskEntries)
-                        {
-                            if (taskentry.action instanceof GuardAI) break guardAI;
-                        }
-                        GuardAI guard = new GuardAI(npc, guardCap);
-                        npc.tasks.addTask(1, guard);
-                    }
-                    IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(npc);
-                    TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc, true);
-                    if (newType == null) continue;
-                    mobs.setType(newType);
-                    int level = SpawnHandler.getSpawnLevel(npc.getEntityWorld(), Vector3.getNewVector().set(npc),
-                            Database.getEntry(1));
-                    TypeTrainer.getRandomTeam(mobs, npc, level, npc.getEntityWorld());
-
-                }
-                needsAI.removeAll(stale);
-            }
-        }
+        if (!(event.getEntity() instanceof EntityLivingBase)) return;
+        EntityLivingBase npc = (EntityLivingBase) event.getEntity();
+        IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(npc);
+        if (mobs == null) return;
+        IAIMob mob = npc.getCapability(IAIMob.THUTMOBAI, null);
+        mob.getAI().addAITask(new AIBattle(npc).setPriority(0));
+        mob.getAI().addAITask(new AIFindTarget(npc, EntityZombie.class).setPriority(20));
+        if (npc instanceof EntityTrainer)
+            mob.getAI().addAITask(new AIFindTarget(npc, EntityPlayer.class).setPriority(10));
+        TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc, true);
+        if (newType == null) return;
+        mobs.setType(newType);
+        int level = SpawnHandler.getSpawnLevel(npc.getEntityWorld(), Vector3.getNewVector().set(npc),
+                Database.getEntry(1));
+        TypeTrainer.getRandomTeam(mobs, npc, level, npc.getEntityWorld());
     }
 
     private static final Map<Class<? extends Entity>, DataParamHolder> parameters = Maps.newHashMap();

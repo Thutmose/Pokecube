@@ -17,10 +17,4 @@ public class AnimalChest extends InventoryBasic
     {
         super(invTitle, slotCount);
     }
-
-    @Override
-    public int getSlotLimit(int slot)
-    {
-        return wrapper.getSlotLimit(slot);
-    }
 }

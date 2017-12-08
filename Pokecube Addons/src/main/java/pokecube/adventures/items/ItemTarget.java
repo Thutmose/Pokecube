@@ -21,7 +21,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -66,8 +65,7 @@ public class ItemTarget extends CompatItem
             if (stack.hasTagCompound() && playerIn == pokemob.getPokemonOwner())
             {
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                pokemob.setHome(MathHelper.floor_float(pos.x), MathHelper.floor_float(pos.y - 1),
-                        MathHelper.floor_float(pos.z), 16);
+                pokemob.setHome((int) (pos.x - 0.5), (int) (pos.y - 1), (int) (pos.z - 0.5), 16);
                 // TODO localize this message.
                 playerIn.addChatMessage(new TextComponentString("Set Home to " + pos));
                 event.setCanceled(true);

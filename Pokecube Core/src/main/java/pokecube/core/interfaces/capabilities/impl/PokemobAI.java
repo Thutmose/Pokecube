@@ -227,7 +227,7 @@ public abstract class PokemobAI extends PokemobEvolves
     public boolean isRoutineEnabled(AIRoutine routine)
     {
         if (enabledStates.containsKey(routine)) return enabledStates.get(routine);
-        return true;
+        return routine.getDefault();
     }
 
     @Override

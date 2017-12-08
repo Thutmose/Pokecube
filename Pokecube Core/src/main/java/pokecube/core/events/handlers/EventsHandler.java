@@ -93,6 +93,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.AICapWrapper;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
@@ -112,6 +113,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
+import thut.api.entity.ai.IAIMob;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -894,32 +896,18 @@ public class EventsHandler
         UsableItemEffects.registerCapabilities(event);
     }
 
-    private List<EntityLiving> needsAI = Lists.newArrayList();
-
     @SubscribeEvent
-    public void onTick(LivingUpdateEvent event)
+    public void onJoinWorld(EntityJoinWorldEvent event)
     {
-        if (!needsAI.isEmpty() && !event.getEntity().getEntityWorld().isRemote)
+        Entity mob = event.getEntity();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        if (pokemob == null) { return; }
+        pokemob.setEntity((EntityLiving) mob);
+        pokemob.initAI();
+        IAIMob ai = mob.getCapability(IAIMob.THUTMOBAI, null);
+        if (ai instanceof AICapWrapper)
         {
-            synchronized (needsAI)
-            {
-                List<EntityLiving> stale = Lists.newArrayList();
-                List<EntityLiving> toProcess = Lists.newArrayList(needsAI);
-                for (EntityLiving mob : toProcess)
-                {
-                    if (mob.ticksExisted == 0) continue;
-                    IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
-                    if (pokemob == null)
-                    {
-                        stale.add(mob);
-                        continue;
-                    }
-                    pokemob.setEntity(mob);
-                    pokemob.initAI();
-                    stale.add(mob);
-                }
-                needsAI.removeAll(stale);
-            }
+            ((AICapWrapper) ai).init();
         }
     }
 
@@ -933,12 +921,12 @@ public class EventsHandler
         {
             DefaultPokemob pokemob = new DefaultPokemob();
             GeneticsProvider genes = new GeneticsProvider();
+            AICapWrapper aiCap = new AICapWrapper(pokemob);
             pokemob.setEntity((EntityLiving) event.getObject());
             pokemob.genes = genes.getCapability(IMobGenetics.GENETICS_CAP, null);
             event.addCapability(GeneticsManager.POKECUBEGENETICS, genes);
             event.addCapability(POKEMOBCAP, pokemob);
-            if (event.getObject().getEntityWorld() != null && !event.getObject().getEntityWorld().isRemote)
-                needsAI.add((EntityLiving) event.getObject());
+            event.addCapability(AICapWrapper.AICAP, aiCap);
             isPokemob = true;
         }
 

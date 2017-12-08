@@ -76,6 +76,7 @@ public class GuiPokemobAI extends GuiContainer
         int xOffset = width / 2 - 10;
         int yOffset = height / 2 - 77;
         buttonList.add(new GuiButton(0, xOffset + 60, yOffset, 30, 10, "Inv"));
+        buttonList.add(new GuiButton(1, xOffset + 30, yOffset, 30, 10, "ST"));
         yOffset += 13;
         xOffset += 2;
         final List<IGuiListEntry> entries = Lists.newArrayList();
@@ -134,6 +135,10 @@ public class GuiPokemobAI extends GuiContainer
         if (guibutton.id == 0)
         {
             Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+        }
+        else if (guibutton.id == 1)
+        {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiPokemobStorage(playerInventory, pokemob, parentScreen));
         }
         else
         {

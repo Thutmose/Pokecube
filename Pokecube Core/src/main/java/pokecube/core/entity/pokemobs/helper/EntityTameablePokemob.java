@@ -29,19 +29,19 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import thut.api.entity.IMobColourable;
-import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityAnimal implements IInventoryChangedListener, IShearable,
-        IEntityOwnable, IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IPathingMob
+        IEntityOwnable, IMobColourable, IRangedAttackMob, IEntityAdditionalSpawnData, IPathingMob
 {
 
     protected boolean              looksWithInterest;
@@ -224,11 +224,14 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         return pokemobCap.getOwner();
     }
 
+    private InvWrapper inventory;
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T) pokemobCap.getPokemobInventory();
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) (inventory == null ? inventory = new InvWrapper(pokemobCap.getPokemobInventory()) : inventory);
         return super.getCapability(capability, facing);
     }
 

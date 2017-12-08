@@ -148,7 +148,7 @@ public interface IMoveConstants extends IMoveNames
     @NonPersistantAI
     static final int MATING               = 1 << 18;
     /** FREE AI STATE */
-//    static final int FREEAISTATE         = 1 << 19;
+    // static final int FREEAISTATE = 1 << 19;
     // /** is the pokemob currently pathing somewhere */
     @NonPersistantAI
     static final int PATHING              = 1 << 20;
@@ -181,6 +181,30 @@ public interface IMoveConstants extends IMoveNames
 
     public static enum AIRoutine
     {
-        GATHER, STORE, WANDER, MATE, FOLLOW, AGRESSIVE;
+        //@formatter:off
+        GATHER,         //Does the pokemob gather item drops and harvest crops.
+        STORE(false),   //Does the pokemob store its inventory when full.
+        WANDER,         //Does the pokemob wander around randomly
+        MATE,           //Does the pokemob breed.
+        FOLLOW,         //Does the pokemob follow its owner.
+        AGRESSIVE;      //Does the pokemob find targets to attack.
+        //@formatter:on
+
+        private final boolean default_;
+
+        private AIRoutine()
+        {
+            default_ = true;
+        }
+
+        private AIRoutine(boolean value)
+        {
+            default_ = value;
+        }
+
+        public boolean getDefault()
+        {
+            return default_;
+        }
     }
 }

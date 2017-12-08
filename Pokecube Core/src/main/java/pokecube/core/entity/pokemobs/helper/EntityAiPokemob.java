@@ -46,7 +46,6 @@ import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.ai.AIThreadManager;
-import thut.api.entity.ai.AIThreadManager.AIStuff;
 import thut.api.entity.ai.ILogicRunnable;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -829,17 +828,5 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getJumpHelper().doJump();
         this.getEntityWorld().theProfiler.endSection();
         this.getEntityWorld().theProfiler.endSection();
-    }
-
-    @Override
-    public AIStuff getAI()
-    {
-        return pokemobCap.getAI();
-    }
-
-    @Override
-    public boolean selfManaged()
-    {
-        return pokemobCap.selfManaged();
     }
 }

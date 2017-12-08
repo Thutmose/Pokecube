@@ -180,9 +180,6 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         entity.tasks.addTask(5, this.utilMoveAI = new PokemobAIUtilityMove(this));
         if (entity instanceof EntityCreature) entity.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
 
-        // None of the AI below should ever run on the client.
-        if (entity.getEntityWorld().isRemote) return;
-
         // Generate a PathManager to use to ensure AI doesn't clear paths for
         // more important runnables.
         PathManager manager = new PathManager();

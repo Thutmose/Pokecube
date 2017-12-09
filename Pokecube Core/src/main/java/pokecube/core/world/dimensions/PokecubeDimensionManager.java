@@ -36,6 +36,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketSyncDimIds;
+import pokecube.core.world.dimensions.custom.CustomDimensionManager;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
@@ -295,10 +296,10 @@ public class PokecubeDimensionManager
         PokecubeMod.log("Stopping server");
     }
 
-    public void onServerStart(FMLServerStartingEvent evt) throws IOException
+    public void onServerStart(FMLServerStartingEvent event) throws IOException
     {
-        PokecubeMod.log("Starting server");
-        ISaveHandler saveHandler = evt.getServer().getEntityWorld().getSaveHandler();
+        PokecubeMod.log("Starting server, Registering Dimensions");
+        ISaveHandler saveHandler = event.getServer().getEntityWorld().getSaveHandler();
         File file = saveHandler.getMapFileFromName("PokecubeDimensionIDs");
         dims.clear();
         dimOwners.clear();
@@ -307,7 +308,7 @@ public class PokecubeDimensionManager
             FileInputStream fileinputstream = new FileInputStream(file);
             NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
             fileinputstream.close();
-            loadFromTag(nbttagcompound);
+            loadFromTag(nbttagcompound, true);
         }
     }
 
@@ -325,16 +326,24 @@ public class PokecubeDimensionManager
             {
                 type = DimensionManager.getProviderType(i);
             }
-            types.setString("dim-" + i, type.toString());
+            types.setString("dim-" + i + "-type", type.toString());
+            World world = DimensionManager.getWorld(i);
+            if (world != null && type != SECRET_BASE_TYPE)
+            {
+                types.setString("dim-" + i + "-name", world.getWorldInfo().getWorldName());
+                types.setString("dim-" + i + "-options", world.getWorldInfo().getGeneratorOptions());
+                types.setString("dim-" + i + "-world", world.getWorldType().getName());
+            }
             if (dimOwners.containsKey(i)) nbttagcompound.setString("dim_" + i, dimOwners.get(i));
         }
         nbttagcompound.setIntArray("dims", dim);
+        nbttagcompound.setTag("types", types);
         NBTTagCompound ret = new NBTTagCompound();
         ret.setTag("Data", nbttagcompound);
         return ret;
     }
 
-    public void loadFromTag(NBTTagCompound nbttagcompound)
+    public void loadFromTag(NBTTagCompound nbttagcompound, boolean init)
     {
         nbttagcompound = nbttagcompound.getCompoundTag("Data");
         int[] nums = nbttagcompound.getIntArray("dims");
@@ -343,12 +352,18 @@ public class PokecubeDimensionManager
         for (int i : nums)
         {
             dims.add(i);
-            if (!DimensionManager.isDimensionRegistered(i))
+            if (DimensionManager.isDimensionRegistered(i) && !init) continue;
+            DimensionType type = SECRET_BASE_TYPE;
+            if (typesTag.hasKey("dim-" + i + "-type"))
+                type = DimensionType.valueOf(typesTag.getString("dim-" + i + "-type"));
+            if (typesTag.hasKey("dim-" + i + "-name"))
             {
-                DimensionType type = SECRET_BASE_TYPE;
-                if (typesTag.hasKey("dim-" + i)) type = DimensionType.valueOf(typesTag.getString("dim-" + i));
-                DimensionManager.registerDimension(i, type);
+                String worldName = typesTag.getString("dim-" + i + "-name");
+                String generatorOptions = typesTag.getString("dim-" + i + "-options");
+                String worldType = typesTag.getString("dim-" + i + "-world");
+                CustomDimensionManager.initDimension(i, worldName, worldType, generatorOptions);
             }
+            else if (!DimensionManager.isDimensionRegistered(i)) DimensionManager.registerDimension(i, type);
             if (nbttagcompound.hasKey("dim_" + i))
             {
                 dimOwners.put(i, nbttagcompound.getString("dim_" + i));

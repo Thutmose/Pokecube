@@ -56,6 +56,6 @@ public class PacketSyncDimIds implements IMessage, IMessageHandler<PacketSyncDim
 
     void processMessage(MessageContext ctx, PacketSyncDimIds message)
     {
-        PokecubeDimensionManager.getInstance().loadFromTag(message.data);
+        PokecubeDimensionManager.getInstance().loadFromTag(message.data, false);
     }
 }

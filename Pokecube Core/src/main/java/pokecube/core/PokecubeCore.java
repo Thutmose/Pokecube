@@ -42,6 +42,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLModIdMappingEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
@@ -732,6 +733,11 @@ public class PokecubeCore extends PokecubeMod
     }
 
     @EventHandler
+    public void serverLoad(FMLServerAboutToStartEvent event)
+    {
+    }
+
+    @EventHandler
     public void serverLoad(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new Commands());
@@ -753,7 +759,7 @@ public class PokecubeCore extends PokecubeMod
         {
             PokecubeDimensionManager.getInstance().onServerStart(event);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }

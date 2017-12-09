@@ -43,19 +43,23 @@ public class LegendarySpawns
         PokedexEntry entry = Database.getEntry(evt.getItemStack().getTagCompound().getString("F"));
         if (block == Blocks.DIAMOND_BLOCK && entry != null)
         {
-            ISpecialSpawnCondition condition = ISpecialSpawnCondition.spawnMap.get(entry);
-            ISpecialCaptureCondition condition2 = ISpecialCaptureCondition.captureMap.get(entry);
-            if (condition != null)
+            ISpecialSpawnCondition spawnCondition = ISpecialSpawnCondition.spawnMap.get(entry);
+            ISpecialCaptureCondition captureCondition = ISpecialCaptureCondition.captureMap.get(entry);
+            if (spawnCondition != null)
             {
                 Vector3 location = Vector3.getNewVector().set(pos);
-                if (condition.canSpawn(playerIn, location))
+                if (spawnCondition.canSpawn(playerIn, location))
                 {
                     EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(entry, worldIn);
                     IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
-                    if (condition2 != null && !condition2.canCapture(playerIn, pokemob)) return;
+                    if (captureCondition != null && !captureCondition.canCapture(playerIn, pokemob))
+                    {
+                        evt.setCanceled(true);
+                        return;
+                    }
                     entity.setHealth(entity.getMaxHealth());
                     location.add(0, 1, 0).moveEntity(entity);
-                    condition.onSpawn(pokemob);
+                    spawnCondition.onSpawn(pokemob);
                     if (pokemob.getExp() < 100)
                     {
                         entity = pokemob.setForSpawn(Tools.levelToXp(entry.getEvolutionMode(), 50)).getEntity();

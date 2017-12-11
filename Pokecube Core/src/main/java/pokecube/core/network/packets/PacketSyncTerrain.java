@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobTerrainEffects;
+import pokecube.core.moves.animations.MoveAnimationHelper;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
@@ -40,7 +41,7 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
         packet.y = y;
         packet.z = z;
         packet.data.setInteger("dimID", player.dimension);
-        
+
         terrain.saveToNBT(packet.data);
         PokecubeMod.packetPipeline.sendToAllAround(packet,
                 new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 64));
@@ -121,21 +122,25 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
     {
         EntityPlayer player;
         player = PokecubeCore.getPlayer(null);
-        TerrainSegment t = TerrainManager.getInstance().getTerrain(player.getEntityWorld()).getTerrain(message.x, message.y,
-                message.z);
+        TerrainSegment t = TerrainManager.getInstance().getTerrain(player.getEntityWorld()).getTerrain(message.x,
+                message.y, message.z);
 
         if (message.type == EFFECTS)
         {
             PokemobTerrainEffects effect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
+            boolean empty = true;
             for (int i = 0; i < 16; i++)
             {
                 effect.effects[i] = message.effects[i];
+                empty = empty && message.effects[i] <= 0;
             }
+            if (!empty) MoveAnimationHelper.Instance().addEffect();
+            else MoveAnimationHelper.Instance().clearEffect();
         }
         else if (message.type == TERRAIN)
         {
             TerrainSegment.readFromNBT(t, message.data);
-            
+
             TerrainManager.getInstance().getTerrain(message.data.getInteger("dimID")).addTerrain(t);
         }
     }

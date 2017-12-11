@@ -97,6 +97,7 @@ import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MoveQueue.MoveQueuer;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.moves.animations.EntityMoveUse;
+import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.moves.implementations.MovesAdder;
 import pokecube.core.network.EntityProvider;
 import pokecube.core.network.NetworkWrapper;
@@ -795,6 +796,7 @@ public class PokecubeCore extends PokecubeMod
     {
         AISaveHandler.instance();
         PokecubePlayerStats.initMap();
+        MoveAnimationHelper.Instance().clear();
     }
 
     /** clears PC when server stops

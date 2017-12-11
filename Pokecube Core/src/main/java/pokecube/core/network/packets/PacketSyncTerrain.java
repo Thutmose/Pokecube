@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobTerrainEffects;
+import pokecube.core.moves.animations.MoveAnimationHelper;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
@@ -83,9 +84,13 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
         TerrainSegment t = TerrainManager.getInstance().getTerrain(player.getEntityWorld(), message.x * 16,
                 message.y * 16, message.z * 16);
         PokemobTerrainEffects effect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
+        boolean empty = true;
         for (int i = 0; i < 16; i++)
         {
             effect.effects[i] = message.effects[i];
+            empty = empty && message.effects[i] <= 0;
         }
+        if (!empty) MoveAnimationHelper.Instance().addEffect();
+        else MoveAnimationHelper.Instance().clearEffect();
     }
 }

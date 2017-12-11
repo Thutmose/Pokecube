@@ -108,6 +108,23 @@ public class MoveAnimationHelper
         index = found;
     }
 
+    private int effects = 0;
+
+    public void clear()
+    {
+        effects = 0;
+    }
+
+    public void addEffect()
+    {
+        effects++;
+    }
+
+    public void clearEffect()
+    {
+        effects = Math.max(0, effects - 1);
+    }
+
     Map<BlockPos, TerrainSegment> terrainMap = Maps.newHashMap();
 
     @SideOnly(Side.CLIENT)
@@ -149,6 +166,7 @@ public class MoveAnimationHelper
     @SubscribeEvent
     public void onRenderWorldPost(RenderFogEvent event)
     {
+        if (effects == 0) return;
         try
         {
             if (index == -1) return;

@@ -76,9 +76,7 @@ public class ActionTeleport implements IMoveAction
     @Override
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
-        boolean angry = (user.getPokemonAIState(IMoveConstants.ANGRY) || user.getEntity().getAttackTarget() != null)
-                || !user.getPokemonAIState(IMoveConstants.TAMED)
-                || !(user.getPokemonAIState(IPokemob.TAMED) && !user.getPokemonAIState(IPokemob.STAYING));
+        boolean angry = user.getPokemonAIState(IMoveConstants.ANGRY);
         if (!angry && user.getPokemonOwner() instanceof EntityPlayer && user.getEntity().isServerWorld())
         {
             EntityPlayer target = (EntityPlayer) user.getPokemonOwner();
@@ -94,7 +92,6 @@ public class ActionTeleport implements IMoveAction
         }
         else if (angry)
         {
-            user.setPokemonAIState(IMoveConstants.ANGRY, false);
             Entity attacked = user.getEntity().getAttackTarget();
             if (attacked != null)
             {
@@ -105,7 +102,6 @@ public class ActionTeleport implements IMoveAction
                 IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
                 if (attackedMob != null)
                 {
-                    attackedMob.setPokemonAIState(IMoveConstants.ANGRY, false);
                     attackedMob.getEntity().setAttackTarget(null);
                 }
             }

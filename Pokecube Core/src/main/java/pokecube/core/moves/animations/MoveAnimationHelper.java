@@ -123,6 +123,7 @@ public class MoveAnimationHelper
     public void onRenderWorldPost(RenderFogEvent event)
     {
         if (effects == 0) return;
+        int num = 0;
         try
         {
             if (index == -1) return;
@@ -153,6 +154,7 @@ public class MoveAnimationHelper
                         GL11.glTranslated(source.x, source.y, source.z);
                         teffect.renderTerrainEffects(event);
                         GL11.glPopMatrix();
+                        num++;
                     }
                 }
             }
@@ -162,6 +164,7 @@ public class MoveAnimationHelper
         {
             e.printStackTrace();
         }
+        effects = num;
     }
 
     @SubscribeEvent

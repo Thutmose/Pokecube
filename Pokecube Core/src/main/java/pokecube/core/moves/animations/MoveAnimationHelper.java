@@ -101,10 +101,28 @@ public class MoveAnimationHelper
         index = found;
     }
 
+    private int effects = 0;
+
+    public void clear()
+    {
+        effects = 0;
+    }
+
+    public void addEffect()
+    {
+        effects++;
+    }
+
+    public void clearEffect()
+    {
+        effects = Math.max(0, effects - 1);
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onRenderWorldPost(RenderFogEvent event)
     {
+        if (effects == 0) return;
         try
         {
             if (index == -1) return;

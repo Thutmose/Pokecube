@@ -212,13 +212,10 @@ public class AIAttack extends AIBase implements IAICombat
         if (chaseTime > 200)
         {
             addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
-            pokemob.setPokemonAIState(IMoveConstants.ANGRY, false);
             addEntityPath(attacker, null, movementSpeed);
             return;
         }
 
-        // Make sure pokemob is still set to being angry.
-        pokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
         double var1 = (double) (this.attacker.width * 2.0F) * (this.attacker.width * 2.0F);
         boolean distanced = false;
         boolean self = false;
@@ -394,11 +391,6 @@ public class AIAttack extends AIBase implements IAICombat
         else
         {
             setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
-        }
-        // Every so often refresh the selected target, to prevent forgetting it.
-        if (!delay && delayTime % 20 == 0)
-        {
-            addTargetInfo(attacker, entityTarget);
         }
         // If all the conditions match, queue up an attack.
         if (!targetLoc.isEmpty() && delay && inRange)

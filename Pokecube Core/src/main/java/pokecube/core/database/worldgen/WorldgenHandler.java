@@ -8,12 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.logging.Level;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
@@ -26,64 +22,69 @@ import com.google.gson.stream.JsonWriter;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.database.PokedexEntryLoader;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.world.gen.WorldGenMultiTemplate;
 import pokecube.core.world.gen.WorldGenTemplates;
 import pokecube.core.world.gen.WorldGenTemplates.TemplateGen;
 import pokecube.core.world.gen.template.PokecubeTemplates;
 
-public class XMLWorldgenHandler
+public class WorldgenHandler
 {
-    public static File DEFAULT;
+    public static File       DEFAULT;
+    public static CustomDims dims;
 
-    @XmlRootElement(name = "Structures")
-    public static class XMLStructures
+    public static class CustomDims
     {
-        @XmlElement(name = "Structure")
-        public List<XMLStructure>      structures      = Lists.newArrayList();
-        @XmlElement(name = "MultiStructure")
-        public List<XMLMultiStructure> multiStructures = Lists.newArrayList();
+        public List<CustomDim> dims = Lists.newArrayList();
     }
 
-    @XmlRootElement(name = "MultiStructure")
-    public static class XMLMultiStructure
+    public static class CustomDim
     {
-        @XmlAttribute
-        public String             name;
-        @XmlAttribute
-        float                     chance;
-        @XmlAttribute
-        boolean                   syncGround = false;
-        @XmlElement
-        public SpawnRule          spawn;
-        @XmlElement(name = "Structure")
-        public List<XMLStructure> structures = Lists.newArrayList();
+        public int    dimid;
+        public String world_name;
+        public String dim_type;
+        public String world_type;
+        public String generator_options;
+
+        @Override
+        public String toString()
+        {
+            return dimid + " " + world_name + " " + dim_type + " " + world_type + " " + generator_options;
+        }
     }
 
-    @XmlRootElement(name = "Structure")
-    public static class XMLStructure
+    public static class Structures
     {
-        @XmlAttribute
+        public List<Structure>      structures      = Lists.newArrayList();
+        public List<MultiStructure> multiStructures = Lists.newArrayList();
+    }
+
+    public static class MultiStructure
+    {
+        public String          name;
+        float                  chance;
+        boolean                syncGround = false;
+        public SpawnRule       spawn;
+        public List<Structure> structures = Lists.newArrayList();
+    }
+
+    public static class Structure
+    {
         public String    name;
-        @XmlAttribute
         float            chance;
-        @XmlAttribute
         int              offset;
-        @XmlAttribute
         public String    biomeType;
-        @XmlElement
         public SpawnRule spawn;
-        @XmlAttribute
         public String    position;
     }
 
-    public static XMLStructures defaults = new XMLStructures();
+    public static Structures defaults = new Structures();
 
     static void init()
     {
         defaults.structures.clear();
-        XMLStructure ruin_1 = new XMLStructure();
+        Structure ruin_1 = new Structure();
         ruin_1.name = "ruin_1";
         ruin_1.chance = 0.002f;
         ruin_1.offset = -3;
@@ -92,6 +93,30 @@ public class XMLWorldgenHandler
         rule.values.put(SpawnBiomeMatcher.TYPES, "plains");
         ruin_1.spawn = rule;
         defaults.structures.add(ruin_1);
+    }
+
+    public static void loadCustomDims(String dimFile)
+    {
+        File file = new File(PokecubeTemplates.TEMPLATES, dimFile);
+        if (!file.exists())
+        {
+            PokecubeMod.log("No Custom Dimensions file found: " + file
+                    + " If you make one, it will allow specifying custom dimensions and worldgen.");
+            return;
+        }
+
+        try
+        {
+            FileInputStream stream = new FileInputStream(file);
+            InputStreamReader reader = new InputStreamReader(stream);
+            dims = PokedexEntryLoader.gson.fromJson(reader, CustomDims.class);
+            PokecubeMod.log("Loaded Dims: "+dims.dims);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error loading custom Dims from: " + file, e);
+        }
+
     }
 
     public static void loadStructures(String configFile)
@@ -120,17 +145,15 @@ public class XMLWorldgenHandler
 
     public static void loadStructures(InputStream stream, boolean json) throws Exception
     {
-        XMLStructures database;
+        Structures database;
         InputStreamReader reader = new InputStreamReader(stream);
         if (json)
         {
-            database = PokedexEntryLoader.gson.fromJson(reader, XMLStructures.class);
+            database = PokedexEntryLoader.gson.fromJson(reader, Structures.class);
         }
         else
         {
-            JAXBContext jaxbContext = JAXBContext.newInstance(XMLStructures.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            database = (XMLStructures) unmarshaller.unmarshal(reader);
+            throw new IllegalArgumentException("The database for structures Must be a json.");
         }
         defaults.structures.addAll(database.structures);
         defaults.multiStructures.addAll(database.multiStructures);
@@ -138,7 +161,7 @@ public class XMLWorldgenHandler
 
     public static void processStructures()
     {
-        for (XMLStructure struct : defaults.structures)
+        for (Structure struct : defaults.structures)
         {
             try
             {
@@ -154,11 +177,11 @@ public class XMLWorldgenHandler
                 e.printStackTrace();
             }
         }
-        for (XMLMultiStructure struct : defaults.multiStructures)
+        for (MultiStructure struct : defaults.multiStructures)
         {
             WorldGenMultiTemplate gen = new WorldGenMultiTemplate();
             gen.syncGround = struct.syncGround;
-            for (XMLStructure struct2 : struct.structures)
+            for (Structure struct2 : struct.structures)
             {
                 try
                 {
@@ -184,7 +207,7 @@ public class XMLWorldgenHandler
                 gen = new WorldGenMultiTemplate();
                 gen.chance = struct.chance;
                 gen.syncGround = struct.syncGround;
-                for (XMLStructure struct2 : struct.structures)
+                for (Structure struct2 : struct.structures)
                 {
                     try
                     {
@@ -209,22 +232,16 @@ public class XMLWorldgenHandler
         }
     }
 
-    // Old do not call this.
-    @Deprecated
-    public static void loadDefaults(File file)
-    {
-
-    }
-
     public static void reloadWorldgen()
     {
         PokecubeTemplates.clear();
         init(DEFAULT);
         for (String s : PokecubeMod.core.getConfig().extraWorldgenDatabases)
         {
-            XMLWorldgenHandler.loadStructures(s);
+            WorldgenHandler.loadStructures(s);
         }
-        XMLWorldgenHandler.processStructures();
+        WorldgenHandler.processStructures();
+        loadCustomDims("custom_dims.json");
     }
 
     public static void init(File file)
@@ -246,7 +263,7 @@ public class XMLWorldgenHandler
                     return new QName(in.nextString());
                 }
             }).setPrettyPrinting().create();
-            String json = gson.toJson(defaults, XMLStructures.class);
+            String json = gson.toJson(defaults, Structures.class);
             try
             {
                 FileWriter writer = new FileWriter(file);

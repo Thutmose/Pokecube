@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -33,6 +34,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import pokecube.core.database.worldgen.WorldgenHandler;
+import pokecube.core.database.worldgen.WorldgenHandler.CustomDim;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketSyncDimIds;
@@ -298,7 +301,7 @@ public class PokecubeDimensionManager
 
     public void onServerStart(FMLServerStartingEvent event) throws IOException
     {
-        PokecubeMod.log("Starting server, Registering Dimensions");
+        PokecubeMod.log("Starting server, Pokecube Registering Dimensions");
         ISaveHandler saveHandler = event.getServer().getEntityWorld().getSaveHandler();
         File file = saveHandler.getMapFileFromName("PokecubeDimensionIDs");
         dims.clear();
@@ -309,6 +312,27 @@ public class PokecubeDimensionManager
             NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
             fileinputstream.close();
             loadFromTag(nbttagcompound, true);
+        }
+        for (CustomDim dim : WorldgenHandler.dims.dims)
+        {
+            if (!dims.contains(dim.dimid))
+            {
+                DimensionType type = DimensionType.OVERWORLD;
+                if (dim.dim_type != null)
+                {
+                    try
+                    {
+                        type = DimensionType.byName(dim.dim_type);
+                    }
+                    catch (Exception e)
+                    {
+                        PokecubeMod.log(Level.WARNING, "Error with dim_type: " + dim.dim_type, e);
+                        type = DimensionType.OVERWORLD;
+                    }
+                }
+                CustomDimensionManager.initDimension(dim.dimid, dim.world_name, dim.world_type, dim.generator_options,
+                        type);
+            }
         }
     }
 

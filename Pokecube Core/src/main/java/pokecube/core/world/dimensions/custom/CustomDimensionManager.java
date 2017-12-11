@@ -23,10 +23,16 @@ public class CustomDimensionManager
 {
     public static void initDimension(int dim, String worldName, String worldType, String generatorOptions)
     {
+        initDimension(dim, worldName, worldType, generatorOptions, DimensionType.OVERWORLD);
+    }
+
+    public static void initDimension(int dim, String worldName, String worldType, String generatorOptions,
+            DimensionType dimType)
+    {
         World overworld = DimensionManager.getWorld(0);
         if (!DimensionManager.isDimensionRegistered(dim))
         {
-            DimensionManager.registerDimension(dim, DimensionType.OVERWORLD);
+            DimensionManager.registerDimension(dim, dimType);
             PokecubeDimensionManager.registerDim(dim);
         }
         else

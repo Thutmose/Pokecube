@@ -29,8 +29,8 @@ import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
-import pokecube.core.database.worldgen.XMLWorldgenHandler;
-import pokecube.core.database.worldgen.XMLWorldgenHandler.XMLStructure;
+import pokecube.core.database.worldgen.WorldgenHandler;
+import pokecube.core.database.worldgen.WorldgenHandler.Structure;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.terrain.BiomeType;
@@ -302,7 +302,7 @@ public class Config extends ConfigBase
                 biomeMap.put(key, BiomeType.getBiome(subbiome).getType());
             }
         }
-        for (XMLStructure struct : XMLWorldgenHandler.defaults.structures)
+        for (Structure struct : WorldgenHandler.defaults.structures)
         {
             if (struct.biomeType != null)
             {

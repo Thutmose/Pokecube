@@ -53,7 +53,7 @@ import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipes;
 import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLReward;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLRewards;
-import pokecube.core.database.worldgen.XMLWorldgenHandler;
+import pokecube.core.database.worldgen.WorldgenHandler;
 import pokecube.core.events.onload.InitDatabase;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
@@ -433,7 +433,7 @@ public class Database
                 PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s + " " + e);
             }
         }
-        XMLWorldgenHandler.reloadWorldgen();
+        WorldgenHandler.reloadWorldgen();
 
         try
         {

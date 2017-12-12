@@ -30,6 +30,11 @@ public class CustomDimensionManager
             DimensionType dimType)
     {
         World overworld = DimensionManager.getWorld(0);
+        if (dimType == null)
+        {
+            dimType = DimensionType.OVERWORLD;
+            PokecubeMod.log(Level.WARNING, "Dimtype should not be null!", new NullPointerException());
+        }
         if (!DimensionManager.isDimensionRegistered(dim))
         {
             DimensionManager.registerDimension(dim, dimType);

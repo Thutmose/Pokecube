@@ -5,72 +5,18 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.utils.Tools;
 
 public class ItemVitamin extends Item implements IMoveConstants
 {
     public static List<String> vitamins = Lists.newArrayList();
 
-    static
-    {
-        vitamins.add("carbos");
-        vitamins.add("zinc");
-        vitamins.add("protein");
-        vitamins.add("calcium");
-        vitamins.add("hpup");
-        vitamins.add("iron");
-    }
-
     public static ItemVitamin instance;
-
-    public static boolean feedToPokemob(ItemStack stack, Entity entity)
-    {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
-        if (pokemob != null)
-        {
-            if (Tools.isSameStack(stack, PokecubeItems.getStack("hpup")))
-            {
-                pokemob.addEVs(new byte[] { 10, 0, 0, 0, 0, 0 });
-                return true;
-            }
-            if (Tools.isSameStack(stack, PokecubeItems.getStack("protein")))
-            {
-                pokemob.addEVs(new byte[] { 0, 10, 0, 0, 0, 0 });
-                return true;
-            }
-            if (Tools.isSameStack(stack, PokecubeItems.getStack("iron")))
-            {
-                pokemob.addEVs(new byte[] { 0, 0, 10, 0, 0, 0 });
-                return true;
-            }
-            if (Tools.isSameStack(stack, PokecubeItems.getStack("calcium")))
-            {
-                pokemob.addEVs(new byte[] { 0, 0, 0, 10, 0, 0 });
-                return true;
-            }
-            if (Tools.isSameStack(stack, PokecubeItems.getStack("zinc")))
-            {
-                pokemob.addEVs(new byte[] { 0, 0, 0, 0, 10, 0 });
-                return true;
-            }
-            if (Tools.isSameStack(stack, PokecubeItems.getStack("carbos")))
-            {
-                pokemob.addEVs(new byte[] { 0, 0, 0, 0, 0, 10 });
-                return true;
-            }
-        }
-        return false;
-    }
 
     public ItemVitamin()
     {

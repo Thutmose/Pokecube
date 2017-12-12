@@ -42,7 +42,6 @@ public class CreativeTabPokecubes extends CreativeTabs
             }
             if (iconItemStack == null || iconItemStack.getItem() == null)
             {
-                Thread.dumpStack();
                 return new ItemStack(Items.STONE_AXE);
             }
             return iconItemStack;

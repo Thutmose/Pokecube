@@ -40,8 +40,15 @@ public class RenderPokecubeTable extends TileEntitySpecialRenderer {
             
             if(!starter)
             {
-                ItemStack item = new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE));
-                Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, TransformType.NONE);
+                try
+                {
+                    ItemStack item = new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE));
+                    Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, TransformType.NONE);
+                }
+                catch (Exception e)
+                {
+                    //No no pokecubes
+                }
             }
             
             GL11.glPopMatrix();

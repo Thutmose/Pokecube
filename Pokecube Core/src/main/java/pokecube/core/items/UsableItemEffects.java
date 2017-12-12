@@ -1,5 +1,9 @@
 package pokecube.core.items;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,6 +60,12 @@ public class UsableItemEffects
 
     public static class VitaminUsable implements IPokemobUseable, ICapabilityProvider
     {
+        public static interface VitaminEffect extends IPokemobUseable
+        {
+        }
+
+        public static Map<String, VitaminEffect> effects = Maps.newHashMap();
+
         /** Called when this item is "used". Normally this means via right
          * clicking the pokemob with the itemstack. It can also be called via
          * onTick or onMoveTick, in which case user will be pokemob.getEntity()
@@ -68,7 +78,10 @@ public class UsableItemEffects
         public boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
             if (user != pokemob.getEntity() && user != pokemob.getOwner()) return false;
-            boolean used = ItemVitamin.feedToPokemob(stack, pokemob.getEntity());
+            if (!stack.hasTagCompound()) return false;
+            boolean used = false;
+            VitaminEffect effect = effects.get(stack.getTagCompound().getString("vitamin"));
+            if (effect != null) used = effect.onUse(pokemob, stack, user);
             if (used) stack.splitStack(1);
             return used;
         }

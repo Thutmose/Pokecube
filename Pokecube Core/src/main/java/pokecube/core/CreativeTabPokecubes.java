@@ -23,7 +23,9 @@ public class CreativeTabPokecubes extends CreativeTabs
     @SideOnly(Side.CLIENT)
     public ItemStack getTabIconItem()
     {
-        return PokecubeItems.getStack("pokecube");
+        ItemStack stack = PokecubeItems.getStack("pokecube");
+        if (stack == null) stack = PokecubeItems.getStack("pokeseal");
+        return stack;
     }
 
     @Override

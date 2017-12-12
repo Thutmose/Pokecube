@@ -748,7 +748,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
         if (GuiScreen.isShiftKeyDown() && pokemob != null && pokemob.getOwner() != null)
         {
-            PacketCommand.sendCommand((IPokemob) this, Command.MOVETO, new MoveToHandler(
+            PacketCommand.sendCommand(pokemob, Command.MOVETO, new MoveToHandler(
                     Vector3.getNewVector().set(pokemob.getOwner()), pokemob.getEntity().getAIMoveSpeed()));
             return;
         }

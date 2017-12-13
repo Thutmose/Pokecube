@@ -23,9 +23,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -124,11 +126,22 @@ public class ModPokecubeML implements IMobProvider
     public void registerDatabase(FMLPreInitializationEvent evt)
     {
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
+        populateAddonMods();
         PokecubeTerrainChecker.init();
         Database.init();
         PokecubeMod.log("Registering Moves");
         MovesAdder.registerMoves();
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
+    }
+
+    private void populateAddonMods()
+    {
+        for (IMobProvider obj : CommonProxy.mobProviders.values())
+        {
+            Object mod = obj.getMod();
+            ModContainer cont = Loader.instance().getReversedModObjectList().get(mod);
+            CommonProxy.validModJars.add(cont.getSource());
+        }
     }
 
     private void postInitPokemobs()

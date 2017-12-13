@@ -313,7 +313,7 @@ public class PokecubeDimensionManager
             fileinputstream.close();
             loadFromTag(nbttagcompound, true);
         }
-        for (CustomDim dim : WorldgenHandler.dims.dims)
+        if (WorldgenHandler.dims != null) for (CustomDim dim : WorldgenHandler.dims.dims)
         {
             if (!dims.contains(dim.dimid))
             {

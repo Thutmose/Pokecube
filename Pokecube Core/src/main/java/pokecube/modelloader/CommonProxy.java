@@ -196,6 +196,7 @@ public class CommonProxy implements IGuiHandler
     public static HashMap<String, IMobProvider>      mobProviders   = Maps.newHashMap();
     public static HashMap<String, ArrayList<String>> modModels      = Maps.newHashMap();
     private static Map<String, CachedLocs>           fileCache      = Maps.newHashMap();
+    public static List<File>                         validModJars   = Lists.newArrayList();
 
     private static final char                        DOT            = '.';
 
@@ -389,9 +390,17 @@ public class CommonProxy implements IGuiHandler
             name = name.replaceAll("(.jar)(.*)", ".jar");
             resourceDir = new File(name);
             PokecubeMod.log(Level.INFO, "Checking in " + resourceDir + " " + mod);
+            checkInFolder(resourceDir, ret, file, files);
         }
-        else resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
-        checkInFolder(resourceDir, ret, file, files);
+        else
+        {
+            resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
+            for (File temp : validModJars)
+            {
+                PokecubeMod.log(Level.INFO, "Checking in " + temp + " " + mod);
+                checkInFolder(temp, ret, file, files);
+            }
+        }
     }
 
     @Override

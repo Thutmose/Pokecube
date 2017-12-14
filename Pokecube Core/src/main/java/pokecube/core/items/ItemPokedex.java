@@ -42,6 +42,7 @@ public class ItemPokedex extends Item
     public ItemPokedex()
     {
         super();
+        this.setHasSubtypes(true);
     }
 
     @Override

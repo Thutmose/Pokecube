@@ -256,7 +256,7 @@ public class Database
         File temp1 = new File(CONFIGLOC + name);
         if (temp1.exists() && !FORCECOPY)
         {
-            System.out.println(" Not Overwriting old database " + name);
+            PokecubeMod.log("Not Overwriting old database: " + temp1);
             return;
         }
         ArrayList<String> rows = getFile(DBLOCATION + name);
@@ -264,6 +264,8 @@ public class Database
         try
         {
             File file = new File(CONFIGLOC + name);
+            file.getParentFile().mkdirs();
+            PokecubeMod.log("Copying Database File: "+file);
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
             for (int i = 0; i < rows.size(); i++)
             {

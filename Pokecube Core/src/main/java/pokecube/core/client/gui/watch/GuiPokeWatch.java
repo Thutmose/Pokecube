@@ -30,6 +30,7 @@ public class GuiPokeWatch extends GuiScreen
         public MissingPage(GuiPokeWatch watch)
         {
             super(watch);
+            setTitle(I18n.format("pokewatch.title.blank"));
         }
 
         @Override
@@ -41,12 +42,6 @@ public class GuiPokeWatch extends GuiScreen
             super.drawScreen(mouseX, mouseY, partialTicks);
         }
 
-        @Override
-        public String getTitle()
-        {
-            return I18n.format("pokewatch.title.blank");
-        }
-
     }
 
     public static final ResourceLocation           TEXTURE  = new ResourceLocation(PokecubeMod.ID,
@@ -56,11 +51,12 @@ public class GuiPokeWatch extends GuiScreen
     static
     {
         PAGELIST.add(StartPage.class);
+        PAGELIST.add(PokemobInfoPage.class);
+        PAGELIST.add(WikiPage.class);
+        PAGELIST.add(SpawnsPage.class);
+        PAGELIST.add(ProgressPage.class);
         PAGELIST.add(TeleportsPage.class);
         PAGELIST.add(SecretBaseRadarPage.class);
-        PAGELIST.add(WikiPage.class);
-        PAGELIST.add(PokemobInfoPage.class);
-        PAGELIST.add(SpawnsPage.class);
     }
 
     final List<WatchPage>     pages = Lists.newArrayList();
@@ -140,10 +136,7 @@ public class GuiPokeWatch extends GuiScreen
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
-            pages.set(index, new MissingPage(this));
-            pages.get(index).initGui();
-            pages.get(index).onPageOpened();
+            handleError(e);
         }
     }
 
@@ -169,10 +162,7 @@ public class GuiPokeWatch extends GuiScreen
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
-            pages.set(index, new MissingPage(this));
-            pages.get(index).initGui();
-            pages.get(index).onPageOpened();
+            handleError(e);
         }
     }
 
@@ -217,10 +207,7 @@ public class GuiPokeWatch extends GuiScreen
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
-            pages.set(index, new MissingPage(this));
-            pages.get(index).initGui();
-            pages.get(index).onPageOpened();
+            handleError(e);
         }
     }
 
@@ -234,10 +221,7 @@ public class GuiPokeWatch extends GuiScreen
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
-            pages.set(index, new MissingPage(this));
-            pages.get(index).initGui();
-            pages.get(index).onPageOpened();
+            handleError(e);
         }
     }
 
@@ -251,10 +235,7 @@ public class GuiPokeWatch extends GuiScreen
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
-            pages.set(index, new MissingPage(this));
-            pages.get(index).initGui();
-            pages.get(index).onPageOpened();
+            handleError(e);
         }
     }
 
@@ -285,15 +266,27 @@ public class GuiPokeWatch extends GuiScreen
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
-            pages.set(index, new MissingPage(this));
-            pages.get(index).initGui();
-            pages.get(index).onPageOpened();
+            handleError(e);
         }
     }
 
     public boolean canEdit(IPokemob pokemob)
     {
         return pokemob.getEntity().addedToChunk && (pokemob.getOwner() == player || player.capabilities.isCreativeMode);
+    }
+    
+    private void handleError(Exception e)
+    {
+        PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
+        try
+        {
+            pages.get(index).onPageClosed();
+        }
+        catch (Exception e1)
+        {
+        }
+        pages.set(index, new MissingPage(this));
+        pages.get(index).initGui();
+        pages.get(index).onPageOpened();
     }
 }

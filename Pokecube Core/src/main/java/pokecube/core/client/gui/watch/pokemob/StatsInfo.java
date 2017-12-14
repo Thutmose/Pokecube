@@ -1,8 +1,6 @@
 package pokecube.core.client.gui.watch.pokemob;
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import pokecube.core.client.gui.watch.GuiPokeWatch;
 import pokecube.core.database.abilities.Ability;
@@ -11,21 +9,18 @@ import pokecube.core.interfaces.IPokemob.Stats;
 
 public class StatsInfo extends PokeInfoPage
 {
+    private FontRenderer fontRender;
+
     public StatsInfo(GuiPokeWatch watch, IPokemob pokemob)
     {
         super(watch, pokemob, "stats");
     }
 
     @Override
-    public void onPageOpened()
+    public void initGui()
     {
-        super.onPageOpened();
-    }
-
-    @Override
-    public void actionPerformed(GuiButton button) throws IOException
-    {
-        super.actionPerformed(button);
+        super.initGui();
+        this.fontRender = this.fontRenderer;
     }
 
     @Override
@@ -34,32 +29,34 @@ public class StatsInfo extends PokeInfoPage
         int x = (watch.width - 160) / 2 + 80;
         int y = (watch.height - 160) / 2 + 8;
         if (watch.canEdit(pokemob)) drawInfo(x, y);
-        else
-        {
-            int HP = pokemob.getPokedexEntry().getStatHP();
-            int ATT = pokemob.getPokedexEntry().getStatATT();
-            int DEF = pokemob.getPokedexEntry().getStatDEF();
-            int ATTSPE = pokemob.getPokedexEntry().getStatATTSPE();
-            int DEFSPE = pokemob.getPokedexEntry().getStatDEFSPE();
-            int VIT = pokemob.getPokedexEntry().getStatVIT();
-            int statYOffSet = y + 0;
-            int offsetX = -50;
-            int dx = 20 + offsetX;
-            drawString(fontRenderer, "HP", x + dx, statYOffSet + 18, 0xFF0000);
-            drawString(fontRenderer, "ATT", x + dx, statYOffSet + 27, 0xF08030);
-            drawString(fontRenderer, "DEF", x + dx, statYOffSet + 36, 0xF8D030);
-            drawString(fontRenderer, "ATTSPE", x + dx, statYOffSet + 45, 0x6890F0);
-            drawString(fontRenderer, "DEFSPE", x + dx, statYOffSet + 54, 0x78C850);
-            drawString(fontRenderer, "VIT", x + dx, statYOffSet + 63, 0xF85888);
+        else drawBaseStats(x, y);
+    }
 
-            dx = 60 + offsetX;
-            drawString(fontRenderer, ": " + HP, x + dx, statYOffSet + 18, 0xFF0000);
-            drawString(fontRenderer, ": " + ATT, x + dx, statYOffSet + 27, 0xF08030);
-            drawString(fontRenderer, ": " + DEF, x + dx, statYOffSet + 36, 0xF8D030);
-            drawString(fontRenderer, ": " + ATTSPE, x + dx, statYOffSet + 45, 0x6890F0);
-            drawString(fontRenderer, ": " + DEFSPE, x + dx, statYOffSet + 54, 0x78C850);
-            drawString(fontRenderer, ": " + VIT, x + dx, statYOffSet + 63, 0xF85888);
-        }
+    private void drawBaseStats(int x, int y)
+    {
+        int HP = pokemob.getPokedexEntry().getStatHP();
+        int ATT = pokemob.getPokedexEntry().getStatATT();
+        int DEF = pokemob.getPokedexEntry().getStatDEF();
+        int ATTSPE = pokemob.getPokedexEntry().getStatATTSPE();
+        int DEFSPE = pokemob.getPokedexEntry().getStatDEFSPE();
+        int VIT = pokemob.getPokedexEntry().getStatVIT();
+        int statYOffSet = y + 0;
+        int offsetX = -50;
+        int dx = 20 + offsetX;
+        drawString(fontRender, "HP", x + dx, statYOffSet + 18, 0xFF0000);
+        drawString(fontRender, "ATT", x + dx, statYOffSet + 27, 0xF08030);
+        drawString(fontRender, "DEF", x + dx, statYOffSet + 36, 0xF8D030);
+        drawString(fontRender, "ATTSPE", x + dx, statYOffSet + 45, 0x6890F0);
+        drawString(fontRender, "DEFSPE", x + dx, statYOffSet + 54, 0x78C850);
+        drawString(fontRender, "VIT", x + dx, statYOffSet + 63, 0xF85888);
+
+        dx = 60 + offsetX;
+        drawString(fontRender, ": " + HP, x + dx, statYOffSet + 18, 0xFF0000);
+        drawString(fontRender, ": " + ATT, x + dx, statYOffSet + 27, 0xF08030);
+        drawString(fontRender, ": " + DEF, x + dx, statYOffSet + 36, 0xF8D030);
+        drawString(fontRender, ": " + ATTSPE, x + dx, statYOffSet + 45, 0x6890F0);
+        drawString(fontRender, ": " + DEFSPE, x + dx, statYOffSet + 54, 0x78C850);
+        drawString(fontRender, ": " + VIT, x + dx, statYOffSet + 63, 0xF85888);
     }
 
     private void drawInfo(int x, int y)
@@ -96,21 +93,21 @@ public class StatsInfo extends PokeInfoPage
             int dy = 17 + i * 9;
             drawRect(x + dx, statYOffSet + dy, x + dx + 107, statYOffSet + dy + 9, colours[i]);
         }
-        drawString(fontRenderer, "           TV   IV   EV", x + dx, statYOffSet + 9, 0xFFFFFF);
-        drawString(fontRenderer, "HP", x + dx, statYOffSet + 18, 0xFF0000);
-        drawString(fontRenderer, "ATT", x + dx, statYOffSet + 27, 0xF08030);
-        drawString(fontRenderer, "DEF", x + dx, statYOffSet + 36, 0xF8D030);
-        drawString(fontRenderer, "ATTSPE", x + dx, statYOffSet + 45, 0x6890F0);
-        drawString(fontRenderer, "DEFSPE", x + dx, statYOffSet + 54, 0x78C850);
-        drawString(fontRenderer, "VIT", x + dx, statYOffSet + 63, 0xF85888);
+        drawString(fontRender, "           TV   IV   EV", x + dx, statYOffSet + 9, 0xFFFFFF);
+        drawString(fontRender, "HP", x + dx, statYOffSet + 18, 0xFF0000);
+        drawString(fontRender, "ATT", x + dx, statYOffSet + 27, 0xF08030);
+        drawString(fontRender, "DEF", x + dx, statYOffSet + 36, 0xF8D030);
+        drawString(fontRender, "ATTSPE", x + dx, statYOffSet + 45, 0x6890F0);
+        drawString(fontRender, "DEFSPE", x + dx, statYOffSet + 54, 0x78C850);
+        drawString(fontRender, "VIT", x + dx, statYOffSet + 63, 0xF85888);
 
         dx = 60 + offsetX;
-        drawString(fontRenderer, ": " + HP, x + dx, statYOffSet + 18, 0xFF0000);
-        drawString(fontRenderer, ": " + ATT, x + dx, statYOffSet + 27, 0xF08030);
-        drawString(fontRenderer, ": " + DEF, x + dx, statYOffSet + 36, 0xF8D030);
-        drawString(fontRenderer, ": " + ATTSPE, x + dx, statYOffSet + 45, 0x6890F0);
-        drawString(fontRenderer, ": " + DEFSPE, x + dx, statYOffSet + 54, 0x78C850);
-        drawString(fontRenderer, ": " + VIT, x + dx, statYOffSet + 63, 0xF85888);
+        drawString(fontRender, ": " + HP, x + dx, statYOffSet + 18, 0xFF0000);
+        drawString(fontRender, ": " + ATT, x + dx, statYOffSet + 27, 0xF08030);
+        drawString(fontRender, ": " + DEF, x + dx, statYOffSet + 36, 0xF8D030);
+        drawString(fontRender, ": " + ATTSPE, x + dx, statYOffSet + 45, 0x6890F0);
+        drawString(fontRender, ": " + DEFSPE, x + dx, statYOffSet + 54, 0x78C850);
+        drawString(fontRender, ": " + VIT, x + dx, statYOffSet + 63, 0xF85888);
 
         dx = 20 + offsetX;
         byte[] stats2 = pokemob.getIVs();
@@ -129,19 +126,19 @@ public class StatsInfo extends PokeInfoPage
         int VIT2 = stats2[5] + 128;
 
         int shift = 88 + offsetX;
-        drawString(fontRenderer, "" + HP, x + shift, statYOffSet + 18, 0xFF0000);
-        drawString(fontRenderer, "" + ATT, x + shift, statYOffSet + 27, 0xF08030);
-        drawString(fontRenderer, "" + DEF, x + shift, statYOffSet + 36, 0xF8D030);
-        drawString(fontRenderer, "" + ATTSPE, x + shift, statYOffSet + 45, 0x6890F0);
-        drawString(fontRenderer, "" + DEFSPE, x + shift, statYOffSet + 54, 0x78C850);
-        drawString(fontRenderer, "" + VIT, x + shift, statYOffSet + 63, 0xF85888);
+        drawString(fontRender, "" + HP, x + shift, statYOffSet + 18, 0xFF0000);
+        drawString(fontRender, "" + ATT, x + shift, statYOffSet + 27, 0xF08030);
+        drawString(fontRender, "" + DEF, x + shift, statYOffSet + 36, 0xF8D030);
+        drawString(fontRender, "" + ATTSPE, x + shift, statYOffSet + 45, 0x6890F0);
+        drawString(fontRender, "" + DEFSPE, x + shift, statYOffSet + 54, 0x78C850);
+        drawString(fontRender, "" + VIT, x + shift, statYOffSet + 63, 0xF85888);
         shift += 21;
-        drawString(fontRenderer, "" + HP2, x + shift, statYOffSet + 18, 0xFF0000);
-        drawString(fontRenderer, "" + ATT2, x + shift, statYOffSet + 27, 0xF08030);
-        drawString(fontRenderer, "" + DEF2, x + shift, statYOffSet + 36, 0xF8D030);
-        drawString(fontRenderer, "" + ATTSPE2, x + shift, statYOffSet + 45, 0x6890F0);
-        drawString(fontRenderer, "" + DEFSPE2, x + shift, statYOffSet + 54, 0x78C850);
-        drawString(fontRenderer, "" + VIT2, x + shift, statYOffSet + 63, 0xF85888);
+        drawString(fontRender, "" + HP2, x + shift, statYOffSet + 18, 0xFF0000);
+        drawString(fontRender, "" + ATT2, x + shift, statYOffSet + 27, 0xF08030);
+        drawString(fontRender, "" + DEF2, x + shift, statYOffSet + 36, 0xF8D030);
+        drawString(fontRender, "" + ATTSPE2, x + shift, statYOffSet + 45, 0x6890F0);
+        drawString(fontRender, "" + DEFSPE2, x + shift, statYOffSet + 54, 0x78C850);
+        drawString(fontRender, "" + VIT2, x + shift, statYOffSet + 63, 0xF85888);
 
         // Draw ability, Happiness and Size
         Ability ability = pokemob.getAbility();
@@ -150,7 +147,7 @@ public class StatsInfo extends PokeInfoPage
         // Draw ability
         if (ability != null)
         {
-            drawString(fontRenderer, "AB: " + I18n.format(ability.getName()), x + dx, y + dy, 0xFFFFFF);
+            drawString(fontRender, "AB: " + I18n.format(ability.getName()), x + dx, y + dy, 0xFFFFFF);
         }
         int happiness = pokemob.getHappiness();
         String message = "";
@@ -158,7 +155,7 @@ public class StatsInfo extends PokeInfoPage
         // Draw size
         dy += 11;
         message = "Size: " + pokemob.getSize();
-        fontRenderer.drawSplitString(message, x + dx, y + dy, 100, 0xFFFFFF);
+        fontRender.drawSplitString(message, x + dx, y + dy, 100, 0xFFFFFF);
 
         if (happiness == 0)
         {
@@ -191,7 +188,7 @@ public class StatsInfo extends PokeInfoPage
         // Draw Happiness
         message = I18n.format(message);
         dy += 11;
-        fontRenderer.drawSplitString(message, x + dx, y + dy, 100, 0xFFFFFF);
+        fontRender.drawSplitString(message, x + dx, y + dy, 100, 0xFFFFFF);
     }
 
 }

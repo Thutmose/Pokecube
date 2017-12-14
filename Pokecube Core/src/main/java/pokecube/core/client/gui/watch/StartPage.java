@@ -91,12 +91,12 @@ public class StartPage extends ListPage
         List<IGuiListEntry> entries = Lists.newArrayList();
         int offsetX = (watch.width - 160) / 2 + 10;
         int offsetY = (watch.height - 160) / 2 + 20;
-        int height = 120;
+        int height = 100;
         for (WatchPage page : watch.pages)
         {
-            if (!(page instanceof StartPage)) entries.add(new PageEntry(page, offsetY, height));
+            if (!(page instanceof StartPage)) entries.add(new PageEntry(page, offsetY, height + 5));
         }
-        list = new ScrollGui(mc, 140, height, 20, offsetX, offsetY, entries);
+        list = new ScrollGui(mc, 146, height, 20, offsetX, offsetY, entries);
     }
 
     @Override

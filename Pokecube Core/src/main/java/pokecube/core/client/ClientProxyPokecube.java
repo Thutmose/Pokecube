@@ -165,7 +165,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             if (pokemob != null) return new GuiPokedex(pokemob, player);
             return new GuiPokedex(null, player);
         }
-        if (guiID == Config.GUIPOKEWATCH_ID) { return new GuiPokeWatch(player, pokemob == null ? 0 : 4); }
+        if (guiID == Config.GUIPOKEWATCH_ID) { return new GuiPokeWatch(player, pokemob == null ? 0 : 1); }
         if (guiID == Config.GUIPOKEMOB_ID)
         {
             IPokemob e = CapabilityPokemob

@@ -9,19 +9,19 @@ import pokecube.core.utils.PokeType;
 public class CaptureStats
 {
 
-    public static int getNumberUniqueCaughtBy(UUID playerName)
+    public static int getNumberUniqueCaughtBy(UUID playerID)
     {
         int count = 0;
-        Map<PokedexEntry, Integer> map = StatsCollector.getCaptures(playerName);
+        Map<PokedexEntry, Integer> map = StatsCollector.getCaptures(playerID);
         if (map == null) return 0;
         count += map.size();
         return count;
     }
 
-    public static int getTotalNumberCaughtBy(UUID playerName)
+    public static int getTotalNumberCaughtBy(UUID playerID)
     {
         int count = 0;
-        Map<PokedexEntry, Integer> map = StatsCollector.getCaptures(playerName);
+        Map<PokedexEntry, Integer> map = StatsCollector.getCaptures(playerID);
         if (map == null) return 0;
         for (Integer i : map.values())
         {
@@ -30,10 +30,10 @@ public class CaptureStats
         return count;
     }
 
-    public static int getTotalNumberOfPokemobCaughtBy(UUID playerName, PokedexEntry type)
+    public static int getTotalNumberOfPokemobCaughtBy(UUID playerID, PokedexEntry type)
     {
         int count = 0;
-        Map<PokedexEntry, Integer> map = StatsCollector.getCaptures(playerName);
+        Map<PokedexEntry, Integer> map = StatsCollector.getCaptures(playerID);
         if (map == null) return 0;
         if (map.containsKey(type))
         {
@@ -52,7 +52,7 @@ public class CaptureStats
         return count;
     }
 
-    public static int getTotalUniqueOfTypeCaughtBy(UUID player, PokeType type)
+    public static int getUniqueOfTypeCaughtBy(UUID player, PokeType type)
     {
         int count = 0;
         for (PokedexEntry dbe : StatsCollector.getCaptures(player).keySet())

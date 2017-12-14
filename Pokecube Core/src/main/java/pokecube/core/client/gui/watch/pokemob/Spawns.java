@@ -41,7 +41,7 @@ public class Spawns extends ListPage
     {
         List<IGuiListEntry> entries = Lists.newArrayList();
         int offsetX = (watch.width - 160) / 2 + 45;
-        int offsetY = (watch.height - 160) / 2 + 25;
+        int offsetY = (watch.height - 160) / 2 + 27;
         int height = 110;
         int max = fontRenderer.FONT_HEIGHT;
         for (SpawnBiomeMatcher matcher : PacketPokedex.selectedMob)

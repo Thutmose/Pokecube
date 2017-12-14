@@ -305,24 +305,35 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                 }
                 PacketPokedex packet = new PacketPokedex(REQUESTLOC);
                 int n = 0;
+                NBTTagCompound data = new NBTTagCompound();
                 for (PokedexEntry e : names)
                 {
                     SpawnBiomeMatcher matcher = matchers.get(e);
                     matcher.spawnRule.values.put(new QName("Local_Rate"), rates.get(e) + "");
-                    packet.data.setString("e" + n, e.getName());
-                    packet.data.setString("" + n, gson.toJson(matcher));
+                    data.setString("e" + n, e.getName());
+                    data.setString("" + n, gson.toJson(matcher));
                     n++;
                 }
+                packet.data.setTag("V", data);
+
+                PokedexEntry entry = Database
+                        .getEntry(PokecubePlayerDataHandler.getCustomDataTag(player).getString("WEntry"));
+                if (entry != null) packet.data.setString("E", entry.getName());
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
             }
             else
             {
                 selectedLoc.clear();
-                int n = message.data.getKeySet().size() / 2;
+                NBTTagCompound data = message.data.getCompoundTag("V");
+                int n = data.getKeySet().size() / 2;
                 for (int i = 0; i < n; i++)
                 {
-                    selectedLoc.put(Database.getEntry(message.data.getString("e" + i)),
-                            gson.fromJson(message.data.getString("" + i), SpawnBiomeMatcher.class));
+                    selectedLoc.put(Database.getEntry(data.getString("e" + i)),
+                            gson.fromJson(data.getString("" + i), SpawnBiomeMatcher.class));
+                }
+                if (message.data.hasKey("E"))
+                {
+                    PokecubePlayerDataHandler.getCustomDataTag(player).setString("WEntry", message.data.getString("E"));
                 }
             }
             return;

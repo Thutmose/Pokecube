@@ -14,6 +14,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.ISpecialCaptureCondition;
 import pokecube.core.database.stats.ISpecialSpawnCondition;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -40,7 +41,8 @@ public class LegendarySpawns
         BlockPos pos = evt.getPos();
         IBlockState state = evt.getWorld().getBlockState(evt.getPos());
         block = state.getBlock();
-        PokedexEntry entry = Database.getEntry(evt.getItemStack().getTagCompound().getString("F"));
+        String name = PokecubePlayerDataHandler.getCustomDataTag(playerIn).getString("WEntry");
+        PokedexEntry entry = Database.getEntry(name);
         if (block == Blocks.DIAMOND_BLOCK && entry != null)
         {
             ISpecialSpawnCondition spawnCondition = ISpecialSpawnCondition.spawnMap.get(entry);

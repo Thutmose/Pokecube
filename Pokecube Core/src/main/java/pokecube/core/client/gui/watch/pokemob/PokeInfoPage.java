@@ -8,13 +8,12 @@ import pokecube.core.interfaces.IPokemob;
 public abstract class PokeInfoPage extends WatchPage
 {
     final IPokemob pokemob;
-    final String   title;
 
     public PokeInfoPage(GuiPokeWatch watch, IPokemob pokemob, String title)
     {
         super(watch);
         this.pokemob = pokemob;
-        this.title = I18n.format("pokewatch.title.pokeinfo." + title);
+        setTitle(I18n.format("pokewatch.title.pokeinfo." + title));
     }
 
     @Override
@@ -24,11 +23,5 @@ public abstract class PokeInfoPage extends WatchPage
     }
 
     abstract void drawInfo(int mouseX, int mouseY, float partialTicks);
-
-    @Override
-    public String getTitle()
-    {
-        return title;
-    }
 
 }

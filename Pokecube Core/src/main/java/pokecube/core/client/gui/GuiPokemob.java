@@ -3,13 +3,17 @@ package pokecube.core.client.gui;
 import java.io.IOException;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -42,6 +46,123 @@ import thut.api.entity.IHungrymob;
 
 public class GuiPokemob extends GuiContainer
 {
+    public static class NameField extends GuiTextField
+    {
+        private final FontRenderer fontRendererInstance;
+
+        public NameField(int componentId, FontRenderer fontrenderer, int x, int y, int par5Width, int par6Height)
+        {
+            super(componentId, fontrenderer, x, y, par5Width, par6Height);
+            this.fontRendererInstance = fontrenderer;
+        }
+
+        @Override
+        public void drawTextBox()
+        {
+            int i = 4210752;
+            int j = this.getCursorPosition();
+            int k = this.getSelectionEnd();
+            String s = this.fontRendererInstance.trimStringToWidth(this.getText(), this.getWidth());
+            boolean flag = j >= 0 && j <= s.length();
+            boolean flag1 = this.isFocused() && flag;
+            int l = this.x;
+            int i1 = this.y;
+            int j1 = l;
+
+            if (k > s.length())
+            {
+                k = s.length();
+            }
+
+            if (!s.isEmpty())
+            {
+                String s1 = flag ? s.substring(0, j) : s;
+                j1 = this.fontRendererInstance.drawString(s1, (float) l, (float) i1, i, false);
+            }
+
+            boolean flag2 = this.getCursorPosition() < this.getText().length()
+                    || this.getText().length() >= this.getMaxStringLength();
+            int k1 = j1;
+
+            if (!flag)
+            {
+                k1 = j > 0 ? l + this.width : l;
+            }
+            else if (flag2)
+            {
+                k1 = j1 - 1;
+                --j1;
+            }
+
+            if (!s.isEmpty() && flag && j < s.length())
+            {
+                j1 = this.fontRendererInstance.drawString(s.substring(j), (float) j1, (float) i1, i, false);
+            }
+
+            if (flag1)
+            {
+                if (flag2)
+                {
+                    Gui.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + this.fontRendererInstance.FONT_HEIGHT, -3092272);
+                }
+                else
+                {
+                    this.fontRendererInstance.drawString("_", (float) k1, (float) i1, i, false);
+                }
+            }
+
+            if (k != j)
+            {
+                int l1 = l + this.fontRendererInstance.getStringWidth(s.substring(0, k));
+                this.drawCursorVertical(k1, i1 - 1, l1 - 1, i1 + 1 + this.fontRendererInstance.FONT_HEIGHT);
+            }
+        }
+
+        /** Draws the current selection and a vertical line cursor in the text
+         * box. */
+        private void drawCursorVertical(int startX, int startY, int endX, int endY)
+        {
+            if (startX < endX)
+            {
+                int i = startX;
+                startX = endX;
+                endX = i;
+            }
+
+            if (startY < endY)
+            {
+                int j = startY;
+                startY = endY;
+                endY = j;
+            }
+
+            if (endX > this.x + this.width)
+            {
+                endX = this.x + this.width;
+            }
+
+            if (startX > this.x + this.width)
+            {
+                startX = this.x + this.width;
+            }
+
+            Tessellator tessellator = Tessellator.getInstance();
+            GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
+            GlStateManager.disableTexture2D();
+            GlStateManager.enableColorLogic();
+            GlStateManager.colorLogicOp(GlStateManager.LogicOp.OR_REVERSE);
+            tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION);
+            tessellator.getBuffer().pos((double) startX, (double) endY, 0.0D).endVertex();
+            tessellator.getBuffer().pos((double) endX, (double) endY, 0.0D).endVertex();
+            tessellator.getBuffer().pos((double) endX, (double) startY, 0.0D).endVertex();
+            tessellator.getBuffer().pos((double) startX, (double) startY, 0.0D).endVertex();
+            tessellator.draw();
+            GlStateManager.disableColorLogic();
+            GlStateManager.enableTexture2D();
+        }
+
+    }
+
     public static class PokemobButton extends GuiButton
     {
         final IPokemob pokemob;
@@ -208,7 +329,7 @@ public class GuiPokemob extends GuiContainer
             yRenderAngle = entity.renderYawOffset - entity.ticksExisted;
             float zoom = (25f / size) * scale;
             GL11.glPushMatrix();
-            GL11.glTranslatef(j + 55, k + 50, 50F);
+            GL11.glTranslatef(j + 55, k + 60, 50F);
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
@@ -216,7 +337,7 @@ public class GuiPokemob extends GuiContainer
             GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(zRenderAngle, 0.0F, 0.0F, 1.0F);
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, 1.5F, false);
             GL11.glPopMatrix();
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();
@@ -232,11 +353,10 @@ public class GuiPokemob extends GuiContainer
     }
 
     private IInventory   playerInventory;
-    private IInventory   pokeInventory;
     private IPokemob     pokemob;
     private EntityLiving entity;
     private float        yRenderAngle = 10;
-
+    private GuiTextField name;
     private float        xRenderAngle = 0;
 
     PokemobButton        stance;
@@ -246,10 +366,32 @@ public class GuiPokemob extends GuiContainer
         super(new ContainerPokemob(playerInv, pokemob.getPokemobInventory(), pokemob));
         pokemob.getPokemobInventory().setCustomName(pokemob.getPokemonDisplayName().getFormattedText());
         this.playerInventory = playerInv;
-        this.pokeInventory = pokemob.getPokemobInventory();
         this.pokemob = pokemob;
         this.entity = pokemob.getEntity();
         this.allowUserInput = false;
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException
+    {
+        if (name.isFocused())
+        {
+            if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                name.setFocused(false);
+            }
+            else
+            {
+                name.textboxKeyTyped(typedChar, keyCode);
+                if (keyCode == Keyboard.KEY_RETURN)
+                {
+                    pokemob.setPokemonNickname(name.getText());
+                }
+                return;
+            }
+        }
+        super.keyTyped(typedChar, keyCode);
+
     }
 
     @Override
@@ -295,8 +437,6 @@ public class GuiPokemob extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.fontRenderer.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getName()
-                : I18n.format(this.pokeInventory.getName(), new Object[0]), 8, 6, 4210752);
         this.fontRenderer.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
                 : I18n.format(this.playerInventory.getName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
         IHungrymob mob = (IHungrymob) pokemob;
@@ -318,6 +458,7 @@ public class GuiPokemob extends GuiContainer
     public void drawScreen(int x, int y, float z)
     {
         super.drawScreen(x, y, z);
+        name.drawTextBox();
         GuiButton stay = buttonList.get(0);
         GuiButton guard = buttonList.get(1);
         GuiButton sit = buttonList.get(2);
@@ -358,6 +499,11 @@ public class GuiPokemob extends GuiContainer
         yOffset = 77;
         buttonList.add(new GuiButton(3, width / 2 - xOffset + 60, height / 2 - yOffset, 30, 10, "AI"));
         buttonList.add(new GuiButton(4, width / 2 - xOffset + 30, height / 2 - yOffset, 30, 10, "ST"));
+        xOffset = 80;
+        name = new NameField(0, fontRenderer, width / 2 - xOffset, height / 2 - yOffset, 120, 10);
+        name.setText(pokemob.getPokemonDisplayName().getUnformattedComponentText().trim());
+        name.setEnableBackgroundDrawing(false);
+        name.setTextColor(0xFFFFFFFF);
     }
 
     /** Called when the mouse is clicked.
@@ -367,5 +513,6 @@ public class GuiPokemob extends GuiContainer
     protected void mouseClicked(int x, int y, int button) throws IOException
     {
         super.mouseClicked(x, y, button);
+        name.mouseClicked(x, y, button);
     }
 }

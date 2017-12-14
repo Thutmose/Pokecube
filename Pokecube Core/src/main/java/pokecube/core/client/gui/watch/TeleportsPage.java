@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import pokecube.core.client.gui.helper.ScrollGui;
+import pokecube.core.client.gui.watch.util.ListPage;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -127,7 +128,7 @@ public class TeleportsPage extends ListPage
     }
 
     @Override
-    protected void initList()
+    public void initList()
     {
         locations = TeleportHandler.getTeleports(watch.player.getCachedUniqueIdString());
         List<IGuiListEntry> entries = Lists.newArrayList();
@@ -145,7 +146,7 @@ public class TeleportsPage extends ListPage
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         int slot = list.getSlotIndexFromScreenCoords(mouseX, mouseY);
@@ -167,7 +168,7 @@ public class TeleportsPage extends ListPage
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
+    public void keyTyped(char typedChar, int keyCode) throws IOException
     {
         for (int i = 0; i < teleNames.size(); i++)
         {
@@ -186,7 +187,7 @@ public class TeleportsPage extends ListPage
     }
 
     @Override
-    protected String getTitle()
+    public String getTitle()
     {
         return I18n.format("pokewatch.title.teleports");
     }

@@ -22,8 +22,8 @@ import pokecube.core.interfaces.pokemob.commandhandlers.SwapMovesHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.pokemobs.PacketCommand;
+import pokecube.core.network.pokemobs.PacketSyncNewMoves;
 import thut.api.maths.Vector3;
-import thut.api.network.PacketHandler;
 import thut.core.common.commands.CommandTools;
 
 public interface IHasMoves extends IHasStats
@@ -94,12 +94,12 @@ public interface IHasMoves extends IHasStats
             }
             else if (moveIndex0 >= moves.length || moveIndex1 >= moves.length)
             {
-                if (getMove(4) == null) return;
+                int index = Math.min(moveIndex0, moveIndex1);
+                if (getMove(4) == null || index > 3) return;
                 String move = getMove(4);
                 getMoveStats().newMoves.remove(move);
-                moves[3] = move;
-                setMoves(moves);
-                PacketHandler.sendEntityUpdate(getEntity());
+                setMove(index, move);
+                PacketSyncNewMoves.sendUpdatePacket((IPokemob) this);
             }
             else
             {
@@ -251,7 +251,8 @@ public interface IHasMoves extends IHasStats
                             thisMob.getPokemonDisplayName().getFormattedText(),
                             new TextComponentTranslation(MovesUtils.getUnlocalizedMove(moveName)));
                     thisMob.displayMessageToOwner(mess);
-                    if (!getMoveStats().newMoves.contains(moveName)) getMoveStats().newMoves.add(moveName);
+                    getMoveStats().newMoves.add(moveName);
+                    PacketSyncNewMoves.sendUpdatePacket((IPokemob) this);
                     return;
                 }
             }

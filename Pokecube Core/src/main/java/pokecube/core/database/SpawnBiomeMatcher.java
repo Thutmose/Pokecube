@@ -79,12 +79,12 @@ public class SpawnBiomeMatcher
 
     public Set<Predicate<SpawnCheck>> additionalConditions = Sets.newHashSet();
 
-    float                             minLight             = 0;
-    float                             maxLight             = 1;
-    boolean                           day                  = true;
-    boolean                           night                = true;
-    boolean                           air                  = true;
-    boolean                           water                = false;
+    public float                      minLight             = 0;
+    public float                      maxLight             = 1;
+    public boolean                    day                  = true;
+    public boolean                    night                = true;
+    public boolean                    air                  = true;
+    public boolean                    water                = false;
 
     public final SpawnRule            spawnRule;
 

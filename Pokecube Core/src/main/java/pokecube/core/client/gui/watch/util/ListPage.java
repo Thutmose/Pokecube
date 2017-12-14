@@ -1,14 +1,14 @@
-package pokecube.core.client.gui.watch;
+package pokecube.core.client.gui.watch.util;
 
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
 import pokecube.core.client.gui.helper.ScrollGui;
-import pokecube.core.client.gui.watch.GuiPokeWatch.WatchPage;
+import pokecube.core.client.gui.watch.GuiPokeWatch;
 
 public abstract class ListPage extends WatchPage
 {
-    ScrollGui list;
+    protected ScrollGui list;
 
     public ListPage(GuiPokeWatch watch)
     {
@@ -22,9 +22,9 @@ public abstract class ListPage extends WatchPage
         initList();
     }
 
-    abstract void initList();
-    
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    public abstract void initList();
+
+    public void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
         int x = (watch.width - 160) / 2 + 80;
         int y = (watch.height - 160) / 2 + 8;
@@ -32,7 +32,7 @@ public abstract class ListPage extends WatchPage
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         list.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -45,18 +45,13 @@ public abstract class ListPage extends WatchPage
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException
+    public void actionPerformed(GuiButton button) throws IOException
     {
         list.actionPerformed(button);
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-    {
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state)
+    public void mouseReleased(int mouseX, int mouseY, int state)
     {
         list.mouseReleased(mouseX, mouseY, state);
     }

@@ -7,8 +7,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,13 +58,41 @@ import thut.api.terrain.TerrainManager;
 
 public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, IMessage>
 {
-    public static final byte   REQUEST   = -5;
-    public static final byte   INSPECT   = -4;
-    public static final byte   BASERADAR = -3;
-    public static final byte   REMOVE    = -2;
-    public static final byte   RENAME    = -1;
+    public static final byte                           SETWATCHPOKE = -8;
+    public static final byte                           REQUESTLOC   = -7;
+    public static final byte                           REQUESTMOB   = -6;
+    public static final byte                           REQUEST      = -5;
+    public static final byte                           INSPECT      = -4;
+    public static final byte                           BASERADAR    = -3;
+    public static final byte                           REMOVE       = -2;
+    public static final byte                           RENAME       = -1;
 
-    public static List<String> values    = Lists.newArrayList();
+    public static List<String>                         values       = Lists.newArrayList();
+    public static List<SpawnBiomeMatcher>              selectedMob  = Lists.newArrayList();
+    public static Map<PokedexEntry, SpawnBiomeMatcher> selectedLoc  = Maps.newHashMap();
+
+    public static void updateWatchEntry(PokedexEntry entry)
+    {
+        PacketPokedex packet = new PacketPokedex(PacketPokedex.SETWATCHPOKE);
+        PokecubePlayerDataHandler.getCustomDataTag(PokecubeCore.getPlayer(null)).setString("WEntry", entry.getName());
+        packet.data.setString("V", entry.getName());
+        PokecubePacketHandler.sendToServer(packet);
+    }
+
+    public static void sendLocationSpawnsRequest()
+    {
+        selectedLoc.clear();
+        PacketPokedex packet = new PacketPokedex(PacketPokedex.REQUESTLOC);
+        PokecubePacketHandler.sendToServer(packet);
+    }
+
+    public static void sendSpecificSpawnsRequest(PokedexEntry entry)
+    {
+        selectedMob.clear();
+        PacketPokedex packet = new PacketPokedex(PacketPokedex.REQUESTMOB);
+        packet.data.setString("V", entry.getName());
+        PokecubePacketHandler.sendToServer(packet);
+    }
 
     public static void sendRenameTelePacket(String newName, int index)
     {
@@ -139,14 +176,17 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
     public void fromBytes(ByteBuf buf)
     {
         message = buf.readByte();
-        PacketBuffer buffer = new PacketBuffer(buf);
-        try
+        if (buf.isReadable())
         {
-            data = buffer.readCompoundTag();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
+            PacketBuffer buffer = new PacketBuffer(buf);
+            try
+            {
+                data = buffer.readCompoundTag();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -154,8 +194,11 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
     public void toBytes(ByteBuf buf)
     {
         buf.writeByte(message);
-        PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeCompoundTag(data);
+        if (!data.hasNoTags())
+        {
+            PacketBuffer buffer = new PacketBuffer(buf);
+            buffer.writeCompoundTag(data);
+        }
     }
 
     void processMessage(MessageContext ctx, PacketPokedex message)
@@ -169,6 +212,160 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         {
             player = ctx.getServerHandler().player;
         }
+
+        if (message.message == SETWATCHPOKE)
+        {
+            if (ctx.side == Side.SERVER)
+            {
+                PokedexEntry entry = Database.getEntry(message.data.getString("V"));
+                if (entry != null)
+                    PokecubePlayerDataHandler.getCustomDataTag(player).setString("WEntry", entry.getName());
+            }
+            return;
+        }
+
+        TypeAdapter<QName> adapter = new TypeAdapter<QName>()
+        {
+            @Override
+            public void write(JsonWriter out, QName value) throws IOException
+            {
+                out.value(value.toString());
+            }
+
+            @Override
+            public QName read(JsonReader in) throws IOException
+            {
+                return new QName(in.nextString());
+            }
+        };
+        ExclusionStrategy spawn_matcher = new ExclusionStrategy()
+        {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f)
+            {
+                switch (f.getName())
+                {
+                case "validBiomes":
+                    return true;
+                case "validSubBiomes":
+                    return true;
+                case "blackListBiomes":
+                    return true;
+                case "blackListSubBiomes":
+                    return true;
+                case "additionalConditions":
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz)
+            {
+                return false;
+            }
+        };
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(QName.class, adapter).setExclusionStrategies(spawn_matcher)
+                .create();
+
+        if (message.message == REQUESTLOC)
+        {
+            if (ctx.side == Side.SERVER)
+            {
+                final Map<PokedexEntry, Float> rates = Maps.newHashMap();
+                final Vector3 pos = Vector3.getNewVector().set(player);
+                final SpawnCheck checker = new SpawnCheck(pos, player.getEntityWorld());
+                ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
+                for (PokedexEntry e : Database.spawnables)
+                {
+                    if (e.getSpawnData().getMatcher(checker, false) != null)
+                    {
+                        names.add(e);
+                    }
+                }
+
+                float total = 0;
+                Map<PokedexEntry, SpawnBiomeMatcher> matchers = Maps.newHashMap();
+                for (PokedexEntry e : names)
+                {
+                    SpawnBiomeMatcher matcher = e.getSpawnData().getMatcher(checker, false);
+                    matchers.put(e, matcher);
+                    float val = e.getSpawnData().getWeight(matcher);
+                    float min = e.getSpawnData().getMin(matcher);
+                    float num = min + (e.getSpawnData().getMax(matcher) - min) / 2;
+                    val *= num;
+                    total += val;
+                    rates.put(e, val);
+                }
+                for (PokedexEntry e : names)
+                {
+                    float val = rates.get(e) / total;
+                    rates.put(e, val);
+                }
+                PacketPokedex packet = new PacketPokedex(REQUESTLOC);
+                int n = 0;
+                for (PokedexEntry e : names)
+                {
+                    SpawnBiomeMatcher matcher = matchers.get(e);
+                    matcher.spawnRule.values.put(new QName("Local_Rate"), rates.get(e) + "");
+                    packet.data.setString("e" + n, e.getName());
+                    packet.data.setString("" + n, gson.toJson(matcher));
+                    n++;
+                }
+                PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
+            }
+            else
+            {
+                selectedLoc.clear();
+                int n = message.data.getKeySet().size() / 2;
+                for (int i = 0; i < n; i++)
+                {
+                    selectedLoc.put(Database.getEntry(message.data.getString("e" + i)),
+                            gson.fromJson(message.data.getString("" + i), SpawnBiomeMatcher.class));
+                }
+            }
+            return;
+        }
+        else if (message.message == REQUESTMOB)
+        {
+            if (ctx.side == Side.SERVER)
+            {
+                PacketPokedex packet = new PacketPokedex(REQUESTMOB);
+                PokedexEntry entry = Database.getEntry(message.data.getString("V"));
+                if (entry.getSpawnData() == null && entry.getChild() != entry)
+                {
+                    PokedexEntry child;
+                    if ((child = entry.getChild()).getSpawnData() != null)
+                    {
+                        entry = child;
+                    }
+                }
+                SpawnData data = entry.getSpawnData();
+                boolean valid = data != null;
+                if (valid)
+                {
+                    int n = 0;
+                    for (SpawnBiomeMatcher matcher : data.matchers.keySet())
+                    {
+                        String value = gson.toJson(matcher);
+                        packet.data.setString("" + n++, value);
+                    }
+                }
+                PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
+            }
+            else
+            {
+                selectedMob.clear();
+                int n = message.data.getKeySet().size();
+                for (int i = 0; i < n; i++)
+                {
+                    selectedMob.add(gson.fromJson(message.data.getString("" + i), SpawnBiomeMatcher.class));
+                }
+            }
+            return;
+        }
+
         if (message.message == REQUEST || (ctx.side == Side.SERVER && message.message >= 0))
         {
             if (ctx.side == Side.CLIENT)

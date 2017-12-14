@@ -3,6 +3,7 @@ package pokecube.core.client.gui.watch;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
@@ -10,79 +11,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeCore;
+import pokecube.core.client.gui.watch.util.WatchPage;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.network.packets.PacketPokedex;
+import pokecube.core.utils.Tools;
 
 public class GuiPokeWatch extends GuiScreen
 {
-    public static abstract class WatchPage extends GuiScreen
-    {
-        protected final GuiPokeWatch watch;
-
-        public WatchPage(GuiPokeWatch watch)
-        {
-            this.watch = watch;
-        }
-
-        @Override
-        public void initGui()
-        {
-            super.initGui();
-            this.mc = watch.mc;
-            this.fontRenderer = watch.fontRenderer;
-        }
-
-        @Override
-        protected void actionPerformed(GuiButton button) throws IOException
-        {
-            super.actionPerformed(button);
-        }
-
-        @Override
-        protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-        {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
-        }
-
-        @Override
-        protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-        {
-            super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        }
-
-        @Override
-        protected void mouseReleased(int mouseX, int mouseY, int state)
-        {
-            super.mouseReleased(mouseX, mouseY, state);
-        }
-
-        @Override
-        protected void keyTyped(char typedChar, int keyCode) throws IOException
-        {
-            super.keyTyped(typedChar, keyCode);
-        }
-
-        @Override
-        public void drawScreen(int mouseX, int mouseY, float partialTicks)
-        {
-            super.drawScreen(mouseX, mouseY, partialTicks);
-        }
-
-        protected void onPageOpened()
-        {
-
-        }
-
-        protected void onPageClosed()
-        {
-
-        }
-
-        protected abstract String getTitle();
-    }
-
     private static class MissingPage extends WatchPage
     {
 
@@ -101,7 +42,7 @@ public class GuiPokeWatch extends GuiScreen
         }
 
         @Override
-        protected String getTitle()
+        public String getTitle()
         {
             return I18n.format("pokewatch.title.blank");
         }
@@ -118,27 +59,27 @@ public class GuiPokeWatch extends GuiScreen
         PAGELIST.add(TeleportsPage.class);
         PAGELIST.add(SecretBaseRadarPage.class);
         PAGELIST.add(WikiPage.class);
+        PAGELIST.add(PokemobInfoPage.class);
+        PAGELIST.add(SpawnsPage.class);
     }
 
     final List<WatchPage>     pages = Lists.newArrayList();
+    public final IPokemob     pokemob;
     public final EntityPlayer player;
     int                       index = 0;
 
+    public GuiPokeWatch(EntityPlayer player, int startPage)
+    {
+        this(player);
+        if (startPage >= 0 && startPage < pages.size()) index = startPage;
+        PacketPokedex.sendLocationSpawnsRequest();
+    }
+
     public GuiPokeWatch(EntityPlayer player)
     {
+        Entity entityHit = Tools.getPointedEntity(player, 16);
+        pokemob = CapabilityPokemob.getPokemobFor(entityHit);
         this.player = player;
-    }
-
-    public List<GuiButton> getButtons()
-    {
-        return buttonList;
-    }
-
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-        pages.clear();
         for (Class<? extends WatchPage> pageClass : PAGELIST)
         {
             WatchPage page;
@@ -153,9 +94,19 @@ public class GuiPokeWatch extends GuiScreen
             }
             pages.add(page);
         }
+    }
+
+    public List<GuiButton> getButtons()
+    {
+        return buttonList;
+    }
+
+    @Override
+    public void initGui()
+    {
+        super.initGui();
         for (WatchPage page : pages)
             page.initGui();
-        pages.get(index).onPageOpened();
         int x = width / 2;
         int y = height / 2 - 5;
         String next = I18n.format("tile.pc.next");
@@ -164,6 +115,8 @@ public class GuiPokeWatch extends GuiScreen
         this.buttonList.add(new GuiButton(0, x + 26, y + 69, 50, 12, next));
         this.buttonList.add(new GuiButton(1, x - 76, y + 69, 50, 12, prev));
         this.buttonList.add(new GuiButton(2, x - 25, y + 69, 50, 12, home));
+
+        pages.get(index).onPageOpened();
     }
 
     @Override
@@ -181,7 +134,17 @@ public class GuiPokeWatch extends GuiScreen
         int k2 = (height - 160) / 2;
         drawTexturedModalRect(j2, k2, 0, 0, 160, 160);
         super.drawScreen(mouseX, mouseY, partialTicks);
-        pages.get(index).drawScreen(mouseX, mouseY, partialTicks);
+        try
+        {
+            pages.get(index).drawScreen(mouseX, mouseY, partialTicks);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
+            pages.set(index, new MissingPage(this));
+            pages.get(index).initGui();
+            pages.get(index).onPageOpened();
+        }
     }
 
     @Override
@@ -199,8 +162,18 @@ public class GuiPokeWatch extends GuiScreen
     @Override
     public void handleMouseInput() throws IOException
     {
-        pages.get(index).handleMouseInput();
         super.handleMouseInput();
+        try
+        {
+            pages.get(index).handleMouseInput();
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
+            pages.set(index, new MissingPage(this));
+            pages.get(index).initGui();
+            pages.get(index).onPageOpened();
+        }
     }
 
     @Override
@@ -238,40 +211,89 @@ public class GuiPokeWatch extends GuiScreen
             pages.get(old).onPageClosed();
             pages.get(index).onPageOpened();
         }
-        pages.get(index).actionPerformed(button);
+        try
+        {
+            pages.get(index).actionPerformed(button);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
+            pages.set(index, new MissingPage(this));
+            pages.get(index).initGui();
+            pages.get(index).onPageOpened();
+        }
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        pages.get(index).mouseClicked(mouseX, mouseY, mouseButton);
+        try
+        {
+            pages.get(index).mouseClicked(mouseX, mouseY, mouseButton);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
+            pages.set(index, new MissingPage(this));
+            pages.get(index).initGui();
+            pages.get(index).onPageOpened();
+        }
     }
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
     {
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        pages.get(index).mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        try
+        {
+            pages.get(index).mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
+            pages.set(index, new MissingPage(this));
+            pages.get(index).initGui();
+            pages.get(index).onPageOpened();
+        }
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state)
     {
         super.mouseReleased(mouseX, mouseY, state);
-        pages.get(index).mouseReleased(mouseX, mouseY, state);
+        try
+        {
+            pages.get(index).mouseReleased(mouseX, mouseY, state);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
+            pages.set(index, new MissingPage(this));
+            pages.get(index).initGui();
+            pages.get(index).onPageOpened();
+        }
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
         super.keyTyped(typedChar, keyCode);
-        pages.get(index).keyTyped(typedChar, keyCode);
+        try
+        {
+            pages.get(index).keyTyped(typedChar, keyCode);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);
+            pages.set(index, new MissingPage(this));
+            pages.get(index).initGui();
+            pages.get(index).onPageOpened();
+        }
     }
 
-    @Override
-    public void updateScreen()
+    public boolean canEdit(IPokemob pokemob)
     {
-        super.updateScreen();
+        return pokemob.getEntity().addedToChunk && (pokemob.getOwner() == player || player.capabilities.isCreativeMode);
     }
 }

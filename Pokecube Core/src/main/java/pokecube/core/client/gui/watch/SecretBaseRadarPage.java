@@ -1,19 +1,17 @@
 package pokecube.core.client.gui.watch;
 
-import java.io.IOException;
 import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Sets;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import pokecube.core.client.gui.watch.GuiPokeWatch.WatchPage;
+import pokecube.core.client.gui.watch.util.WatchPage;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 import thut.api.maths.Vector3;
 
@@ -25,36 +23,6 @@ public class SecretBaseRadarPage extends WatchPage
     public SecretBaseRadarPage(GuiPokeWatch watch)
     {
         super(watch);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) throws IOException
-    {
-        super.actionPerformed(button);
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-    {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-    {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        super.mouseReleased(mouseX, mouseY, state);
-    }
-
-    @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
-    {
-        super.keyTyped(typedChar, keyCode);
     }
 
     @Override
@@ -124,7 +92,7 @@ public class SecretBaseRadarPage extends WatchPage
     }
 
     @Override
-    protected String getTitle()
+    public String getTitle()
     {
         return I18n.format("pokewatch.title.baseradar");
     }

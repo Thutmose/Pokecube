@@ -82,6 +82,7 @@ public class Pokedex
 
     public PokedexEntry getNext(PokedexEntry pokedexEntry, int i)
     {
+        if (!pokedexEntry.base) pokedexEntry = pokedexEntry.getBaseForme();
         Integer index = entryIndecies.get(pokedexEntry);
         if (index == null)
         {

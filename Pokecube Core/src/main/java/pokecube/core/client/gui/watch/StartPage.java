@@ -8,7 +8,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import net.minecraft.client.resources.I18n;
 import pokecube.core.client.gui.helper.ScrollGui;
-import pokecube.core.client.gui.watch.GuiPokeWatch.WatchPage;
+import pokecube.core.client.gui.watch.util.ListPage;
+import pokecube.core.client.gui.watch.util.WatchPage;
 
 public class StartPage extends ListPage
 {
@@ -85,7 +86,7 @@ public class StartPage extends ListPage
     }
 
     @Override
-    void initList()
+    public void initList()
     {
         List<IGuiListEntry> entries = Lists.newArrayList();
         int offsetX = (watch.width - 160) / 2 + 10;
@@ -99,7 +100,7 @@ public class StartPage extends ListPage
     }
 
     @Override
-    protected String getTitle()
+    public String getTitle()
     {
         return I18n.format("pokewatch.title.start");
     }

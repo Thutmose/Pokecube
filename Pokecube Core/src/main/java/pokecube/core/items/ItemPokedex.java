@@ -3,8 +3,6 @@
  */
 package pokecube.core.items;
 
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +12,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -48,7 +47,7 @@ public class ItemPokedex extends Item
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
+    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
         if (tab != getCreativeTab()) return;
         subItems.add(new ItemStack(this, 1, 0));

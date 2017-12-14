@@ -46,7 +46,6 @@ public enum PokeType
         for (PokeType type : values())
         {
             if (name.equalsIgnoreCase(type.name)) return type;
-
         }
         return unknown;
     }

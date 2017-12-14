@@ -3,6 +3,8 @@ package pokecube.core.client.gui;
 import java.io.IOException;
 import java.util.List;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -273,8 +275,7 @@ public class GuiPokemob extends GuiContainer
                         mc.getTextureMapBlocks().getAtlasSprite("minecraft:items/diamond_sword"), 16, 16);
                 if (!pokemob.getPokemonAIState(IMoveConstants.GUARDING))
                 {
-                    this.drawGradientRect(x + 2, y + 2, x + width - 2, y + width - 2,
-                            0x88884444, 0x88884444);
+                    this.drawGradientRect(x + 2, y + 2, x + width - 2, y + width - 2, 0x88884444, 0x88884444);
                 }
             }
         }
@@ -298,8 +299,8 @@ public class GuiPokemob extends GuiContainer
          * Equivalent of MouseListener.mousePressed(MouseEvent e). */
         public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
         {
-            return this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y
-                    && mouseX < this.x + this.width && mouseY < this.y + this.height;
+            return this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
+                    && mouseY < this.y + this.height;
         }
 
         @Override
@@ -325,7 +326,9 @@ public class GuiPokemob extends GuiContainer
             float size = 0;
             int j = width;
             int k = height;
-            size = Math.max(entity.width, entity.height);
+            float mobScale = pokemob.getSize();
+            Vector3f dims = pokemob.getPokedexEntry().getModelSize();
+            size = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
             yRenderAngle = entity.renderYawOffset - entity.ticksExisted;
             float zoom = (25f / size) * scale;
             GL11.glPushMatrix();

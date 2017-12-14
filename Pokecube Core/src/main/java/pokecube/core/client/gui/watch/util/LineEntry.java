@@ -64,7 +64,7 @@ public class LineEntry implements IGuiListEntry
         int dx = fontRender.getStringWidth(line.getFormattedText());
         int relativeX = mouseX - x;
         int relativeY = mouseY - y;
-        if (relativeY <= fontRender.FONT_HEIGHT && relativeX <= dx && (relativeY) > 0)
+        if (relativeY <= fontRender.FONT_HEIGHT && relativeX >= 0 && relativeX <= dx && (relativeY) > 0)
         {
             listener.handleHovor(line, x, y);
         }

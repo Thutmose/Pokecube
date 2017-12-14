@@ -251,8 +251,11 @@ public interface IHasMoves extends IHasStats
                             thisMob.getPokemonDisplayName().getFormattedText(),
                             new TextComponentTranslation(MovesUtils.getUnlocalizedMove(moveName)));
                     thisMob.displayMessageToOwner(mess);
-                    getMoveStats().newMoves.add(moveName);
-                    PacketSyncNewMoves.sendUpdatePacket((IPokemob) this);
+                    if (!getMoveStats().newMoves.contains(moveName))
+                    {
+                        getMoveStats().newMoves.add(moveName);
+                        PacketSyncNewMoves.sendUpdatePacket((IPokemob) this);
+                    }
                     return;
                 }
             }

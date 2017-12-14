@@ -158,14 +158,14 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         if (guiID == Config.GUIPOKECENTER_ID) { return new GuiHealTable(player.inventory); }
         if (guiID == Config.GUIDISPLAYPOKECUBEINFO_ID) { return null; }
         if (guiID == Config.GUIDISPLAYTELEPORTINFO_ID) { return null; }
+        Entity entityHit = Tools.getPointedEntity(player, 16);
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityHit);
         if (guiID == Config.GUIPOKEDEX_ID)
         {
-            Entity entityHit = Tools.getPointedEntity(player, 16);
-            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityHit);
             if (pokemob != null) return new GuiPokedex(pokemob, player);
             return new GuiPokedex(null, player);
         }
-        if (guiID == Config.GUIPOKEWATCH_ID) { return new GuiPokeWatch(player); }
+        if (guiID == Config.GUIPOKEWATCH_ID) { return new GuiPokeWatch(player, pokemob == null ? 0 : 4); }
         if (guiID == Config.GUIPOKEMOB_ID)
         {
             IPokemob e = CapabilityPokemob

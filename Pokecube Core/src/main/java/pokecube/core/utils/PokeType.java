@@ -46,9 +46,6 @@ public enum PokeType
         for (PokeType type : values())
         {
             if (name.equalsIgnoreCase(type.name)) return type;
-            if (name.equalsIgnoreCase(getTranslatedName(type).toLowerCase(java.util.Locale.ENGLISH).trim()))
-                return type;
-
         }
         return unknown;
     }

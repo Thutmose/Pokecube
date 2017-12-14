@@ -45,12 +45,7 @@ public class WikiPage extends ListPage
     public WikiPage(GuiPokeWatch watch)
     {
         super(watch);
-    }
-
-    @Override
-    public String getTitle()
-    {
-        return I18n.format("pokewatch.title.wiki");
+        this.setTitle(I18n.format("pokewatch.title.wiki"));
     }
 
     @Override

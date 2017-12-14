@@ -7,7 +7,6 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -34,18 +33,6 @@ public class Moves extends ListPage
     public Moves(GuiPokeWatch watch, IPokemob pokemob)
     {
         super(watch, pokemob, "moves");
-    }
-
-    @Override
-    public void onPageOpened()
-    {
-        super.onPageOpened();
-    }
-
-    @Override
-    public void actionPerformed(GuiButton button) throws IOException
-    {
-        super.actionPerformed(button);
     }
 
     @Override
@@ -306,7 +293,7 @@ public class Moves extends ListPage
     }
 
     @Override
-    protected boolean handleComponentClick(ITextComponent component)
+    public boolean handleComponentClick(ITextComponent component)
     {
         return super.handleComponentClick(component);
     }

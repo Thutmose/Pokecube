@@ -77,12 +77,7 @@ public class StartPage extends ListPage
     public StartPage(GuiPokeWatch watch)
     {
         super(watch);
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.setTitle(I18n.format("pokewatch.title.start"));
     }
 
     @Override
@@ -97,12 +92,6 @@ public class StartPage extends ListPage
             if (!(page instanceof StartPage)) entries.add(new PageEntry(page, offsetY, height + 5));
         }
         list = new ScrollGui(mc, 146, height, 20, offsetX, offsetY, entries);
-    }
-
-    @Override
-    public String getTitle()
-    {
-        return I18n.format("pokewatch.title.start");
     }
 
 }

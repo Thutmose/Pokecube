@@ -1,11 +1,9 @@
 package pokecube.core.client.gui.watch.pokemob;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import pokecube.core.client.gui.helper.ScrollGui;
 import pokecube.core.client.gui.watch.GuiPokeWatch;
@@ -22,18 +20,6 @@ public class Spawns extends ListPage
     public Spawns(GuiPokeWatch watch, IPokemob pokemob)
     {
         super(watch, pokemob, "spawns");
-    }
-
-    @Override
-    public void onPageOpened()
-    {
-        super.onPageOpened();
-    }
-
-    @Override
-    public void actionPerformed(GuiButton button) throws IOException
-    {
-        super.actionPerformed(button);
     }
 
     @Override

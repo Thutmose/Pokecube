@@ -125,6 +125,7 @@ public class TeleportsPage extends ListPage
     public TeleportsPage(GuiPokeWatch watch)
     {
         super(watch);
+        this.setTitle(I18n.format("pokewatch.title.teleports"));
     }
 
     @Override
@@ -184,12 +185,6 @@ public class TeleportsPage extends ListPage
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    public String getTitle()
-    {
-        return I18n.format("pokewatch.title.teleports");
     }
 
 }

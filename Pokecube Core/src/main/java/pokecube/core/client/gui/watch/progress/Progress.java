@@ -30,7 +30,7 @@ public abstract class Progress extends WatchPage
     public void initGui()
     {
         super.initGui();
-        this.fontRender = fontRendererObj;
+        this.fontRender = fontRenderer;
     }
 
 }

@@ -16,12 +16,6 @@ public class GlobalProgress extends Progress
     }
 
     @Override
-    public void initGui()
-    {
-        super.initGui();
-    }
-
-    @Override
     public void onPageOpened()
     {
         lines.clear();

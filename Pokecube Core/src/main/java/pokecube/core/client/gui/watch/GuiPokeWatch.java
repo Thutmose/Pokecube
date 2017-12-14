@@ -141,18 +141,6 @@ public class GuiPokeWatch extends GuiScreen
     }
 
     @Override
-    public void handleInput() throws IOException
-    {
-        super.handleInput();
-    }
-
-    @Override
-    public void handleKeyboardInput() throws IOException
-    {
-        super.handleKeyboardInput();
-    }
-
-    @Override
     public void handleMouseInput() throws IOException
     {
         super.handleMouseInput();

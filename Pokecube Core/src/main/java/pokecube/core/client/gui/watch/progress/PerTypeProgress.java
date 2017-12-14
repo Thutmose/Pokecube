@@ -32,7 +32,7 @@ public class PerTypeProgress extends Progress
         super.initGui();
         int x = watch.width / 2 - 30;
         int y = watch.height / 2 + 53;
-        text = new GuiTextField(0, fontRendererObj, x, y, 60, 10);
+        text = new GuiTextField(0, fontRender, x, y, 60, 10);
     }
 
     @Override
@@ -123,7 +123,6 @@ public class PerTypeProgress extends Progress
         else if (keyCode == Keyboard.KEY_RETURN)
         {
             PokeType newType = PokeType.getType(text.getText());
-            System.out.println(newType);
             if (newType != null)
             {
                 text.setText(PokeType.getTranslatedName(newType));

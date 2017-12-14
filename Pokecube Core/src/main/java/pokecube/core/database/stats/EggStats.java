@@ -8,19 +8,19 @@ import pokecube.core.utils.PokeType;
 
 public class EggStats
 {
-    public static int getNumberUniqueHatchedBy(UUID playerName)
+    public static int getNumberUniqueHatchedBy(UUID playerID)
     {
         int count = 0;
-        Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerName);
+        Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerID);
         if (map == null) return 0;
         count += map.size();
         return count;
     }
 
-    public static int getTotalNumberHatchedBy(UUID playerName)
+    public static int getTotalNumberHatchedBy(UUID playerID)
     {
         int count = 0;
-        Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerName);
+        Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerID);
         if (map == null) return 0;
         for (Integer i : map.values())
         {
@@ -29,10 +29,10 @@ public class EggStats
         return count;
     }
 
-    public static int getTotalNumberOfPokemobHatchedBy(UUID playerName, PokedexEntry type)
+    public static int getTotalNumberOfPokemobHatchedBy(UUID playerID, PokedexEntry type)
     {
         int count = 0;
-        Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerName);
+        Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerID);
         if (map == null) return 0;
         if (map.containsKey(type)) count += map.get(type);
         return count;
@@ -44,6 +44,16 @@ public class EggStats
         for (PokedexEntry dbe : StatsCollector.getHatches(player).keySet())
         {
             if (dbe.isType(type)) count += StatsCollector.getHatches(player).get(dbe);
+        }
+        return count;
+    }
+
+    public static int getUniqueOfTypeHatchedBy(UUID player, PokeType type)
+    {
+        int count = 0;
+        for (PokedexEntry dbe : StatsCollector.getHatches(player).keySet())
+        {
+            if (dbe.isType(type)) count++;
         }
         return count;
     }

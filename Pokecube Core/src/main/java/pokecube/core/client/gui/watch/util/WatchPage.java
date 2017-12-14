@@ -10,6 +10,7 @@ import pokecube.core.client.gui.watch.GuiPokeWatch;
 public abstract class WatchPage extends GuiScreen
 {
     public final GuiPokeWatch watch;
+    private String            title;
 
     public WatchPage(GuiPokeWatch watch)
     {
@@ -77,5 +78,13 @@ public abstract class WatchPage extends GuiScreen
         });
     }
 
-    public abstract String getTitle();
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
 }

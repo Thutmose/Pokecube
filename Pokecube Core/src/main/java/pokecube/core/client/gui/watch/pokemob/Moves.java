@@ -9,10 +9,15 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import pokecube.core.client.gui.helper.ScrollGui;
 import pokecube.core.client.gui.watch.GuiPokeWatch;
 import pokecube.core.client.gui.watch.util.LineEntry;
@@ -47,10 +52,10 @@ public class Moves extends ListPage
     void initList()
     {
         List<IGuiListEntry> entries = Lists.newArrayList();
-        int offsetX = (watch.width - 160) / 2 + 20;
+        int offsetX = (watch.width - 160) / 2 + 46;
         int offsetY = (watch.height - 160) / 2 + 85;
         int height = fontRendererObj.FONT_HEIGHT * 6;
-        int width = 135;
+        int width = 111;
 
         int y0 = offsetY;
         int y1 = offsetY + height;
@@ -59,7 +64,7 @@ public class Moves extends ListPage
         if (!watch.canEdit(pokemob))
         {
             width = 111;
-            int dx = 25;
+            int dx = 0;
             int dy = -57;
             y0 += dy;
             y1 += dy;
@@ -97,6 +102,8 @@ public class Moves extends ListPage
                 ITextComponent main = new TextComponentTranslation("pokewatch.moves.lvl", i, moveName);
                 main.setStyle(new Style());
                 main.getStyle().setColor(TextFormatting.GREEN);
+                main.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, s));
+                main.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(s)));
                 entries.add(new LineEntry(y0, y1, fontRendererObj, main, colour).setClickListner(listener));
             }
         }
@@ -109,6 +116,8 @@ public class Moves extends ListPage
             ITextComponent main = new TextComponentTranslation("pokewatch.moves.tm", moveName);
             main.setStyle(new Style());
             main.getStyle().setColor(TextFormatting.GREEN);
+            main.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, s));
+            main.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(s)));
             entries.add(new LineEntry(y0, y1, fontRendererObj, main, colour).setClickListner(listener));
         }
         list = new ScrollGui(mc, width, height, fontRendererObj.FONT_HEIGHT, offsetX, offsetY, entries);
@@ -136,15 +145,17 @@ public class Moves extends ListPage
     {
         int x = (watch.width - 160) / 2 + 80;
         int y = (watch.height - 160) / 2 + 8;
-        if (watch.canEdit(pokemob)) drawMoves(x, y);
+        if (watch.canEdit(pokemob)) drawMoves(x, y, mouseX, mouseY);
     }
 
-    private void drawMoves(int x, int y)
+    private void drawMoves(int x, int y, int mouseX, int mouseY)
     {
-        // Draw the pokemob's moves
+
         int dx = -30;
         int dy = 20;
         int held = -1;
+        int mx = mouseX - (x + dx);
+        int my = mouseY - (y + dy);
         for (int i = 0; i < moveOffsets.length; i++)
         {
             int[] offset = moveOffsets[i];
@@ -158,6 +169,24 @@ public class Moves extends ListPage
             {
                 drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), x + dx,
                         y + dy + offset[1] + offset[4], move.getType(pokemob).colour);
+                int length = fontRendererObj.getStringWidth(MovesUtils.getMoveName(move.getName()).getFormattedText());
+                if (mx > 0 && mx < length && my > offset[1] && my < offset[1] + fontRendererObj.FONT_HEIGHT)
+                {
+                    String text;
+                    int pwr = move.getPWR(pokemob, watch.player);
+                    if (pwr > 0) text = pwr + "";
+                    else text = "-";
+                    text = I18n.format("pokewatch.moves.pwr", text);
+                    GlStateManager.disableDepth();
+                    int box = Math.max(10, fontRendererObj.getStringWidth(text) + 2);
+                    int mx1 = 75 - box;
+                    int my1 = offset[1] + 18;
+                    int dy1 = fontRendererObj.FONT_HEIGHT;
+                    drawRect(x + mx1 - 1, y + my1 - 1, x + mx1 + box + 1, y + my1 + dy1 + 1, 0xFF78C850);
+                    drawRect(x + mx1, y + my1, x + mx1 + box, y + my1 + dy1, 0xFF000000);
+                    fontRendererObj.drawString(text, x + mx1 + 1, y + my1, 0xFFFFFFFF, true);
+                    GlStateManager.enableDepth();
+                }
             }
         }
         if (held != -1)
@@ -285,6 +314,26 @@ public class Moves extends ListPage
     @Override
     protected void handleComponentHover(ITextComponent component, int x, int y)
     {
+        tooltip:
+        if (component.getStyle().getHoverEvent() != null)
+        {
+            String text = component.getStyle().getHoverEvent().getValue().getUnformattedText();
+            Move_Base move = MovesUtils.getMoveFromName(text);
+            if (move == null) break tooltip;
+            int pwr = move.getPWR(pokemob, watch.player);
+            if (pwr > 0) text = pwr + "";
+            else text = "-";
+            text = I18n.format("pokewatch.moves.pwr", text);
+            GlStateManager.disableDepth();
+            int box = Math.max(10, fontRendererObj.getStringWidth(text) + 2);
+            int mx = 102 - box;
+            int my = -10;
+            int dy = fontRendererObj.FONT_HEIGHT;
+            drawRect(x + mx - 1, y + my - 1, x + mx + box + 1, y + my + dy + 1, 0xFF78C850);
+            drawRect(x + mx, y + my, x + mx + box, y + my + dy, 0xFF000000);
+            fontRendererObj.drawString(text, x + mx + 1, y + my, 0xFFFFFFFF, true);
+            GlStateManager.enableDepth();
+        }
         super.handleComponentHover(component, x, y);
     }
 

@@ -1,7 +1,11 @@
 package pokecube.core.client.gui.watch;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import org.lwjgl.input.Keyboard;
 
@@ -11,14 +15,15 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.command.CommandBase;
 import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.client.gui.GuiPokemob;
 import pokecube.core.client.gui.watch.pokemob.Breeding;
 import pokecube.core.client.gui.watch.pokemob.Moves;
-import pokecube.core.client.gui.watch.pokemob.PokeInfoPage;
 import pokecube.core.client.gui.watch.pokemob.Spawns;
 import pokecube.core.client.gui.watch.pokemob.StatsInfo;
 import pokecube.core.client.gui.watch.util.PageButton;
+import pokecube.core.client.gui.watch.util.PageWithSubPages;
 import pokecube.core.client.gui.watch.util.WatchPage;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -30,13 +35,11 @@ import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
 
-public class PokemobInfoPage extends WatchPage
+public class PokemobInfoPage extends PageWithSubPages
 {
 
-    IPokemob           pokemob;
-    int                index = 0;
-    GuiTextField       search;
-    List<PokeInfoPage> pages = Lists.newArrayList();
+    IPokemob     pokemob;
+    GuiTextField search;
 
     public PokemobInfoPage(GuiPokeWatch watch)
     {
@@ -55,14 +58,12 @@ public class PokemobInfoPage extends WatchPage
 
     public void initPages(IPokemob pokemob)
     {
-        boolean update = false;
         if (pokemob == null)
         {
             String name = PokecubePlayerDataHandler.getCustomDataTag(watch.player).getString("WEntry");
             PokedexEntry entry = Database.getEntry(name);
             if (entry == null)
             {
-                update = true;
                 entry = Pokedex.getInstance().getFirstEntry();
             }
             pokemob = EventsHandlerClient.getRenderMob(entry, watch.player.getEntityWorld());
@@ -71,23 +72,21 @@ public class PokemobInfoPage extends WatchPage
         search.setVisible(!watch.canEdit(pokemob));
         search.setText(pokemob.getPokedexEntry().getName());
         PacketPokedex.sendSpecificSpawnsRequest(pokemob.getPokedexEntry());
-        if (update) PacketPokedex.updateWatchEntry(pokemob.getPokedexEntry());
+        PacketPokedex.updateWatchEntry(pokemob.getPokedexEntry());
         pages.clear();
         pages.add(new StatsInfo(watch, pokemob));
         pages.add(new Moves(watch, pokemob));
         pages.add(new Spawns(watch, pokemob));
         pages.add(new Breeding(this, pokemob));
-        // pages.add(new Search(this, pokemob));
-        for (PokeInfoPage page : pages)
+        for (WatchPage page : pages)
         {
             page.initGui();
         }
     }
 
     @Override
-    public void onPageOpened()
+    public void preSubOpened()
     {
-        super.onPageOpened();
         initPages(pokemob);
         int x = watch.width / 2;
         int y = watch.height / 2 - 5;
@@ -95,23 +94,12 @@ public class PokemobInfoPage extends WatchPage
         String prev = "<";
         this.watch.getButtons().add(new PageButton(watch.getButtons().size(), x + 64, y - 70, 12, 12, next, this));
         this.watch.getButtons().add(new PageButton(watch.getButtons().size(), x - 76, y - 70, 12, 12, prev, this));
-        if (!watch.canEdit(pokemob))
-        {
-            PageButton buttonNext = new PageButton(watch.getButtons().size(), x - 46, y + 4, 12, 12, next, this);
-            PageButton buttonPrev = new PageButton(watch.getButtons().size() + 1, x - 76, y + 4, 12, 12, prev, this);
-            PageButton formCycle = new PageButton(watch.getButtons().size() + 2, x - 65, y + 4, 20, 12, "-", this);
-            this.watch.getButtons().add(buttonNext);
-            this.watch.getButtons().add(buttonPrev);
-            this.watch.getButtons().add(formCycle);
-        }
-        pages.get(index).onPageOpened();
-    }
-
-    @Override
-    public void onPageClosed()
-    {
-        super.onPageClosed();
-        pages.get(index).onPageClosed();
+        PageButton buttonNext = new PageButton(watch.getButtons().size(), x - 46, y + 4, 12, 12, next, this);
+        PageButton buttonPrev = new PageButton(watch.getButtons().size() + 1, x - 76, y + 4, 12, 12, prev, this);
+        PageButton formCycle = new PageButton(watch.getButtons().size() + 2, x - 65, y + 4, 20, 12, "-", this);
+        this.watch.getButtons().add(buttonNext);
+        this.watch.getButtons().add(buttonPrev);
+        this.watch.getButtons().add(formCycle);
     }
 
     @Override
@@ -119,17 +107,11 @@ public class PokemobInfoPage extends WatchPage
     {
         if (button.id == 3)// Next
         {
-            pages.get(index).onPageClosed();
-            index++;
-            if (index >= pages.size()) index = 0;
-            pages.get(index).onPageOpened();
+            changePage(index + 1);
         }
         else if (button.id == 4)// Previous
         {
-            pages.get(index).onPageClosed();
-            index--;
-            if (index < 0) index = pages.size() - 1;
-            pages.get(index).onPageOpened();
+            changePage(index - 1);
         }
         else if (button.id == 5)
         {
@@ -147,7 +129,7 @@ public class PokemobInfoPage extends WatchPage
             pokemob = EventsHandlerClient.getRenderMob(entry, watch.player.getEntityWorld());
             initPages(pokemob);
         }
-        else if (button.id == 7)
+        else if (button.id == 7 && !watch.canEdit(pokemob))
         {
             // Cycle Form.
             PokedexEntry entry = pokemob.getPokedexEntry();
@@ -169,51 +151,96 @@ public class PokemobInfoPage extends WatchPage
             }
         }
         super.actionPerformed(button);
-        pages.get(index).actionPerformed(button);
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        pages.get(index).mouseClicked(mouseX, mouseY, mouseButton);
-        if (search.getVisible() && !new Exception().getStackTrace()[2].getClassName()
-                .equals("pokecube.core.client.gui.watch.PokemobInfoPage"))
-            search.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public void handleMouseInput() throws IOException
-    {
-        super.handleMouseInput();
-        pages.get(index).handleMouseInput();
-    }
-
-    @Override
-    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-    {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        pages.get(index).mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-    }
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        super.mouseReleased(mouseX, mouseY, state);
-        pages.get(index).mouseReleased(mouseX, mouseY, state);
+        if (!new Exception().getStackTrace()[2].getClassName()
+                .equals("pokecube.core.client.gui.watch.util.PageWithSubPages"))
+        {
+            // change gender if clicking on the gender, and shininess otherwise
+            if (!watch.canEdit(pokemob))
+            {
+                int x = (watch.width - 160) / 2 + 80;
+                int y = (watch.height - 160) / 2 + 8;
+                int mx = mouseX - x;
+                int my = mouseY - y;
+                if (mx > -43 && mx < -43 + 76 && my > 42 && my < 42 + 7)
+                {
+                    switch (pokemob.getSexe())
+                    {
+                    case IPokemob.MALE:
+                        pokemob.setSexe(IPokemob.FEMALE);
+                        break;
+                    case IPokemob.FEMALE:
+                        pokemob.setSexe(IPokemob.MALE);
+                        break;
+                    }
+                }
+                else if (mx > -75 && mx < -75 + 40 && my > 10 && my < 10 + 40)
+                {
+                    if (pokemob.getPokedexEntry().hasShiny)
+                    {
+                        pokemob.setShiny(!pokemob.isShiny());
+                    }
+                }
+            }
+            if (search.getVisible()) search.mouseClicked(mouseX, mouseY, mouseButton);
+        }
     }
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException
     {
         super.keyTyped(typedChar, keyCode);
-        pages.get(index).keyTyped(typedChar, keyCode);
         if (search.getVisible())
         {
             search.textboxKeyTyped(typedChar, keyCode);
             if (keyCode == Keyboard.KEY_TAB)
             {
-                // TODO autocomplete the name.
+                String text = search.getText();
+                List<String> ret = new ArrayList<String>();
+                for (PokedexEntry entry : Database.allFormes)
+                {
+                    String check = entry.getName().toLowerCase(java.util.Locale.ENGLISH);
+                    if (check.startsWith(text.toLowerCase(java.util.Locale.ENGLISH)))
+                    {
+                        String name = entry.getName();
+                        if (name.contains(" "))
+                        {
+                            name = "\'" + name + "\'";
+                        }
+                        ret.add(name);
+                    }
+                }
+                Collections.sort(ret, new Comparator<String>()
+                {
+                    @Override
+                    public int compare(String o1, String o2)
+                    {
+                        if (o1.startsWith("'") && !o2.startsWith("'")) return 1;
+                        else if (o2.startsWith("'") && !o1.startsWith("'")) return -1;
+                        return o1.compareToIgnoreCase(o2);
+                    }
+                });
+                ret.replaceAll(new UnaryOperator<String>()
+                {
+
+                    @Override
+                    public String apply(String t)
+                    {
+                        if (t.startsWith("'") && t.endsWith("'"))
+                        {
+                            t = t.substring(1, t.length() - 1);
+                        }
+                        return t;
+                    }
+                });
+                String[] args = { text };
+                ret = CommandBase.getListOfStringsMatchingLastWord(args, ret);
+                if (!ret.isEmpty()) search.setText(ret.get(0));
             }
             else if (keyCode == Keyboard.KEY_RETURN)
             {
@@ -234,8 +261,29 @@ public class PokemobInfoPage extends WatchPage
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void prePageDraw(int mouseX, int mouseY, float partialTicks)
     {
+        if (!watch.canEdit(pokemob))
+        {
+            String name = PokecubePlayerDataHandler.getCustomDataTag(watch.player).getString("WEntry");
+            if (!name.equals(pokemob.getPokedexEntry().getName()))
+            {
+                search.setText(name);
+                PokedexEntry entry = pokemob.getPokedexEntry();
+                PokedexEntry newEntry = Database.getEntry(search.getText());
+                if (newEntry != null)
+                {
+                    search.setText(newEntry.getName());
+                    pokemob = EventsHandlerClient.getRenderMob(newEntry, watch.player.getEntityWorld());
+                    initPages(pokemob);
+                }
+                else
+                {
+                    search.setText(entry.getName());
+                }
+            }
+        }
+
         int x = (watch.width - 160) / 2 + 80;
         int y = (watch.height - 160) / 2 + 8;
         drawCenteredString(fontRendererObj, getTitle(), x, y, 0xFF78C850);
@@ -305,8 +353,13 @@ public class PokemobInfoPage extends WatchPage
             dr = 40;
             drawHorizontalLine(x + dx, x + dx + dr, y + dy + dr / 2, colour);
         }
-        pages.get(index).drawScreen(mouseX, mouseY, partialTicks);
+    }
 
+    @Override
+    public void postPageDraw(int mouseX, int mouseY, float partialTicks)
+    {
+        int x = (watch.width - 160) / 2 + 80;
+        int y = (watch.height - 160) / 2 + 8;
         if (pokemob != null)
         {
             // Draw hovored tooltip with pokemob's name
@@ -323,7 +376,7 @@ public class PokemobInfoPage extends WatchPage
                 GlStateManager.disableDepth();
                 mx = -35;
                 my = 20;
-                dy = fontRendererObj.FONT_HEIGHT;
+                int dy = fontRendererObj.FONT_HEIGHT;
                 int box = 0;
                 for (String s : text)
                 {
@@ -341,7 +394,6 @@ public class PokemobInfoPage extends WatchPage
             }
         }
         search.drawTextBox();
-        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override

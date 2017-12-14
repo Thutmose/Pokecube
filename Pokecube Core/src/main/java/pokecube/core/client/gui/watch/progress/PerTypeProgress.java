@@ -122,7 +122,7 @@ public class PerTypeProgress extends Progress
         }
         else if (keyCode == Keyboard.KEY_RETURN)
         {
-            PokeType newType = PokeType.getType(text.getText());
+            PokeType newType = getType(text.getText());
             if (newType != null)
             {
                 text.setText(PokeType.getTranslatedName(newType));
@@ -134,6 +134,18 @@ public class PerTypeProgress extends Progress
                 text.setText(PokeType.getTranslatedName(type));
             }
         }
+    }
+
+    private PokeType getType(String name)
+    {
+        name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
+        for (PokeType type : PokeType.values())
+        {
+            if (name.equalsIgnoreCase(type.name)) return type;
+            if (name.equalsIgnoreCase(PokeType.getTranslatedName(type).toLowerCase(java.util.Locale.ENGLISH).trim()))
+                return type;
+        }
+        return PokeType.unknown;
     }
 
 }

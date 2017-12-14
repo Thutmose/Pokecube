@@ -75,6 +75,10 @@ public class GuiPokeWatch extends GuiScreen
     {
         Entity entityHit = Tools.getPointedEntity(player, 16);
         pokemob = CapabilityPokemob.getPokemobFor(entityHit);
+        if (pokemob != null)
+        {
+            PacketPokedex.sendInspectPacket(pokemob);
+        }
         this.player = player;
         for (Class<? extends WatchPage> pageClass : PAGELIST)
         {
@@ -262,7 +266,7 @@ public class GuiPokeWatch extends GuiScreen
     {
         return pokemob.getEntity().addedToChunk && (pokemob.getOwner() == player || player.capabilities.isCreativeMode);
     }
-    
+
     private void handleError(Exception e)
     {
         PokecubeMod.log(Level.WARNING, "Error with page " + pages.get(index).getTitle(), e);

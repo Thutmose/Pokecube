@@ -20,6 +20,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,7 +46,10 @@ import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.PokedexInspector;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -58,6 +62,7 @@ import thut.api.terrain.TerrainManager;
 
 public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, IMessage>
 {
+    public static final byte                           INSPECTMOB   = -9;
     public static final byte                           SETWATCHPOKE = -8;
     public static final byte                           REQUESTLOC   = -7;
     public static final byte                           REQUESTMOB   = -6;
@@ -70,6 +75,13 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
     public static List<String>                         values       = Lists.newArrayList();
     public static List<SpawnBiomeMatcher>              selectedMob  = Lists.newArrayList();
     public static Map<PokedexEntry, SpawnBiomeMatcher> selectedLoc  = Maps.newHashMap();
+
+    public static void sendInspectPacket(IPokemob pokemob)
+    {
+        PacketPokedex packet = new PacketPokedex(PacketPokedex.INSPECTMOB);
+        packet.data.setInteger("V", pokemob.getEntity().getEntityId());
+        PokecubePacketHandler.sendToServer(packet);
+    }
 
     public static void updateWatchEntry(PokedexEntry entry)
     {
@@ -213,6 +225,18 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         else
         {
             player = ctx.getServerHandler().player;
+        }
+        if (message.message == INSPECTMOB)
+        {
+            if (ctx.side == Side.SERVER)
+            {
+                Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(),
+                        message.data.getInteger("V"), true);
+                IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+                if (pokemob != null) PokecubePlayerDataHandler.getInstance().getPlayerData(player)
+                        .getData(PokecubePlayerStats.class).inspect(player, pokemob);
+            }
+            return;
         }
 
         if (message.message == SETWATCHPOKE)

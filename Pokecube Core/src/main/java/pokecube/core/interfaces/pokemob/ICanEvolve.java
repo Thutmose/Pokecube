@@ -168,8 +168,11 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                         ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
                                 theMob.getPokemonDisplayName(), move);
                         theMob.displayMessageToOwner(mess);
-                        theMob.getMoveStats().newMoves.add(s);
-                        PacketSyncNewMoves.sendUpdatePacket((IPokemob) this);
+                        if (!theMob.getMoveStats().newMoves.contains(s))
+                        {
+                            theMob.getMoveStats().newMoves.add(s);
+                            PacketSyncNewMoves.sendUpdatePacket((IPokemob) this);
+                        }
                     }
                     PacketHandler.sendEntityUpdate(getEntity());
                     return theMob;

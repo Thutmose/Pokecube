@@ -72,6 +72,8 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
 
     public static void updateWatchEntry(PokedexEntry entry)
     {
+        String name = PokecubePlayerDataHandler.getCustomDataTag(PokecubeCore.getPlayer(null)).getString("WEntry");
+        if (Database.getEntry(name) == entry) return;
         PacketPokedex packet = new PacketPokedex(PacketPokedex.SETWATCHPOKE);
         PokecubePlayerDataHandler.getCustomDataTag(PokecubeCore.getPlayer(null)).setString("WEntry", entry.getName());
         packet.data.setString("V", entry.getName());

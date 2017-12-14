@@ -23,6 +23,7 @@ public class SecretBaseRadarPage extends WatchPage
     public SecretBaseRadarPage(GuiPokeWatch watch)
     {
         super(watch);
+        this.setTitle(I18n.format("pokewatch.title.baseradar"));
     }
 
     @Override
@@ -90,11 +91,4 @@ public class SecretBaseRadarPage extends WatchPage
         drawCenteredString(fontRendererObj, getTitle(), x, y, 0x78C850);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
-
-    @Override
-    public String getTitle()
-    {
-        return I18n.format("pokewatch.title.baseradar");
-    }
-
 }

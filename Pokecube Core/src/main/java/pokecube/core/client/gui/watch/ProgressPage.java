@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.ITextComponent;
 import pokecube.core.client.gui.watch.progress.GlobalProgress;
 import pokecube.core.client.gui.watch.progress.PerMobProgress;
 import pokecube.core.client.gui.watch.progress.PerTypeProgress;
@@ -19,18 +18,6 @@ public class ProgressPage extends PageWithSubPages
     {
         super(watch);
         setTitle(I18n.format("pokewatch.progress.main.title"));
-    }
-
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-    }
-
-    @Override
-    public void preSubClosed()
-    {
-        super.preSubClosed();
     }
 
     @Override
@@ -74,33 +61,4 @@ public class ProgressPage extends PageWithSubPages
         drawCenteredString(fontRendererObj, getTitle(), x, y, 0xFF78C850);
         drawCenteredString(fontRendererObj, pages.get(index).getTitle(), x, y + 10, 0xFF78C850);
     }
-
-    @Override
-    public void postPageDraw(int mouseX, int mouseY, float partialTicks)
-    {
-        // TODO Auto-generated method stub
-        super.postPageDraw(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    public boolean handleComponentClick(ITextComponent component)
-    {
-        // TODO Auto-generated method stub
-        return super.handleComponentClick(component);
-    }
-
-    @Override
-    protected void handleComponentHover(ITextComponent component, int x, int y)
-    {
-        // TODO Auto-generated method stub
-        super.handleComponentHover(component, x, y);
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode) throws IOException
-    {
-        // TODO Auto-generated method stub
-        super.keyTyped(typedChar, keyCode);
-    }
-
 }

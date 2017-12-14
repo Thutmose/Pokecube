@@ -29,6 +29,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.pokemobs.PacketSyncNewMoves;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
@@ -168,6 +169,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                                 theMob.getPokemonDisplayName(), move);
                         theMob.displayMessageToOwner(mess);
                         theMob.getMoveStats().newMoves.add(s);
+                        PacketSyncNewMoves.sendUpdatePacket((IPokemob) this);
                     }
                     PacketHandler.sendEntityUpdate(getEntity());
                     return theMob;

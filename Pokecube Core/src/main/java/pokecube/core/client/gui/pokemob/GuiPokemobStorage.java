@@ -261,6 +261,13 @@ public class GuiPokemobStorage extends GuiContainer
                 : I18n.format(this.pokeInventory.getName(), new Object[0]), 8, 6, 4210752);
         this.fontRendererObj.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
                 : I18n.format(this.playerInventory.getName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+        int x = 83;
+        int y = 20;
+        this.fontRendererObj.drawString(I18n.format("pokemob.gui.berry"), x, y, 4210752);
+        this.fontRendererObj.drawString(I18n.format("pokemob.gui.store"), x, y + 10, 4210752);
+        this.fontRendererObj.drawString(I18n.format("pokemob.gui.face"), x, y + 20, 4210752);
+        this.fontRendererObj.drawString(I18n.format("pokemob.gui.empty"), x, y + 30, 4210752);
+        this.fontRendererObj.drawString(I18n.format("pokemob.gui.face"), x, y + 40, 4210752);
     }
 
     @Override

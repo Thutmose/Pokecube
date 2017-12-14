@@ -134,22 +134,25 @@ public class XMLRewardsHandler
 
         public static class FreeTranslatedReward implements IInspectReward
         {
-            public final String key;
-            final String        message;
-            final String        tagKey;
-            final String        langFile;
+            public final String  key;
+            public final boolean watch_only;
+            final String         message;
+            final String         tagKey;
+            final String         langFile;
 
-            public FreeTranslatedReward(String key, String message, String tagKey, String langFile)
+            public FreeTranslatedReward(String key, String message, String tagKey, String langFile, boolean watch_only)
             {
                 this.key = key;
                 this.message = message;
                 this.tagKey = tagKey;
                 this.langFile = langFile;
+                this.watch_only = watch_only;
             }
 
             @Override
             public boolean inspect(PokecubePlayerCustomData data, Entity entity, boolean giveReward)
             {
+                if (watch_only) return false;
                 String lang = data.tag.getString("lang");
                 if (lang.isEmpty()) lang = "en_US";
                 if (data.tag.getBoolean(key)) return false;
@@ -209,10 +212,11 @@ public class XMLRewardsHandler
             }
         }
 
-        static final QName KEY  = new QName("key");
-        static final QName MESS = new QName("mess");
-        static final QName LANG = new QName("file");
-        static final QName TAG  = new QName("tag");
+        static final QName KEY       = new QName("key");
+        static final QName MESS      = new QName("mess");
+        static final QName LANG      = new QName("file");
+        static final QName TAG       = new QName("tag");
+        static final QName WATCHONLY = new QName("watch_only");
 
         @Override
         public void process(XMLReward reward)
@@ -221,9 +225,14 @@ public class XMLRewardsHandler
             String mess = reward.condition.values.get(MESS);
             String lang = reward.condition.values.get(LANG);
             String tag = reward.condition.values.get(TAG);
+            boolean watch_only = false;
+            if (reward.condition.values.containsKey(WATCHONLY))
+            {
+                watch_only = Boolean.parseBoolean(reward.condition.values.get(WATCHONLY));
+            }
             if (key == null || mess == null || lang == null || tag == null)
                 throw new NullPointerException(key + " " + mess + " " + lang + " " + tag);
-            PokedexInspector.rewards.add(new FreeTranslatedReward(key, mess, tag, lang));
+            PokedexInspector.rewards.add(new FreeTranslatedReward(key, mess, tag, lang, watch_only));
         }
     }
 

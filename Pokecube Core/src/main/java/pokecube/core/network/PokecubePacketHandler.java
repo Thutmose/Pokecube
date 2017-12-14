@@ -60,6 +60,7 @@ import pokecube.core.network.pokemobs.PacketSyncExp;
 import pokecube.core.network.pokemobs.PacketSyncGene;
 import pokecube.core.network.pokemobs.PacketSyncModifier;
 import pokecube.core.network.pokemobs.PacketSyncMoveUse;
+import pokecube.core.network.pokemobs.PacketSyncNewMoves;
 import pokecube.core.network.pokemobs.PacketUpdateAI;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.MessageHandlerServer;
@@ -128,7 +129,7 @@ public class PokecubePacketHandler
             }
         }
 
-        public static final byte MOVEENTITY    = 12;
+        public static final byte MOVEENTITY = 12;
 
         PacketBuffer             buffer;;
 
@@ -535,6 +536,8 @@ public class PokecubePacketHandler
         PokecubeMod.packetPipeline.registerMessage(PacketSyncExp.class, PacketSyncExp.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketSyncMoveUse.class, PacketSyncMoveUse.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketSyncNewMoves.class, PacketSyncNewMoves.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
     }
 

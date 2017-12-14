@@ -24,7 +24,35 @@ pokewatch.title.teleports=Teleport Locations
 pokewatch.title.blank=Blank Page
 pokewatch.title.baseradar=Secret Base Radar
 pokewatch.title.wiki=Info Books
+pokewatch.title.pokeinfo=Pokémob Info
+pokewatch.title.spawns=Pokémob Spawns
 pokewatch.title.start=PokéWatch Home
+
+pokewatch.title.pokeinfo.stats=Stats
+pokewatch.title.pokeinfo.moves=Moves
+pokewatch.title.pokeinfo.breeding=Breeding
+pokewatch.title.pokeinfo.search=Search
+pokewatch.title.pokeinfo.spawns=Spawns
+
+pokewatch.moves.lvl=L.%1$s: %2$s
+pokewatch.moves.tm=TM: %1$s
+
+pokewatch.spawns.times=Times:
+pokewatch.spawns.day=Day
+pokewatch.spawns.night=Night
+pokewatch.spawns.water_only=In water
+pokewatch.spawns.water_optional=In water or on land
+pokewatch.spawns.biomes=Biomes:
+pokewatch.spawns.types=Subbiomes:
+pokewatch.spawns.rate_local=Adjusted Rate: %s
+pokewatch.spawns.rate_single=Non Adj Rate: %s
+pokewatch.spawns.info=Spawns for here:
+
+pokemob.gui.store=STORE
+pokemob.gui.berry=BERRY
+pokemob.gui.empty=EMPTY
+pokemob.gui.face=SIDE
+
 item.pokewatch.name=PokéWatch
 
 item.nullBerry.name=Berry

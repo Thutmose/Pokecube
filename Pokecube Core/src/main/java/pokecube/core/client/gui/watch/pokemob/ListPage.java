@@ -1,18 +1,19 @@
-package pokecube.core.client.gui.watch;
+package pokecube.core.client.gui.watch.pokemob;
 
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
 import pokecube.core.client.gui.helper.ScrollGui;
-import pokecube.core.client.gui.watch.GuiPokeWatch.WatchPage;
+import pokecube.core.client.gui.watch.GuiPokeWatch;
+import pokecube.core.interfaces.IPokemob;
 
-public abstract class ListPage extends WatchPage
+public abstract class ListPage extends PokeInfoPage
 {
     ScrollGui list;
 
-    public ListPage(GuiPokeWatch watch)
+    public ListPage(GuiPokeWatch watch, IPokemob pokemob, String title)
     {
-        super(watch);
+        super(watch, pokemob, title);
     }
 
     @Override
@@ -22,8 +23,15 @@ public abstract class ListPage extends WatchPage
         initList();
     }
 
+    @Override
+    public void onPageOpened()
+    {
+        super.onPageOpened();
+        initList();
+    }
+
     abstract void initList();
-    
+
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
         int x = (watch.width - 160) / 2 + 80;
@@ -32,7 +40,7 @@ public abstract class ListPage extends WatchPage
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         list.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -45,18 +53,18 @@ public abstract class ListPage extends WatchPage
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException
+    public void actionPerformed(GuiButton button) throws IOException
     {
         list.actionPerformed(button);
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
+    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
     {
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state)
+    public void mouseReleased(int mouseX, int mouseY, int state)
     {
         list.mouseReleased(mouseX, mouseY, state);
     }
@@ -64,7 +72,8 @@ public abstract class ListPage extends WatchPage
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        drawTitle(mouseX, mouseY, partialTicks);
         list.drawScreen(mouseX, mouseY, partialTicks);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
+
 }

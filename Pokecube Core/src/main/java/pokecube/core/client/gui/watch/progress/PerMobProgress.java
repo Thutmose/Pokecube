@@ -39,7 +39,7 @@ public class PerMobProgress extends Progress
         super.initGui();
         int x = watch.width / 2 - 70;
         int y = watch.height / 2 + 53;
-        text = new GuiTextField(0, fontRendererObj, x, y, 140, 10);
+        text = new GuiTextField(0, fontRender, x, y, 140, 10);
     }
 
     @Override

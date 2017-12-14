@@ -19,6 +19,7 @@ import pokecube.core.client.gui.watch.util.ListPage;
 import pokecube.core.client.gui.watch.util.SpawnListEntry;
 import pokecube.core.client.gui.watch.util.LineEntry;
 import pokecube.core.client.gui.watch.util.LineEntry.IClickListener;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.network.packets.PacketPokedex;
 
@@ -29,6 +30,7 @@ public class SpawnsPage extends ListPage
     public SpawnsPage(GuiPokeWatch watch)
     {
         super(watch);
+        this.setTitle(I18n.format("pokewatch.title.spawns"));
     }
 
     @Override
@@ -38,7 +40,7 @@ public class SpawnsPage extends ListPage
         int offsetX = (watch.width - 160) / 2 + 5;
         int offsetY = (watch.height - 160) / 2 + 25;
         int max = fontRendererObj.FONT_HEIGHT;
-        int height = max * 10;
+        int height = max * 12;
         QName local = new QName("Local_Rate");
         List<PokedexEntry> names = Lists.newArrayList(PacketPokedex.selectedLoc.keySet());
         Map<PokedexEntry, Float> rates = Maps.newHashMap();
@@ -75,7 +77,7 @@ public class SpawnsPage extends ListPage
         for (PokedexEntry pokeEntry : names)
         {
             SpawnListEntry entry = new SpawnListEntry(this, fontRendererObj, PacketPokedex.selectedLoc.get(pokeEntry),
-                    pokeEntry, 120, height, offsetY);
+                    pokeEntry, height, height, offsetY);
             List<LineEntry> lines = entry.getLines(listener);
             int num = 4;
             ITextComponent water0 = new TextComponentString(I18n.format("pokewatch.spawns.water_only"));
@@ -98,13 +100,7 @@ public class SpawnsPage extends ListPage
 
             entries.addAll(lines);
         }
-        list = new ScrollGui(mc, 151, 120, max, offsetX, offsetY, entries);
-    }
-
-    @Override
-    public String getTitle()
-    {
-        return I18n.format("pokewatch.title.spawns");
+        list = new ScrollGui(mc, 151, height, max, offsetX, offsetY, entries);
     }
 
     @Override
@@ -123,8 +119,18 @@ public class SpawnsPage extends ListPage
     }
 
     @Override
-    protected boolean handleComponentClick(ITextComponent component)
+    public boolean handleComponentClick(ITextComponent component)
     {
+        PokedexEntry e = Database.getEntry(component.getUnformattedComponentText());
+        if (e != null)
+        {
+            PacketPokedex.updateWatchEntry(e);
+            watch.pages.get(watch.index).onPageClosed();
+            watch.index = 1;
+            PokemobInfoPage page = (PokemobInfoPage) watch.pages.get(watch.index);
+            page.initPages(null);
+            watch.pages.get(watch.index).onPageOpened();
+        }
         return super.handleComponentClick(component);
     }
 

@@ -90,7 +90,7 @@ public class Breeding extends ListPage
     }
 
     @Override
-    protected boolean handleComponentClick(ITextComponent component)
+    public boolean handleComponentClick(ITextComponent component)
     {
 
         if (component != null)
@@ -121,11 +121,4 @@ public class Breeding extends ListPage
         }
         return super.handleComponentClick(component);
     }
-
-    @Override
-    protected void handleComponentHover(ITextComponent component, int x, int y)
-    {
-        super.handleComponentHover(component, x, y);
-    }
-
 }

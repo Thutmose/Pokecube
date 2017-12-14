@@ -10,10 +10,13 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.biome.Biome;
 import pokecube.core.client.gui.watch.util.LineEntry.IClickListener;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.SpawnBiomeMatcher;
 import thut.api.terrain.BiomeType;
@@ -50,7 +53,7 @@ public class SpawnListEntry
         {
             biomes.add(b.getBiomeName());
         }
-        if (entry != null) output.add(TextFormatting.GREEN + entry.getName() + ":");
+        if (entry != null) output.add(entry.getName() + ":");
         String ind = entry != null ? "  " : "";
         if (!biomes.isEmpty())
         {
@@ -103,8 +106,10 @@ public class SpawnListEntry
         boolean air = value.air;
         if (water)
         {
-            if (air) output.add(ind + I18n.format("pokewatch.spawns.water_optional"));
-            else output.add(ind + I18n.format("pokewatch.spawns.water_only"));
+            if (air) output.addAll(
+                    fontRender.listFormattedStringToWidth(ind + I18n.format("pokewatch.spawns.water_optional"), width));
+            else output.addAll(
+                    fontRender.listFormattedStringToWidth(ind + I18n.format("pokewatch.spawns.water_only"), width));
         }
         String times = ind + I18n.format("pokewatch.spawns.times");
         if (day)
@@ -116,7 +121,7 @@ public class SpawnListEntry
             if (day) times = times + ", ";
             times = times + I18n.format("pokewatch.spawns.night");
         }
-        output.add(times);
+        output.addAll(fontRender.listFormattedStringToWidth(times, width));
         String rate = "";
         if (value.spawnRule.values.containsKey(new QName("Local_Rate")))
         {
@@ -177,7 +182,7 @@ public class SpawnListEntry
         }
         if (!rate.isEmpty())
         {
-            output.add(rate);
+            output.addAll(fontRender.listFormattedStringToWidth(rate, width));
         }
         output.add("");
     }
@@ -187,10 +192,20 @@ public class SpawnListEntry
         int y0 = yMin;
         int y1 = yMin + height;
         List<LineEntry> lines = Lists.newArrayList();
+        int n = 0;
         for (String s : output)
         {
-            lines.add(new LineEntry(y0, y1, fontRender, new TextComponentString(s), 0xFFFFFFFF)
-                    .setClickListner(listener));
+            ITextComponent comp = new TextComponentString(s);
+            if (n++ == 0)
+            {
+                PokedexEntry e = Database.getEntry(comp.getUnformattedComponentText());
+                if (e != null)
+                {
+                    comp.setStyle(new Style());
+                    comp.getStyle().setColor(TextFormatting.GREEN);
+                }
+            }
+            lines.add(new LineEntry(y0, y1, fontRender, comp, 0xFFFFFFFF).setClickListner(listener));
         }
         return lines;
     }

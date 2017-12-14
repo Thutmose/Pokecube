@@ -21,12 +21,6 @@ public abstract class PageWithSubPages extends WatchPage
     }
 
     @Override
-    public void initGui()
-    {
-        super.initGui();
-    }
-
-    @Override
     public void onPageClosed()
     {
         super.onPageClosed();

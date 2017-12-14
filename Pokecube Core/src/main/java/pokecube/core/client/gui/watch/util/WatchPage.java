@@ -25,6 +25,36 @@ public abstract class WatchPage extends GuiScreen
         this.fontRendererObj = this.mc.fontRendererObj;
     }
 
+    public void onPageOpened()
+    {
+    }
+
+    public void onPageClosed()
+    {
+        final WatchPage thisPage = this;
+        this.watch.getButtons().removeIf(new Predicate<GuiButton>()
+        {
+            @Override
+            public boolean test(GuiButton t)
+            {
+                return t instanceof PageButton && ((PageButton) t).page == thisPage;
+            }
+        });
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    // The following methods are set public here so that watch pages can call
+    // them from each other.
+
     @Override
     public void actionPerformed(GuiButton button) throws IOException
     {
@@ -59,32 +89,5 @@ public abstract class WatchPage extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    public void onPageOpened()
-    {
-    }
-
-    public void onPageClosed()
-    {
-        final WatchPage thisPage = this;
-        this.watch.getButtons().removeIf(new Predicate<GuiButton>()
-        {
-            @Override
-            public boolean test(GuiButton t)
-            {
-                return t instanceof PageButton && ((PageButton) t).page == thisPage;
-            }
-        });
-    }
-
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-
-    public String getTitle()
-    {
-        return title;
     }
 }

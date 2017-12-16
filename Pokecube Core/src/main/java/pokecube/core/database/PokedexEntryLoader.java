@@ -2,6 +2,8 @@ package pokecube.core.database;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,8 +15,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
@@ -89,7 +93,7 @@ public class PokedexEntryLoader
             {
                 return new QName(in.nextString());
             }
-        }).create();
+        }).setPrettyPrinting().create();
         missingno.stats = new StatsNode();
     }
 
@@ -617,6 +621,7 @@ public class PokedexEntryLoader
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Object getSerializableCopy(Class<?> type, Object original)
             throws InstantiationException, IllegalAccessException
     {
@@ -633,15 +638,13 @@ public class PokedexEntryLoader
         Object copy = null;
         try
         {
-            // if (type.isPrimitive()) copy = original;
-            // else
             copy = type.newInstance();
         }
         catch (Exception e1)
         {
             copy = original;
         }
-        if (copy == original) return copy;
+        if (copy == original || (copy != null && copy.equals(original))) { return copy; }
         Object value;
         Object defaultvalue;
         for (Field field : fields)
@@ -655,7 +658,10 @@ public class PokedexEntryLoader
                 value = field.get(original);
                 defaultvalue = field.get(copy);
                 if (value == null) continue;
-                if (value.getClass().isPrimitive()) field.set(copy, value);
+                if (value.getClass().isPrimitive())
+                {
+                    field.set(copy, value);
+                }
                 else if (defaultvalue != null && defaultvalue.equals(value))
                 {
                     field.set(copy, null);
@@ -681,7 +687,20 @@ public class PokedexEntryLoader
                 else if (value instanceof Collection)
                 {
                     if (((Collection<?>) value).isEmpty()) field.set(copy, null);
-                    else field.set(copy, value);
+                    else
+                    {
+                        if (value instanceof List)
+                        {
+                            List args = (List) value;
+                            ListIterator iter = args.listIterator();
+                            while (iter.hasNext())
+                            {
+                                Object var = iter.next();
+                                iter.set(getSerializableCopy(var.getClass(), var));
+                            }
+                        }
+                        field.set(copy, value);
+                    }
                 }
                 else field.set(copy, getSerializableCopy(value.getClass(), value));
             }
@@ -979,6 +998,7 @@ public class PokedexEntryLoader
 
     public static XMLDatabase initDatabase(File file) throws Exception
     {
+        PokecubeMod.log("Initializing Database: " + file);
         if (file.getName().endsWith(".json"))
         {
             try
@@ -987,7 +1007,11 @@ public class PokedexEntryLoader
             }
             catch (Exception e)
             {
-                PokecubeMod.log(Level.WARNING, "Error with " + file, e);
+                if (e instanceof FileNotFoundException)
+                {
+                    PokecubeMod.log(Level.WARNING, "No Database of " + file + ", Skipping.");
+                }
+                else PokecubeMod.log(Level.WARNING, "Error with " + file, e);
             }
         }
         else if (file.getName().endsWith(".xml"))
@@ -1577,5 +1601,40 @@ public class PokedexEntryLoader
             PokecubeMod.log(Level.WARNING, "Error with " + xmlEntry + " init? " + init, e);
         }
         if (moves != null) initMoves(entry, moves);
+    }
+
+    public static void writeCompoundDatabase()
+    {
+        try
+        {
+            database.pokemon.sort(ENTRYSORTER);
+            database.pokemon.replaceAll(new UnaryOperator<XMLPokedexEntry>()
+            {
+                @Override
+                public XMLPokedexEntry apply(XMLPokedexEntry t)
+                {
+                    try
+                    {
+                        return (XMLPokedexEntry) getSerializableCopy(t.getClass(), t);
+                    }
+                    catch (InstantiationException | IllegalAccessException e)
+                    {
+                        return t;
+                    }
+                }
+            });
+            Map<String, XMLPokedexEntry> back = database.map;
+            database.map = null;
+            String json = gson.toJson(database);
+            database.map = back;
+            FileWriter writer = new FileWriter(new File(Database.CONFIGLOC + "pokemobs_.json"));
+            writer.append(json);
+            writer.close();
+            database = null;
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error outputing compound database", e);
+        }
     }
 }

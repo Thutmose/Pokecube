@@ -960,7 +960,14 @@ public class PokedexEntryLoader
                     if (old != null) mergeNonDefaults(missingno, e, old);
                     else
                     {
-                        database.addEntry(e);
+                        try
+                        {
+                            database.addEntry(e);
+                        }
+                        catch (Exception e1)
+                        {
+                            PokecubeMod.log(Level.SEVERE, "Error with " + e.name, e1);
+                        }
                     }
                 }
                 ProgressManager.pop(bar2);

@@ -196,7 +196,7 @@ public class CommonProxy implements IGuiHandler
     public static HashMap<String, IMobProvider>      mobProviders   = Maps.newHashMap();
     public static HashMap<String, ArrayList<String>> modModels      = Maps.newHashMap();
     private static Map<String, CachedLocs>           fileCache      = Maps.newHashMap();
-    public static List<File>                         validModJars   = Lists.newArrayList();
+    public static Set<File>                          validModJars   = Sets.newHashSet();
 
     private static final char                        DOT            = '.';
 
@@ -320,7 +320,6 @@ public class CommonProxy implements IGuiHandler
     {
         CachedLocs cached = getCached((String) mod);
         if (cached.xmls.containsKey(file.toString())) { return cached.xmls.get(file.toString()); }
-        PokecubeMod.log("File for " + file + " not in cache, Searching for it manually.");
         ArrayList<String> toFill = Lists.newArrayList();
         String name = file.toString();
         XMLLocs locations = xmlFiles.get(name);
@@ -395,9 +394,9 @@ public class CommonProxy implements IGuiHandler
         else
         {
             resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
+            PokecubeMod.log(Level.INFO, "Checking in " + validModJars);
             for (File temp : validModJars)
             {
-                PokecubeMod.log(Level.INFO, "Checking in " + temp + " " + mod);
                 checkInFolder(temp, ret, file, files);
             }
         }

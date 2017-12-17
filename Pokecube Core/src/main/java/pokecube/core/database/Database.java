@@ -44,7 +44,6 @@ import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
-import pokecube.core.database.PokedexEntryLoader.XMLDatabase;
 import pokecube.core.database.moves.MoveEntryLoader;
 import pokecube.core.database.moves.MovesParser;
 import pokecube.core.database.moves.json.JsonMoves;
@@ -419,23 +418,19 @@ public class Database
                 PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s + " " + e1);
             }
         }
-        boolean loaded = false;
         for (String s : configDatabases.get(EnumDatabase.POKEMON.ordinal()))
         {
             try
             {
-                XMLDatabase data = PokedexEntryLoader.initDatabase(new File(CONFIGLOC + s));
-                if (data != null && !loaded)
-                {
-                    loaded = true;
-                    MinecraftForge.EVENT_BUS.post(new InitDatabase.Load());
-                }
+                PokedexEntryLoader.initDatabase(new File(CONFIGLOC + s));
             }
             catch (Exception e)
             {
                 PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s + " " + e);
             }
         }
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Load());
+
         WorldgenHandler.reloadWorldgen();
 
         try

@@ -201,6 +201,8 @@ public class PokedexEntryLoader
         public Map<QName, String> values = Maps.newHashMap();
         @XmlElement(name = "tag")
         public String             tag;
+        @XmlAttribute
+        public String             lootTable;
         @XmlElement(name = "Drop")
         public List<Drop>         drops  = Lists.newArrayList();
     }

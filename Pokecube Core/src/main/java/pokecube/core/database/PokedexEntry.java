@@ -243,14 +243,15 @@ public class PokedexEntry
     {
         public static class Interaction
         {
-            public final ItemStack key;
-            public PokedexEntry    forme;
-            public List<ItemStack> stacks   = Lists.newArrayList();
-            public boolean         male     = true;
-            public boolean         female   = true;
-            public int             cooldown = 100;
-            public int             variance = 1;
-            public int             hunger   = 100;
+            public final ItemStack  key;
+            public PokedexEntry     forme;
+            public List<ItemStack>  stacks   = Lists.newArrayList();
+            public ResourceLocation lootTable;
+            public boolean          male     = true;
+            public boolean          female   = true;
+            public int              cooldown = 100;
+            public int              variance = 1;
+            public int              hunger   = 100;
 
             public Interaction(ItemStack key)
             {
@@ -367,6 +368,7 @@ public class PokedexEntry
                         if (stack != CompatWrapper.nullStack) stacks.add(stack);
                     }
                     interaction.stacks = stacks;
+                    if (action.lootTable != null) interaction.lootTable = new ResourceLocation(action.lootTable);
                 }
                 DispenseBehaviourInteract.registerBehavior(keyStack);
             }
@@ -401,7 +403,9 @@ public class PokedexEntry
         {
             if (held != null) for (ItemStack stack : actions.keySet())
             {
-                if (Tools.isSameStack(stack, held) && !actions.get(stack).stacks.isEmpty()) { return stack; }
+                Interaction action = null;
+                if (Tools.isSameStack(stack, held) && (!(action = actions.get(stack)).stacks.isEmpty()
+                        || action.lootTable != null)) { return stack; }
             }
             return CompatWrapper.nullStack;
         }
@@ -429,16 +433,38 @@ public class PokedexEntry
                 long diff = entity.getEntityWorld().getTotalWorldTime() - time;
                 if (diff < action.cooldown + new Random(time).nextInt(action.variance)) { return false; }
             }
-            if (action.stacks.isEmpty()) return false;
             if (!action.male && pokemob.getSexe() == IPokemob.MALE) return false;
             if (!action.female && pokemob.getSexe() == IPokemob.FEMALE) return false;
+            if (action.stacks.isEmpty() && action.lootTable == null) return false;
             if (!doInteract) return true;
+            ItemStack result = null;
+            if (action.lootTable != null)
+            {
+                LootTable loottable = pokemob.getEntity().getEntityWorld().getLootTableManager()
+                        .getLootTableFromLocation(action.lootTable);
+                LootContext.Builder lootcontext$builder = (new LootContext.Builder(
+                        (WorldServer) pokemob.getEntity().getEntityWorld())).withLootedEntity(pokemob.getEntity());
+                for (ItemStack itemstack : loottable.generateLootForPools(pokemob.getEntity().getRNG(),
+                        lootcontext$builder.build()))
+                {
+                    if (CompatWrapper.isValid(itemstack))
+                    {
+                        result = itemstack;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+
+                List<ItemStack> results = action.stacks;
+                int index = player.getRNG().nextInt(results.size());
+                result = results.get(index).copy();
+            }
+            if (!CompatWrapper.isValid(result)) return false;
             data.setLong("lastInteract", entity.getEntityWorld().getTotalWorldTime());
             int time = pokemob.getHungerTime();
             pokemob.setHungerTime(time + action.hunger);
-            List<ItemStack> results = action.stacks;
-            int index = player.getRNG().nextInt(results.size());
-            ItemStack result = results.get(index).copy();
             if (CompatWrapper.increment(held, -1) == 0)
             {
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, result);

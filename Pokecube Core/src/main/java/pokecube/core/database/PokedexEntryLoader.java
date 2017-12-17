@@ -315,6 +315,8 @@ public class PokedexEntryLoader
         public List<Drop>        held           = Lists.newArrayList();
         @XmlElement(name = "lootTable")
         public String            lootTable;
+        @XmlElement(name = "heldTable")
+        public String            heldTable;
         // Spawn Rules
         @XmlAttribute
         public Boolean           overwrite;
@@ -1287,6 +1289,8 @@ public class PokedexEntryLoader
                 handleAddHeld(entry, d);
             }
         }
+        if (xmlStats.heldTable != null && !xmlStats.heldTable.isEmpty())
+            entry.heldTable = new ResourceLocation(xmlStats.heldTable);
         // Logics
         if (xmlStats.logics != null)
         {
@@ -1607,6 +1611,9 @@ public class PokedexEntryLoader
     {
         try
         {
+            List<XMLPokedexEntry> entries = Lists.newArrayList(database.pokemon);
+            XMLDatabase database = new XMLDatabase();
+            database.pokemon = entries;
             database.pokemon.sort(ENTRYSORTER);
             database.pokemon.replaceAll(new UnaryOperator<XMLPokedexEntry>()
             {
@@ -1630,7 +1637,6 @@ public class PokedexEntryLoader
             FileWriter writer = new FileWriter(new File(Database.CONFIGLOC + "pokemobs_.json"));
             writer.append(json);
             writer.close();
-            database = null;
         }
         catch (Exception e)
         {

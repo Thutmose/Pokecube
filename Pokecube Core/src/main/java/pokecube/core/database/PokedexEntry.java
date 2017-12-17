@@ -29,7 +29,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.relauncher.Side;
@@ -299,6 +302,23 @@ public class PokedexEntry
             }
         }
 
+        private static void cleanInteract(Interact interact)
+        {
+            Interact defs = new Interact();
+            for (Field f : Interact.class.getDeclaredFields())
+            {
+                f.setAccessible(true);
+                try
+                {
+                    if (f.get(interact) == null) f.set(interact, f.get(defs));
+                }
+                catch (IllegalArgumentException | IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         protected static void initForEntry(PokedexEntry entry, List<Interact> data)
         {
             if (data == null || data.isEmpty())
@@ -308,6 +328,7 @@ public class PokedexEntry
             }
             for (Interact interact : data)
             {
+                cleanInteract(interact);
                 Key key = interact.key;
                 Action action = interact.action;
                 boolean isForme = action.values.get(new QName("type")).equals("forme");
@@ -679,6 +700,10 @@ public class PokedexEntry
 
     @CopyToGender
     public Map<ItemStack, Float>                held             = Maps.newHashMap();
+    /** This is a loot table to be used for held item. if this isn't null, the
+     * above held is ignored. */
+    @CopyToGender
+    public ResourceLocation                     heldTable        = null;
     /** Interactions with items from when player right clicks. */
     @CopyToGender
     protected InteractionLogic                  interactionLogic = new InteractionLogic();
@@ -1280,8 +1305,19 @@ public class PokedexEntry
         return ret;
     }
 
-    public ItemStack getRandomHeldItem()
+    public ItemStack getRandomHeldItem(EntityLiving mob)
     {
+        if (mob.getEntityWorld().isRemote) return CompatWrapper.nullStack;
+        if (heldTable != null)
+        {
+            LootTable loottable = mob.getEntityWorld().getLootTableManager().getLootTableFromLocation(heldTable);
+            LootContext.Builder lootcontext$builder = (new LootContext.Builder((WorldServer) mob.getEntityWorld()))
+                    .withLootedEntity(mob);
+            for (ItemStack itemstack : loottable.generateLootForPools(mob.getRNG(), lootcontext$builder.build()))
+            {
+                if (CompatWrapper.isValid(itemstack)) return itemstack;
+            }
+        }
         if (held.isEmpty()) return CompatWrapper.nullStack;
         ItemStack ret = CompatWrapper.nullStack;
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();

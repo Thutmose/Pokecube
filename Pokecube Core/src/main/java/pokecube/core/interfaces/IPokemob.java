@@ -16,6 +16,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -699,11 +700,12 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
     IPokemob specificSpawnInit();
 
     /** Returns the held item this pokemob should have when found wild.
+     * @param mob 
      * 
      * @return */
-    default ItemStack wildHeldItem()
+    default ItemStack wildHeldItem(EntityLiving mob)
     {
-        return this.getPokedexEntry().getRandomHeldItem();
+        return this.getPokedexEntry().getRandomHeldItem(mob);
     }
 
     /** The personality value for the pokemob, used to determine nature,

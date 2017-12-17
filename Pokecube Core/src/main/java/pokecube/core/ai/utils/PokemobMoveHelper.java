@@ -104,12 +104,15 @@ public class PokemobMoveHelper extends EntityMoveHelper
             return;
         }
 
-        float f9 = (float) (MathHelper.atan2(dz, dx) * (180D / Math.PI)) - 90.0F;
-        this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, 180.0F);
+        float newYaw = (float) (MathHelper.atan2(dz, dx) * (180D / Math.PI)) - 90.0F;
+        newYaw = this.limitAngle(this.entity.rotationYaw, newYaw, 180.0F);
+        this.entity.rotationYaw = newYaw;
+        this.entity.renderYawOffset = newYaw;
         float v = (float) (this.speed
                 * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
         if ((air && !entity.onGround && !entity.isInWater())) v *= PokecubeCore.core.getConfig().flyPathingSpeedFactor;
         else if (water) v *= PokecubeCore.core.getConfig().swimPathingSpeedFactor;
+        this.entity.setAIMoveSpeed(v);
 
         if (shouldGoDown || shouldGoUp)
         {
@@ -120,7 +123,6 @@ public class PokemobMoveHelper extends EntityMoveHelper
             float up = -MathHelper.sin(entity.rotationPitch * (float) Math.PI / 180.0F) * factor;
             entity.setMoveVertical(up);
         }
-        this.entity.setAIMoveSpeed(v);
 
         boolean upLadder = dy > 0 && entity.isOnLadder();
         boolean jump = upLadder

@@ -422,11 +422,11 @@ public class Database
         {
             try
             {
-                PokedexEntryLoader.initDatabase(new File(CONFIGLOC + s));
+                PokedexEntryLoader.initDatabase(new File(CONFIGLOC + "pokemobs" + File.separator + s));
             }
             catch (Exception e)
             {
-                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s + " " + e);
+                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + "pokemobs" + File.separator + s + " " + e);
             }
         }
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Load());

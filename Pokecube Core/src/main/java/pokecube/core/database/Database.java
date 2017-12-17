@@ -44,6 +44,7 @@ import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
+import pokecube.core.database.PokedexEntryLoader.XMLDatabase;
 import pokecube.core.database.moves.MoveEntryLoader;
 import pokecube.core.database.moves.MovesParser;
 import pokecube.core.database.moves.json.JsonMoves;
@@ -265,7 +266,7 @@ public class Database
         {
             File file = new File(CONFIGLOC + name);
             file.getParentFile().mkdirs();
-            PokecubeMod.log("Copying Database File: "+file);
+            PokecubeMod.log("Copying Database File: " + file);
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
             for (int i = 0; i < rows.size(); i++)
             {
@@ -425,8 +426,8 @@ public class Database
         {
             try
             {
-                PokedexEntryLoader.initDatabase(new File(CONFIGLOC + s));
-                if (!loaded)
+                XMLDatabase data = PokedexEntryLoader.initDatabase(new File(CONFIGLOC + s));
+                if (data != null && !loaded)
                 {
                     loaded = true;
                     MinecraftForge.EVENT_BUS.post(new InitDatabase.Load());
@@ -451,6 +452,7 @@ public class Database
             // throw new RuntimeException("Database loading failed, this is very
             // bad.");
         }
+        PokedexEntryLoader.writeCompoundDatabase();
 
         PokecubeMod.log("Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");
     }

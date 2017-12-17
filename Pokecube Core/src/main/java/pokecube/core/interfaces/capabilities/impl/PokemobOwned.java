@@ -411,7 +411,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         {
             if (!getEntity().getEntityData().getBoolean("initSpawn"))
             {
-                pokemob.setHeldItem(pokemob.wildHeldItem());
+                pokemob.setHeldItem(pokemob.wildHeldItem(getEntity()));
                 setSpecialInfo(pokemob.getPokedexEntry().defaultSpecial);
                 if (pokemob instanceof PokemobOwned) ((PokemobOwned) pokemob).updateHealth();
                 pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
@@ -429,7 +429,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         }
         getEntity().getEntityData().removeTag("spawnExp");
         pokemob = pokemob.setForSpawn(maxXP);
-        pokemob.setHeldItem(pokemob.wildHeldItem());
+        pokemob.setHeldItem(pokemob.wildHeldItem(getEntity()));
         setSpecialInfo(pokemob.getPokedexEntry().defaultSpecial);
         if (pokemob instanceof PokemobOwned) ((PokemobOwned) pokemob).updateHealth();
         pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());

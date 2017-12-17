@@ -608,7 +608,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
             if (this.canDropLoot() && this.worldObj.getGameRules().getBoolean("doMobLoot") && !shadowDrop)
             {
-                this.dropFewItems(this.recentlyHit > 0, i);
+
+                this.dropLoot(this.recentlyHit > 0, i, damageSource);
                 this.dropEquipment(this.recentlyHit > 0, i);
 
                 if (recentlyHit > 0 && !pokemobCap.getPokemonAIState(IPokemob.TAMED))

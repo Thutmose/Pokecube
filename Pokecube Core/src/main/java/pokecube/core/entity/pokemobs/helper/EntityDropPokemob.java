@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -42,18 +41,14 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     @Override
     protected void dropFewItems(boolean wasRecentlyHit, int lootingModifier)
     {
-        if (!pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
-        {
-            for (int i = 2; i < pokemobCap.getPokemobInventory().getSizeInventory(); i++)
-            {
-                ItemStack stack = pokemobCap.getPokemobInventory().getStackInSlot(i);
-                if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
-                pokemobCap.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
-            }
-        }
-
         if (wasEaten || !wasRecentlyHit) return;
         if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED)) return;
+        for (int i = 0; i < pokemobCap.getPokemobInventory().getSizeInventory(); i++)
+        {
+            ItemStack stack = pokemobCap.getPokemobInventory().getStackInSlot(i);
+            if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
+            pokemobCap.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
+        }
         List<ItemStack> drops = pokemobCap.getPokedexEntry().getRandomDrops(lootingModifier);
         for (ItemStack stack : drops)
         {
@@ -64,28 +59,27 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             }
             if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
         }
-        dropItem();
-        for (int i = 2; i < pokemobCap.getPokemobInventory().getSizeInventory(); i++)
-        {
-            ItemStack stack = pokemobCap.getPokemobInventory().getStackInSlot(i);
-            if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
-        }
-    }
-
-    public void dropItem()
-    {
-        ItemStack toDrop = this.getHeldItemMainhand();
-        if (toDrop == CompatWrapper.nullStack) return;
-
-        EntityItem drop = new EntityItem(this.getEntityWorld(), this.posX, this.posY + 0.5, this.posZ, toDrop);
-        this.getEntityWorld().spawnEntity(drop);
-        pokemobCap.setHeldItem(CompatWrapper.nullStack);
     }
 
     @Override
     protected void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
     {
-        dropFewItems(wasRecentlyHit, lootingModifier);
+        if (getLootTable() != null)
+        {
+            if (!pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
+            {
+                for (int i = 0; i < pokemobCap.getPokemobInventory().getSizeInventory(); i++)
+                {
+                    ItemStack stack = pokemobCap.getPokemobInventory().getStackInSlot(i);
+                    if (stack != CompatWrapper.nullStack) entityDropItem(stack.copy(), 0.0f);
+                    pokemobCap.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
+                }
+            }
+            if (wasEaten || !wasRecentlyHit) return;
+            if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED)) return;
+            super.dropLoot(wasRecentlyHit, lootingModifier, source);
+        }
+        else dropFewItems(wasRecentlyHit, lootingModifier);
     }
 
     @Override

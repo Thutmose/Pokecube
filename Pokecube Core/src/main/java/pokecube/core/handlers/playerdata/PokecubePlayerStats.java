@@ -46,13 +46,13 @@ public class PokecubePlayerStats extends PlayerData
 
     public boolean hasInspected(PokedexEntry entry)
     {
-        if (inspected == null) initMap();
+        if (inspected == null) initMaps();
         return inspected.contains(entry);
     }
 
     public boolean inspect(EntityPlayer player, IPokemob pokemob)
     {
-        if (inspected == null) initMap();
+        if (inspected == null) initMaps();
         if (player instanceof EntityPlayerMP) Triggers.INSPECTPOKEMOB.trigger((EntityPlayerMP) player, pokemob);
         return inspected.add(pokemob.getPokedexEntry());
     }

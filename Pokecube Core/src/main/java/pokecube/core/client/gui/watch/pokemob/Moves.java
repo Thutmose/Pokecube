@@ -191,7 +191,7 @@ public class Moves extends ListPage
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        if (mouseButton == 0 && new Exception().getStackTrace()[4].getClassName()
+        if (mouseButton == 0 && new Exception().getStackTrace()[3].getClassName()
                 .equals("pokecube.core.client.gui.watch.GuiPokeWatch"))
         {
             for (int i = 0; i < moveOffsets.length; i++)
@@ -219,8 +219,8 @@ public class Moves extends ListPage
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long timeSinceLastClick)
     {
-        if (mouseButton == 0 && new Exception().getStackTrace()[4].getClassName()
-                .equals("pokecube.core.client.gui.watch.GuiPokeWatch"))
+        if (mouseButton == 0 && new Exception().getStackTrace()[3].getClassName()
+                .equals("net.minecraft.client.gui.GuiScreen"))
         {
             int heldIndex = -1;
             for (int i = 0; i < moveOffsets.length; i++)
@@ -252,8 +252,8 @@ public class Moves extends ListPage
     @Override
     public void mouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        if (mouseButton == 0 && new Exception().getStackTrace()[4].getClassName()
-                .equals("pokecube.core.client.gui.watch.GuiPokeWatch"))
+        if (mouseButton == 0 && new Exception().getStackTrace()[3].getClassName()
+                .equals("net.minecraft.client.gui.GuiScreen"))
         {
             int oldIndex = -1;
             for (int i = 0; i < moveOffsets.length; i++)

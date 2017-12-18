@@ -79,6 +79,8 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
     public static void sendInspectPacket(IPokemob pokemob)
     {
         PacketPokedex packet = new PacketPokedex(PacketPokedex.INSPECTMOB);
+        PokecubePlayerDataHandler.getInstance().getPlayerData(PokecubeCore.getPlayer(null))
+                .getData(PokecubePlayerStats.class).inspect(PokecubeCore.getPlayer(null), pokemob);
         packet.data.setInteger("V", pokemob.getEntity().getEntityId());
         PokecubePacketHandler.sendToServer(packet);
     }

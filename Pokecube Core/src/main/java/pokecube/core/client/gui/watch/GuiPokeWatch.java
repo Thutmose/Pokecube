@@ -78,6 +78,7 @@ public class GuiPokeWatch extends GuiScreen
         if (pokemob != null)
         {
             PacketPokedex.sendInspectPacket(pokemob);
+            PacketPokedex.updateWatchEntry(pokemob.getPokedexEntry());
         }
         this.player = player;
         for (Class<? extends WatchPage> pageClass : PAGELIST)

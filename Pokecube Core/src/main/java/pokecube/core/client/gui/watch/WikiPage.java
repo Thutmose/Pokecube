@@ -109,13 +109,14 @@ public class WikiPage extends ListPage
         ItemStack book = books.get(index).getInfoBook(FMLClientHandler.instance().getCurrentLanguage());
         NBTTagCompound tag = book.getTagCompound();
         NBTTagList bookPages = tag.getTagList("pages", 8);
+        ITextComponent line;
         for (int i = 0; i < bookPages.tagCount(); i++)
         {
             ITextComponent page = ITextComponent.Serializer.jsonToComponent(bookPages.getStringTagAt(i));
             List<ITextComponent> list = GuiUtilRenderComponents.splitText(page, 120, fontRenderer, true, true);
             for (int j = 0; j < list.size(); j++)
             {
-                ITextComponent line = list.get(j);
+                line = list.get(j);
                 if (j < list.size() - 1 && line.getUnformattedText().trim().isEmpty())
                 {
                     for (int l = j; l < list.size(); l++)
@@ -127,8 +128,7 @@ public class WikiPage extends ListPage
                         }
                     }
                 }
-                entries.add(new WikiLine((watch.height - 160) / 2 + 25, (watch.height - 160) / 2 + 132, fontRenderer,
-                        line, i).setClickListner(listener));
+                entries.add(new WikiLine(offsetY + 4, offsetY + height + 4, fontRenderer, line, i).setClickListner(listener));
             }
         }
         list = new ScrollGui(mc, 135, height, fontRenderer.FONT_HEIGHT + 2, offsetX, offsetY, entries);

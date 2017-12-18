@@ -57,9 +57,9 @@ public class LineEntry implements IGuiListEntry
     public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY,
             boolean isSelected, float partialTicks)
     {
-        y -= fontRender.FONT_HEIGHT / 2;
         if (y < y0) return;
         if (y + fontRender.FONT_HEIGHT > y1) return;
+        y -= fontRender.FONT_HEIGHT / 2;
         fontRender.drawString(line.getFormattedText(), x, y, colour);
         int dx = fontRender.getStringWidth(line.getFormattedText());
         int relativeX = mouseX - x;
@@ -74,7 +74,7 @@ public class LineEntry implements IGuiListEntry
     public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY)
     {
         int dx = fontRender.getStringWidth(line.getFormattedText());
-        if (relativeY <= (y1 - y0) && relativeX <= dx && (mouseY - y1) < -1)
+        if (relativeY <= (y1 - y0) && relativeX >= 0 && relativeX <= dx && (mouseY - y1) < -1)
         {
             listener.handleClick(line);
             return true;

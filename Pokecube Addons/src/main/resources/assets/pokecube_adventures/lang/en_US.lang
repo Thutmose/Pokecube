@@ -103,6 +103,7 @@ traineredit.button.stationary=Stands
 
 gui.jei.pokemobs=Pokémob Evolution
 gui.jei.pokemobs.interact=Pokémob Interactions
+gui.jei.pokemobs.moves=Pokémob Move Recipes
 gui.jei.pokemob.evo.level=Level %s
 gui.jei.pokemob.evo.traded=When Traded
 gui.jei.pokemob.evo.night=At Night

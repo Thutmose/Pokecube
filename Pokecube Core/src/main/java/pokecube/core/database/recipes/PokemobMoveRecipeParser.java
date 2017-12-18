@@ -43,10 +43,10 @@ public class PokemobMoveRecipeParser implements IRecipeParser
     private static final QName OREDICT    = new QName("oreDict");
     private static final QName SIZE       = new QName("n");
 
-    private static class WrappedSizedIngredient extends Ingredient
+    public static class WrappedSizedIngredient extends Ingredient
     {
-        final Ingredient wrapped;
-        final int        size;
+        public final Ingredient wrapped;
+        public final int        size;
 
         public WrappedSizedIngredient(Ingredient wrapped, int size)
         {
@@ -139,8 +139,8 @@ public class PokemobMoveRecipeParser implements IRecipeParser
 
     public static class WrappedRecipeMove implements IMoveAction
     {
-        final IMoveAction parent;
-        final IMoveAction other;
+        public final IMoveAction parent;
+        public final IMoveAction other;
 
         public WrappedRecipeMove(IMoveAction parent, IMoveAction other)
         {
@@ -165,16 +165,17 @@ public class PokemobMoveRecipeParser implements IRecipeParser
 
     public static class RecipeMove implements IMoveAction
     {
-        final String            name;
-        final IRecipe           recipe;
+        public final String     name;
+        public final IRecipe    recipe;
+        public final int        hungerCost;
         final InventoryCrafting inventory;
         final Container         handler;
-        final int               hungerCost;
 
         public RecipeMove(XMLRecipe recipe)
         {
             this.name = recipe.values.get(MOVENAME);
             this.hungerCost = Integer.parseInt(recipe.values.get(HUNGERCOST));
+            System.out.println(name + " " + hungerCost);
             this.handler = new Container()
             {
                 @Override
@@ -201,6 +202,7 @@ public class PokemobMoveRecipeParser implements IRecipeParser
                         }
                         if (CompatWrapper.isValid(stack)) oreInputs.add(CompatWrapper.setStackSize(stack.copy(), size));
                     }
+                    PokecubeMod.log(oreInputs + "");
                     if (!oreInputs.isEmpty()) inputs.add(oreInputs);
                     else throw new IllegalArgumentException(
                             "No Items found registered for ore name:" + xml.values.get(OREDICT));

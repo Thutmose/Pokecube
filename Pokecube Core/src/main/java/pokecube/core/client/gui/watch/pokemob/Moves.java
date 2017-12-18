@@ -44,8 +44,8 @@ public class Moves extends ListPage
         int height = fontRenderer.FONT_HEIGHT * 6;
         int width = 111;
 
-        int y0 = offsetY;
-        int y1 = offsetY + height;
+        int y0 = offsetY + 4;
+        int y1 = offsetY + height + 4;
         int colour = 0xFFFFFFFF;
 
         if (!watch.canEdit(pokemob))
@@ -219,8 +219,8 @@ public class Moves extends ListPage
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long timeSinceLastClick)
     {
-        if (mouseButton == 0 && new Exception().getStackTrace()[3].getClassName()
-                .equals("net.minecraft.client.gui.GuiScreen"))
+        if (mouseButton == 0
+                && new Exception().getStackTrace()[3].getClassName().equals("net.minecraft.client.gui.GuiScreen"))
         {
             int heldIndex = -1;
             for (int i = 0; i < moveOffsets.length; i++)
@@ -252,8 +252,8 @@ public class Moves extends ListPage
     @Override
     public void mouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        if (mouseButton == 0 && new Exception().getStackTrace()[3].getClassName()
-                .equals("net.minecraft.client.gui.GuiScreen"))
+        if (mouseButton == 0
+                && new Exception().getStackTrace()[3].getClassName().equals("net.minecraft.client.gui.GuiScreen"))
         {
             int oldIndex = -1;
             for (int i = 0; i < moveOffsets.length; i++)

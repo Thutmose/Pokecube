@@ -1,4 +1,4 @@
-package pokecube.compat.jei.pokemobs;
+package pokecube.compat.jei.pokemobs.evolutions;
 
 import java.awt.Rectangle;
 import java.util.Iterator;

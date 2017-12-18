@@ -1,29 +1,21 @@
-package pokecube.compat.jei.pokemobs;
+package pokecube.compat.jei.pokemobs.evolutions;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.PokedexEntry.InteractionLogic.Interaction;
+import pokecube.core.database.PokedexEntry.EvolutionData;
+import thut.lib.CompatWrapper;
 import thut.lib.IDefaultRecipe;
 
-public class PokemobInteractRecipe implements IDefaultRecipe
+public class PokemobRecipe implements IDefaultRecipe
 {
-    final PokedexEntry entry;
-    final ItemStack    key;
-    final ItemStack    outputStack;
-    final PokedexEntry outputForme;
-    final Interaction  logic;
+    EvolutionData data;
 
-    public PokemobInteractRecipe(PokedexEntry entry, Interaction logic, ItemStack outputStack)
+    public PokemobRecipe(EvolutionData data)
     {
-        this.entry = entry;
-        this.key = logic.key;
-        this.logic = logic;
-        this.outputForme = logic.forme;
-        this.outputStack = outputStack;
+        this.data = data;
     }
 
     @Override
@@ -35,13 +27,13 @@ public class PokemobInteractRecipe implements IDefaultRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        return getRecipeOutput();
+        return CompatWrapper.nullStack;
     }
 
     @Override
     public ItemStack getRecipeOutput()
     {
-        return outputStack != null ? outputStack : ItemStack.EMPTY;
+        return CompatWrapper.nullStack;
     }
 
     ResourceLocation registryName;
@@ -64,4 +56,5 @@ public class PokemobInteractRecipe implements IDefaultRecipe
     {
         return IRecipe.class;
     }
+
 }

@@ -1,4 +1,4 @@
-package pokecube.compat.jei.pokemobs;
+package pokecube.compat.jei.pokemobs.evolutions;
 
 import javax.annotation.Nonnull;
 
@@ -15,7 +15,7 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.compat.jei.JEICompat;
 import pokecube.core.database.PokedexEntry;
 
-public class PokemobInteractCategory implements IRecipeCategory<PokemobInteractRecipeWrapper>
+public class PokemobCategory implements IRecipeCategory<PokemobRecipeWrapper>
 {
     @Nonnull
     private final IDrawable background;
@@ -24,18 +24,18 @@ public class PokemobInteractCategory implements IRecipeCategory<PokemobInteractR
     @Nonnull
     private final String    localizedName;
 
-    public PokemobInteractCategory(IGuiHelper guiHelper)
+    public PokemobCategory(IGuiHelper guiHelper)
     {
         ResourceLocation location = new ResourceLocation(PokecubeAdv.ID, "textures/gui/evorecipe.png");
         background = guiHelper.createDrawable(location, 29, 16, 116, 54);
-        localizedName = Translator.translateToLocal("gui.jei.pokemobs.interact");
+        localizedName = Translator.translateToLocal("gui.jei.pokemobs");
         icon = guiHelper.createDrawable(JEICompat.TABS, 32, 0, 16, 16);
     }
 
     @Override
     public String getUid()
     {
-        return JEICompat.POKEMOBINTERACT;
+        return JEICompat.POKEMOB;
     }
 
     @Override
@@ -64,13 +64,12 @@ public class PokemobInteractCategory implements IRecipeCategory<PokemobInteractR
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, PokemobInteractRecipeWrapper recipeWrapper,
-            IIngredients ingredients)
+    public void setRecipe(IRecipeLayout recipeLayout, PokemobRecipeWrapper recipeWrapper, IIngredients ingredients)
     {
         int out = 24;
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        if (recipeWrapper.recipe.outputForme != null) recipeLayout.getIngredientsGroup(PokedexEntry.class).init(0,
-                false, JEICompat.ingredientRendererOutput, 81, 15, out, out, 4, 4);
+        recipeLayout.getIngredientsGroup(PokedexEntry.class).init(0, false, JEICompat.ingredientRendererOutput, 81, 15,
+                out, out, 4, 4);
         int x = 50;
         int y = 0;
         guiItemStacks.init(1, true, x, y);
@@ -78,7 +77,6 @@ public class PokemobInteractCategory implements IRecipeCategory<PokemobInteractR
         y = 15;
         recipeLayout.getIngredientsGroup(PokedexEntry.class).init(1, true, JEICompat.ingredientRendererOutput, x, y,
                 out, out, 4, 4);
-        if (recipeWrapper.recipe.outputStack != null) guiItemStacks.init(0, false, x+69, y+1);
         guiItemStacks.set(ingredients);
         recipeLayout.getIngredientsGroup(PokedexEntry.class).set(ingredients);
     }

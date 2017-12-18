@@ -3,6 +3,7 @@ package pokecube.compat.jei;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -28,15 +29,18 @@ import pokecube.adventures.blocks.cloner.container.ContainerCloner;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.adventures.client.gui.cloner.GuiCloner;
 import pokecube.compat.jei.cloner.ClonerRecipeCategory;
-import pokecube.compat.jei.cloner.ClonerRecipeHandler;
+import pokecube.compat.jei.cloner.ClonerRecipeWrapper;
 import pokecube.compat.jei.ingredients.PokedexEntryIngredientHelper;
 import pokecube.compat.jei.ingredients.PokedexEntryIngredientRenderer;
-import pokecube.compat.jei.pokemobs.PokemobCategory;
-import pokecube.compat.jei.pokemobs.PokemobInteractCategory;
-import pokecube.compat.jei.pokemobs.PokemobInteractRecipe;
-import pokecube.compat.jei.pokemobs.PokemobInteractRecipeHandler;
-import pokecube.compat.jei.pokemobs.PokemobRecipe;
-import pokecube.compat.jei.pokemobs.PokemobRecipeHandler;
+import pokecube.compat.jei.pokemobs.evolutions.PokemobCategory;
+import pokecube.compat.jei.pokemobs.evolutions.PokemobRecipe;
+import pokecube.compat.jei.pokemobs.evolutions.PokemobRecipeWrapper;
+import pokecube.compat.jei.pokemobs.interactions.PokemobInteractCategory;
+import pokecube.compat.jei.pokemobs.interactions.PokemobInteractRecipe;
+import pokecube.compat.jei.pokemobs.interactions.PokemobInteractRecipeWrapper;
+import pokecube.compat.jei.pokemobs.moves.PokemobMoveCategory;
+import pokecube.compat.jei.pokemobs.moves.PokemobMoveRecipe;
+import pokecube.compat.jei.pokemobs.moves.PokemobMoveRecipeWrapper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -51,6 +55,7 @@ public class JEICompat implements IModPlugin
     public static final String                            REANIMATOR               = "pokecube_adventures.reanimator";
     public static final String                            POKEMOB                  = "pokecube_adventures.pokemobs";
     public static final String                            POKEMOBINTERACT          = "pokecube_adventures.pokemobs.interact";
+    public static final String                            POKEMOBMOVES             = "pokecube_adventures.pokemobs.moves";
 
     public static final ResourceLocation                  TABS                     = new ResourceLocation(
             PokecubeAdv.ID, "textures/gui/jeitabs.png");
@@ -73,16 +78,20 @@ public class JEICompat implements IModPlugin
         registry.addRecipeCategories(new ClonerRecipeCategory(guiHelper));
         registry.addRecipeCategories(new PokemobCategory(guiHelper));
         registry.addRecipeCategories(new PokemobInteractCategory(guiHelper));
+        registry.addRecipeCategories(new PokemobMoveCategory(guiHelper));
     }
 
     @Override
     public void register(IModRegistry registry)
     {
         System.out.println("JEI INIT RECIPES");
-        registry.handleRecipes(RecipeFossilRevive.class, new ClonerRecipeHandler(), JEICompat.REANIMATOR);
-        registry.handleRecipes(PokemobRecipe.class, new PokemobRecipeHandler(), JEICompat.POKEMOB);
-        registry.handleRecipes(PokemobInteractRecipe.class, new PokemobInteractRecipeHandler(),
+        registry.handleRecipes(RecipeFossilRevive.class, recipe -> new ClonerRecipeWrapper(recipe),
+                JEICompat.REANIMATOR);
+        registry.handleRecipes(PokemobRecipe.class, recipe -> new PokemobRecipeWrapper(recipe), JEICompat.POKEMOB);
+        registry.handleRecipes(PokemobInteractRecipe.class, recipe -> new PokemobInteractRecipeWrapper(recipe),
                 JEICompat.POKEMOBINTERACT);
+        registry.handleRecipes(PokemobMoveRecipe.class,
+                recipe -> new PokemobMoveRecipeWrapper(registry.getJeiHelpers(), recipe), JEICompat.POKEMOBMOVES);
         registry.addRecipeClickArea(GuiCloner.class, 88, 32, 28, 23, REANIMATOR);
 
         List<PokemobRecipe> pokemobEvolRecipes = Lists.newArrayList();
@@ -135,11 +144,22 @@ public class JEICompat implements IModPlugin
         {
             e2.printStackTrace();
         }
+        List<RecipeFossilRevive> clonerRecipes = RecipeFossilRevive.getRecipeList();
+        clonerRecipes.removeIf(new Predicate<RecipeFossilRevive>()
+        {
+            @Override
+            public boolean test(RecipeFossilRevive t)
+            {
+                return t.recipeItems.isEmpty();
+            }
+        });
         registry.addRecipes(pokemobEvolRecipes, JEICompat.POKEMOB);
         registry.addRecipes(pokemobInteractRecipes, JEICompat.POKEMOBINTERACT);
         IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
         recipeTransferRegistry.addRecipeTransferHandler(ContainerCloner.class, REANIMATOR, 1, 9, 10, 36);
-        registry.addRecipes(RecipeFossilRevive.getRecipeList(), JEICompat.REANIMATOR);
+        registry.addRecipes(clonerRecipes, JEICompat.REANIMATOR);
+        List<PokemobMoveRecipe> list = PokemobMoveRecipe.getRecipes();
+        if (!list.isEmpty()) registry.addRecipes(list, JEICompat.POKEMOBMOVES);
     }
 
     @Override
@@ -202,7 +222,7 @@ public class JEICompat implements IModPlugin
         }
         for (RecipeFossilRevive r : RecipeFossilRevive.getRecipeList())
         {
-            relevant.add(r.getPokedexEntry());
+            if (!r.recipeItems.isEmpty()) relevant.add(r.getPokedexEntry());
         }
         Field interactionLogic;
         try
@@ -229,7 +249,6 @@ public class JEICompat implements IModPlugin
         {
 
         }
-
         registry.register(PokedexEntry.class, relevant, ingredientHelper, ingredientRendererInput);
         if (autoHideJEI)
         {

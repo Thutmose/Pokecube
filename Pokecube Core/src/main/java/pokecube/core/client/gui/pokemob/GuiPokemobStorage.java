@@ -298,6 +298,7 @@ public class GuiPokemobStorage extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
+        super.drawDefaultBackground();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(Resources.GUI_POKEMOB);
         int k = (this.width - this.xSize) / 2;

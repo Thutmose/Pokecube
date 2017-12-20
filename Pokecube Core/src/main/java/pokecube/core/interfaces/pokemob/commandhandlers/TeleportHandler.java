@@ -51,6 +51,18 @@ public class TeleportHandler implements IMobCommandHandler
         }
     }
 
+    public static void swapTeleports(String uuid, int index1, int index2)
+    {
+        List<TeleDest> teleports = getTeleports(uuid);
+        if (index1 < 0 || index1 >= teleports.size() || index2 < 0 || index2 >= teleports.size()) return;
+        TeleDest dest1 = teleports.get(index1);
+        TeleDest dest2 = teleports.get(index2);
+        dest1.index = index2;
+        dest2.index = index1;
+        teleports.set(index1, dest2);
+        teleports.set(index2, dest1);
+    }
+
     public static void unsetTeleport(int index, String uuid)
     {
         TeleDest dest = getTeleport(uuid, index);

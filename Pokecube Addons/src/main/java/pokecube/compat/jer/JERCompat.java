@@ -3,6 +3,8 @@ package pokecube.compat.jer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
@@ -17,12 +19,15 @@ import jeresources.api.drop.PlantDrop;
 import jeresources.api.render.IMobRenderHook;
 import jeresources.api.restrictions.BiomeRestriction;
 import jeresources.api.restrictions.Restriction;
+import jeresources.compatibility.CompatBase;
+import jeresources.util.LootTableHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,8 +46,8 @@ import pokecube.core.items.berries.BerryManager;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.lib.CompatClass;
-import thut.lib.CompatWrapper;
 import thut.lib.CompatClass.Phase;
+import thut.lib.CompatWrapper;
 
 public class JERCompat
 {
@@ -61,14 +66,11 @@ public class JERCompat
                                                                       float mobScale = pokemob.getSize();
                                                                       entity.prevRotationYawHead = entity.rotationYawHead;
                                                                       entity.prevRotationPitch = entity.rotationPitch;
-                                                                      float size = Math.max(
-                                                                              pokemob.getPokedexEntry().width * mobScale,
-                                                                              Math.max(
-                                                                                      pokemob.getPokedexEntry().height
-                                                                                              * mobScale,
-                                                                                              pokemob.getPokedexEntry().length
-                                                                                              * mobScale));
-                                                                      float zoom = (float) (1f / Math.pow(size, 0.7));
+                                                                      Vector3f dims = pokemob.getPokedexEntry()
+                                                                              .getModelSize();
+                                                                      float size = Math.max(dims.z * mobScale, Math.max(
+                                                                              dims.y * mobScale, dims.x * mobScale));
+                                                                      float zoom = (float) (1f / Math.pow(size, 0.5));
                                                                       renderInfo.scale = zoom;
                                                                       GL11.glTranslated(0, 0, 0);
                                                                       GL11.glScalef(zoom, zoom, zoom);
@@ -83,7 +85,7 @@ public class JERCompat
     @CompatClass(phase = Phase.POSTPOST)
     public static void JERInit()
     {
-        new pokecube.compat.jer.JERCompat().register();
+        new JERCompat().register();
     }
 
     public JERCompat()
@@ -93,7 +95,8 @@ public class JERCompat
     private LootDrop[] getDrops(PokedexEntry entry)
     {
         boolean hasDrops = false;
-        hasDrops = !entry.drops.isEmpty() || !entry.held.isEmpty();
+        hasDrops = !entry.drops.isEmpty() || !entry.held.isEmpty() || entry.heldTable != null
+                || entry.lootTable != null;
         if (!hasDrops) return null;
 
         ArrayList<LootDrop> drops = new ArrayList<LootDrop>();
@@ -112,6 +115,16 @@ public class JERCompat
             float chance = entry.held.get(stack);
             drops.add(drop = new LootDrop(stack, chance));
             drop.minDrop = drop.maxDrop;
+        }
+        World world = CompatBase.getWorld();
+        if (entry.heldTable != null)
+        {
+            drops.addAll(LootTableHelper.toDrops(world, entry.heldTable));
+
+        }
+        if (entry.lootTable != null)
+        {
+            drops.addAll(LootTableHelper.toDrops(world, entry.lootTable));
         }
         return drops.toArray(new LootDrop[0]);
     }
@@ -195,15 +208,7 @@ public class JERCompat
 
     public void register()
     {
-        try
-        {
-            registerMobs();
-        }
-        catch (Throwable e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        registerMobs();
         registerOres();
         registerPlants();
     }
@@ -211,27 +216,28 @@ public class JERCompat
     @SuppressWarnings("unchecked")
     private void registerMobs()
     {
-        System.out.println("Registering Mobs for JER");
+        PokecubeMod.log("Registering Mobs for JER");
         for (PokedexEntry e : Database.allFormes)
         {
-            LootDrop[] drops = getDrops(e);
-            if (drops == null) continue;
             Entity poke = PokecubeMod.core.createPokemob(e, PokecubeCore.proxy.getWorld());
             if (poke == null) continue;
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(poke);
-            pokemob.setShiny(false);
-            pokemob.setSize(1);
-            JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
-            JERAPI.getMobRegistry()
-                    .registerRenderHook(PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);
+            LootDrop[] drops = getDrops(e);
+            if (drops != null)
+            {
+                pokemob.setShiny(false);
+                pokemob.setSize(1);
+                JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
+                JERAPI.getMobRegistry().registerRenderHook(
+                        PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);
+            }
         }
     }
 
     private void registerOres()
     {
-        System.out.println("Registering Ores for JER");
+        PokecubeMod.log("Registering Ores for JER");
         ItemStack fossilStone = PokecubeItems.getStack("fossilstone");
-
         DistributionBase distrubution = new DistributionSquare(5, 44, 12 / 265f);
         Restriction restriction = new Restriction(new BiomeRestriction(BiomeDatabase.getBiome("desertHills"),
                 BiomeDatabase.getBiome("desert"), BiomeDatabase.getBiome("jungle"),
@@ -253,7 +259,7 @@ public class JERCompat
 
     private void registerPlants()
     {
-        System.out.println("Registering Crops for JER");
+        PokecubeMod.log("Registering Crops for JER");
         for (Integer i : BerryManager.berryCrops.keySet())
         {
             Block crop = BerryManager.berryCrops.get(i);

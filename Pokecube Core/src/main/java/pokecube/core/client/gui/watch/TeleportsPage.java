@@ -29,6 +29,8 @@ public class TeleportsPage extends ListPage
         final GuiTextField  text;
         final GuiButton     delete;
         final GuiButton     confirm;
+        final GuiButton     moveUp;
+        final GuiButton     moveDown;
         final int           guiHeight;
 
         public TeleOption(Minecraft mc, int offsetY, TeleDest dest, GuiTextField text, int height, TeleportsPage parent)
@@ -43,12 +45,16 @@ public class TeleportsPage extends ListPage
             delete.packedFGColour = 0xFFFF0000;
             confirm = new GuiButton(0, 0, 0, 10, 10, "Y");
             confirm.enabled = false;
+            moveUp = new GuiButton(0, 0, 0, 10, 10, "\u21e7");
+            moveDown = new GuiButton(0, 0, 0, 10, 10, "\u21e9");
+            moveUp.enabled = dest.index != 0;
+            moveDown.enabled = dest.index != parent.locations.size() - 1;
         }
 
         @Override
         public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_)
         {
-            
+
         }
 
         @Override
@@ -62,6 +68,10 @@ public class TeleportsPage extends ListPage
             delete.x = x - 1 + text.width;
             confirm.y = y - 5;
             confirm.x = x - 2 + 10 + text.width;
+            moveUp.y = y - 5;
+            moveUp.x = x - 2 + 18 + text.width;
+            moveDown.y = y - 5;
+            moveDown.x = x - 2 + 26 + text.width;
             fits = text.y >= offsetY;
             fits = fits && text.y + text.height <= offsetY + guiHeight;
             if (fits)
@@ -69,6 +79,8 @@ public class TeleportsPage extends ListPage
                 text.drawTextBox();
                 delete.drawButton(mc, mouseX, mouseY, partialTicks);
                 confirm.drawButton(mc, mouseX, mouseY, partialTicks);
+                moveUp.drawButton(mc, mouseX, mouseY, partialTicks);
+                moveDown.drawButton(mc, mouseX, mouseY, partialTicks);
             }
         }
 
@@ -93,6 +105,20 @@ public class TeleportsPage extends ListPage
                 PacketPokedex.sendRemoveTelePacket(dest.index);
                 // Also remove it client side so we update now.
                 TeleportHandler.unsetTeleport(dest.index, parent.watch.player.getCachedUniqueIdString());
+                // Update the list for the page.
+                parent.initList();
+            }
+            else if (moveUp.isMouseOver() && moveUp.enabled)
+            {
+                moveUp.playPressSound(this.mc.getSoundHandler());
+                PacketPokedex.sendReorderTelePacket(dest.index, dest.index - 1);
+                // Update the list for the page.
+                parent.initList();
+            }
+            else if (moveDown.isMouseOver() && moveDown.enabled)
+            {
+                moveDown.playPressSound(this.mc.getSoundHandler());
+                PacketPokedex.sendReorderTelePacket(dest.index, dest.index + 1);
                 // Update the list for the page.
                 parent.initList();
             }
@@ -132,18 +158,19 @@ public class TeleportsPage extends ListPage
     public void initList()
     {
         locations = TeleportHandler.getTeleports(watch.player.getCachedUniqueIdString());
+        teleNames.clear();
         List<IGuiListEntry> entries = Lists.newArrayList();
         int offsetX = (watch.width - 160) / 2 + 10;
         int offsetY = (watch.height - 160) / 2 + 20;
         int height = 120;
         for (TeleDest d : locations)
         {
-            GuiTextField name = new GuiTextField(0, fontRenderer, 0, 0, 110, 10);
+            GuiTextField name = new GuiTextField(0, fontRenderer, 0, 0, 104, 10);
             teleNames.add(name);
             name.setText(d.getName());
             entries.add(new TeleOption(mc, offsetY, d, name, height, this));
         }
-        list = new ScrollGui(mc, 140, height, 10, offsetX, offsetY, entries);
+        list = new ScrollGui(mc, 146, height, 10, offsetX, offsetY, entries);
     }
 
     @Override
@@ -153,7 +180,7 @@ public class TeleportsPage extends ListPage
         int slot = list.getSlotIndexFromScreenCoords(mouseX, mouseY);
         if (slot != -1)
         {
-            for (int i = 0; i < teleNames.size(); i++)
+            for (int i = 0; i < list.getSize(); i++)
             {
                 if (i != slot)
                 {

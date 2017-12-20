@@ -62,6 +62,7 @@ import thut.api.terrain.TerrainManager;
 
 public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, IMessage>
 {
+    public static final byte                           REORDER      = -10;
     public static final byte                           INSPECTMOB   = -9;
     public static final byte                           SETWATCHPOKE = -8;
     public static final byte                           REQUESTLOC   = -7;
@@ -117,6 +118,16 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         packet.data.setString("N", newName);
         packet.data.setInteger("I", index);
         PokecubePacketHandler.sendToServer(packet);
+    }
+
+    public static void sendReorderTelePacket(int index1, int index2)
+    {
+        PacketPokedex packet = new PacketPokedex();
+        packet.message = REORDER;
+        packet.data.setInteger("2", index2);
+        packet.data.setInteger("1", index1);
+        PokecubePacketHandler.sendToServer(packet);
+        TeleportHandler.swapTeleports(PokecubeCore.getPlayer(null).getCachedUniqueIdString(), index1, index2);
     }
 
     public static void sendRemoveTelePacket(int index)
@@ -541,6 +552,15 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
             }
             if (message.message == REQUEST) return;
+        }
+        if (message.message == REORDER)
+        {
+            int index1 = message.data.getInteger("1");
+            int index2 = message.data.getInteger("2");
+            PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
+            TeleportHandler.swapTeleports(PokecubeCore.getPlayer(null).getCachedUniqueIdString(), index1, index2);
+            PacketDataSync.sendInitPacket(player, "pokecube-data");
+            return;
         }
         if (message.message == REMOVE)
         {

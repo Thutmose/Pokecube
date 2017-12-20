@@ -164,8 +164,6 @@ public abstract class PokemobMoves extends PokemobSexed
         if (here == null) here = Vector3.getNewVector();
         here.set(getEntity()).addTo(0, getEntity().getEyeHeight(), 0);
         MovesUtils.useMove(move, getEntity(), target, here, targetLocation);
-        this.setAttackCooldown(MovesUtils.getAttackDelay(this, currentMove,
-                (move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0, false));
         here.set(getEntity());
     }
 

@@ -119,8 +119,6 @@ public class AIAttack extends AIBase implements IAICombat
                 }
             }
         }
-        delayTime = pokemob.getAttackCooldown();
-        pokemob.setAttackCooldown(--delayTime > 0 ? delayTime : 0);
     }
 
     @Override
@@ -167,13 +165,12 @@ public class AIAttack extends AIBase implements IAICombat
 
             /** Check if it should notify the player of agression, and do so if
              * it should. */
-            if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
+            if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning
                     && entityTarget instanceof EntityPlayerMP && !(entityTarget instanceof FakePlayer)
                     && !pokemob.getPokemonAIState(IMoveConstants.TAMED)
                     && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker//getRevengeTarget in 1.12
                     && ((EntityPlayer) entityTarget).getLastAttackedEntity() != attacker)//getLastAttackedEntity in 1.12
             {
-                delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
                 ITextComponent message = new TextComponentTranslation("pokemob.agress",
                         pokemob.getPokemonDisplayName().getFormattedText());
                 try
@@ -184,10 +181,7 @@ public class AIAttack extends AIBase implements IAICombat
                 {
                     System.out.println("Error with message for " + entityTarget);
                 }
-            }
-            else if (delayTime < 0)
-            {
-                delayTime = 0;
+                pokemob.setAttackCooldown(PokecubeMod.core.getConfig().pokemobagressticks);
             }
             return;
         }
@@ -270,6 +264,7 @@ public class AIAttack extends AIBase implements IAICombat
             self = true;
         }
 
+        delayTime = pokemob.getAttackCooldown();
         boolean canUseMove = MovesUtils.canUseMove(pokemob);
         boolean shouldPath = delayTime <= 0;
         boolean inRange = false;

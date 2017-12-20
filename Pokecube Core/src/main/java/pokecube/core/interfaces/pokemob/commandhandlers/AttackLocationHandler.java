@@ -35,8 +35,12 @@ public class AttackLocationHandler implements IMobCommandHandler
                     pokemob.getPokemonDisplayName(),
                     new TextComponentTranslation(MovesUtils.getUnlocalizedMove(move.getName())));
             pokemob.displayMessageToOwner(mess);
-            pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
-            ((PokemobAIUtilityMove) pokemob.getUtilityMoveAI()).destination = location;
+            if (pokemob.getUtilityMoveAI() != null)
+            {
+                pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
+                ((PokemobAIUtilityMove) pokemob.getUtilityMoveAI()).destination = location;
+            }
+            else pokemob.executeMove(null, location, 0);
         }
     }
 

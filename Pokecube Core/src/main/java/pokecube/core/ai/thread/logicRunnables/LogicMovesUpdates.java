@@ -67,6 +67,7 @@ public class LogicMovesUpdates extends LogicBase
     {
         super.doServerTick(world);
         v.set(entity);
+        pokemob.setAttackCooldown(Math.max(0, pokemob.getAttackCooldown() - 1));
         updateOngoingMoves();
         updateStatusEffect();
         doExplosionChecks();

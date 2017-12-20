@@ -490,8 +490,6 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
         // these two are used for tracking learning new moves.
         public int                            num                        = 0;
-        // next tick when a move can be used
-        public int                            nextMoveTick               = 0;
         // The array of moves.
         public String[]                       moves                      = new String[4];
         // Moves it is trying to learn.

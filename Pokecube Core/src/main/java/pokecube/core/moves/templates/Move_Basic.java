@@ -278,8 +278,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     {
         MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Pre(packet.attacker, this, packet.attacked));
         IPokemob attacker = packet.attacker;
-        attacker.getMoveStats().nextMoveTick = (int) (attacker.getEntity().ticksExisted
-                + PokecubeMod.core.getConfig().attackCooldown * MovesUtils.getDelayMultiplier(attacker, name));
         attacker.onMoveUse(packet);
         IPokemob attacked = CapabilityPokemob.getPokemobFor(packet.attacked);
         if (attacked != null)

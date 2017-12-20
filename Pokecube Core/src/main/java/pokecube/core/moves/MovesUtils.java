@@ -887,7 +887,7 @@ public class MovesUtils implements IMoveConstants
 
     public static boolean canUseMove(IPokemob attacker)
     {
-        if (attacker.getMoveStats().nextMoveTick <= attacker.getEntity().ticksExisted) return true;
+        if (attacker.getAttackCooldown() <= 0) return true;
         return false;
     }
 }

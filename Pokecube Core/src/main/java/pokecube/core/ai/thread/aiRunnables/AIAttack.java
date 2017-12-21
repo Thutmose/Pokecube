@@ -270,6 +270,7 @@ public class AIAttack extends AIBase implements IAICombat
 
         delayTime = pokemob.getAttackCooldown();
         boolean canUseMove = MovesUtils.canUseMove(pokemob);
+        if (!canUseMove) return;
         boolean shouldPath = delayTime <= 0;
         boolean inRange = false;
 

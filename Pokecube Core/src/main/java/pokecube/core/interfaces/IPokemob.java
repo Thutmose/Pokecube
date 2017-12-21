@@ -437,6 +437,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
             IGNORE.add("newMoves");
             IGNORE.add("num");
             IGNORE.add("exp");
+            IGNORE.add("disableTimers");
         }
         public Entity                         weapon1;
 
@@ -698,8 +699,8 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
     IPokemob specificSpawnInit();
 
     /** Returns the held item this pokemob should have when found wild.
-     * @param mob 
      * 
+     * @param mob
      * @return */
     default ItemStack wildHeldItem(EntityLiving mob)
     {

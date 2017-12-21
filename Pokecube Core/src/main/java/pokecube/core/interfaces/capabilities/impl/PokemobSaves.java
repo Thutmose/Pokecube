@@ -80,6 +80,11 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             }
             this.setMoveIndex(movesTag.getInteger(MOVEINDEX));
             this.setAttackCooldown(movesTag.getInteger(COOLDOWN));
+            int[] disables = movesTag.getIntArray(DISABLED);
+            if (disables.length == 4) for (int i = 0; i < 4; i++)
+            {
+                setDisableTimer(i, disables[i]);
+            }
         }
         // Read Inventory tag
         if (!inventoryTag.hasNoTags())
@@ -107,7 +112,11 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         {
             this.setSpecialInfo(visualsTag.getInteger(SPECIALTAG));
             setSize(getSize());
-            flavourAmounts = visualsTag.getIntArray(FLAVOURSTAG);
+            int[] flavourAmounts = visualsTag.getIntArray(FLAVOURSTAG);
+            if (flavourAmounts.length == 5) for (int i = 0; i < flavourAmounts.length; i++)
+            {
+                setFlavourAmount(i, flavourAmounts[i]);
+            }
             if (visualsTag.hasKey(POKECUBE))
             {
                 NBTTagCompound pokecubeTag = visualsTag.getCompoundTag(POKECUBE);
@@ -202,6 +211,17 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             movesTag.setTag(NEWMOVES, newMoves);
         }
         movesTag.setInteger(COOLDOWN, getAttackCooldown());
+        int[] disables = new int[4];
+        boolean tag = false;
+        for (int i = 0; i < 4; i++)
+        {
+            disables[i] = getDisableTimer(i);
+            tag = tag || disables[i] > 0;
+        }
+        if (tag)
+        {
+            movesTag.setIntArray(DISABLED, disables);
+        }
 
         // Write Inventory tag
         NBTTagCompound inventoryTag = new NBTTagCompound();
@@ -232,6 +252,11 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         // stored in genes.
         visualsTag.setString(FORME, getPokedexEntry().getName());
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
+        int[] flavourAmounts = new int[5];
+        for (int i = 0; i < flavourAmounts.length; i++)
+        {
+            flavourAmounts[i] = getFlavourAmount(i);
+        }
         visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);
         if (CompatWrapper.isValid(getPokecube()))
         {

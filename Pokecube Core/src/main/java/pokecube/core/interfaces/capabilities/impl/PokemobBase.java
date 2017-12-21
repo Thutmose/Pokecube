@@ -63,6 +63,10 @@ public abstract class PokemobBase implements IPokemob
         {
             params.FLAVOURS[i] = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         }
+        for (int i = 0; i < 4; i++)
+        {
+            params.DISABLE[i] = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
+        }
         params.AIACTIONSTATESDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.ATTACKTARGETIDDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.HUNGERDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
@@ -106,6 +110,7 @@ public abstract class PokemobBase implements IPokemob
         public DataParameter<Integer>         SPECIALINFO;
         public DataParameter<String>          TYPE1DW;
         public DataParameter<String>          TYPE2DW;
+        public final DataParameter<Integer>[] DISABLE  = new DataParameter[4];
 
         public PokemobDataManager register(EntityDataManager dataManager, EntityLiving entity)
         {
@@ -143,6 +148,12 @@ public abstract class PokemobBase implements IPokemob
             for (int i = 0; i < 5; i++)
             {
                 dataManager.register(FLAVOURS[i], Integer.valueOf(0));
+            }
+
+            // Flavours for various berries eaten.
+            for (int i = 0; i < 4; i++)
+            {
+                dataManager.register(DISABLE[i], Integer.valueOf(0));
             }
 
             PokemobDataManager manager = new PokemobDataManager(entity);
@@ -190,7 +201,6 @@ public abstract class PokemobBase implements IPokemob
     protected Vector<IBreedingMob> males            = new Vector<>();
     protected int                  uid              = -1;
     protected ItemStack            pokecube         = CompatWrapper.nullStack;
-    protected int[]                flavourAmounts   = new int[5];
     /** Tracker for things related to moves. */
     protected PokemobMoveStats     moveInfo         = new PokemobMoveStats();
     /** Used for size when pathing */

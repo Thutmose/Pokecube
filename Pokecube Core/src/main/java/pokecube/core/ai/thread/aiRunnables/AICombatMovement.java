@@ -1,6 +1,7 @@
 package pokecube.core.ai.thread.aiRunnables;
 
 import java.util.Random;
+import java.util.logging.Level;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -121,6 +122,10 @@ public class AICombatMovement extends AIBase
     public void tryDodge()
     {
         if (!shouldDodge()) return;
+        if (PokecubeCore.debug)
+        {
+            PokecubeMod.log(Level.INFO, "Dodge: " + attacker);
+        }
         Vector3 loc = Vector3.getNewVector().set(attacker);
         Vector3 target = Vector3.getNewVector().set(attacker.getAttackTarget());
         Vector3 temp = Vector3.getNewVector();
@@ -199,6 +204,10 @@ public class AICombatMovement extends AIBase
 
         if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !attacker.onGround) return;
         pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
+        if (PokecubeCore.debug)
+        {
+            PokecubeMod.log(Level.INFO, "Leap: " + attacker);
+        }
         Vector3 targetLoc = Vector3.getNewVector().set(target);
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);
         Vector3 dir = targetLoc.subtract(leaperLoc);

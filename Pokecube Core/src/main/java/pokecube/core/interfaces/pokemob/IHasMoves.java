@@ -336,4 +336,8 @@ public interface IHasMoves extends IHasStats
         if (index == 0) getMoveStats().weapon1 = weapon;
         else getMoveStats().weapon2 = weapon;
     }
+
+    void setDisableTimer(int index, int timer);
+
+    int getDisableTimer(int index);
 }

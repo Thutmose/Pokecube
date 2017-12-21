@@ -140,6 +140,7 @@ public abstract class PokemobMoves extends PokemobSexed
         }
         else
         {
+            // TODO do not pick a disabled move.
             if (moveIndexCounter++ > rand.nextInt(3))
             {
                 int nb = rand.nextInt(5);
@@ -153,6 +154,14 @@ public abstract class PokemobMoves extends PokemobSexed
                 setMoveIndex(nb);
             }
             attack = getMove(getMoveIndex());
+        }
+        int index = getMoveIndex();
+        if (index < 4 && index >= 0)
+        {
+            if (getDisableTimer(index) > 0)
+            {
+                attack = "struggle";
+            }
         }
         Move_Base move = MovesUtils.getMoveFromName(attack);
         if (move == null || move.move == null)
@@ -310,4 +319,17 @@ public abstract class PokemobMoves extends PokemobSexed
     {
         return getEntity().onGround;
     }
+
+    @Override
+    public void setDisableTimer(int index, int timer)
+    {
+        this.getDataManager().set(params.DISABLE[index], timer);
+    }
+
+    @Override
+    public int getDisableTimer(int index)
+    {
+        return this.getDataManager().get(params.DISABLE[index]);
+    }
+
 }

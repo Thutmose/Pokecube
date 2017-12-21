@@ -150,11 +150,12 @@ public class AIFindTarget extends AIBase implements IAICombat
     @Override
     public void run()
     {
+        if (entity.getAttackTarget() != null) return;
         // Check if the pokemob is set to follow, and if so, look for mobs
         // nearby trying to attack the owner of the pokemob, if any such are
         // found, try to aggress them immediately.
-        if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.STAYING)
-                && pokemob.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeCore.isOnClientSide())
+        if (!pokemob.getPokemonAIState(IMoveConstants.STAYING) && pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                && !PokecubeCore.isOnClientSide())
         {
             List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
             if (!list.isEmpty() && pokemob.getPokemonOwner() != null)
@@ -177,8 +178,8 @@ public class AIFindTarget extends AIBase implements IAICombat
         }
 
         // If hunting, look for valid prey, and if found, agress it.
-        if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
-                && pokemob.isCarnivore() && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+        if (!pokemob.getPokemonAIState(IMoveConstants.SITTING) && pokemob.isCarnivore()
+                && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
         {
             List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
             if (!list.isEmpty())

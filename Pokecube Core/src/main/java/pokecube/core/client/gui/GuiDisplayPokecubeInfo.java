@@ -377,14 +377,13 @@ public class GuiDisplayPokecubeInfo extends Gui
             if (dir == -1)
             {
                 h -= 14 + 12 * (moveCount - 1) - (4 - moveCount) * 2;
-            } // System.out.println(Arrays.toString(pokemob.getMoves())+"
-              // "+pokemob);
+            }
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {
                 int index = moveIndex;
 
                 Move_Base move = MovesUtils.getMoveFromName(originalPokemob.getMove(index));
-
+                boolean disabled = index >= 0 && index < 4 && originalPokemob.getDisableTimer(index) > 0;
                 if (move != null)
                 {
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -393,14 +392,14 @@ public class GuiDisplayPokecubeInfo extends Gui
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
                     this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1, 91, 13);
 
+                    // Render colour overlays.
                     if (currentMoveIndex == index)
                     {
                         // Draw selected indictator
-                        GL11.glColor4f(0F, 0.9F, 0.9F, 0.9F);
+                        GL11.glColor4f(0F, 1F, 1F, 0.5F);
                         this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1, 91,
                                 13);
                         GL11.glColor4f(0F, 1.0F, 1.0F, 1.0F);
-
                         // Draw cooldown box
                         float timer = 1;
                         Move_Base lastMove;
@@ -411,10 +410,19 @@ public class GuiDisplayPokecubeInfo extends Gui
                                     (lastMove.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0, false));
                         }
                         timer = Math.max(0, Math.min(timer, 1));
-                        GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
+                        GL11.glColor4f(0F, 0.1F, 1.0F, 0.5F);
                         this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1,
                                 (int) (91 * timer), 13);
+                        GL11.glColor4f(0F, 1.0F, 1.0F, 1.0F);
                     }
+                    if (disabled)
+                    {
+                        GL11.glColor4f(1F, 0.0F, 0.0F, 0.5F);
+                        this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1, 91,
+                                13);
+                        GL11.glColor4f(0F, 1.0F, 1.0F, 1.0F);
+                    }
+
                     GL11.glPopMatrix();
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     GL11.glPushMatrix();

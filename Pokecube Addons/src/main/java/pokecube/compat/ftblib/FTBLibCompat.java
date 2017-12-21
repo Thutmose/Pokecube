@@ -13,21 +13,22 @@ import com.feed_the_beast.ftbl.api.IUniverse;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.Optional;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.handlers.TeamManager.ITeamProvider;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.lib.CompatClass;
+import thut.lib.CompatClass.Phase;
 
 public class FTBLibCompat implements IFTBLibPlugin
 {
     public static class TeamProvider implements ITeamProvider
     {
         final ITeamProvider defaults;
-        final FTBLibAPI     api;
 
-        public TeamProvider(ITeamProvider defaults, FTBLibAPI api)
+        public TeamProvider(ITeamProvider defaults)
         {
             this.defaults = defaults;
-            this.api = api;
         }
 
         private String getPlayerTeam(EntityPlayer player)
@@ -88,16 +89,24 @@ public class FTBLibCompat implements IFTBLibPlugin
 
     @FTBLibPlugin
     public static FTBLibCompat INSTANCE = new FTBLibCompat();
+    public static FTBLibAPI    api;
 
     public FTBLibCompat()
     {
+    }
+
+    @Optional.Method(modid = "ftbu")
+    @CompatClass(phase = Phase.POSTPOST)
+    public static void thutEssentialsCompat()
+    {
+        TeamManager.provider = new TeamProvider(TeamManager.provider);
     }
 
     @Override
     public void init(FTBLibAPI api)
     {
         PokecubeMod.log("Registering Team Manager for FTBL");
-        TeamManager.provider = new TeamProvider(TeamManager.provider, api);
+        FTBLibCompat.api = api;
     }
 
 }

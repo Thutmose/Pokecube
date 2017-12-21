@@ -11,6 +11,7 @@ import pokecube.core.handlers.TeamManager.ITeamProvider;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import thut.essentials.ThutEssentials;
 import thut.essentials.events.DenyItemUseEvent;
 import thut.essentials.events.DenyItemUseEvent.UseType;
 import thut.essentials.land.LandManager;
@@ -66,7 +67,7 @@ public class EssentialsCompat
     public EssentialsCompat()
     {
         MinecraftForge.EVENT_BUS.register(this);
-        TeamManager.provider = new TeamProvider(TeamManager.provider);
+        if (ThutEssentials.instance.config.landEnabled) TeamManager.provider = new TeamProvider(TeamManager.provider);
     }
 
     @SubscribeEvent

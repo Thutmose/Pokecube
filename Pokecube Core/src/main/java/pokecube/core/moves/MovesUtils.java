@@ -887,7 +887,23 @@ public class MovesUtils implements IMoveConstants
 
     public static boolean canUseMove(IPokemob attacker)
     {
-        if (attacker.getAttackCooldown() <= 0) return true;
+        if (attacker.getAttackCooldown() <= 0)
+        {
+            int index = attacker.getMoveIndex();
+            if (index < 4 && index >= 0)
+            {
+                if (attacker.getDisableTimer(index) <= 0) return true;
+                else
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (attacker.getDisableTimer(i) <= 0) return false;
+                    }
+                    return true;
+                }
+            }
+            return true;
+        }
         return false;
     }
 }

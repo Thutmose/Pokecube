@@ -3,6 +3,7 @@ package pokecube.core.interfaces.capabilities.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -62,6 +63,10 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             Entity owner = this.getPokemonOwner();
             if (owner instanceof EntityPlayerMP && !getEntity().isDead)
             {
+                if (PokecubeCore.debug)
+                {
+                    PokecubeMod.log(Level.INFO, message.getFormattedText());
+                }
                 MoveMessageEvent event = new MoveMessageEvent(this, message);
                 MinecraftForge.EVENT_BUS.post(event);
                 PacketPokemobMessage.sendMessage((EntityPlayer) owner, getEntity().getEntityId(), event.message);

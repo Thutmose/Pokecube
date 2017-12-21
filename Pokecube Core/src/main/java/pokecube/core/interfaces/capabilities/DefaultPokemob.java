@@ -207,5 +207,4 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         // affect it.
         MinecraftForge.EVENT_BUS.post(new InitAIEvent(this));
     }
-
 }

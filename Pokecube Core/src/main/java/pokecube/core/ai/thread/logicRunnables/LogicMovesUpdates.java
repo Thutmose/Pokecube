@@ -27,7 +27,8 @@ import thut.lib.CompatWrapper;
  * activating the held item (like berries) if it should be used. */
 public class LogicMovesUpdates extends LogicBase
 {
-    Vector3 v = Vector3.getNewVector();
+    Vector3 v     = Vector3.getNewVector();
+    int     index = -1;
 
     public LogicMovesUpdates(IPokemob entity)
     {
@@ -68,9 +69,25 @@ public class LogicMovesUpdates extends LogicBase
         super.doServerTick(world);
         v.set(entity);
         pokemob.setAttackCooldown(Math.max(0, pokemob.getAttackCooldown() - 1));
+
+        for (int i = 0; i < 4; i++)
+        {
+            int timer = pokemob.getDisableTimer(i);
+            if (timer > 0) pokemob.setDisableTimer(i, timer - 1);
+        }
+
         updateOngoingMoves();
         updateStatusEffect();
         doExplosionChecks();
+
+        // Reset move specific counters if the move index has changed.
+        if (index != pokemob.getMoveIndex())
+        {
+            pokemob.getMoveStats().FURYCUTTERCOUNTER = 0;
+            pokemob.getMoveStats().PHYSICALDAMAGETAKENCOUNTER = 0;
+            pokemob.getMoveStats().SPECIALDAMAGETAKENCOUNTER = 0;
+        }
+        index = pokemob.getMoveIndex();
 
         if (pokemob.getMoves()[0] == null)
         {

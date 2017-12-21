@@ -38,10 +38,10 @@ public class JsonMoves
 
     public static class AnimationJson
     {
-        public String preset;
-        public String duration  = "5";
-        public String starttick = "0";
-        public String applyAfter;
+        public String  preset;
+        public String  duration  = "5";
+        public String  starttick = "0";
+        public boolean applyAfter;
     }
 
     public static class MoveJsonEntry

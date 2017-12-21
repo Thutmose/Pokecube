@@ -45,7 +45,7 @@ public class AnimationMultiAnimations extends MoveAnimationBase
             if (animation == null) continue;
             int start = Integer.parseInt(anim.starttick);
             int dur = Integer.parseInt(anim.duration);
-            if (anim.applyAfter != null && Boolean.parseBoolean(anim.applyAfter))
+            if (anim.applyAfter)
             {
                 applicationTick = Math.max(start + dur, applicationTick);
             }

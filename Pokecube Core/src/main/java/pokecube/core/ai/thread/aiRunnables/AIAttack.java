@@ -1,5 +1,7 @@
 package pokecube.core.ai.thread.aiRunnables;
 
+import java.util.logging.Level;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,6 +16,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayer;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -207,6 +210,10 @@ public class AIAttack extends AIBase implements IAICombat
         {
             addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
             addEntityPath(attacker, null, movementSpeed);
+            if (PokecubeCore.debug)
+            {
+                PokecubeMod.log(Level.INFO, "Too Long Chase, Forgetting Target: " + attacker + " " + entityTarget);
+            }
             return;
         }
 
@@ -270,6 +277,7 @@ public class AIAttack extends AIBase implements IAICombat
 
         delayTime = pokemob.getAttackCooldown();
         boolean canUseMove = MovesUtils.canUseMove(pokemob);
+        if (!canUseMove) return;
         boolean shouldPath = delayTime <= 0;
         boolean inRange = false;
 

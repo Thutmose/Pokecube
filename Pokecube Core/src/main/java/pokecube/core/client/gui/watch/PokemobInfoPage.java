@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.entity.EntityLivingBase;
-import pokecube.core.client.gui.GuiPokemob;
+import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.client.gui.watch.pokemob.Breeding;
 import pokecube.core.client.gui.watch.pokemob.Moves;
 import pokecube.core.client.gui.watch.pokemob.Spawns;
@@ -308,10 +308,10 @@ public class PokemobInfoPage extends PageWithSubPages
                 EntityTools.copyEntityTransforms(pokemob.getEntity(), player);
             }
 
-            dx = -110;
-            dy = -20;
+            dx = -35;
+            dy = -55;
             // Draw the actual pokemob
-            GuiPokemob.renderMob(pokemob, x + dx, y + dy, watch.width, watch.height, 0, 0, 0, 1);
+            GuiPokedex.renderMob(pokemob.getEntity(), mc, dx, dy, 0.75f,  watch.height, watch.width, 160, 160, 0, 45, -45);
             // Draw gender, types and lvl
             int genderColor = 0xBBBBBB;
             String gender = "";

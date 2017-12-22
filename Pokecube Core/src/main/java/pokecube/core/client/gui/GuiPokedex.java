@@ -541,7 +541,8 @@ public class GuiPokedex extends GuiScreen
         int xOffset = width / 2;
 
         GL11.glPushMatrix();
-        renderMob();
+        renderMob(getEntityToDisplay(), mc, 0, 0, 1, height, width, xSize, ySize, xHeadRenderAngle, yHeadRenderAngle,
+                0);
         GL11.glPopMatrix();
         nicknameTextField.drawTextBox();
         int length = fontRenderer.getStringWidth(pokemobTextField.getText()) / 2;
@@ -1121,11 +1122,11 @@ public class GuiPokedex extends GuiScreen
         }
     }
 
-    private void renderMob()
+    public static void renderMob(EntityLiving entity, Minecraft mc, int dx, int dy, float scale, int height, int width,
+            int xSize, int ySize, float xHeadRenderAngle, float yHeadRenderAngle, float yaw)
     {
         try
         {
-            EntityLiving entity = getEntityToDisplay();
 
             float size = 0;
             int j = 0;
@@ -1133,8 +1134,8 @@ public class GuiPokedex extends GuiScreen
 
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
             if (pokemob == null) { return; }
+            PokedexEntry pokedexEntry = pokemob.getPokedexEntry();
             pokemob.setSize(1);
-            pokemob.setShiny(false);
             PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance()
                     .getPlayerData(Minecraft.getMinecraft().player).getData(PokecubePlayerStats.class);
             if ((StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().player) > 0
@@ -1149,7 +1150,7 @@ public class GuiPokedex extends GuiScreen
             }
             else
             {
-                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(0, 0, 0, 255);
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(15, 15, 15, 255);
             }
 
             pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
@@ -1157,12 +1158,12 @@ public class GuiPokedex extends GuiScreen
             float mobScale = pokemob.getSize();
             Vector3f dims = pokemob.getPokedexEntry().getModelSize();
             size = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
-            j = (width - xSize) / 2;
-            k = (height - ySize) / 2;
+            j = (width - xSize) / 2 + dx;
+            k = (height - ySize) / 2 + dy;
 
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 60, k + 100, 50F);
-            float zoom = (float) (25F / Math.sqrt(size));
+            float zoom = (float) (25F / Math.sqrt(size)) * scale;
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             float f5 = ((k + 75) - 50) - ySize;
@@ -1170,16 +1171,18 @@ public class GuiPokedex extends GuiScreen
 
             GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
-            entity.renderYawOffset = 0F;
-            entity.rotationYaw = yHeadRenderAngle;
-            entity.rotationPitch = xHeadRenderAngle;
-            entity.rotationYawHead = entity.rotationYaw;
+            entity.prevRenderYawOffset = yaw;
+            entity.renderYawOffset = yaw;
+            entity.rotationYaw = yaw;
             entity.prevRotationYaw = entity.rotationYaw;
+            entity.rotationPitch = xHeadRenderAngle;
+            entity.rotationYawHead = yHeadRenderAngle;
             entity.prevRotationYawHead = entity.rotationYawHead;
             entity.prevRotationPitch = entity.rotationPitch;
             GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
 
-            entity.setPosition(entityPlayer.posX, entityPlayer.posY + 1, entityPlayer.posZ);
+            entity.setPosition(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY + 1,
+                    Minecraft.getMinecraft().player.posZ);
 
             entity.limbSwing = 0;
             entity.limbSwingAmount = 0;
@@ -1201,13 +1204,14 @@ public class GuiPokedex extends GuiScreen
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             RenderHelper.enableStandardItemLighting();
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 1, POKEDEX_RENDER, false);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();
             GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
             GlStateManager.disableTexture2D();
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
 
             GL11.glPopMatrix();
 

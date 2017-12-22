@@ -61,6 +61,10 @@ public class TeleportHandler implements IMobCommandHandler
         dest2.index = index1;
         teleports.set(index1, dest2);
         teleports.set(index2, dest1);
+        for (int i = 0; i < teleports.size(); i++)
+        {
+            teleports.get(i).index = i;
+        }
     }
 
     public static void unsetTeleport(int index, String uuid)

@@ -39,19 +39,12 @@ public class GuiTeleport extends Gui
 
     public static GuiTeleport instance()
     {
-        if (instance == null) create();
-
-        if (instance.locations == null)
-            instance.locations = TeleportHandler.getTeleports(instance.minecraft.player.getCachedUniqueIdString());
-
         return instance;
     }
 
     protected FontRenderer fontRenderer;
 
     protected Minecraft    minecraft;
-
-    public List<TeleDest>  locations;
 
     public int             indexLocation = 0;
 
@@ -81,7 +74,7 @@ public class GuiTeleport extends Gui
         GlStateManager.enableBlend();
         int h = 0;
         int w = 0;
-        locations = TeleportHandler.getTeleports(minecraft.player.getCachedUniqueIdString());
+        List<TeleDest> locations = TeleportHandler.getTeleports(minecraft.player.getCachedUniqueIdString());
         int i = 0;
         int xOffset = 0;
         int yOffset = 0;
@@ -93,8 +86,8 @@ public class GuiTeleport extends Gui
 
         for (int k = 0; k < 1; k++)
         {
-            if (k >= instance().locations.size()) break;
-            TeleDest location = instance().locations.get((k + instance().indexLocation) % instance().locations.size());
+            if (k >= locations.size()) break;
+            TeleDest location = locations.get((k + this.indexLocation) % locations.size());
             if (location != null)
             {
                 if (k == 0) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
@@ -118,17 +111,17 @@ public class GuiTeleport extends Gui
 
     public boolean getState()
     {
-        return instance().state;
+        return this.state;
     }
 
     public void nextMove()
     {
-        instance().indexLocation++;
-        if (instance().locations.size() > 0)
-            instance().indexLocation = instance().indexLocation % instance().locations.size();
-        else instance().indexLocation = 0;
+        List<TeleDest> locations = TeleportHandler.getTeleports(minecraft.player.getCachedUniqueIdString());
+        indexLocation++;
+        if (locations.size() > 0) indexLocation = indexLocation % locations.size();
+        else indexLocation = 0;
         PokecubeServerPacket packet = new PokecubeServerPacket(
-                new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
+                new byte[] { PokecubeServerPacket.TELEPORT, (byte) indexLocation });
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -137,7 +130,7 @@ public class GuiTeleport extends Gui
     {
         try
         {
-            if (instance().state && (minecraft.currentScreen == null || GuiArranger.toggle)
+            if (state && (minecraft.currentScreen == null || GuiArranger.toggle)
                     && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
                     && event.getType() == ElementType.HOTBAR)
                 draw(event);
@@ -150,20 +143,16 @@ public class GuiTeleport extends Gui
 
     public void previousMove()
     {
-        instance().indexLocation--;
-        if (instance().indexLocation < 0) instance().indexLocation = Math.max(0, instance().locations.size() - 1);
+        List<TeleDest> locations = TeleportHandler.getTeleports(minecraft.player.getCachedUniqueIdString());
+        indexLocation--;
+        if (indexLocation < 0) this.indexLocation = Math.max(0, locations.size() - 1);
         PokecubeServerPacket packet = new PokecubeServerPacket(
-                new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
+                new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.this.indexLocation });
         PokecubePacketHandler.sendToServer(packet);
-    }
-
-    public void refresh()
-    {
-        instance.locations = TeleportHandler.getTeleports(instance.minecraft.player.getCachedUniqueIdString());
     }
 
     public void setState(boolean state)
     {
-        instance().state = state;
+        this.state = state;
     }
 }

@@ -386,7 +386,7 @@ public class Tools
         Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
         RayTraceResult result = entity.getEntityWorld().rayTraceBlocks(vec3, vec32, false, true, false);
         if (result == null || result.hitVec == null) return null;
-        Vector3 vec = Vector3.getNewVector().set(result.hitVec);
+        Vector3 vec = Vector3.getNewVector().set(result.getBlockPos()).add(0.5, 0.5, 0.5);
         return vec;
     }
 

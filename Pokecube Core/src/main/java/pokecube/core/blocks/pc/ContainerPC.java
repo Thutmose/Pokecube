@@ -1,6 +1,10 @@
 package pokecube.core.blocks.pc;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import com.google.common.collect.Sets;
 
 import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,20 +17,22 @@ import net.minecraft.item.ItemWrittenBook;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokedex;
+import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.network.packets.PacketPC;
 import thut.lib.CompatWrapper;
 
 @ChestContainer(isLargeChest = true, showButtons = false)
 public class ContainerPC extends Container
 {
+    public static Set<Predicate<ItemStack>> CUSTOMPCWHILTELIST = Sets.newHashSet();
 
-    public static int STACKLIMIT = 64;
-    public static int yOffset;
-    public static int xOffset;
+    public static int                       STACKLIMIT         = 64;
+    public static int                       yOffset;
+    public static int                       xOffset;
 
     /** Returns true if the item is a filled pokecube.
      *
@@ -35,10 +41,17 @@ public class ContainerPC extends Container
      * @return true if the id is a filled pokecube one, false otherwise */
     public static boolean isItemValid(ItemStack itemstack)
     {
-        if (itemstack == CompatWrapper.nullStack) return false;
+        if (!CompatWrapper.isValid(itemstack)) return false;
         boolean eggorCube = !PokecubeMod.core.getConfig().pcHoldsOnlyPokecubes || PokecubeManager.isFilled(itemstack)
-                || itemstack.getItem() instanceof ItemWrittenBook || itemstack.getItem() == PokecubeItems.pokemobEgg
-                || itemstack.getItem() instanceof ItemPokedex;
+                || itemstack.getItem() instanceof ItemWrittenBook || itemstack.getItem() instanceof ItemPokemobEgg
+                || itemstack.getItem() instanceof ItemPokedex || itemstack.hasCapability(MegaCapability.MEGA_CAP, null);
+        if (!eggorCube)
+        {
+            for (Predicate<ItemStack> tester : CUSTOMPCWHILTELIST)
+            {
+                if (tester.test(itemstack)) return true;
+            }
+        }
         return eggorCube;
     }
 

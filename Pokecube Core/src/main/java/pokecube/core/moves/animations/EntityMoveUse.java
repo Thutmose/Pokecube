@@ -236,7 +236,7 @@ public class EntityMoveUse extends Entity
             }
             else
             {
-                if (attack.getPRE(userMob, target) == 0 && target != null) setEnd(Vector3.getNewVector().set(target));
+                if (attack.getPRE(userMob, target) <= 0 && target != null) setEnd(Vector3.getNewVector().set(target));
                 MovesUtils.doAttack(attack.name, userMob, getEnd());
             }
         }

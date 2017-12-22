@@ -250,7 +250,7 @@ public class JsonMoves
         }
         catch (Exception e)
         {
-
+            PokecubeMod.log(Level.WARNING, "Error with animation parsing.", e);
         }
     }
 

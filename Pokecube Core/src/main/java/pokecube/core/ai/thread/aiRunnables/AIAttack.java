@@ -330,7 +330,6 @@ public class AIAttack extends AIBase implements IAICombat
                 AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                         dz + attackedLength);
                 inRange = box.intersectsWith(box2);// intersects 1.12
-                if (shouldPath && !(distanced || self)) setPokemobAIState(pokemob, IMoveConstants.LEAPING, true);
 
             }
         }
@@ -338,6 +337,14 @@ public class AIAttack extends AIBase implements IAICombat
         {
             inRange = true;
             targetLoc.set(attacker);
+        }
+        if (shouldPath && !(distanced || self) && !pokemob.getPokemonAIState(IMoveConstants.LEAPING))
+        {
+            setPokemobAIState(pokemob, IMoveConstants.LEAPING, true);
+            if (PokecubeCore.debug)
+            {
+                PokecubeMod.log(Level.INFO, "Set To Leap: " + attacker);
+            }
         }
 
         // If can't see, increment the timer for giving up later.

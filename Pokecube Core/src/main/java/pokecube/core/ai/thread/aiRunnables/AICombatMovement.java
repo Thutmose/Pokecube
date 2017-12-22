@@ -196,13 +196,7 @@ public class AICombatMovement extends AIBase
         double dist = d0 * d0 + d2 * d2;
         float diff = attacker.width + target.width;
         diff = diff * diff;
-        if (!(dist <= diff && dist <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false))
-        {
-            // TODO see if need to path to target
-            return;
-        }
-
-        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !attacker.onGround) return;
+        if (!(dist >= diff && dist <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false)) { return; }
         pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
         if (PokecubeCore.debug)
         {
@@ -222,7 +216,7 @@ public class AICombatMovement extends AIBase
         }
         if (dir.magSq() > 3)
         {
-            System.out.println(dir);
+            PokecubeMod.log(Level.INFO, "Leap Error? : " + attacker + " " + dir);
         }
         double dy = Math.abs(dir.y);
         if (!attacker.onGround && dy > pokemob.getSize() * pokemob.getPokedexEntry().height && dy < 3) dir.y *= 2;

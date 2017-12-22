@@ -171,14 +171,18 @@ public class AIAttack extends AIBase implements IAICombat
             if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning
                     && entityTarget instanceof EntityPlayerMP && !(entityTarget instanceof FakePlayer)
                     && !pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                    && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker//getRevengeTarget in 1.12
-                    && ((EntityPlayer) entityTarget).getLastAttackedEntity() != attacker)//getLastAttackedEntity in 1.12
+                    && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker// getRevengeTarget
+                                                                                   // in
+                                                                                   // 1.12
+                    && ((EntityPlayer) entityTarget).getLastAttackedEntity() != attacker)// getLastAttackedEntity
+                                                                                         // in
+                                                                                         // 1.12
             {
                 ITextComponent message = new TextComponentTranslation("pokemob.agress",
                         pokemob.getPokemonDisplayName().getFormattedText());
                 try
                 {
-                    entityTarget.sendMessage(message);//sendMessage in 1.12
+                    entityTarget.sendMessage(message);// sendMessage in 1.12
                 }
                 catch (Exception e)
                 {
@@ -305,7 +309,7 @@ public class AIAttack extends AIBase implements IAICombat
                     AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
                     AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                             dz + attackedLength);
-                    inRange = box.intersects(box2);//intersects 1.12
+                    inRange = box.intersects(box2);// intersects 1.12
                 }
             }
             else
@@ -325,9 +329,7 @@ public class AIAttack extends AIBase implements IAICombat
                 AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
                 AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                         dz + attackedLength);
-                inRange = box.intersects(box2);//intersects 1.12
-                if (shouldPath && !(distanced || self))
-                    setPokemobAIState(pokemob, IMoveConstants.LEAPING, true);
+                inRange = box.intersects(box2);// intersects 1.12
 
             }
         }
@@ -335,6 +337,14 @@ public class AIAttack extends AIBase implements IAICombat
         {
             inRange = true;
             targetLoc.set(attacker);
+        }
+        if (shouldPath && !(distanced || self) && !pokemob.getPokemonAIState(IMoveConstants.LEAPING))
+        {
+            setPokemobAIState(pokemob, IMoveConstants.LEAPING, true);
+            if (PokecubeCore.debug)
+            {
+                PokecubeMod.log(Level.INFO, "Set To Leap: " + attacker);
+            }
         }
 
         // If can't see, increment the timer for giving up later.

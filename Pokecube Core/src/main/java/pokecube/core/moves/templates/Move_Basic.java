@@ -8,6 +8,7 @@ import static pokecube.core.utils.PokeType.getAttackEfficiency;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -550,11 +551,34 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 }
                 attacked.attackEntityFrom(source1, d1);
                 attacked.attackEntityFrom(source2, d2);
+                if (PokecubeMod.debug)
+                {
+                    PokecubeMod.log(Level.INFO, "Attack Used: " + attack);
+                    PokecubeMod.log(Level.INFO, "Normal Component: " + d1);
+                    PokecubeMod.log(Level.INFO, "Magic Component: " + d2);
+                }
+            }
+            else if (targetPokemob != null)
+            {
+                DamageSource source = new PokemobDamageSource("mob", attackerMob, MovesUtils.getMoveFromName(attack));
+                source.setDamageIsAbsolute();
+                source.setDamageBypassesArmor();
+                if (PokecubeMod.debug)
+                {
+                    PokecubeMod.log(Level.INFO, "Attack Used: " + attack);
+                    PokecubeMod.log(Level.INFO, "Attack Damage: " + finalAttackStrength);
+                }
+                attacked.attackEntityFrom(source, finalAttackStrength);
             }
             else
             {
                 DamageSource source = new PokemobDamageSource("mob", attackerMob, MovesUtils.getMoveFromName(attack));
                 attacked.attackEntityFrom(source, finalAttackStrength);
+                if (PokecubeMod.debug)
+                {
+                    PokecubeMod.log(Level.INFO, "Attack Used: " + attack);
+                    PokecubeMod.log(Level.INFO, "Attack Damage: " + finalAttackStrength);
+                }
             }
 
             if (targetPokemob != null)

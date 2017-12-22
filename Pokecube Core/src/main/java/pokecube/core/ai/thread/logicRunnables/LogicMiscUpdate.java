@@ -313,6 +313,7 @@ public class LogicMiscUpdate extends LogicBase
         else if (entity.getAttackTarget() != null)
         {
             lastHadTargetTime = 100;
+            pokemob.setPokemonAIState(ANGRY, true);
             reset = false;
         }
 

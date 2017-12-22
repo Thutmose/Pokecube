@@ -30,7 +30,7 @@ public class BattleCommand extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        if (args.length != 1) { throw new CommandException(getCommandUsage(sender)); }
+        if (args.length != 1) { throw new CommandException(getUsage(sender)); }
         final EntityPlayer player = getPlayer(server, sender, args[0]);
         // Use 32 blocks as farthest to look for trainer.
         final int NEAR = 32 * 32;

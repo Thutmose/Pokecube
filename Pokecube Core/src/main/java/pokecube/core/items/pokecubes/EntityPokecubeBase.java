@@ -63,6 +63,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     /** 1 if the player can pick up the arrow */
     public int                                              canBePickedUp;
     public boolean                                          isLoot         = false;
+    public ResourceLocation                                 lootTable      = null;
     protected int                                           inData;
     protected boolean                                       inGround;
     public UUID                                             shooter;

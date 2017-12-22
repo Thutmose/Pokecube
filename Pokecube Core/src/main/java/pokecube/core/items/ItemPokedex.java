@@ -85,6 +85,25 @@ public class ItemPokedex extends Item
             showGui(player, itemstack);
             return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
         }
+        else
+        {
+            Vector3 hit = Tools.getPointedLocation(player, 6);
+            if (hit != null)
+            {
+                Block block = hit.getBlockState(world).getBlock();
+                if (block instanceof BlockHealTable)
+                {
+                    Vector4 loc = new Vector4(player);
+                    TeleportHandler.setTeleport(loc, player.getCachedUniqueIdString());
+                    if (!world.isRemote)
+                    {
+                        CommandTools.sendMessage(player, "pokedex.setteleport");
+                        PacketDataSync.sendInitPacket(player, "pokecube-data");
+                    }
+                    return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+                }
+            }
+        }
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
     }
 
@@ -103,11 +122,11 @@ public class ItemPokedex extends Item
         Block block = hit.getBlockState(worldIn).getBlock();
         if (block instanceof BlockHealTable)
         {
-            if (worldIn.isRemote) CommandTools.sendMessage(playerIn, "pokedex.setteleport");
             Vector4 loc = new Vector4(playerIn);
             TeleportHandler.setTeleport(loc, playerIn.getCachedUniqueIdString());
             if (!worldIn.isRemote)
             {
+                CommandTools.sendMessage(playerIn, "pokedex.setteleport");
                 PacketDataSync.sendInitPacket(playerIn, "pokecube-data");
             }
             return EnumActionResult.SUCCESS;

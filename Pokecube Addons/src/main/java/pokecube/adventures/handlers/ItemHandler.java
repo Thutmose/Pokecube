@@ -5,6 +5,8 @@ import static pokecube.core.PokecubeItems.getItem;
 import static pokecube.core.PokecubeItems.register;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
 
+import java.util.function.Predicate;
+
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -27,6 +29,7 @@ import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeItems;
+import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.items.ItemTM;
 
@@ -130,6 +133,14 @@ public class ItemHandler
         item.setRegistryName(BlockHandler.warppad.getRegistryName());
         register(item, registry);
 
+        ContainerPC.CUSTOMPCWHILTELIST.add(new Predicate<ItemStack>()
+        {
+            @Override
+            public boolean test(ItemStack t)
+            {
+                return t.getItem() instanceof ItemBag || t.getItem() instanceof ItemBadge;
+            }
+        });
     }
 
     public static void handleLoot()

@@ -20,11 +20,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
@@ -424,13 +428,38 @@ public class EntityPokecube extends EntityPokecubeBase
                 {
                     if (isLoot)
                     {
-                        if (cannotCollect(player) || lootStacks.isEmpty()) return false;
+                        if (cannotCollect(player)) return false;
                         players.add(new CollectEntry(player.getCachedUniqueIdString(),
                                 getEntityWorld().getTotalWorldTime()));
-                        PacketPokecube.sendMessage(player, getEntityId(),
-                                getEntityWorld().getTotalWorldTime() + resetTime);
-                        ItemStack loot = lootStacks.get(new Random().nextInt(lootStacks.size()));
-                        Tools.giveItem(player, loot.copy());
+                        ItemStack loot = CompatWrapper.nullStack;
+
+                        if (!lootStacks.isEmpty())
+                        {
+                            loot = lootStacks.get(new Random().nextInt(lootStacks.size()));
+                            if (CompatWrapper.isValid(loot))
+                            {
+                                PacketPokecube.sendMessage(player, getEntityId(),
+                                        getEntityWorld().getTotalWorldTime() + resetTime);
+                                Tools.giveItem(player, loot.copy());
+                            }
+                        }
+                        else if (lootTable != null)
+                        {
+                            LootTable loottable = getEntityWorld().getLootTableManager()
+                                    .getLootTableFromLocation(lootTable);
+                            LootContext.Builder lootcontext$builder = (new LootContext.Builder(
+                                    (WorldServer) getEntityWorld())).withLootedEntity(this);
+                            for (ItemStack itemstack : loottable.generateLootForPools(getRNG(),
+                                    lootcontext$builder.build()))
+                            {
+                                if (CompatWrapper.isValid(itemstack))
+                                {
+                                    Tools.giveItem(player, itemstack.copy());
+                                }
+                            }
+                            PacketPokecube.sendMessage(player, getEntityId(),
+                                    getEntityWorld().getTotalWorldTime() + resetTime);
+                        }
                         return true;
                     }
                     Tools.giveItem(player, getItem());
@@ -462,7 +491,11 @@ public class EntityPokecube extends EntityPokecubeBase
             for (int i = 0; i < nbttaglist.tagCount(); i++)
                 addLoot(LootEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
         }
-        if (loot.isEmpty()) isLoot = false;
+        String lootTable = nbt.getString("lootTable");
+        if (!lootTable.isEmpty())
+        {
+            this.lootTable = new ResourceLocation(lootTable);
+        }
     }
 
     /** Sets the position and rotation. Only difference from the other one is no
@@ -510,6 +543,8 @@ public class EntityPokecube extends EntityPokecubeBase
             nbttaglist.appendTag(nbttagcompound);
         }
         if (!loot.isEmpty()) nbt.setTag("loot", nbttaglist);
+        if (lootTable != null) nbt.setString("lootTable", lootTable.toString());
+        else nbt.setString("lootTable", "");
     }
 
     protected void captureAttempt(Entity e)

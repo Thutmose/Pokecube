@@ -1135,7 +1135,6 @@ public class GuiPokedex extends GuiScreen
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
             if (pokemob == null) { return; }
             PokedexEntry pokedexEntry = pokemob.getPokedexEntry();
-            pokemob.setSize(1);
             PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance()
                     .getPlayerData(Minecraft.getMinecraft().player).getData(PokecubePlayerStats.class);
             if ((StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().player) > 0
@@ -1180,9 +1179,6 @@ public class GuiPokedex extends GuiScreen
             entity.prevRotationYawHead = entity.rotationYawHead;
             entity.prevRotationPitch = entity.rotationPitch;
             GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-
-            entity.setPosition(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY + 1,
-                    Minecraft.getMinecraft().player.posZ);
 
             entity.limbSwing = 0;
             entity.limbSwingAmount = 0;

@@ -371,6 +371,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         if (targetPokemob != null)
         {
             efficiency = getAttackEfficiency(type, targetPokemob.getType1(), targetPokemob.getType2());
+            if (efficiency > 0 && packet.getMove().fixedDamage) efficiency = 1;
         }
 
         float criticalRatio = 1;
@@ -465,6 +466,14 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         }
         TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(attackerMob);
         float terrainDamageModifier = MovesUtils.getTerrainDamageModifier(type, attackerMob, terrain);
+
+        if (packet.getMove().fixedDamage)
+        {
+            criticalRatio = 1;
+            terrainDamageModifier = 1;
+            stabFactor = 1;
+            packet.superEffectMult = 1;
+        }
 
         int finalAttackStrength = Math.max(0, Math.round(attackStrength * efficiency * criticalRatio
                 * terrainDamageModifier * stabFactor * packet.superEffectMult));

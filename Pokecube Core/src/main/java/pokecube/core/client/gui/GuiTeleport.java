@@ -3,15 +3,15 @@
  */
 package pokecube.core.client.gui;
 
-import java.util.List;
-
 import org.lwjgl.opengl.GL11;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,9 +46,7 @@ public class GuiTeleport extends Gui
 
     protected Minecraft    minecraft;
 
-    public int             indexLocation = 0;
-
-    boolean                state         = false;
+    boolean                state = false;
 
     /**
      *
@@ -74,7 +72,6 @@ public class GuiTeleport extends Gui
         GlStateManager.enableBlend();
         int h = 0;
         int w = 0;
-        List<TeleDest> locations = TeleportHandler.getTeleports(minecraft.player.getCachedUniqueIdString());
         int i = 0;
         int xOffset = 0;
         int yOffset = 0;
@@ -84,28 +81,23 @@ public class GuiTeleport extends Gui
         this.drawTexturedModalRect(xOffset + w, yOffset + h, 44, 0, 90, 13);
         fontRenderer.drawString(I18n.format("gui.pokemob.teleport"), 2 + xOffset + w, 2 + yOffset + h, lightGrey);
 
-        for (int k = 0; k < 1; k++)
+        TeleDest location = TeleportHandler.getTeleport(minecraft.player.getCachedUniqueIdString());
+        if (location != null)
         {
-            if (k >= locations.size()) break;
-            TeleDest location = locations.get((k + this.indexLocation) % locations.size());
-            if (location != null)
+            GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
+            String name = location.getName();
+            int shift = 13 + 12 * i + yOffset + h;
+            if (dir == -1)
             {
-                if (k == 0) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
-                else GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                String name = location.getName();
-                int shift = 13 + 12 * i + yOffset + h;
-                if (dir == -1)
-                {
-                    shift -= 25;
-                }
-                // bind texture
-                minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-                this.drawTexturedModalRect(xOffset + w, shift, 44, 22, 91, 12);
-                fontRenderer.drawString(name, 5 + xOffset + w, shift + 2, PokeType.getType("fire").colour);
+                shift -= 25;
             }
-            i++;
-            GlStateManager.disableBlend();
+            // bind texture
+            minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
+            this.drawTexturedModalRect(xOffset + w, shift, 44, 22, 91, 12);
+            fontRenderer.drawString(name, 5 + xOffset + w, shift + 2, PokeType.getType("fire").colour);
         }
+        i++;
+        GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
 
@@ -116,12 +108,13 @@ public class GuiTeleport extends Gui
 
     public void nextMove()
     {
-        List<TeleDest> locations = TeleportHandler.getTeleports(minecraft.player.getCachedUniqueIdString());
-        indexLocation++;
-        if (locations.size() > 0) indexLocation = indexLocation % locations.size();
-        else indexLocation = 0;
-        PokecubeServerPacket packet = new PokecubeServerPacket(
-                new byte[] { PokecubeServerPacket.TELEPORT, (byte) indexLocation });
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(5));
+        buffer.writeByte(PokecubeServerPacket.TELEPORT);
+        String uuid = minecraft.player.getCachedUniqueIdString();
+        int index = TeleportHandler.getTeleIndex(uuid) + 1;
+        buffer.writeInt(index);
+        TeleportHandler.setTeleIndex(uuid, index);
+        PokecubeServerPacket packet = new PokecubeServerPacket();
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -143,11 +136,13 @@ public class GuiTeleport extends Gui
 
     public void previousMove()
     {
-        List<TeleDest> locations = TeleportHandler.getTeleports(minecraft.player.getCachedUniqueIdString());
-        indexLocation--;
-        if (indexLocation < 0) this.indexLocation = Math.max(0, locations.size() - 1);
-        PokecubeServerPacket packet = new PokecubeServerPacket(
-                new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.this.indexLocation });
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(5));
+        buffer.writeByte(PokecubeServerPacket.TELEPORT);
+        String uuid = minecraft.player.getCachedUniqueIdString();
+        int index = TeleportHandler.getTeleIndex(uuid) - 1;
+        buffer.writeInt(index);
+        TeleportHandler.setTeleIndex(uuid, index);
+        PokecubeServerPacket packet = new PokecubeServerPacket();
         PokecubePacketHandler.sendToServer(packet);
     }
 

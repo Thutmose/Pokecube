@@ -24,6 +24,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.BerryGenManager;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -257,18 +258,19 @@ public class AIHungry extends AIBase
                     if (PokecubeMod.core.getConfig().pokemobsEatRocks && Math.random() > 0.0075)
                     {
                         v.set(entity).offsetBy(EnumFacing.DOWN);
-                        if (b == Blocks.COBBLESTONE)
-                        {
+                        if (SpawnHandler.checkNoSpawnerInArea(world, v.intX(), v.intY(), v.intZ()))
+                            if (b == Blocks.COBBLESTONE)
+                            {
                             TickHandler.addBlockChange(v, entity.dimension, Blocks.GRAVEL);
-                        }
-                        else if (b == Blocks.GRAVEL && PokecubeMod.core.getConfig().pokemobsEatGravel)
-                        {
+                            }
+                            else if (b == Blocks.GRAVEL && PokecubeMod.core.getConfig().pokemobsEatGravel)
+                            {
                             TickHandler.addBlockChange(v, entity.dimension, Blocks.AIR);
-                        }
-                        else if (state.getMaterial() == Material.ROCK)
-                        {
+                            }
+                            else if (state.getMaterial() == Material.ROCK)
+                            {
                             TickHandler.addBlockChange(v, entity.dimension, Blocks.COBBLESTONE);
-                        }
+                            }
                     }
                     berry.setItem(new ItemStack(b));
                     setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);

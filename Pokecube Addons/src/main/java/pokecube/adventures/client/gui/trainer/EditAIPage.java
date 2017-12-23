@@ -208,7 +208,7 @@ public class EditAIPage extends Page
                 packet.data.setInteger("I", parent.entity.getEntityId());
                 PokecubeMod.packetPipeline.sendToServer(packet);
                 this.onPageOpened();
-                mess = new TextComponentTranslation("traineredit.set.cooldown_g", argInt);
+                mess = new TextComponentTranslation("traineredit.set.cooldown_p", argInt);
                 break;
             case 4:
                 argInt = value.isEmpty() ? 0 : Integer.parseInt(value);
@@ -221,7 +221,7 @@ public class EditAIPage extends Page
                 packet.data.setInteger("I", parent.entity.getEntityId());
                 PokecubeMod.packetPipeline.sendToServer(packet);
                 this.onPageOpened();
-                mess = new TextComponentTranslation("traineredit.set.cooldown_p", argInt);
+                mess = new TextComponentTranslation("traineredit.set.cooldown_g", argInt);
                 break;
             }
             if (time != null)

@@ -206,7 +206,7 @@ public class PokecubePacketHandler
                             }
                             else if (channel == TELEPORT)
                             {
-                                int index = buffer.readByte();
+                                int index = buffer.readInt();
                                 TeleportHandler.setTeleIndex(player.getCachedUniqueIdString(), index);
                             }
                         }

@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
@@ -118,7 +119,7 @@ public class Pokecube extends Item implements IPokecube
             }
 
             float health = poketag.getFloat("Health");
-            float maxHealth = pokemob.getEntity().getMaxHealth();
+            float maxHealth = pokemob.getStat(Stats.HP, false);
             int lvlexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel());
             int exp = pokemob.getExp() - lvlexp;
             int neededexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() + 1) - lvlexp;

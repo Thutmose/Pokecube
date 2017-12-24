@@ -114,7 +114,7 @@ public class GuiTeleport extends Gui
         int index = TeleportHandler.getTeleIndex(uuid) + 1;
         buffer.writeInt(index);
         TeleportHandler.setTeleIndex(uuid, index);
-        PokecubeServerPacket packet = new PokecubeServerPacket();
+        PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -142,7 +142,7 @@ public class GuiTeleport extends Gui
         int index = TeleportHandler.getTeleIndex(uuid) - 1;
         buffer.writeInt(index);
         TeleportHandler.setTeleIndex(uuid, index);
-        PokecubeServerPacket packet = new PokecubeServerPacket();
+        PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
         PokecubePacketHandler.sendToServer(packet);
     }
 

@@ -1,11 +1,7 @@
 package pokecube.core.handlers;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -13,10 +9,6 @@ import java.util.concurrent.FutureTask;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.SoundEvents;
@@ -30,6 +22,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
+import pokecube.core.contributors.Contributor;
+import pokecube.core.contributors.ContributorManager;
 import pokecube.core.database.Database;
 import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.recipes.XMLRecipeHandler;
@@ -39,6 +33,7 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.network.PokecubePacketHandler.StarterInfo;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
@@ -78,10 +73,9 @@ public class Config extends ConfigBase
     private static Config                defaults                     = new Config();
     // Misc Settings
     @Configure(category = misc, needsMcRestart = true)
-    public String[]                      defaultStarters              = {};
-    public String[]                      defaultStarts                = {};
+    public boolean                       default_contributors         = true;
     @Configure(category = misc, needsMcRestart = true)
-    public boolean                       contributorStarters          = true;
+    public String                        extra_contributors           = "";
     @Configure(category = misc, needsMcRestart = true)
     public boolean                       loginmessage                 = true;
     @Configure(category = misc)
@@ -615,6 +609,7 @@ public class Config extends ConfigBase
     @Override
     public void applySettings()
     {
+        if (PokecubeCore.core.getConfig() == this) initDefaultStarts();
         WorldProviderSecretBase.init(baseSizeFunction);
         if (!useConfigForBerryLocations) berryLocations = defaults.berryLocations;
         for (String s : structureSubiomes)
@@ -903,27 +898,16 @@ public class Config extends ConfigBase
             {
                 try
                 {
-                    JsonParser parser = new JsonParser();
-                    URL url = new URL(PokecubeMod.CONTRIBURL);
-                    URLConnection con = url.openConnection();
-                    con.setConnectTimeout(1000);
-                    con.setReadTimeout(1000);
-                    InputStream in = con.getInputStream();
-                    InputStreamReader reader = new InputStreamReader(in);
-                    JsonElement element = parser.parse(reader);
-                    JsonElement element1 = element.getAsJsonObject().get("contributors");
-                    JsonArray contribArray = element1.getAsJsonArray();
-                    List<String> defaults = Lists.newArrayList(defaultStarters);
-                    for (int i = 0; i < contribArray.size(); i++)
+                    ContributorManager.instance().loadContributors();
+                    List<String> args = Lists.newArrayList();
+                    for (Contributor c : ContributorManager.instance().contributors.contributors)
                     {
-                        element1 = contribArray.get(i);
-                        JsonObject obj = element1.getAsJsonObject();
-                        String name = obj.get("username").getAsString();
-                        String info = obj.get("info").getAsString();
-                        if (info != null && !info.isEmpty()) defaults.add(name + ":" + info);
+                        if (!c.legacy.isEmpty())
+                        {
+                            args.add(c.name + ";" + c.legacy);
+                        }
                     }
-                    defaultStarts = defaults.toArray(new String[0]);
-                    reader.close();
+                    StarterInfo.infos = args.toArray(new String[0]);
                 }
                 catch (Exception e)
                 {

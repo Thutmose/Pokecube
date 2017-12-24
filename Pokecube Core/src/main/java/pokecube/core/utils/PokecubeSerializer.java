@@ -33,6 +33,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.healtable.TileHealTable;
+import pokecube.core.contributors.Contributor;
+import pokecube.core.contributors.ContributorManager;
 import pokecube.core.database.Database;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerData;
@@ -518,12 +520,16 @@ public class PokecubeSerializer
             entity.setForSpawn(Tools.levelToXp(entity.getExperienceMode(), 5));
             entity.getEntity().setHealth(entity.getEntity().getMaxHealth());
             entity.setPokemonOwner(owner);
-            entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
+            Contributor contrib = ContributorManager.instance().getContributor(owner.getGameProfile());
+            if (contrib != null)
+            {
+                entity.setPokecube(contrib.getStarterCube());
+            }
+            else entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
             ItemStack item = PokecubeManager.pokemobToItem(entity);
             entity.getEntity().isDead = true;
             return item;
         }
-
         return null;
     }
 

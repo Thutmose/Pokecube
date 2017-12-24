@@ -101,7 +101,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public PathNavigate getNavigator()
     {
         if (pokemobCap.navi != null) return pokemobCap.navi;
-
         return super.getNavigator();
     }
 
@@ -286,6 +285,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         else
         {
             this.motionY += ladder ? 0.1 : 0.03999999910593033D;
+            if (ladder) this.motionY = Math.min(this.motionY, 0.5);
         }
     }
 
@@ -303,7 +303,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         int aiState = pokemobCap.getTotalAIState();
         boolean isAbleToFly = entry.floats() || entry.flys();
         boolean isWaterMob = entry.swims();
-
         if (isAbleToFly && !(getAIState(IPokemob.SLEEPING, aiState) || getAIState(IPokemob.SITTING, aiState)))
             this.setNoGravity(true);
         else this.setNoGravity(false);

@@ -457,7 +457,7 @@ public class PokecubeCore extends PokecubeMod
         PokecubeMod.log("Pokecube Core Post Init");
         PokecubeItems.init();
         Database.postInit();
-        StarterInfo.processStarterInfo(config.defaultStarts);
+        StarterInfo.processStarterInfo();
         AbilityManager.init();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
         MovesAdder.postInitMoves();

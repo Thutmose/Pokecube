@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,8 +26,8 @@ import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
 import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobMoveHelper;
+import pokecube.core.ai.utils.pathing.PokemobNavigator;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.InitAIEvent;
 import pokecube.core.events.handlers.EventsHandler;
@@ -170,8 +171,30 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         // JEI, etc), do not bother with AI stuff.
         if (entity.getEntityWorld() == null) return;
 
+        // Set the pathing priorities for various blocks
+        if (entity.isImmuneToFire)
+        {
+            entity.setPathPriority(PathNodeType.LAVA, 0);
+            entity.setPathPriority(PathNodeType.DAMAGE_FIRE, 0);
+            entity.setPathPriority(PathNodeType.DANGER_FIRE, 0);
+        }
+        if (swims())
+        {
+            entity.setPathPriority(PathNodeType.WATER, 0);
+        }
+        if (getPokedexEntry().hatedMaterial != null) for (String material : getPokedexEntry().hatedMaterial)
+            if (material.equalsIgnoreCase("water"))
+            {
+                entity.setPathPriority(PathNodeType.WATER, -1);
+            }
+            else if (material.equalsIgnoreCase("fire"))
+            {
+                entity.setPathPriority(PathNodeType.DAMAGE_FIRE, -1);
+                entity.setPathPriority(PathNodeType.DANGER_FIRE, -1);
+            }
+
         // These are used by pokecube's implementation of IPokemob.
-        this.navi = new PokeNavigator(this, entity.getEntityWorld());
+        this.navi = new PokemobNavigator(this, entity.getEntityWorld());
         this.mover = new PokemobMoveHelper(entity);
 
         // Add in some vanilla-like AI classes

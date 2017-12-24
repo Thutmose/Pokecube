@@ -359,7 +359,7 @@ public class AdvancedRocketryCompat
     public void spawn(SpawnEvent.Pick.Pre event) throws Exception
     {
         if (event.getPicked() == null) return;
-        if (!canBreatheHere(event.entry, event.world, event.location.getPos())) event.setPick(null);
+        if (!canBreatheHere(event.getPicked(), event.world, event.location.getPos())) event.setPick(null);
     }
 
     @SubscribeEvent

@@ -116,7 +116,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
 
         if (shouldGoDown || shouldGoUp)
         {
-            entity.rotationPitch = -(float) (Math.atan((float) (dy / Math.sqrt(dhoriz))) * 180 / Math.PI);
+            entity.rotationPitch = -(float) (Math.atan((dy / Math.sqrt(dhoriz))) * 180 / Math.PI);
             pokemob.setDirectionPitch(entity.rotationPitch);
             float factor = 1;
             if (water && dy < 0.5) factor = 2;
@@ -125,8 +125,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
         }
 
         boolean upLadder = dy > 0 && entity.isOnLadder();
-        boolean jump = upLadder
-                || (dy > (double) this.entity.stepHeight && dhoriz < (double) Math.max(1.0F, this.entity.width))
+        boolean jump = upLadder || (dy > this.entity.stepHeight && dhoriz < Math.max(1.0F, this.entity.width))
                 || (dy > entity.stepHeight && dhoriz <= 2 * speed);
 
         if (jump)

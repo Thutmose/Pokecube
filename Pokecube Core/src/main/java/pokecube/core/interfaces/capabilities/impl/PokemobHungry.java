@@ -152,9 +152,7 @@ public abstract class PokemobHungry extends PokemobMoves
     @Override
     public int getPathTime()
     {
-        int time = 2500000;
-        if (getPokemonAIState(IMoveConstants.TAMED)) time *= 3;
-        return time;
+        return 0;
     }
 
     /** @return does this pokemon hunt for food */

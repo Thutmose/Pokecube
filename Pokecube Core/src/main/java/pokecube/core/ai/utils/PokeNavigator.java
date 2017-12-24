@@ -8,6 +8,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -130,6 +131,9 @@ public class PokeNavigator extends PathNavigate
 
             return (int) this.entity.posY;
         }
+        Vector3 pos = Vector3.getNewVector().set(entity);
+        Vector3 down;
+        if ((down = pos.findNextSolidBlock(world, Vector3.secondAxisNeg, 5)) != null) { return down.intY(); }
         return (int) (this.entity.posY + 0.5D);
 
     }
@@ -193,6 +197,12 @@ public class PokeNavigator extends PathNavigate
         {
             ret = pathfinder.getEntityPathToXYZ(this.entity, pos.getX(), pos.getY(), pos.getZ(),
                     this.getPathSearchRange());
+
+            if (ret != null) for (int i = 0; i < ret.getCurrentPathLength(); i++)
+            {
+                Vector3 p1 = Vector3.getNewVector().set(ret.getPathPointFromIndex(i)).add(0, 5, 0);
+                p1.setBlock(this.entity.getEntityWorld(), Blocks.GOLD_BLOCK.getDefaultState());
+            }
         }
         return ret;
 
@@ -257,6 +267,67 @@ public class PokeNavigator extends PathNavigate
     public void pathFollow()
     {
         super.pathFollow();
+    }
+
+    @Override
+    protected void checkForStuck(Vec3d positionVec3)
+    {
+        int index = getPath().getCurrentPathIndex();
+        int last = getPath().getCurrentPathLength() - 1;
+        index = Math.max(0, index);
+        double dr = positionVec3.squareDistanceTo(this.lastPosCheck);
+        if (index <= last && dr < 1.0D)
+        {
+            BlockPos here = new BlockPos(positionVec3);
+            PathPoint pos = getPath().getPathPointFromIndex(index);
+            BlockPos there = new BlockPos(pos.x, pos.y, pos.z);
+            int dz = (here.getZ() - there.getZ());
+            int dx = (here.getX() - there.getX());
+            double dh = dx * dx + dz * dz;
+            if (dh < 2 && here.getY() < there.getY())
+            {
+                getPath().setCurrentPathIndex(index + 1);
+                this.ticksAtLastPos = this.totalTicks;
+                this.lastPosCheck = positionVec3;
+            }
+        }
+        if (this.totalTicks - this.ticksAtLastPos > 100)
+        {
+            if (dr < 2.25D)
+            {
+                getPath().setCurrentPathIndex(index + 1);
+            }
+
+            this.ticksAtLastPos = this.totalTicks;
+            this.lastPosCheck = positionVec3;
+        }
+
+        if (this.currentPath != null && !this.currentPath.isFinished())
+        {
+            Vec3d vec3d = this.currentPath.getCurrentPos();
+
+            if (vec3d.equals(this.timeoutCachedNode))
+            {
+                this.timeoutTimer += System.currentTimeMillis() - this.lastTimeoutCheck;
+            }
+            else
+            {
+                this.timeoutCachedNode = vec3d;
+                double d0 = positionVec3.distanceTo(this.timeoutCachedNode);
+                this.timeoutLimit = this.entity.getAIMoveSpeed() > 0.0F
+                        ? d0 / (double) this.entity.getAIMoveSpeed() * 1000.0D : 0.0D;
+            }
+
+            if (this.timeoutLimit > 0.0D && (double) this.timeoutTimer > this.timeoutLimit * 3.0D)
+            {
+                this.timeoutCachedNode = Vec3d.ZERO;
+                this.timeoutTimer = 0L;
+                this.timeoutLimit = 0.0D;
+                getPath().setCurrentPathIndex(index + 1);
+            }
+
+            this.lastTimeoutCheck = System.currentTimeMillis();
+        }
     }
 
     public void refreshCache()

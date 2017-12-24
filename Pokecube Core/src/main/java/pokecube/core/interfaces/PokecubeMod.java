@@ -64,9 +64,8 @@ public abstract class PokecubeMod
     public final static String                    MINFORGEVERSION            = "@FORGEVERSION";
 
     public final static String                    DEPSTRING                  = ";required-after:thutcore@@THUTCORE";
-    private final static String                   GIST                       = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/";
+    public final static String                    GIST                       = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/";
     public final static String                    UPDATEURL                  = GIST + "core.json";
-    public final static String                    CONTRIBURL                 = GIST + "contributors.json";
 
     public final static String                    GIFTURL                    = GIST + "gift";
     public static final int                       MAX_DAMAGE                 = 0x7FFF;

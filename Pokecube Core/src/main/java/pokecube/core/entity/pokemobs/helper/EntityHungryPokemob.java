@@ -6,13 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.ChunkCoordinate;
-import thut.api.maths.Vector3;
 
 public abstract class EntityHungryPokemob extends EntityAiPokemob
 {
@@ -98,56 +96,5 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
             return false;
         }
         return false;
-    }
-
-    // The following methods are from IPathingMob
-    // TODO make a capability in ThutCore to deal with this instead.
-
-    @Override
-    public boolean floats()
-    {
-        return pokemobCap.floats();
-    }
-
-    @Override
-    public boolean flys()
-    {
-        return pokemobCap.flys();
-    }
-
-    @Override
-    public float getBlockPathWeight(IBlockAccess world, Vector3 location)
-    {
-        return pokemobCap.getBlockPathWeight(world, location);
-    }
-
-    @Override
-    public double getFloatHeight()
-    {
-        return pokemobCap.getFloatHeight();
-    }
-
-    @Override
-    public Vector3 getMobSizes()
-    {
-        return pokemobCap.getMobSizes();
-    }
-
-    @Override
-    public boolean fits(IBlockAccess world, Vector3 location, Vector3 directionFrom)
-    {
-        return pokemobCap.fits(world, location, directionFrom);
-    }
-
-    @Override
-    public int getPathTime()
-    {
-        return pokemobCap.getPathTime();
-    }
-
-    @Override
-    public boolean swims()
-    {
-        return pokemobCap.swims();
     }
 }

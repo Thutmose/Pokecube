@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -775,8 +776,9 @@ public class GuiDisplayPokecubeInfo extends Gui
 
         if (GuiScreen.isShiftKeyDown() && pokemob != null && pokemob.getOwner() != null)
         {
-            PacketCommand.sendCommand(pokemob, Command.MOVETO, new MoveToHandler(
-                    Vector3.getNewVector().set(pokemob.getOwner()), pokemob.getEntity().getAIMoveSpeed()));
+            PacketCommand.sendCommand(pokemob, Command.MOVETO,
+                    new MoveToHandler(Vector3.getNewVector().set(pokemob.getOwner()), (float) pokemob.getEntity()
+                            .getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
             return;
         }
 

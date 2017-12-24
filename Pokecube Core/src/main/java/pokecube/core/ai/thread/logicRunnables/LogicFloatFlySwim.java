@@ -29,13 +29,14 @@ public class LogicFloatFlySwim extends LogicBase
         super.doServerTick(world);
         if (!shouldRun()) return;
         here.set(entity);
-        doFloatFly(here);
+        if (pokemob.getDirectionPitch() == 0) entity.setMoveVertical(0);
+        if (entity.getNavigator().noPath()) doFloatFly(here);
         doSwim(here);
     }
 
     public boolean shouldRun()
     {
-        return !pokemob.getPokemonAIState(IMoveConstants.CONTROLLED) && entity.getNavigator().noPath();
+        return !pokemob.getPokemonAIState(IMoveConstants.CONTROLLED);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class LogicFloatFlySwim extends LogicBase
 
     private void doSwim(Vector3 here)
     {
-        if (!(this.entity.isInWater() || this.entity.isInLava())) return;
+        if (!(this.entity.isInWater() || this.entity.isInLava())) { return; }
         IPokemob pokemob = this.pokemob;
         IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
         if (transformed != null) pokemob = transformed;

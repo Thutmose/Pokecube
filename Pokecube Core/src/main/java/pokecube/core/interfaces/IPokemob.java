@@ -54,7 +54,7 @@ import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
 public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob,
-        IBreedingMob, IPathingMob, IHasCommands
+        IBreedingMob, IHasCommands, IPathingMob
 {
     @CapabilityInject(IPokemob.class)
     public static final Capability<IPokemob> POKEMOB_CAP = null;

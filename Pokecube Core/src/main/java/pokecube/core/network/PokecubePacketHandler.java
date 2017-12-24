@@ -3,11 +3,9 @@
  */
 package pokecube.core.network;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import io.netty.buffer.ByteBuf;
@@ -27,9 +25,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.commands.MakeCommand;
+import pokecube.core.contributors.Contributor;
+import pokecube.core.contributors.ContributorManager;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IHealer;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
@@ -37,7 +37,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket.PokecubeMessageHandlerClient;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket.PokecubeMessageHandlerServer;
 import pokecube.core.network.packets.PacketChoose;
@@ -281,12 +280,14 @@ public class PokecubePacketHandler
 
     public static class StarterInfo
     {
-        public static void processStarterInfo(String[] infos)
+        public static String[] infos = {};
+
+        public static void processStarterInfo()
         {
             specialStarters.clear();
             for (String s : infos)
             {
-                String[] data = s.split(":");
+                String[] data = s.split(";");
                 if (data.length < 2)
                 {
                     continue;
@@ -302,17 +303,15 @@ public class PokecubePacketHandler
                 for (int i = 0; i < info.length; i++)
                 {
                     String s1 = pokemonData[i];
-                    String[] dat = s1.split(";");
+                    String[] dat = s1.split(" ");
                     String name = dat[0];
                     if (Database.getEntry(name) != null)
                     {
-                        String s2 = dat.length > 1 ? dat[1] : "";
-                        info[i] = new StarterInfo(name, s2);
+                        info[i] = new StarterInfo(dat);
                     }
                     else
                     {
-                        String s2 = dat.length > 1 ? dat[1] : "";
-                        info[i] = new StarterInfo(null, s2);
+                        info[i] = new StarterInfo(null);
                     }
                 }
                 StarterInfoContainer cont = new StarterInfoContainer(info);
@@ -320,58 +319,26 @@ public class PokecubePacketHandler
             }
         }
 
-        public final String  name;
-        public final String  data;
-        public int           red     = 255;
-        public int           green   = 255;
-        public int           blue    = 255;
-        public boolean       shiny   = false;
+        public final String   name;
+        public final String[] args;
 
-        public String        ability = null;
-
-        private List<String> moves   = Lists.newArrayList();
-
-        public StarterInfo(String name, String data)
+        public StarterInfo(String[] args)
         {
-            this.name = name;
-            this.data = data;
-            String[] stuff = data.split("`");
-
-            if (stuff.length > 0) for (String s : stuff)
+            if (args == null)
             {
-                if (s.isEmpty()) continue;
-
-                String arg1 = s.substring(0, 1);
-                String arg2 = s.substring(1);
-                if (arg1.equals("S"))
-                {
-                    shiny = true;
-                }
-                if (arg1.equals("R"))
-                {
-                    red = 0;
-                }
-                if (arg1.equals("G"))
-                {
-                    green = 0;
-                }
-                if (arg1.equals("B"))
-                {
-                    blue = 0;
-                }
-                if (arg1.equals("M"))
-                {
-                    moves.add(arg2);
-                }
-                if (arg1.equals("A"))
-                {
-                    ability = arg2;
-                }
+                this.name = null;
+                this.args = new String[0];
+            }
+            else
+            {
+                this.name = args[0];
+                this.args = args;
             }
         }
 
         public int getNumber()
         {
+            if (name == null) return 0;
             PokedexEntry entry = Database.getEntry(name);
             return entry == null ? 0 : entry.getPokedexNb();
         }
@@ -391,32 +358,19 @@ public class PokecubePacketHandler
                 IPokemob pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, worldObj));
                 if (pokemob != null)
                 {
-                    pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
+                    if (args.length > 1)
+                    {
+                        MakeCommand.setToArgs(args, pokemob, 1, null, false);
+                    }
                     pokemob.setPokemonOwner(owner.getUniqueID());
-                    pokemob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
+                    Contributor contrib = ContributorManager.instance().getContributor(owner.getGameProfile());
+                    if (contrib != null)
+                    {
+                        pokemob.setPokecube(contrib.getStarterCube());
+                    }
+                    else pokemob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
                     pokemob.setExp(Tools.levelToXp(pokemob.getExperienceMode(), 5), true);
-                    if (shiny) pokemob.setShiny(true);
-                    PokedexEntry entry2;
-                    if (red == 0 && (entry2 = Database.getEntry(entry.getName() + "R")) != null)
-                        pokemob.setPokedexEntry(entry2);
-                    if (green == 0 && (entry2 = Database.getEntry(entry.getName() + "G")) != null)
-                        pokemob.setPokedexEntry(entry2);
-                    if (blue == 0 && (entry2 = Database.getEntry(entry.getName() + "B")) != null)
-                        pokemob.setPokedexEntry(entry2);
-                    if (ability != null && AbilityManager.abilityExists(ability))
-                    {
-                        pokemob.setAbility(AbilityManager.getAbility(ability));
-                    }
-                    if (moves.size() > 4)
-                    {
-                        Collections.shuffle(moves);
-                    }
-                    for (int i = 0; i < Math.min(4, moves.size()); i++)
-                    {
-                        String move = moves.get(i);
-                        if (MovesUtils.isMoveImplemented(move)) pokemob.setMove(i, move);
-                    }
-
+                    pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
                     ItemStack item = PokecubeManager.pokemobToItem(pokemob);
                     pokemob.getEntity().isDead = true;
                     return item;
@@ -430,7 +384,7 @@ public class PokecubePacketHandler
         @Override
         public String toString()
         {
-            return name + " " + data;
+            return name + " " + Arrays.toString(args);
         }
     }
 

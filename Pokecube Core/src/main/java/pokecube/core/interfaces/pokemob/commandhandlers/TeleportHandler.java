@@ -112,7 +112,7 @@ public class TeleportHandler implements IMobCommandHandler
     {
         List<?> list = getTeleports(uuid);
         if (index < 0) index = list.size() - 1;
-        if (index < 0 && index >= list.size()) index = 0;
+        if (index < 0 || index > list.size() - 1) index = 0;
         PokecubePlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
                 .setTeleIndex(index);
     }

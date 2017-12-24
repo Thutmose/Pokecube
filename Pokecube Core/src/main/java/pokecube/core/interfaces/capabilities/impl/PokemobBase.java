@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.AxisAlignedBB;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.properties.IGuardAICapability;
@@ -27,7 +28,6 @@ import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
 import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobDataManager;
 import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.database.PokedexEntry;
@@ -226,7 +226,7 @@ public abstract class PokemobBase implements IPokemob
     public LogicMountedControl     controller;
     public AIStuff                 aiStuff;
 
-    public PokeNavigator           navi;
+    public PathNavigate            navi;
     public PokemobMoveHelper       mover;
     protected boolean              initAI           = true;
     protected boolean              popped           = false;

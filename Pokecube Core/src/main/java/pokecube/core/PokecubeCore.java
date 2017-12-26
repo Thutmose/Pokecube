@@ -259,8 +259,7 @@ public class PokecubeCore extends PokecubeMod
         if (entry == null || !registered.get(entry.getPokedexNb())) return null;
         try
         {
-            PokedexEntry base = entry.base ? entry : entry.getBaseForme();
-            clazz = pokedexmap.get(base);
+            clazz = pokedexmap.get(entry);
             if (clazz != null)
             {
                 entity = (Entity) clazz.getConstructor(new Class[] { World.class }).newInstance(new Object[] { world });
@@ -603,11 +602,6 @@ public class PokecubeCore extends PokecubeMod
     @Override
     public void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry)
     {
-        if (!entry.base)
-        {
-            Pokedex.getInstance().getRegisteredEntries().add(entry);
-            return;
-        }
         Class<?> c = genericMobClasses.get(entry);
         if (c == null)
         {
@@ -652,36 +646,28 @@ public class PokecubeCore extends PokecubeMod
         {
             pokedexmap = new HashMap();
         }
-        String name = entry.getName().replace(":", "");
+        String name = entry.getTrimmedName().replace(":", "");
         if (clazz != null)
         {
             try
             {
-                // in case of double definition, the Manchou's implementation
-                // will have the priority by default, or whatever is set in
-                // config.
-                if (!registered.get(entry.getPokedexNb()))
+                if (pokedexmap.containsKey(entry))
                 {
-                    int id = getUniqueEntityId(mod);
-                    if (!entry.base) name = entry.getBaseName();
-                    CompatWrapper.registerModEntity(clazz, name, id, mod, 80, 3, true);
+                    PokecubeMod.log("Error: Tried to register a second " + entry);
+                    return;
+                }
 
-                    if (!pokemobEggs.containsKey(entry.getPokedexNb()))
-                    {
-                        pokemobEggs.put(new Integer(entry.getPokedexNb()),
-                                CompatWrapper.getEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
-                    }
-                    pokedexmap.put(entry, clazz);
-                    PokemobGenes.registerClass(clazz, entry.getPokedexNb());
-                    for (PokedexEntry e : entry.forms.values())
-                        pokedexmap.put(e, clazz);
-                    registered.set(entry.getPokedexNb());
-                    Pokedex.getInstance().registerPokemon(entry);
-                }
-                else
+                CompatWrapper.registerModEntity(clazz, name, getUniqueEntityId(mod), mod, 80, 3, true);
+
+                if (!pokemobEggs.containsKey(entry.getPokedexNb()))
                 {
-                    System.err.println("Double Registration for " + entry);
+                    pokemobEggs.put(new Integer(entry.getPokedexNb()),
+                            CompatWrapper.getEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
                 }
+                pokedexmap.put(entry, clazz);
+                PokemobGenes.registerClass(clazz, entry);
+                registered.set(entry.getPokedexNb());
+                Pokedex.getInstance().registerPokemon(entry);
             }
             catch (Throwable e)
             {

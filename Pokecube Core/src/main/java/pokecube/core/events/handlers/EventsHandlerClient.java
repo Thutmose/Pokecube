@@ -151,7 +151,8 @@ public class EventsHandlerClient
     public static IPokemob getRenderMob(PokedexEntry entry, World world)
     {
         IPokemob pokemob = renderMobs.get(entry);
-        if (pokemob == null)
+        if (pokemob != null) pokemob = pokemob.setPokedexEntry(entry);
+        if (pokemob == null || pokemob != renderMobs.get(entry))
         {
             pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
             if (pokemob == null) return null;
@@ -265,13 +266,13 @@ public class EventsHandlerClient
                 controller.upInputDown = up;
                 controller.downInputDown = down;
                 controller.followOwnerLook = PokecubeMod.core.getConfig().riddenMobsTurnWithLook;
-                
-                if(GameSettings.isKeyDown(ClientProxyPokecube.throttleDown))
+
+                if (GameSettings.isKeyDown(ClientProxyPokecube.throttleDown))
                 {
                     controller.throttle -= 0.05;
                     controller.throttle = Math.max(controller.throttle, 0.01);
                 }
-                else if(GameSettings.isKeyDown(ClientProxyPokecube.throttleUp))
+                else if (GameSettings.isKeyDown(ClientProxyPokecube.throttleUp))
                 {
                     controller.throttle += 0.05;
                     controller.throttle = Math.min(controller.throttle, 1);

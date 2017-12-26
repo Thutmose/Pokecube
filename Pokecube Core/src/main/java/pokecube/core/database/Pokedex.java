@@ -104,7 +104,7 @@ public class Pokedex
     public void registerPokemon(PokedexEntry entry)
     {
         if (entry == null || entry.pokedexNb == 0) { return; }
-        entries.add(entry);
+        if (!entries.contains(entry) && entry.base) entries.add(entry);
         registeredFormes.add(entry);
         resort();
     }

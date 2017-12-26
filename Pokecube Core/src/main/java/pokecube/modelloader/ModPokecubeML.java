@@ -179,7 +179,7 @@ public class ModPokecubeML implements IMobProvider
         }
         for (String s : addedPokemon)
         {
-            loadMob(s.toLowerCase(Locale.ENGLISH));
+            loadMob(s);
         }
         ExtraDatabase.apply();
         if (PokecubeMod.debug)
@@ -195,10 +195,8 @@ public class ModPokecubeML implements IMobProvider
         sort(addedPokemon);
         for (String s : addedPokemon)
         {
-            // TODO replace this with a regex to replace illegal chars.
-            s = s.replace(":", "");
             if (PokecubeMod.debug) PokecubeMod.log("reg: " + s);
-            registerMob(s.toLowerCase(Locale.ENGLISH));
+            registerMob(s);
         }
     }
 
@@ -207,7 +205,7 @@ public class ModPokecubeML implements IMobProvider
     {
         for (PokedexEntry e : Database.allFormes)
         {
-            if (e.getBaseForme() != null)
+            if (e.getBaseForme() != null && e.getModId() == null)
             {
                 e.texturePath = e.getBaseForme().texturePath;
                 e.setModId(e.getBaseForme().getModId());
@@ -345,8 +343,7 @@ public class ModPokecubeML implements IMobProvider
             {
                 e.setModId(ID);
             }
-            if (e.getBaseForme() == null) PokecubeMod.core.registerPokemon(true, this, e);
-            else Pokedex.getInstance().getRegisteredEntries().add(e);
+            PokecubeMod.core.registerPokemon(true, this, e);
         }
         else if (e == null)
         {

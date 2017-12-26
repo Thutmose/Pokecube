@@ -159,12 +159,12 @@ public class MovesParser
         if (alwaysCrit)
         {
             move.crit = 255;
-            PokecubeMod.log(move.name + " set to always crit.");
+            if (PokecubeMod.debug) PokecubeMod.log(move.name + " set to always crit.");
         }
         else if (crit)
         {
             move.crit = 2;
-            PokecubeMod.log(move.name + " set to twice crit rate.");
+            if (PokecubeMod.debug) PokecubeMod.log(move.name + " set to twice crit rate.");
         }
         else
         {
@@ -186,7 +186,7 @@ public class MovesParser
             try
             {
                 move.power = Integer.parseInt(var);
-                PokecubeMod.log(entry.readableName + " set to fixed damage of " + var);
+                if (PokecubeMod.debug) PokecubeMod.log(entry.readableName + " set to fixed damage of " + var);
             }
             catch (NumberFormatException e)
             {
@@ -213,7 +213,7 @@ public class MovesParser
             else if (half.find()) damage = 1 / 2f;
             move.selfDamage = damage;
             move.selfDamageType = MoveEntry.DAMAGEDEALT;
-            PokecubeMod.log(move.name + " set to recoil factor of " + damage);
+            if (PokecubeMod.debug) PokecubeMod.log(move.name + " set to recoil factor of " + damage);
             return;
         }
         boolean userFaint = var.contains("user faints");
@@ -239,7 +239,7 @@ public class MovesParser
             if (number.find()) move.damageHeal = Integer.parseInt(number.group()) / 100f;
             else if (half.find()) move.damageHeal = 0.5f;
             else if (third.find()) move.damageHeal = 1 / 3f;
-            PokecubeMod.log(move.name + " set to damage heal of " + move.damageHeal);
+            if (PokecubeMod.debug) PokecubeMod.log(move.name + " set to damage heal of " + move.damageHeal);
             return;
         }
         else if (healRatio)
@@ -250,7 +250,7 @@ public class MovesParser
             if (number.find()) move.selfHealRatio = Integer.parseInt(number.group()) / 100f;
             else if (half.find()) move.selfHealRatio = 0.5f;
             else if (third.find()) move.selfHealRatio = 1 / 3f;
-            PokecubeMod.log(move.name + " set to self heal of " + move.damageHeal);
+            if (PokecubeMod.debug) PokecubeMod.log(move.name + " set to self heal of " + move.damageHeal);
             return;
         }
         if (var.contains("user restores health"))
@@ -343,7 +343,8 @@ public class MovesParser
         move.statusChance = rate / 100f;
         if (slp || burn || par || poison || frz || slp)
         {
-            PokecubeMod.log(move.name + " Has Status Effects: " + move.statusChange + " " + move.statusChance);
+            if (PokecubeMod.debug)
+                PokecubeMod.log(move.name + " Has Status Effects: " + move.statusChange + " " + move.statusChance);
         }
     }
 

@@ -206,6 +206,14 @@ public class ExtraDatabase
                 if (PokecubeMod.debug) PokecubeMod.log("ResourceEntry: " + fileEntry.name);
                 loading.step(fileEntry.name);
                 XMLPokedexEntry old = PokedexEntryLoader.database.map.get(fileEntry.name);
+                PokedexEntry other = Database.getEntry(fileEntry.name);
+
+                // Ensure that the loaded forms inherit the same texture path as
+                // the base forms.
+                if (other != null && !other.base)
+                {
+                    other.texturePath = other.getBaseForme().texturePath;
+                }
                 if (old != null) PokedexEntryLoader.mergeNonDefaults(PokedexEntryLoader.missingno, fileEntry, old);
                 else
                 {

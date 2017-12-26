@@ -276,7 +276,7 @@ public class GCCompat
             init = true;
         }
 
-        if (vacuumBreathers.contains(evt.pokedexNb))
+        if (vacuumBreathers.contains(evt.pokedexEntry))
         {
             try
             {

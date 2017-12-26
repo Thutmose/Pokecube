@@ -323,6 +323,7 @@ public class AnimationLoader
                         {
                             if (phaseName.equals(s))
                             {
+                                if (PokecubeMod.debug) PokecubeMod.log("Loading " + s + " for " + model.name);
                                 tblAnims.add(AnimationRegistry.make(s, part.getAttributes(), null));
                                 preset = true;
                             }

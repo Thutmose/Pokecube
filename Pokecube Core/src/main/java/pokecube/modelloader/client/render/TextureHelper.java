@@ -345,7 +345,7 @@ public class TextureHelper implements IPartTexturer
             PokedexEntry forme = entry;
             if (forme.getBaseForme() != null && forme != forme.getBaseForme())
             {
-                String name = forme.getName().toLowerCase(java.util.Locale.ENGLISH).replace(" ", "");
+                String name = forme.getTrimmedName();
                 String tex = formeMap.get(name);
                 if (tex != null)
                 {
@@ -395,7 +395,7 @@ public class TextureHelper implements IPartTexturer
     {
         if (tex == null)
         {
-            return new ResourceLocation(entry.getModId(), entry.getName());
+            return new ResourceLocation(entry.getModId(), entry.getTrimmedName());
         }
         else if (tex.contains(":"))
         {

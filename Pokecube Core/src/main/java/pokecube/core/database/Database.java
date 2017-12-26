@@ -605,7 +605,6 @@ public class Database
                     continue;
                 }
                 if (entry.isGenderForme) continue;
-                System.out.println(entry.drops);
                 if (xmlEntry.overwrite)
                 {
                     entry.drops.clear();
@@ -734,13 +733,13 @@ public class Database
                     e.catchRate = base.catchRate;
                     e.mass = base.mass;
                     e.drops = base.drops;
-                    System.err.println("Error with " + e);
+                    PokecubeMod.log("Error with " + e);
                 }
                 if (e.species == null)
                 {
                     e.childNumbers = base.childNumbers;
                     e.species = base.species;
-                    System.err.println(e + " Has no Species");
+                    PokecubeMod.log(e + " Has no Species");
                 }
                 if (e.type1 == null)
                 {
@@ -793,7 +792,7 @@ public class Database
                 spawnables.remove(e);
             }
         }
-        System.out.println(toRemove.size() + " Pokemon Formes Removed");
+        PokecubeMod.log(toRemove.size() + " Pokemon Formes Removed");
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
         Collections.sort(removed, COMPARATOR);
@@ -854,8 +853,7 @@ public class Database
             }
             catch (Exception e)
             {
-                System.err.println(name + " " + n);
-                e.printStackTrace();
+                PokecubeMod.log(Level.WARNING, name + " " + n, e);
             }
         }
         try

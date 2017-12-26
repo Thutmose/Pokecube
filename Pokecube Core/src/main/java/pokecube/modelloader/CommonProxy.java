@@ -20,7 +20,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -430,7 +429,7 @@ public class CommonProxy implements IGuiHandler
         ArrayList<String> entries = Lists.newArrayList();
         for (PokedexEntry entry : Database.allFormes)
         {
-            String name = entry.getTrimmedName().toLowerCase(Locale.ENGLISH);
+            String name = entry.getTrimmedName();
             entries.add(name);
         }
         Collections.sort(entries, new Comparator<String>()
@@ -489,8 +488,9 @@ public class CommonProxy implements IGuiHandler
                 }
                 String entry = entryArr[i];
                 PokedexEntry pokeentry = Database.getEntry(entry);
+                pokeentry.setModId(modId);
                 bar2.step(entry);
-                toAdd.add(entry);
+                if (!toAdd.contains(entry)) toAdd.add(entry);
                 ModPokecubeML.textureProviders.put(entry, modId);
                 ResourceLocation xml = new ResourceLocation(modId, mod.getModelDirectory(pokeentry) + entry + ".xml");
                 pokeentry.texturePath = mod.getTextureDirectory(pokeentry);

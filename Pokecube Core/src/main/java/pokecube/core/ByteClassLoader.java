@@ -4,9 +4,6 @@ import java.io.InputStream;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -48,34 +45,18 @@ public class ByteClassLoader extends ClassLoader
         ClassReader reader = new ClassReader(genericMobBytes);
         ClassWriter writer;
         byte[] genericMob = reader.b.clone();
-        int num = entry.getPokedexNb();
+        String name = entry.getTrimmedName();
         ClassNode changer = new ClassNode();
         reader.accept(changer, 0);
 
-        changer.sourceFile = changer.sourceFile.replace(".java", "") + num + ".java";
-        changer.name = changer.name + num;
+        changer.sourceFile = changer.sourceFile.replace(".java", "") + name + "_" + ".java";
+        changer.name = changer.name + "_" + name;
 
         writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
         changer.accept(writer);
 
-        // ASM in the pokedex number.
-        ClassWriter cw = writer;
-        MethodVisitor mv;
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getPokedexNb", "()Ljava/lang/Integer;", null, null);
-        mv.visitCode();
-        Label l0 = new Label();
-        mv.visitLabel(l0);
-        if (num <= Byte.MAX_VALUE) mv.visitIntInsn(Opcodes.BIPUSH, num);
-        else mv.visitIntInsn(Opcodes.SIPUSH, num);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
-        mv.visitInsn(Opcodes.ARETURN);
-        Label l1 = new Label();
-        mv.visitLabel(l1);
-        mv.visitMaxs(1, 1);
-        mv.visitEnd();
-
-        ClassGenEvent evt = new ClassGenEvent(writer, changer, num);
+        ClassGenEvent evt = new ClassGenEvent(writer, changer, entry);
         MinecraftForge.EVENT_BUS.post(evt);
         writer.visitEnd();
         genericMob = writer.toByteArray();

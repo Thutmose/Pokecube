@@ -1077,7 +1077,9 @@ public class PokedexEntryLoader
                     if (gender != -1)
                     {
                         PokedexEntry entry = Database.getEntry(xmlEntry.genderBase);
-                        entry.createGenderForme(gender);
+                        name = name.replaceAll("([\\W])", "");
+                        if (entry.getTrimmedName().equals(name)) name = null;
+                        entry.createGenderForme(gender, name);
                     }
                     else
                     {

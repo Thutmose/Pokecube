@@ -158,7 +158,8 @@ public class EventsHandlerClient
     public static IPokemob getRenderMob(PokedexEntry entry, World world)
     {
         IPokemob pokemob = renderMobs.get(entry);
-        if (pokemob == null)
+        if (pokemob != null) pokemob = pokemob.setPokedexEntry(entry);
+        if (pokemob == null || pokemob != renderMobs.get(entry))
         {
             pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
             if (pokemob == null) return null;

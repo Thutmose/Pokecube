@@ -12,14 +12,16 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
-import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -174,7 +176,6 @@ public class GuiAnimate extends GuiScreen
                 PokedexEntry adder = entry.getBaseForme() == null ? entry : entry.getBaseForme();
                 List<PokedexEntry> formes = Lists.newArrayList(adder.forms.values());
                 if (!formes.contains(adder)) formes.add(adder);
-
                 Collections.sort(formes, new Comparator<PokedexEntry>()
                 {
                     @Override
@@ -292,7 +293,6 @@ public class GuiAnimate extends GuiScreen
 
         GL11.glScaled(scale, scale, scale);
 
-        Object o;
         String tex = state.getText().trim();
 
         if (!tex.isEmpty() && !state.isFocused())
@@ -344,17 +344,25 @@ public class GuiAnimate extends GuiScreen
         {
 
         }
-
-        if ((o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
+        Render<Entity> rend = null;
+        try
         {
-            RenderAdvancedPokemobModel render = (RenderAdvancedPokemobModel) o;
+            rend = Minecraft.getMinecraft().getRenderManager().<Entity> getEntityRenderObject(pokemob.getEntity());
+        }
+        catch (Exception e)
+        {
+
+        }
+        if (rend instanceof RenderAdvancedPokemobModel)
+        {
+            RenderAdvancedPokemobModel render = (RenderAdvancedPokemobModel) rend;
             render.anim = anim.getText();
             render.overrideAnim = true;
         }
         EventsHandlerClient.renderMob(pokemob, partialTicks, false);
-        if ((o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
+        if (rend instanceof RenderAdvancedPokemobModel)
         {
-            RenderAdvancedPokemobModel render = (RenderAdvancedPokemobModel) o;
+            RenderAdvancedPokemobModel render = (RenderAdvancedPokemobModel) rend;
             render.anim = "";
             render.overrideAnim = false;
         }

@@ -416,6 +416,7 @@ public class AnimationLoader
                     String toName = mergedAnimations.get(s);
                     Animation to = null;
                     Animation from = null;
+
                     for (Animation anim : loaded.animations.values())
                     {
                         if (s.equals(anim.name))

@@ -78,7 +78,8 @@ public class PokecubeManager
         int number = poketag.getCompoundTag(TagNames.OWNERSHIPTAG).getInteger(TagNames.POKEDEXNB);
         if (poketag.hasNoTags() || number == 0) return Database.getEntry(getPokedexNb(itemStack));
         String forme = poketag.getCompoundTag(TagNames.VISUALSTAG).getString(TagNames.FORME);
-        return forme.isEmpty() ? Database.getEntry(number) : Database.getEntry(forme);
+        PokedexEntry entry = Database.getEntry(forme);
+        return entry == null ? Database.getEntry(number) : entry;
     }
 
     public static NBTTagCompound getSealTag(Entity pokemob)

@@ -16,7 +16,6 @@ import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,33 +45,17 @@ import thut.api.entity.genetics.Alleles;
 
 public abstract class PokemobGenes extends PokemobBase implements IMobColourable
 {
-    private static Int2ObjectOpenHashMap<Class<? extends EntityLiving>> pokedexNbMap = new Int2ObjectOpenHashMap<>();
-    private static HashMap<Class<? extends EntityLiving>, Integer>      classMap     = Maps.newHashMap();
+    private static HashMap<Class<? extends EntityLiving>, PokedexEntry> classMap = Maps.newHashMap();
 
     public static boolean isRegistered(Class<? extends EntityLiving> clazz)
     {
         return classMap.containsKey(clazz);
     }
 
-    public static int registerClass(Class<? extends EntityLiving> clazz)
+    public static void registerClass(Class<? extends EntityLiving> clazz, PokedexEntry entry)
     {
-        for (int i = -1; i > -1000; i--)
-        {
-            if (!pokedexNbMap.containsKey(i))
-            {
-                pokedexNbMap.put(i, clazz);
-                classMap.put(clazz, i);
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    public static void registerClass(Class<? extends EntityLiving> clazz, int nb)
-    {
-        if (pokedexNbMap.containsKey(nb)) throw new IllegalArgumentException("Cannot register " + nb + " twice!");
-        pokedexNbMap.put(nb, clazz);
-        classMap.put(clazz, nb);
+        if (classMap.containsValue(entry)) throw new IllegalArgumentException("Cannot register " + entry + " twice!");
+        classMap.put(clazz, entry);
     }
 
     private void initAbilityGene()
@@ -443,34 +426,32 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
                 genesSpecies = new Alleles();
                 genes.getAlleles().put(SPECIESGENE, genesSpecies);
             }
-            if (genesSpecies.getAlleles()[0] == null)
+            SpeciesGene gene;
+            SpeciesInfo info;
+            if (genesSpecies.getAlleles()[0] == null
+                    || (info = (gene = genesSpecies.getExpressed()).getValue()).entry == null)
             {
-                SpeciesGene gene = new SpeciesGene();
-                SpeciesInfo info = gene.getValue();
-                Integer nb = classMap.get(getEntity().getClass());
-                if (nb != null)
+                gene = new SpeciesGene();
+                info = gene.getValue();
+                info.entry = classMap.get(getEntity().getClass());
+                if (entry == null)
                 {
-                    PokedexEntry entry = Database.getEntry(nb);
-                    info.entry = entry;
-                }
-                else
-                {
-                    if (getEntity().getClass().getName().contains("GenericPokemob"))
+                    if (getEntity().getClass().getSimpleName().startsWith("GenericPokemob_"))
                     {
-                        String num = getEntity().getClass().getSimpleName().replace("GenericPokemob", "").trim();
-                        PokedexEntry entry = Database.getEntry(Integer.parseInt(num));
-                        info.entry = entry;
+                        String name = getEntity().getClass().getSimpleName().replace("GenericPokemob_", "").trim();
+                        info.entry = Database.getEntry(name);
                     }
                     else
                     {
-                        System.out.println(this.getEntity().getClass() + " " + getPokedexNb());
+                        System.out.println(this.getEntity().getClass());
                         Thread.dumpStack();
                         entity.setDead();
                         info.entry = Database.missingno;
+                        throw new RuntimeException("Error with Species!");
                     }
                 }
                 info.value = Tools.getSexe(info.entry.getSexeRatio(), new Random());
-
+                info.entry = info.entry.getForGender(info.value);
                 // Generate the basic genes
                 genesSpecies.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesSpecies.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
@@ -481,11 +462,12 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
                 // child state.
                 genesSpecies.getExpressed().setValue(info);
             }
-            SpeciesInfo info = genesSpecies.getExpressed().getValue();
+            info = genesSpecies.getExpressed().getValue();
             info.entry = info.entry.getForGender(info.value);
         }
         SpeciesInfo info = genesSpecies.getExpressed().getValue();
-        return info.entry.getForGender(getSexe());
+        assert info.entry != null;
+        return info.entry;
     }
 
     @Override

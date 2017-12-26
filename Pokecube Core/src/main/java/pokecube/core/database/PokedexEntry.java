@@ -1006,14 +1006,18 @@ public class PokedexEntry
         this.addForm(e);
     }
 
-    public PokedexEntry createGenderForme(byte gender)
+    public PokedexEntry createGenderForme(byte gender, String name)
     {
-        String suffix = "";
-        if (gender == IPokemob.MALE) suffix = " Male";
-        else suffix = " Female";
-        PokedexEntry forme = Database.getEntry(name + suffix);
-        if (forme == null) forme = new PokedexEntry(pokedexNb, name + suffix);
-
+        if (name == null)
+        {
+            name = this.name;
+            String suffix = "";
+            if (gender == IPokemob.MALE) suffix = " Male";
+            else suffix = " Female";
+            name = name + suffix;
+        }
+        PokedexEntry forme = Database.getEntry(name);
+        if (forme == null) forme = new PokedexEntry(pokedexNb, name);
         forme.setBaseForme(this);
         if (gender == IPokemob.MALE)
         {
@@ -1188,9 +1192,10 @@ public class PokedexEntry
 
     public PokedexEntry getForGender(byte gender)
     {
-        if (male != null || female != null) { return gender == IPokemob.MALE ? male == null ? male = this : male
-                : female == null ? female = this : female; }
-        return this;
+        if (!base && getBaseForme() != null) return getBaseForme().getForGender(gender);
+        if (male == null) male = this;
+        if (female == null) female = this;
+        return gender == IPokemob.MALE ? male : female;
     }
 
     /** @param form
@@ -1209,7 +1214,7 @@ public class PokedexEntry
         if (pokedexNb < 494) return 4;
         if (pokedexNb < 650) return 5;
         if (pokedexNb < 722) return 6;
-        if (pokedexNb < 803) return 7;
+        if (pokedexNb < 808) return 7;
         return 0;
     }
 
@@ -1309,10 +1314,8 @@ public class PokedexEntry
     public String getTrimmedName()
     {
         String name = this.name.toLowerCase(Locale.ENGLISH);
-        // Deal with colons, can't have those in file paths.
-        name = name.replace(":", "");
-        // Deal with a . at the end, cant have that either.
-        if (name.endsWith(".")) name = name.substring(0, name.length() - 1);
+        // Replace all non word chars.
+        name = name.replaceAll("([\\W])", "");
         return name;
     }
 

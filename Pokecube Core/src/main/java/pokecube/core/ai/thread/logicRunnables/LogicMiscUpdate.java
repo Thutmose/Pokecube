@@ -234,7 +234,7 @@ public class LogicMiscUpdate extends LogicBase
             {
                 float scale = entity.width * 2;
                 Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5,
-                        rand.nextDouble() + entity.height / 2, rand.nextDouble() - 0.5);
+                        rand.nextDouble(), rand.nextDouble() - 0.5);
                 offset.scalarMultBy(scale);
                 particleLoc.addTo(offset);
             }

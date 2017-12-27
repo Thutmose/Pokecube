@@ -7,6 +7,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import pokecube.core.events.CommandAttackEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
@@ -35,18 +37,20 @@ public class AttackEntityHandler implements IMobCommandHandler
             throw new IllegalArgumentException("Target Mob cannot be null!");
         String moveName = "";
         int currentMove = pokemob.getMoveIndex();
+        MinecraftForge.EVENT_BUS.post(new CommandAttackEvent(pokemob.getEntity(), target));
         if (currentMove != 5 && MovesUtils.canUseMove(pokemob))
         {
             Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
             moveName = MovesUtils.getUnlocalizedMove(move.getName());
-            if(move.isSelfMove())
+            if (move.isSelfMove())
             {
                 pokemob.executeMove(pokemob.getEntity(), null, 0);
             }
             else
             {
                 ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
-                        pokemob.getPokemonDisplayName(), target.getDisplayName(), new TextComponentTranslation(moveName));
+                        pokemob.getPokemonDisplayName(), target.getDisplayName(),
+                        new TextComponentTranslation(moveName));
                 pokemob.displayMessageToOwner(mess);
                 pokemob.getEntity().setAttackTarget((EntityLivingBase) target);
                 if (target instanceof EntityLiving) ((EntityLiving) target).setAttackTarget(pokemob.getEntity());

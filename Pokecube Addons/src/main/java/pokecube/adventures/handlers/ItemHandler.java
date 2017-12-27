@@ -29,8 +29,13 @@ import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.pc.ContainerPC;
+import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.handlers.HeldItemHandler.IMoveModifier;
 import pokecube.core.interfaces.IMoveNames;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.items.ItemTM;
+import pokecube.core.utils.PokeType;
 
 public class ItemHandler
 {
@@ -138,6 +143,23 @@ public class ItemHandler
             public boolean test(ItemStack t)
             {
                 return t.getItem() instanceof ItemBag || t.getItem() instanceof ItemBadge;
+            }
+        });
+
+        HeldItemHandler.ITEMMODIFIERS.put(new Predicate<ItemStack>()
+        {
+            @Override
+            public boolean test(ItemStack t)
+            {
+                return ItemBadge.isBadge(t);
+            }
+        }, new IMoveModifier()
+        {
+            @Override
+            public void processHeldItemUse(MovePacket moveUse, IPokemob mob, ItemStack held)
+            {
+                PokeType type = PokeType.getType(held.getTagCompound().getString("type"));
+                if (type == moveUse.attackType) moveUse.PWR *= 1.2;
             }
         });
     }

@@ -158,6 +158,7 @@ public class ItemHandler
             @Override
             public void processHeldItemUse(MovePacket moveUse, IPokemob mob, ItemStack held)
             {
+                if (mob != moveUse.attacker) return;
                 PokeType type = PokeType.getType(held.getTagCompound().getString("type"));
                 if (type == moveUse.attackType) moveUse.PWR *= 1.2;
             }

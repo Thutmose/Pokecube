@@ -66,10 +66,10 @@ public interface IPokemobUseable
         return false;
     }
 
-    /** @param pokemob
+    /** @param attacker
      * @param stack
      * @return */
-    public default boolean onMoveTick(IPokemob pokemob, ItemStack stack, MovePacket moveuse)
+    public default boolean onMoveTick(IPokemob attacker, ItemStack stack, MovePacket moveuse)
     {
         return false;
     }

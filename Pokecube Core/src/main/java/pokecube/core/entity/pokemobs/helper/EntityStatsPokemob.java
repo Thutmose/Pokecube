@@ -79,6 +79,10 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         }
         else
         {
+            // Don't apply the damage from the burning when on fire, the status
+            // should handle that.
+            if (source.isFireDamage() && (pokemobCap.getStatus() & IMoveConstants.STATUS_BRN) >= 0) { return false; }
+
             this.entityAge = 0;
             IPokemob sourceMob = CapabilityPokemob.getPokemobFor(source.getEntity());
             if (source.isExplosion() && sourceMob != null

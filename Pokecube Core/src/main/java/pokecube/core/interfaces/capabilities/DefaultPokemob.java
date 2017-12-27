@@ -53,11 +53,10 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         return capability == POKEMOB_CAP;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        if (hasCapability(capability, facing)) return (T) this;
+        if (hasCapability(capability, facing)) return POKEMOB_CAP.cast(this);
         return null;
     }
 

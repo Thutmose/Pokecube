@@ -8,6 +8,8 @@ import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
 import thut.api.maths.Vector3;
 
+/** These events are fired on the
+ * {@link pokecube.core.interfaces.PokecubeMod#MOVE_BUS} */
 public class MoveUse extends Event
 {
     final IPokemob  user;
@@ -46,7 +48,10 @@ public class MoveUse extends Event
 
         @Cancelable
         /** This is called when the move entity is made to start using the move.
-         * Cancelling this prevents the move from occurring. */
+         * Cancelling this prevents the move from occurring.<br>
+         * <br>
+         * this is fired on the
+         * {@link pokecube.core.interfaces.PokecubeMod#MOVE_BUS} */
         public static class Init extends ActualMoveUse
         {
             public Init(IPokemob user, Move_Base move, Entity target)
@@ -56,7 +61,10 @@ public class MoveUse extends Event
         }
 
         /** This is called during the pre move use method of the move
-         * calculations */
+         * calculations <br>
+         * <br>
+         * this is fired on the
+         * {@link pokecube.core.interfaces.PokecubeMod#MOVE_BUS} */
         public static class Pre extends ActualMoveUse
         {
             public Pre(IPokemob user, Move_Base move, Entity target)
@@ -65,7 +73,10 @@ public class MoveUse extends Event
             }
         }
 
-        /** This is called after the post move use. */
+        /** This is called after the post move use.<br>
+         * <br>
+         * this is fired on the
+         * {@link pokecube.core.interfaces.PokecubeMod#MOVE_BUS} */
         public static class Post extends ActualMoveUse
         {
             public Post(IPokemob user, Move_Base move, Entity target)
@@ -77,7 +88,7 @@ public class MoveUse extends Event
 
     public static class DuringUse extends MoveUse
     {
-        private final boolean fromUser;
+        private final boolean    fromUser;
         private final MovePacket packet;
 
         public DuringUse(MovePacket packet, boolean fromUser)
@@ -99,7 +110,10 @@ public class MoveUse extends Event
 
         @Cancelable
         /** Cancelling this event prevents the default implementation from being
-         * applied. */
+         * applied. <br>
+         * <br>
+         * this is fired on the
+         * {@link pokecube.core.interfaces.PokecubeMod#MOVE_BUS} */
         public static class Pre extends DuringUse
         {
             public Pre(MovePacket packet, boolean fromUser)
@@ -110,7 +124,10 @@ public class MoveUse extends Event
 
         @Cancelable
         /** Cancelling this event prevents the default implementation from being
-         * applied. */
+         * applied. <br>
+         * <br>
+         * this is fired on the
+         * {@link pokecube.core.interfaces.PokecubeMod#MOVE_BUS} */
         public static class Post extends DuringUse
         {
             public Post(MovePacket packet, boolean fromUser)
@@ -136,9 +153,13 @@ public class MoveUse extends Event
         }
 
         /** This event is called to actually do the world action, it is handled
-         * by an event handler if PreAction is not cancelled. The default actions
-         * for this will be set to lowest priority, and not receive cancelled, so
-         * if you want to interfere, make sure to cancel this event. */
+         * by an event handler if PreAction is not cancelled. The default
+         * actions for this will be set to lowest priority, and not receive
+         * cancelled, so if you want to interfere, make sure to cancel this
+         * event.<br>
+         * <br>
+         * this is fired on the
+         * {@link pokecube.core.interfaces.PokecubeMod#MOVE_BUS} */
         @Cancelable
         public static class OnAction extends MoveWorldAction
         {

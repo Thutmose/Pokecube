@@ -18,8 +18,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -33,7 +31,14 @@ import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.entity.IOngoingAffected;
+import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
+import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect;
+import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect.Effect;
+import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
+import pokecube.core.interfaces.entity.impl.StatEffect;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PacketSyncModifier;
 import pokecube.core.utils.PokeType;
@@ -64,9 +69,9 @@ public class MovesUtils implements IMoveConstants
     public static void addChange(Entity target, IPokemob attacker, byte change)
     {
         IPokemob attacked = CapabilityPokemob.getPokemobFor(target);
+        boolean effect = CapabilityAffected.addEffect(target, new NonPersistantStatusEffect(Effect.getStatus(change)));
         if (attacked != null)
         {
-            boolean effect = attacked.addChange(change);
             if (change == IMoveConstants.CHANGE_CONFUSED)
             {
                 if (effect)
@@ -90,17 +95,6 @@ public class MovesUtils implements IMoveConstants
                     attacked.getEntity().playSound(SoundEvents.ENTITY_PLAYER_ATTACK_NODAMAGE, 1, 1);
                 }
             }
-        }
-        else if (target instanceof EntityLivingBase)
-        {
-            int duration = 250;
-
-            if (change == IMoveConstants.CHANGE_CONFUSED)
-            {
-                ((EntityLivingBase) target)
-                        .addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("nausea"), duration));
-            }
-
         }
     }
 
@@ -577,21 +571,30 @@ public class MovesUtils implements IMoveConstants
 
     /** Handles stats modifications of the move
      * 
-     * @param mob
+     * @param attacker
      *            the pokemob being affected
      * @param atk
      *            the move being used
      * @param attacked
      *            whether the mob is the attacked mob, or the attacker
      * @return */
-    public static boolean handleStats(IPokemob mob, Entity target, MovePacket atk, boolean attacked)
+    public static boolean handleStats(IPokemob attacker, Entity target, MovePacket atk, boolean attacked)
     {
         int[] stats = attacked ? atk.attackedStatModification : atk.attackerStatModification;
-        IPokemob affected = attacked ? CapabilityPokemob.getPokemobFor(target) : mob;
-        if (affected == null) return false;
-        DefaultModifiers modifiers = affected.getModifiers().getDefaultMods();
-        float[] mods = modifiers.values;
-        float[] old = mods.clone();
+        IPokemob affected = attacked ? CapabilityPokemob.getPokemobFor(target) : attacker;
+        float[] mods;
+        float[] old;
+        if (affected != null)
+        {
+            DefaultModifiers modifiers = affected.getModifiers().getDefaultMods();
+            mods = modifiers.values;
+            old = mods.clone();
+        }
+        else
+        {
+            mods = new float[7];
+            old = mods.clone();
+        }
         if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
             mods[1] = (byte) Math.max(-6, Math.min(6, mods[1] + stats[1]));
         if (attacked ? atk.attackedStatModProb > Math.random() : atk.attackerStatModProb > Math.random())
@@ -618,13 +621,21 @@ public class MovesUtils implements IMoveConstants
         }
         if (ret)
         {
+            IOngoingAffected affect = CapabilityAffected.getAffected(target);
             IPokemob targetMob = affected;
             for (byte i = 0; i < diff.length; i++)
             {
                 if (diff[i] != 0)
                 {
-                    if (!attacked) displayStatsMessage(mob, target, 0, i, diff[i]);
-                    else if (targetMob != null) displayStatsMessage(targetMob, mob.getEntity(), 0, i, diff[i]);
+                    if (!attacked) displayStatsMessage(attacker, target, 0, i, diff[i]);
+                    if (affected != null)
+                    {
+                        if (attacked) displayStatsMessage(targetMob, attacker.getEntity(), 0, i, diff[i]);
+                    }
+                    else if (affect != null)
+                    {
+                        affect.addEffect(new StatEffect(Stats.values()[i], diff[i]));
+                    }
                 }
             }
             PacketSyncModifier.sendUpdate(StatModifiers.DEFAULTMODIFIERS, affected);
@@ -632,9 +643,9 @@ public class MovesUtils implements IMoveConstants
         return ret;
     }
 
-    public static boolean handleStats2(IPokemob mob, Entity attacker, int statEffect, int statEffectAmount)
+    public static boolean handleStats2(IPokemob targetPokemob, Entity attacker, int statEffect, int statEffectAmount)
     {
-        DefaultModifiers modifiers = mob.getModifiers().getDefaultMods();
+        DefaultModifiers modifiers = targetPokemob.getModifiers().getDefaultMods();
         float[] mods = modifiers.values;
         float[] old = mods.clone();
         mods[1] = (byte) Math.max(-6, Math.min(6, mods[1] + statEffectAmount * (statEffect & 1)));
@@ -661,10 +672,10 @@ public class MovesUtils implements IMoveConstants
             {
                 if (diff[i] != 0 && pokemob != null)
                 {
-                    displayStatsMessage(pokemob, mob.getEntity(), 0, i, diff[i]);
+                    displayStatsMessage(pokemob, targetPokemob.getEntity(), 0, i, diff[i]);
                 }
             }
-            PacketSyncModifier.sendUpdate(StatModifiers.DEFAULTMODIFIERS, mob);
+            PacketSyncModifier.sendUpdate(StatModifiers.DEFAULTMODIFIERS, targetPokemob);
         }
         return ret;
     }
@@ -731,43 +742,12 @@ public class MovesUtils implements IMoveConstants
         }
         else if (attacked instanceof EntityLivingBase)
         {
-            int duration = 20;
-            if (status == IMoveConstants.STATUS_BRN)
+            IOngoingAffected affected = CapabilityAffected.getAffected(attacked);
+            if (affected != null)
             {
-                attacked.setFire(10);
+                IOngoingEffect effect = new PersistantStatusEffect(status, 5);
+                affected.addEffect(effect);
             }
-            if (status == IMoveConstants.STATUS_FRZ)
-            {
-                ((EntityLivingBase) attacked).addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
-                ((EntityLivingBase) attacked).addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("weakness"), duration * 3, 100));
-            }
-            if (status == IMoveConstants.STATUS_PAR)
-            {
-                ((EntityLivingBase) attacked).addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 1));
-            }
-            if (status == IMoveConstants.STATUS_PSN)
-            {
-                ((EntityLivingBase) attacked).addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("poison"), duration, 10));
-            }
-            if (status == IMoveConstants.STATUS_PSN2)
-            {
-                ((EntityLivingBase) attacked).addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("poison"), duration * 2, 10));
-            }
-            if (status == IMoveConstants.STATUS_SLP)
-            {
-                ((EntityLivingBase) attacked).addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
-                ((EntityLivingBase) attacked).addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
-                ((EntityLivingBase) attacked).addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("weakness"), duration * 2, 100));
-            }
-
         }
         return true;
     }

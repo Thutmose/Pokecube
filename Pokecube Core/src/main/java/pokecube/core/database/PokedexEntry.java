@@ -1720,9 +1720,22 @@ public class PokedexEntry
     /** @param sound */
     public void setSound(String sound)
     {
-        if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 1);
-        // TODO regex replacements for things.
-        if (sound.contains(":")) sound = sound.replace(":", "");
+        // Replace all non word chars.
+        sound = sound.replaceAll("([\\W])", "");
+        modid:
+        if (getModId() == null)
+        {
+
+            for (PokedexEntry e : this.forms.values())
+            {
+                if (e.getModId() != null)
+                {
+                    this.setModId(e.getModId());
+                    break modid;
+                }
+            }
+            this.setModId(PokecubeMod.defaultMod);
+        }
         this.sound = new ResourceLocation(getModId() + ":" + sound);
     }
 

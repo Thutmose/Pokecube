@@ -3,7 +3,9 @@ package pokecube.core.interfaces.pokemob.commandhandlers;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
+import pokecube.core.events.CommandAttackEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -28,6 +30,7 @@ public class AttackLocationHandler implements IMobCommandHandler
     public void handleCommand(IPokemob pokemob)
     {
         int currentMove = pokemob.getMoveIndex();
+        MinecraftForge.EVENT_BUS.post(new CommandAttackEvent(pokemob.getEntity(), null));
         if (currentMove != 5 && MovesUtils.canUseMove(pokemob))
         {
             Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);

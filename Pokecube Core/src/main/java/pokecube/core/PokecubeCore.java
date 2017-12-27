@@ -656,6 +656,19 @@ public class PokecubeCore extends PokecubeMod
                     PokecubeMod.log("Error: Tried to register a second " + entry);
                     return;
                 }
+                modid:
+                if (entry.getModId() == null)
+                {
+                    for (PokedexEntry e : entry.forms.values())
+                    {
+                        if (e.getModId() != null)
+                        {
+                            entry.setModId(e.getModId());
+                            break modid;
+                        }
+                    }
+                    entry.setModId(defaultMod);
+                }
 
                 CompatWrapper.registerModEntity(clazz, name, getUniqueEntityId(mod), mod, 80, 3, true);
 

@@ -66,6 +66,10 @@ public class CapabilityAffected
         EntityLivingBase                                 entity;
         final List<IOngoingEffect>                       effects = Lists.newArrayList();
         final Map<ResourceLocation, Set<IOngoingEffect>> map     = Maps.newHashMap();
+        
+        public DefaultAffected()
+        {
+        }
 
         public DefaultAffected(EntityLivingBase entity)
         {

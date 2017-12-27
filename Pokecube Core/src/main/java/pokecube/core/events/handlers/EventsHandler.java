@@ -344,10 +344,10 @@ public class EventsHandler
     public EventsHandler()
     {
         CapabilityManager.INSTANCE.register(IGuardAICapability.class, storage = new IGuardAICapability.Storage(),
-                GuardAICapability.class);
-        CapabilityManager.INSTANCE.register(IPokemob.class, new CapabilityPokemob.Storage(), DefaultPokemob.class);
+                GuardAICapability::new);
+        CapabilityManager.INSTANCE.register(IPokemob.class, new CapabilityPokemob.Storage(), DefaultPokemob::new);
         CapabilityManager.INSTANCE.register(IOngoingAffected.class, new CapabilityAffected.Storage(),
-                CapabilityAffected.DefaultAffected.class);
+                DefaultAffected::new);
         CapabilityManager.INSTANCE.register(IMegaCapability.class, new Capability.IStorage<IMegaCapability>()
         {
             @Override
@@ -361,9 +361,9 @@ public class EventsHandler
                     NBTBase nbt)
             {
             }
-        }, MegaCapability.class);
+        }, MegaCapability.Default::new);
         CapabilityManager.INSTANCE.register(IPokemobUseable.class, new IPokemobUseable.Storage(),
-                IPokemobUseable.class);
+                IPokemobUseable.Default::new);
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         MinecraftForge.EVENT_BUS.register(new GeneticsManager());
         MinecraftForge.EVENT_BUS.register(this);

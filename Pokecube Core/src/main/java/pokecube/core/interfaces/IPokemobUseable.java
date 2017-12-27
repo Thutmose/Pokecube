@@ -73,4 +73,9 @@ public interface IPokemobUseable
     {
         return false;
     }
+
+    public static class Default implements IPokemobUseable
+    {
+
+    }
 }

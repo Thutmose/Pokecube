@@ -69,19 +69,9 @@ public class PokecubeAdv
     public final static String MCVERSIONS         = "@MCVERSION";
     public final static String MINVERSION         = "@MINVERSION";
     public final static String DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION;"
-            + "after:thut_wearables;"
-            + "after:thutessentials;"
-            + "after:waila;"
-            + "after:advancedrocketry;"
-            + "after:thut_bling;"
-            + "after:theoneprobe;"
-            + "after:tesla;"
-            + "after:lostcities;"
-            + "after:ruins;"
-            + "after:ftbl;"
-            + "after:journeymap;"
-            + "after:reccomplex;"
-            + "after:minefactoryreloaded";
+            + "after:thut_wearables;" + "after:thutessentials;" + "after:waila;" + "after:advancedrocketry;"
+            + "after:thut_bling;" + "after:theoneprobe;" + "after:tesla;" + "after:lostcities;" + "after:ruins;"
+            + "after:ftbl;" + "after:journeymap;" + "after:reccomplex;" + "after:minefactoryreloaded";
 
     public final static String UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
@@ -162,29 +152,33 @@ public class PokecubeAdv
         DBLoader.load();
         registerAchieves();
     }
-    
+
     private void registerAchieves()
     {
-//        int x = -3;
-//        int y = -2;
-//        Achievement beatTrainer = new AchievementDefeatTrainer("pokeadv.defeat.trainer", "pokeadv.defeat.trainer", x,
-//                y++, Items.IRON_SWORD, null);
-//        beatTrainer.registerStat();
-//        Achievement beatLeader = new AchievementDefeatLeader("pokeadv.defeat.leader", "pokeadv.defeat.leader", x, y++,
-//                Items.DIAMOND_SWORD, null);
-//        beatLeader.registerStat();
-//        AchievementPage.getAchievementPage(0).getAchievements().add(beatLeader);
-//        AchievementPage.getAchievementPage(0).getAchievements().add(beatTrainer);
-//        for (String s : ItemBadge.variants)
-//        {
-//            Achievement badge = new AchievementGetBadge("pokeadv." + s, "achievement.pokeadv.get." + s, x, y++,
-//                    PokecubeItems.getStack(s), beatLeader);
-//            badge.registerStat();
-//            AchievementPage.getAchievementPage(0).getAchievements().add(badge);
-//        }
+        // int x = -3;
+        // int y = -2;
+        // Achievement beatTrainer = new
+        // AchievementDefeatTrainer("pokeadv.defeat.trainer",
+        // "pokeadv.defeat.trainer", x,
+        // y++, Items.IRON_SWORD, null);
+        // beatTrainer.registerStat();
+        // Achievement beatLeader = new
+        // AchievementDefeatLeader("pokeadv.defeat.leader",
+        // "pokeadv.defeat.leader", x, y++,
+        // Items.DIAMOND_SWORD, null);
+        // beatLeader.registerStat();
+        // AchievementPage.getAchievementPage(0).getAchievements().add(beatLeader);
+        // AchievementPage.getAchievementPage(0).getAchievements().add(beatTrainer);
+        // for (String s : ItemBadge.variants)
+        // {
+        // Achievement badge = new AchievementGetBadge("pokeadv." + s,
+        // "achievement.pokeadv.get." + s, x, y++,
+        // PokecubeItems.getStack(s), beatLeader);
+        // badge.registerStat();
+        // AchievementPage.getAchievementPage(0).getAchievements().add(badge);
+        // }
     }
 
-    
     @EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
@@ -197,13 +191,13 @@ public class PokecubeAdv
         RecipeHandler.preInit();
 
         CapabilityManager.INSTANCE.register(IHasPokemobs.class,
-                CapabilityHasPokemobs.storage = new CapabilityHasPokemobs.Storage(), DefaultPokemobs.class);
+                CapabilityHasPokemobs.storage = new CapabilityHasPokemobs.Storage(), DefaultPokemobs::new);
         CapabilityManager.INSTANCE.register(IHasNPCAIStates.class,
-                CapabilityNPCAIStates.storage = new CapabilityNPCAIStates.Storage(), DefaultAIStates.class);
+                CapabilityNPCAIStates.storage = new CapabilityNPCAIStates.Storage(), DefaultAIStates::new);
         CapabilityManager.INSTANCE.register(IHasMessages.class,
-                CapabilityNPCMessages.storage = new CapabilityNPCMessages.Storage(), DefaultMessager.class);
+                CapabilityNPCMessages.storage = new CapabilityNPCMessages.Storage(), DefaultMessager::new);
         CapabilityManager.INSTANCE.register(IHasRewards.class,
-                CapabilityHasRewards.storage = new CapabilityHasRewards.Storage(), DefaultRewards.class);
+                CapabilityHasRewards.storage = new CapabilityHasRewards.Storage(), DefaultRewards::new);
     }
 
     @SubscribeEvent

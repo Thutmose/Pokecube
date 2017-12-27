@@ -92,9 +92,16 @@ public class NonPersistantStatusEffect extends BaseEffect
                             pokemob.getPokemonDisplayName().getFormattedText());
                     pokemob.displayMessageToOwner(mess);
                 }
-                DamageSource curse = DamageSource.causeMobDamage(entity);
-                curse.setDamageIsAbsolute();
-                curse.setDamageBypassesArmor();
+                EntityLivingBase targetM = entity.getAttackingEntity();
+                if (targetM == null) targetM = entity.getRevengeTarget();
+                if (targetM == null) targetM = entity.getLastAttackedEntity();
+                if (targetM == null) targetM = entity;
+                DamageSource curse = DamageSource.causeMobDamage(targetM);
+                if (pokemob != null)
+                {
+                    curse.setDamageIsAbsolute();
+                    curse.setDamageBypassesArmor();
+                }
                 entity.attackEntityFrom(curse, entity.getMaxHealth() * 0.25f);
                 break;
             case FLINCH:

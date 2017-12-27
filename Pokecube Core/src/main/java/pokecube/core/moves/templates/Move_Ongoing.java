@@ -2,7 +2,9 @@ package pokecube.core.moves.templates;
 
 import java.util.Random;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
 import pokecube.core.interfaces.entity.impl.OngoingMoveEffect;
@@ -15,11 +17,26 @@ public class Move_Ongoing extends Move_Basic
         super(name);
     }
 
+    protected DamageSource getOngoingDamage(EntityLivingBase mob)
+    {
+        EntityLivingBase target = mob.getAttackingEntity();
+        if (target == null) target = mob.getRevengeTarget();
+        if (target == null) target = mob.getLastAttackedEntity();
+        if (target == null) target = mob;
+        DamageSource source = DamageSource.causeMobDamage(target);
+        if (CapabilityPokemob.getPokemobFor(mob) != null)
+        {
+            source.setDamageIsAbsolute();
+            source.setDamageBypassesArmor();
+        }
+        return source;
+    }
+
     public void doOngoingEffect(IOngoingAffected mob, IOngoingEffect effect)
     {
         float thisMaxHP = mob.getEntity().getMaxHealth();
         int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
-        mob.getEntity().attackEntityFrom(DamageSource.GENERIC, damage);
+        mob.getEntity().attackEntityFrom(getOngoingDamage(mob.getEntity()), damage);
     }
 
     /** I have these attacks affecting the target roughly once per 40 ticks,

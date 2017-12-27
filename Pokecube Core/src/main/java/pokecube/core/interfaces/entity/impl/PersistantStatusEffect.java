@@ -92,8 +92,17 @@ public class PersistantStatusEffect extends BaseEffect
             boolean toRemove = pokemob != null ? false : Math.random() > 0.75;
             if (effect.getDuration() == 0) toRemove = true;
             int duration = PokecubeMod.core.getConfig().attackCooldown + 10;
-            DamageSource source = DamageSource.causeMobDamage(entity);
-            if (pokemob != null) source.setDamageIsAbsolute();
+
+            EntityLivingBase targetM = entity.getAttackingEntity();
+            if (targetM == null) targetM = entity.getRevengeTarget();
+            if (targetM == null) targetM = entity.getLastAttackedEntity();
+            if (targetM == null) targetM = entity;
+            DamageSource source = DamageSource.causeMobDamage(targetM);
+            if (pokemob != null)
+            {
+                source.setDamageIsAbsolute();
+                source.setDamageBypassesArmor();
+            }
             switch (status)
             {
             case BADPOISON:

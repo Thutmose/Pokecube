@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
-import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
 import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IPokemob;
@@ -55,7 +54,7 @@ public class Move_MultiHit extends Move_Basic
         }
         for (int i = 0; i < count; i++)
         {
-            if (MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Init(pokemob, this, target)))
+            if (PokecubeCore.MOVE_BUS.post(new MoveUse.ActualMoveUse.Init(pokemob, this, target)))
             {
                 // Move Failed message here?
                 break;

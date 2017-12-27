@@ -29,6 +29,7 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ByteClassLoader;
 import pokecube.core.CreativeTabPokecube;
@@ -90,6 +91,8 @@ public abstract class PokecubeMod
     public static List<String>                    giftLocations              = Lists.newArrayList();
     public static Map<PokedexEntry, Class<?>>     pokedexmap                 = Maps.newHashMap();
     public static Map<PokedexEntry, Class<?>>     genericMobClasses          = Maps.newHashMap();
+
+    public static final EventBus                  MOVE_BUS                   = new EventBus();
 
     public static BitSet                          registered                 = new BitSet();
 

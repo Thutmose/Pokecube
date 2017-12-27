@@ -26,7 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.moves.MoveEntry;
@@ -38,7 +37,9 @@ import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.animations.AnimationMultiAnimations;
@@ -237,12 +238,12 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             return;
         }
         MoveWorldAction.PreAction preEvent = new MoveWorldAction.PreAction(this, attacker, location);
-        if (!MinecraftForge.EVENT_BUS.post(preEvent))
+        if (!PokecubeCore.MOVE_BUS.post(preEvent))
         {
             MoveWorldAction.OnAction onEvent = new MoveWorldAction.OnAction(this, attacker, location);
-            MinecraftForge.EVENT_BUS.post(onEvent);
+            PokecubeCore.MOVE_BUS.post(onEvent);
             MoveWorldAction.PostAction postEvent = new MoveWorldAction.PostAction(this, attacker, location);
-            MinecraftForge.EVENT_BUS.post(postEvent);
+            PokecubeCore.MOVE_BUS.post(postEvent);
         }
     }
 
@@ -271,13 +272,13 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             attacked.onMoveUse(packet);
         }
-        MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Post(packet.attacker, this, packet.attacked));
+        PokecubeCore.MOVE_BUS.post(new MoveUse.ActualMoveUse.Post(packet.attacker, this, packet.attacked));
     }
 
     @Override
     public void preAttack(MovePacket packet)
     {
-        MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Pre(packet.attacker, this, packet.attacked));
+        PokecubeCore.MOVE_BUS.post(new MoveUse.ActualMoveUse.Pre(packet.attacker, this, packet.attacked));
         IPokemob attacker = packet.attacker;
         attacker.onMoveUse(packet);
         IPokemob attacked = CapabilityPokemob.getPokemobFor(packet.attacked);
@@ -459,8 +460,10 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             if (MovesUtils.getMoveFromName(attack) instanceof Move_Ongoing)
             {
                 ongoing = (Move_Ongoing) MovesUtils.getMoveFromName(attack);
-                if (ongoing.onTarget() && targetPokemob != null) targetPokemob.addOngoingEffect(ongoing);
-                if (ongoing.onSource()) attacker.addOngoingEffect(ongoing);
+                IOngoingAffected targetAffected = CapabilityAffected.getAffected(attacked);
+                IOngoingAffected sourceAffected = CapabilityAffected.getAffected(attackerMob);
+                if (ongoing.onTarget() && targetAffected != null) targetAffected.getEffects().add(ongoing.makeEffect());
+                if (ongoing.onSource() && sourceAffected != null) sourceAffected.getEffects().add(ongoing.makeEffect());
             }
         }
         TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(attackerMob);

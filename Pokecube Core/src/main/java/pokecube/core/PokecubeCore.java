@@ -76,6 +76,7 @@ import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.events.handlers.EventsHandler;
+import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
@@ -249,6 +250,7 @@ public class PokecubeCore extends PokecubeMod
         CombatTypeLoader.loadTypes();
         BerryManager.addBerry("null", 0, 0, 0, 0, 0, 0);
         checkConfigFiles();
+        MoveEventsHandler.getInstance();
     }
 
     @Override

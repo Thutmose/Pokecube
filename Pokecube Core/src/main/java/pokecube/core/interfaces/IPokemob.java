@@ -6,7 +6,6 @@ package pokecube.core.interfaces;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +29,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,7 +44,6 @@ import pokecube.core.interfaces.pokemob.IHasMoves;
 import pokecube.core.interfaces.pokemob.IHasOwner;
 import pokecube.core.interfaces.pokemob.IHasStats;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
@@ -416,7 +413,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
             this.attackedStatModProb = move.move.attackedStatModProb;
             this.attackerStatModProb = move.move.attackerStatModProb;
 
-            MinecraftForge.EVENT_BUS.post(new AttackEvent(this));
+            PokecubeCore.MOVE_BUS.post(new AttackEvent(this));
         }
 
         public Move_Base getMove()
@@ -468,9 +465,6 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
         public boolean                        biding                     = false;
 
         public float                          substituteHP               = 0;
-        /** Moves which have on-going effects, like leech seed, firespin, bind,
-         * etc */
-        public HashMap<Move_Ongoing, Integer> ongoingEffects             = new HashMap<Move_Ongoing, Integer>();
 
         public int                            changes                    = CHANGE_NONE;
 

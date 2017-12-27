@@ -2,7 +2,6 @@ package pokecube.core.events.handlers;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import com.google.common.collect.Maps;
 
@@ -11,14 +10,12 @@ import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -32,7 +29,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.MoveUse;
 import pokecube.core.events.MoveUse.MoveWorldAction;
-import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
@@ -43,6 +39,12 @@ import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.entity.IOngoingAffected;
+import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect;
+import pokecube.core.interfaces.entity.impl.OngoingMoveEffect;
+import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
+import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect.Effect;
+import pokecube.core.interfaces.entity.impl.PersistantStatusEffect.Status;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -348,7 +350,12 @@ public class MoveEventsHandler
 
     private MoveEventsHandler()
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        PokecubeMod.MOVE_BUS.register(this);
+        IOngoingAffected.EFFECTS.put(NonPersistantStatusEffect.ID, NonPersistantStatusEffect.class);
+        IOngoingAffected.EFFECTS.put(PersistantStatusEffect.ID, PersistantStatusEffect.class);
+        IOngoingAffected.EFFECTS.put(OngoingMoveEffect.ID, OngoingMoveEffect.class);
+        Status.initDefaults();
+        Effect.initDefaults();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
@@ -363,57 +370,6 @@ public class MoveEventsHandler
             register(action = new DefaultAction(move));
         }
         action.applyEffect(attacker, location);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
-    public void onEvent(StatusEffectEvent evt)
-    {
-        byte status = evt.getStatus();
-        EntityLiving entity = (EntityLiving) evt.getEntity();
-        IPokemob pokemob = evt.getPokemob();
-        short timer = pokemob.getStatusTimer();
-        if (status == IMoveConstants.STATUS_BRN)
-        {
-            entity.setFire(1);
-            entity.attackEntityFrom(DamageSource.causeMobDamage(entity), entity.getMaxHealth() / 16f);
-        }
-        if (status == IMoveConstants.STATUS_FRZ)
-        {
-            if (Math.random() > 0.9)
-            {
-                pokemob.healStatus();
-            }
-        }
-        if (status == IMoveConstants.STATUS_PSN)
-        {
-            entity.attackEntityFrom(DamageSource.causeMobDamage(entity), entity.getMaxHealth() / 8f);
-            spawnPoisonParticle(entity);
-
-        }
-        if (status == IMoveConstants.STATUS_PSN2)
-        {
-            entity.attackEntityFrom(DamageSource.causeMobDamage(entity),
-                    (pokemob.getMoveStats().TOXIC_COUNTER + 1) * entity.getMaxHealth() / 16f);
-            spawnPoisonParticle(entity);
-            spawnPoisonParticle(entity);
-            pokemob.getMoveStats().TOXIC_COUNTER++;
-        }
-        else
-        {
-            pokemob.getMoveStats().TOXIC_COUNTER = 0;
-        }
-        if (status == IMoveConstants.STATUS_SLP)
-        {
-            if (Math.random() > 0.9 || timer <= 0)
-            {
-                pokemob.healStatus();
-            }
-            else
-            {
-                spawnSleepParticle(entity);
-            }
-
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
@@ -525,33 +481,5 @@ public class MoveEventsHandler
             applied.getMoveStats().BLOCKCOUNTER += 2;
         }
         if (applied.getMoveStats().BLOCKCOUNTER > 0) applied.getMoveStats().BLOCKCOUNTER--;
-    }
-
-    protected void spawnSleepParticle(Entity entity)
-    {
-        Random rand = new Random();
-        Vector3 particleLoc = Vector3.getNewVector();
-        Vector3 vel = Vector3.getNewVector();
-        for (int i = 0; i < 3; ++i)
-        {
-            particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
-            PokecubeMod.core.spawnParticle(entity.getEntityWorld(), "mobSpell", particleLoc, vel);
-        }
-    }
-
-    protected void spawnPoisonParticle(Entity entity)
-    {
-        Random rand = new Random();
-        Vector3 particleLoc = Vector3.getNewVector();
-        int i = 0xFFFF00FF;
-        double d0 = (i >> 16 & 255) / 255.0D;
-        double d1 = (i >> 8 & 255) / 255.0D;
-        double d2 = (i >> 0 & 255) / 255.0D;
-        Vector3 vel = Vector3.getNewVector().set(d0, d1, d2);
-        for (i = 0; i < 3; ++i)
-        {
-            particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
-            PokecubeMod.core.spawnParticle(entity.getEntityWorld(), "mobSpell", particleLoc, vel);
-        }
     }
 }

@@ -19,7 +19,11 @@ public class Move_Ongoing extends Move_Basic
 
     protected DamageSource getOngoingDamage(EntityLivingBase mob)
     {
-        DamageSource source = DamageSource.causeMobDamage(mob);
+        EntityLivingBase target = mob.getAttackingEntity();
+        if (target == null) target = mob.getAITarget();
+        if (target == null) target = mob.getLastAttacker();
+        if (target == null) target = mob;
+        DamageSource source = DamageSource.causeMobDamage(target);
         if (CapabilityPokemob.getPokemobFor(mob) != null)
         {
             source.setDamageIsAbsolute();

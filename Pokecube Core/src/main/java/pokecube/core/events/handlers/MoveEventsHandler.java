@@ -408,6 +408,30 @@ public class MoveEventsHandler
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+    public void onEvent(MoveUse.DuringUse.Post evt)
+    {
+        MovePacket move = evt.getPacket();
+        IPokemob attacker = move.attacker;
+        Entity attacked = move.attacked;
+        IPokemob target = CapabilityPokemob.getPokemobFor(attacked);
+
+        IPokemobUseable attackerheld = IPokemobUseable.getUsableFor(attacker.getHeldItem());
+        if (attackerheld != null) attackerheld.onMoveTick(attacker, attacker.getHeldItem(), move);
+        if (target != null)
+        {
+            IPokemobUseable targetheld = IPokemobUseable.getUsableFor(target.getHeldItem());
+            if (targetheld != null) targetheld.onMoveTick(attacker, target.getHeldItem(), move);
+        }
+
+        boolean user = evt.isFromUser();
+        IPokemob applied = user ? attacker : target;
+        if (applied.getHeldItem() != null)
+        {
+            HeldItemHandler.processHeldItemUse(move, applied, applied.getHeldItem());
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
     public void onEvent(MoveUse.DuringUse.Pre evt)
     {
         MovePacket move = evt.getPacket();

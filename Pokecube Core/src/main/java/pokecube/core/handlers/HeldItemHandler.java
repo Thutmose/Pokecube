@@ -3,18 +3,27 @@ package pokecube.core.handlers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.item.ItemStack;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
-import pokecube.core.utils.PokeType;
 
 public class HeldItemHandler
 {
-    public static ArrayList<String> megaVariants   = new ArrayList<>();
-    public static ArrayList<String> fossilVariants = new ArrayList<>();
+    public static interface IMoveModifier
+    {
+        void processHeldItemUse(MovePacket moveUse, IPokemob mob, ItemStack held);
+    }
+
+    public static Map<Predicate<ItemStack>, IMoveModifier> ITEMMODIFIERS  = Maps.newHashMap();
+
+    public static ArrayList<String>                        megaVariants   = new ArrayList<>();
+    public static ArrayList<String>                        fossilVariants = new ArrayList<>();
 
     public static void sortMegaVariants()
     {
@@ -25,21 +34,14 @@ public class HeldItemHandler
         megaVariants.addAll(0, start);
     }
 
-    private static double getMoveMultiplier(ItemStack held, PokeType move)
-    {
-        double ret = 1;
-        String name = held.getItem().getRegistryName().getResourcePath();
-        String typename = name.replace("badge", "");
-        PokeType type = PokeType.getType(typename);
-        if (type == move) return 1.2;
-        return ret;
-    }
-
     public static void processHeldItemUse(MovePacket moveUse, IPokemob mob, ItemStack held)
     {
-        if (moveUse.attacker == mob && moveUse.pre)
+        for (Map.Entry<Predicate<ItemStack>, IMoveModifier> entry : ITEMMODIFIERS.entrySet())
         {
-            moveUse.PWR = (int) (moveUse.PWR * getMoveMultiplier(held, moveUse.attackType));
+            if (entry.getKey().test(held))
+            {
+                entry.getValue().processHeldItemUse(moveUse, mob, held);
+            }
         }
     }
 }

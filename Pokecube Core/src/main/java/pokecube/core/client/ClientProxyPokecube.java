@@ -586,6 +586,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
+        if (world == null || Minecraft.getMinecraft().player == null) return;
         if (world.provider.getDimension() != Minecraft.getMinecraft().player.dimension) return;
         if (velocity == null) velocity = Vector3.empty;
         IParticle particle2 = ParticleFactory.makeParticle(par1Str, location, velocity, args);

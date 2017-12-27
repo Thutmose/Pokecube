@@ -14,7 +14,11 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.entity.IOngoingAffected;
+import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
+import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketSyncMoveUse;
 import pokecube.core.utils.PokeType;
@@ -61,7 +65,7 @@ public abstract class PokemobMoves extends PokemobSexed
                 mess = CommandTools.makeTranslatedMessage("pokemob.status.flinch", "green", getPokemonDisplayName());
                 targetMob.displayMessageToOwner(mess);
             }
-            removeChanges(CHANGE_FLINCH);
+            removeChange(CHANGE_FLINCH);
             return;
         }
 
@@ -69,7 +73,7 @@ public abstract class PokemobMoves extends PokemobSexed
         {
             if (Math.random() > 0.75)
             {
-                removeChanges(CHANGE_CONFUSED);
+                removeChange(CHANGE_CONFUSED);
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.confuse.remove", "green",
                         getPokemonDisplayName());
                 IPokemob targetMob = CapabilityPokemob.getPokemobFor(getEntity().getAttackTarget());
@@ -228,6 +232,12 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public void healStatus()
     {
+        IOngoingAffected affected = CapabilityAffected.getAffected(getEntity());
+        if (affected != null)
+        {
+            for (IOngoingEffect effect : affected.getEffects(PersistantStatusEffect.ID))
+                effect.setDuration(0);
+        }
         dataManager.set(params.STATUSDW, (byte) 0);
     }
 
@@ -262,7 +272,7 @@ public abstract class PokemobMoves extends PokemobSexed
     }
 
     @Override
-    public boolean setStatus(byte status)
+    public boolean setStatus(byte status, int turns)
     {
         if (getStatus() != STATUS_NON) { return false; }
         if (status == STATUS_BRN && isType(PokeType.getType("fire"))) return false;
@@ -270,8 +280,18 @@ public abstract class PokemobMoves extends PokemobSexed
         if (status == STATUS_FRZ && isType(PokeType.getType("ice"))) return false;
         if ((status == STATUS_PSN || status == STATUS_PSN2) && (isType(poison) || isType(steel))) return false;
         dataManager.set(params.STATUSDW, status);
-        setStatusTimer((short) (PokecubeMod.core.getConfig().attackCooldown * 5));
-        return true;
+        if ((status == STATUS_SLP || status == STATUS_FRZ) && turns == -1) turns = 5;
+        short timer = (short) (turns == -1 ? PokecubeMod.core.getConfig().attackCooldown * 5
+                : turns * PokecubeMod.core.getConfig().attackCooldown);
+        setStatusTimer(timer);
+        PersistantStatusEffect statusEffect = new PersistantStatusEffect(status, turns);
+        return CapabilityAffected.addEffect(getEntity(), statusEffect);
+    }
+
+    @Override
+    public boolean setStatus(byte status)
+    {
+        return setStatus(status, -1);
     }
 
     @Override

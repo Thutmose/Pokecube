@@ -59,8 +59,8 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -98,9 +98,12 @@ import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.AICapWrapper;
+import pokecube.core.interfaces.capabilities.CapabilityAffected;
+import pokecube.core.interfaces.capabilities.CapabilityAffected.DefaultAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
+import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.UsableItemEffects;
 import pokecube.core.items.berries.ItemBerry;
@@ -208,6 +211,7 @@ public class EventsHandler
     }
 
     public static final ResourceLocation               POKEMOBCAP  = new ResourceLocation(PokecubeMod.ID, "pokemob");
+    public static final ResourceLocation               AFFECTEDCAP = new ResourceLocation(PokecubeMod.ID, "affected");
 
     @CapabilityInject(IGuardAICapability.class)
     public static final Capability<IGuardAICapability> GUARDAI_CAP = null;
@@ -342,6 +346,8 @@ public class EventsHandler
         CapabilityManager.INSTANCE.register(IGuardAICapability.class, storage = new IGuardAICapability.Storage(),
                 GuardAICapability.class);
         CapabilityManager.INSTANCE.register(IPokemob.class, new CapabilityPokemob.Storage(), DefaultPokemob.class);
+        CapabilityManager.INSTANCE.register(IOngoingAffected.class, new CapabilityAffected.Storage(),
+                CapabilityAffected.DefaultAffected.class);
         CapabilityManager.INSTANCE.register(IMegaCapability.class, new Capability.IStorage<IMegaCapability>()
         {
             @Override
@@ -888,6 +894,13 @@ public class EventsHandler
     public void livingUpdate(LivingUpdateEvent evt)
     {
         if (evt.getEntity().getEntityWorld().isRemote || evt.getEntity().isDead) return;
+        int tick = Math.max(PokecubeMod.core.getConfig().attackCooldown, 1);
+        if (evt.getEntityLiving().ticksExisted % tick == 0)
+        {
+            IOngoingAffected affected = CapabilityAffected.getAffected(evt.getEntityLiving());
+            affected.tick();
+        }
+
         if (evt.getEntityLiving() instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
@@ -928,6 +941,11 @@ public class EventsHandler
     @SubscribeEvent
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
+        if (event.getObject() instanceof EntityLivingBase && !event.getCapabilities().containsKey(AFFECTEDCAP))
+        {
+            DefaultAffected affected = new DefaultAffected((EntityLivingBase) event.getObject());
+            event.addCapability(AFFECTEDCAP, affected);
+        }
         boolean isPokemob = false;
         if (PokemobGenes.isRegistered((Class<? extends EntityLiving>) event.getObject().getClass())
                 && !event.getCapabilities().containsKey(POKEMOBCAP))

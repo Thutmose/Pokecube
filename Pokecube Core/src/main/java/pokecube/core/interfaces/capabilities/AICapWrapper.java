@@ -73,11 +73,10 @@ public class AICapWrapper implements IAIMob, ICapabilitySerializable<NBTTagCompo
         return capability == THUTMOBAI;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        if (hasCapability(capability, facing)) return (T) this;
+        if (hasCapability(capability, facing)) return THUTMOBAI.cast(this);
         return null;
     }
 

@@ -1,13 +1,10 @@
 package pokecube.core.interfaces.pokemob;
 
-import java.util.HashMap;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import pokecube.core.PokecubeCore;
 import pokecube.core.events.MoveUse;
@@ -15,12 +12,15 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.PokemobMoveStats;
-import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.entity.IOngoingAffected;
+import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
+import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect;
+import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect.Effect;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
 import pokecube.core.interfaces.pokemob.commandhandlers.SwapMovesHandler;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.pokemobs.PacketCommand;
 import pokecube.core.network.pokemobs.PacketSyncNewMoves;
 import thut.api.maths.Vector3;
@@ -40,23 +40,6 @@ public interface IHasMoves extends IHasStats
         int old = getMoveStats().changes;
         getMoveStats().changes |= change;
         return getMoveStats().changes != old;
-    }
-
-    /** Sets a Move_Base and as an ongoing effect for moves which cause effects
-     * over time
-     * 
-     * @param effect */
-    default boolean addOngoingEffect(Move_Base effect)
-    {
-        if (effect instanceof Move_Ongoing)
-        {
-            if (!getMoveStats().ongoingEffects.containsKey(effect))
-            {
-                getMoveStats().ongoingEffects.put((Move_Ongoing) effect, ((Move_Ongoing) effect).getDuration());
-                return true;
-            }
-        }
-        return false;
     }
 
     /** Used by Gui Pokedex. Exchange the two moves.
@@ -181,11 +164,6 @@ public interface IHasMoves extends IHasStats
 
     PokemobMoveStats getMoveStats();
 
-    default HashMap<Move_Ongoing, Integer> getOngoingEffects()
-    {
-        return getMoveStats().ongoingEffects;
-    }
-
     Entity getTransformedTo();
 
     EntityAIBase getUtilityMoveAI();
@@ -278,14 +256,38 @@ public interface IHasMoves extends IHasStats
     {
         Event toPost = move.pre ? new MoveUse.DuringUse.Pre(move, move.attacker == getEntity())
                 : new MoveUse.DuringUse.Post(move, move.attacker == getEntity());
-        MinecraftForge.EVENT_BUS.post(toPost);
+        PokecubeCore.MOVE_BUS.post(toPost);
+    }
+
+    default void healChanges()
+    {
+        this.getMoveStats().changes = 0;
+        IOngoingAffected affected = CapabilityAffected.getAffected(getEntity());
+        if (affected != null)
+        {
+            affected.removeEffects(NonPersistantStatusEffect.ID);
+        }
     }
 
     /** @param change
      *            the changes to set */
-    default void removeChanges(int changes)
+    default void removeChange(int change)
     {
-        this.getMoveStats().changes -= changes;
+        this.getMoveStats().changes -= change;
+        IOngoingAffected affected = CapabilityAffected.getAffected(getEntity());
+        if (affected != null)
+        {
+            Effect toRemove = Effect.getStatus((byte) change);
+            for (IOngoingEffect effect : affected.getEffects(NonPersistantStatusEffect.ID))
+            {
+                if (effect instanceof NonPersistantStatusEffect
+                        && ((NonPersistantStatusEffect) effect).effect == toRemove)
+                {
+                    affected.removeEffect(effect);
+                    break;
+                }
+            }
+        }
     }
 
     void setAttackCooldown(int timer);
@@ -307,6 +309,16 @@ public interface IHasMoves extends IHasStats
      * @param i
      *            must be a value from 0 to 3 */
     public void setMoveIndex(int i);
+
+    /** Same as {@link IHasMoves#setStatus(byte)} but also specifies the
+     * duration for the effect.
+     * 
+     * @param status
+     *            the status to set
+     * @param turns
+     *            How many times attackCooldown should the status apply.
+     * @return whether the status has actually been set */
+    boolean setStatus(byte status, int turns);
 
     /** Statuses: {@link IMoveConstants#STATUS_PSN} for example. The set can
      * fail because the mob is immune against this status (a fire-type Pokemon

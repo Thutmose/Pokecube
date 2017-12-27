@@ -2,8 +2,10 @@ package pokecube.core.moves.templates;
 
 import java.util.Random;
 
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.DamageSource;
+import pokecube.core.interfaces.entity.IOngoingAffected;
+import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
+import pokecube.core.interfaces.entity.impl.OngoingMoveEffect;
 
 public class Move_Ongoing extends Move_Basic
 {
@@ -13,11 +15,11 @@ public class Move_Ongoing extends Move_Basic
         super(name);
     }
 
-    public void doOngoingEffect(EntityLiving mob)
+    public void doOngoingEffect(IOngoingAffected mob, IOngoingEffect effect)
     {
-        float thisMaxHP = mob.getMaxHealth();
+        float thisMaxHP = mob.getEntity().getMaxHealth();
         int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
-        mob.attackEntityFrom(DamageSource.GENERIC, damage);
+        mob.getEntity().attackEntityFrom(DamageSource.GENERIC, damage);
     }
 
     /** I have these attacks affecting the target roughly once per 40 ticks,
@@ -46,5 +48,18 @@ public class Move_Ongoing extends Move_Basic
     public boolean onTarget()
     {
         return true;
+    }
+
+    public Class<? extends OngoingMoveEffect> getEffectClass()
+    {
+        return OngoingMoveEffect.class;
+    }
+
+    public OngoingMoveEffect makeEffect()
+    {
+        OngoingMoveEffect effect = new OngoingMoveEffect();
+        effect.setDuration(getDuration());
+        effect.move = this;
+        return effect;
     }
 }

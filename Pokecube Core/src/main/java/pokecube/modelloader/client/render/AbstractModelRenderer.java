@@ -73,19 +73,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
             boolean status = pokemob.getStatus() == IMoveConstants.STATUS_SLP;
             if (status || pokemob.getPokemonAIState(IMoveConstants.SLEEPING))
             {
-                float timer = pokemob.getStatusTimer() + par4;
                 float ratio = 1F;
-                if (status)
-                {
-                    if (timer <= 200 && timer > 175)
-                    {
-                        ratio = 1F - ((timer - 175F) / 25F);
-                    }
-                    if (timer >= 0 && timer <= 25)
-                    {
-                        ratio = 1F - ((25F - timer) / 25F);
-                    }
-                }
                 GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
                 return;
             }

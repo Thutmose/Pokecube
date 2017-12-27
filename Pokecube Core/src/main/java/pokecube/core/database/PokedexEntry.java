@@ -1706,6 +1706,8 @@ public class PokedexEntry
     /** @param sound */
     public void setSound(String sound)
     {
+        boolean mobs = false;
+        if (mobs = sound.startsWith("mobs.")) sound = sound.replaceFirst(".mobs", "");
         // Replace all non word chars.
         sound = sound.replaceAll("([\\W])", "");
         modid:
@@ -1722,6 +1724,7 @@ public class PokedexEntry
             }
             this.setModId(PokecubeMod.defaultMod);
         }
+        if (mobs) sound = "mobs." + sound;
         this.sound = new ResourceLocation(getModId() + ":" + sound);
     }
 

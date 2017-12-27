@@ -1,107 +1,67 @@
-
-// For those who want the bleeding edge
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+//Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
 repositories {
-    maven {
-        name = "forge"
-        url = "http://files.minecraftforge.net/maven"
-    }
-    maven {
-        name = "OpenComputers"
-        url = "http://maven.cil.li/"
-    }
-    maven {
-        name = "jei"
-        url =  "http://dvs1.progwml6.com/files/maven"
-    }
-    ivy {
-        name = "thutcore"
-        url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
-        layout "pattern", {
-            artifact "[module]-[revision]-dev.[ext]"
-        }
-    }
-    ivy {
-        name = "thutbling"
-        url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
-        layout "pattern", {
-            artifact "[module]-[revision]-dev.[ext]"
-        }
-    }
-    ivy {
-        name = "thutwear"
-        url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
-        layout "pattern", {
-            artifact "[module]-[revision]-dev.[ext]"
-        }
-    }
-    ivy {
-        name = "pokecube"
-        url = "https://github.com/Thutmose/Pokecube/raw/1.9/Pokecube%20Core/deobf"
-        layout "pattern", {
-            artifact "[module]-${version_minecraft}-[revision]-dev.[ext]"
-        }
-    }
-    ivy {
-        name = "thaumcraft"
-        url = "https://dl.dropboxusercontent.com/u/47135879/"
-        layout "pattern", {
-            artifact "[module]-${version_minecraft}-[revision]-deobf.[ext]"
-        }
-    }
-    maven {
-        name = "IGW"
-        url = "http://maven.k-4u.nl/"
-    }
-    maven { // TOP
-        name 'tterrag maven'
-        url "http://maven.tterrag.com/"
-    }
-    maven {url 'http://maven.epoxide.xyz'}
-    ivy {
-        name = "thutessentials"
-        url = "https://github.com/Thutmose/ThutEssentials/raw/master/deobf"
-        layout "pattern", {
-            artifact "[module]-[revision]-dev.[ext]"
-        }
-    }
+  maven {
+    // location of the maven that hosts JEI files
+    name = "Progwml6 maven"
+    url = "http://dvs1.progwml6.com/files/maven"
+  }
+  maven {
+    // location of a maven mirror for JEI files, as a fallback
+    name = "ModMaven"
+    url = "modmaven.k-4u.nl"
+  }
+  ivy {
+    name "LatMod"
+    artifactPattern "http://mods.latmod.com/${version_ftblib}/[module]-[revision](-[classifier]).[ext]"
+  }   
 }
 
 dependencies {
-    compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
-    compile "net.darkhax.tesla:Tesla:${version_tesla}"
-    deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
-    deobfCompile name: 'pokecube', version: "${version_pokecube}", ext: 'jar'
-    deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
-    deobfCompile name: 'thut_bling', version: "${version_bling}", ext: 'jar'
-    deobfCompile name: 'thut_wearables', version: "${version_wear}", ext: 'jar'
-    deobfCompile "mcjty.theoneprobe:TheOneProbe:${version_top}"
-    deobfCompile name: 'thutessentials', version: "${version_thutessentials}", ext: 'jar'
+  // compile against the JEI API
+  deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}:api"
+  // at runtime, use the full JEI jar
+  runtime "mezz.jei:jei_${version_minecraft}:${version_jei}"
 }
 
-group= "pokecube"
-archivesBaseName = "Pokecube Revival"
+version = "${version_compile}"
+group= "" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${compile_name}"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 minecraft {
-    version = "${version_minecraft}-${version_forge}"
-    mappings = "${version_mappings}"
+    version = "${version_long}"
     runDir = "run"
+    mappings = "${version_mappings}"
+    //useDepAts = true
     
-    useDepAts = true
+    //Most things
+    replace "@VERSION@", project.version
+    replaceIn "Reference.java"
+    replace "@MINVERSION", "[${version_min_support},)"
+    replaceIn "Reference.java"
+    replace "@VERSION", project.version
+    replaceIn "mcmod.info"
+    replace "@POKECUBEVERSION", "[${version_pokecube},)"
+    replaceIn "Reference.java"
+    replace "@MINVERSION", "[${version_min_support},)"
+    replaceIn "Reference.java"
+    replace "@MCVERSION", "${version_mcsupport}"
+    replaceIn "Reference.java"
     
+    //Pokecube Revival
     replace "@VERSION", project.version
     replaceIn "PokecubeAdv.java"
     replace "@MCVERSION", "${version_mcsupport}"
@@ -109,32 +69,39 @@ minecraft {
     replace "@POKECUBEVERSION", "[${version_pokecube},)"
     replaceIn "PokecubeAdv.java"
     
+    //Pokecube Core
+    replace "@VERSION", project.version
+    replaceIn "PokecubeMod.java"
+    replace "@MCVERSION", "${version_mcsupport}"
+    replaceIn "PokecubeMod.java"
+    replace "@MINVERSION", "[${version_min_support},)"
+    replaceIn "PokecubeMod.java"
+    replace "@FORGEVERSION", "[${version_forge},)"
+    replaceIn "PokecubeMod.java"
+    replace "@THUTCORE", "[${version_thutcore},)"
+    replaceIn "PokecubeMod.java"
+    replace "@BAUBLES", "[${version_baubles},)"
+    replaceIn "PokecubeMod.java"
+    
     makeObfSourceJar = false
 }
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+artifacts {
+    archives deobfJar
+}
+
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+}
 
-    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-    // except that these dependencies get remapped to your current MCP mappings
-    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+jar {
+        manifest {
+        attributes "FMLAT": "${at_file}"
+    }
 }
 
 processResources
@@ -154,24 +121,5 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-        exclude 'pokecube_at.cfg'
     }
 }
-
-task srcJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'dev'
-}
-
-artifacts {
-   // archives srcJar
-    archives deobfJar
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8

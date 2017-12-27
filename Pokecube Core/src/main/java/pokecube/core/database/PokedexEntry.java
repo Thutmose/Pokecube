@@ -1707,7 +1707,7 @@ public class PokedexEntry
     public void setSound(String sound)
     {
         boolean mobs = false;
-        if (mobs = sound.startsWith("mobs.")) sound = sound.replaceFirst(".mobs", "");
+        if (mobs = sound.startsWith("mobs.")) sound = sound.replaceFirst("mobs.", "");
         // Replace all non word chars.
         sound = sound.replaceAll("([\\W])", "");
         modid:

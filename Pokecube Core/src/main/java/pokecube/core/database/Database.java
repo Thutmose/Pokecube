@@ -315,8 +315,15 @@ public class Database
         PokedexEntry ret = null;
         if (name == null) return null;
         if (name.trim().isEmpty()) return null;
-        if (data2.containsKey(name)) return data2.get(name);
+        PokedexEntry var = data2.get(name);
+        if (var != null) return var;
         String newName = trim(name);
+        var = data2.get(newName);
+        if (var != null)
+        {
+            data2.put(name, var);
+            return var;
+        }
         for (PokedexEntry e : allFormes)
         {
             String s = e.getTrimmedName();
@@ -548,19 +555,28 @@ public class Database
                 /** First init the formes, to copy the stuff over from the
                  * current base forme if needed. */
                 initFormes(formes, entry);
-                /** Then check if the base form, or any others, are dummy forms,
-                 * and replace them. */
-                checkDummies(formes, vars);
                 /** Then Check if the entry should be replaced with a gender
                  * version */
                 checkGenderFormes(formes, vars);
+                /** Then check if the base form, or any others, are dummy forms,
+                 * and replace them. */
+                checkDummies(formes, vars);
             }
             entry = vars.getValue();
             formLists.put(entry.getPokedexNb(), formes);
         }
+        // Post process, also count dummies.
         int dummies = 0;
         for (PokedexEntry e : allFormes)
+        {
+            if (e.getType1() == null)
+            {
+                e.type1 = PokeType.unknown;
+                if (e != missingno) PokecubeMod.log(Level.SEVERE, "Error with typing for " + e + " " + e.getType2());
+            }
+            if (e.getType2() == null) e.type2 = PokeType.unknown;
             if (e.dummy) dummies++;
+        }
         if (PokecubeMod.debug) PokecubeMod.log("Processed Form Lists, found " + dummies + " Dummy Forms.");
         ProgressManager.pop(bar);
     }
@@ -582,6 +598,7 @@ public class Database
                     entry.base = false;
                     data.put(entry1.getPokedexNb(), entry1);
                     data2.put(entry.getTrimmedName(), entry1);
+                    data2.put(entry.getName(), entry1);
                     // Set all the subformes base to this new one.
                     for (PokedexEntry e : formes)
                     {
@@ -594,7 +611,6 @@ public class Database
                     break;
                 }
             }
-
         }
     }
 
@@ -616,6 +632,7 @@ public class Database
             entry.base = false;
             data.put(male.getPokedexNb(), male);
             data2.put(entry.getTrimmedName(), male);
+            data2.put(entry.getName(), male);
             vars.setValue(male);
             // Set all the subformes base to this new one.
             for (PokedexEntry e : formes)

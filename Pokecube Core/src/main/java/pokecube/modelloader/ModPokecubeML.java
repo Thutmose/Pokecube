@@ -182,6 +182,16 @@ public class ModPokecubeML implements IMobProvider
                 builder.append("\n-   ").append(e.getName());
             }
             PokecubeMod.log(builder.toString());
+            // this makes english lang file, waste of time most times, so
+            // commented out for now.
+            // builder = new StringBuilder("Lang File Ouput:");
+            // for (PokedexEntry e : all)
+            // {
+            // PokedexEntry base = e.getBaseForme();
+            // if (base == null) base = e;
+            // builder.append("\npkmn.").append(e.getName()).append(".name=").append(base.getName());
+            // }
+            // PokecubeMod.log(builder.toString());
         }
         for (String s : addedPokemon)
         {

@@ -148,7 +148,7 @@ public class PersistantStatusEffect extends BaseEffect
                 else
                 {
                     entity.addPotionEffect(
-                            new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), 10, 100));
+                            new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration, 100));
                     entity.addPotionEffect(
                             new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration, 100));
                     entity.addPotionEffect(
@@ -157,6 +157,7 @@ public class PersistantStatusEffect extends BaseEffect
                 }
                 break;
             default:
+                toRemove = true;
                 break;
             }
             if (toRemove)
@@ -233,15 +234,16 @@ public class PersistantStatusEffect extends BaseEffect
     @Override
     public void deserializeNBT(NBTTagCompound nbt)
     {
-        this.status = Status.values()[nbt.getByte("S")];
         super.deserializeNBT(nbt);
+        if (nbt.hasKey("S")) this.status = Status.values()[nbt.getByte("S")];
+        else this.setDuration(0);
     }
 
     @Override
     public NBTTagCompound serializeNBT()
     {
         NBTTagCompound tag = super.serializeNBT();
-        tag.setByte("S", (byte) status.ordinal());
+        if (status != null) tag.setByte("S", (byte) status.ordinal());
         return tag;
     }
 

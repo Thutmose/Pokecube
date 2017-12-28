@@ -275,8 +275,7 @@ public class Database
         }
         catch (Exception e)
         {
-            System.err.println(name + " " + n);
-            e.printStackTrace();
+            PokecubeMod.log(Level.SEVERE, name + " " + n, e);
         }
     }
 
@@ -469,7 +468,8 @@ public class Database
             if (e.getModId() == null) continue;
             if (e.sound == null)
             {
-                if (e.base) e.setSound("mobs." + e.getTrimmedName());
+                if (e.customSound != null) e.setSound("mobs." + Database.trim(e.customSound));
+                else if (e.base) e.setSound("mobs." + e.getTrimmedName());
                 else e.setSound("mobs." + e.getBaseForme().getTrimmedName());
             }
             e.event = new SoundEvent(e.sound);
@@ -522,46 +522,89 @@ public class Database
             /** Collect all the different forms we can for this mob. */
             for (PokedexEntry e : allFormes)
                 if (e.getPokedexNb() == entry.getPokedexNb()) set.add(e);
-            PokedexEntry female = entry.getForGender(IPokemob.FEMALE);
-            PokedexEntry male = entry.getForGender(IPokemob.MALE);
-            set.add(male);
-            set.add(female);
             formes.addAll(set);
             formes.sort(COMPARATOR);
 
             /** First init the formes, to copy the stuff over from the current
              * base forme if needed. */
             if (formes.size() > 1) initFormes(formes, entry);
-            /** If the forme has both male and female entries, replace the base
-             * forme with the male forme. */
-            if (male != female && male != entry && female != entry)
-            {
-                male.base = true;
-                male.male = male;
-                female.male = male;
-                male.female = female;
-                data.put(male.getPokedexNb(), male);
-                data2.put(entry.getTrimmedName(), male);
-                vars.setValue(male);
-                // Set all the subformes base to this new one.
-                for (PokedexEntry e : formes)
-                {
-                    // Set the forme.
-                    e.setBaseForme(male);
-                    // Initialize some things.
-                    e.getBaseForme();
-                }
-                entry = male;
-            }
+            /** Then check if the base form, or any others, are dummy forms, and
+             * replace them. */
+            checkDummies(formes, vars);
+            /** Then Check if the entry should be replaced with a gender
+             * version */
+            checkGenderFormes(formes, vars);
+            entry = vars.getValue();
             formLists.put(entry.getPokedexNb(), formes);
         }
         ProgressManager.pop(bar);
     }
 
+    /** Replaces a dummy base form with the first form in the sorted list.
+     * 
+     * @param formes
+     * @param vars */
+    private static void checkDummies(List<PokedexEntry> formes, Map.Entry<Integer, PokedexEntry> vars)
+    {
+        PokedexEntry entry = vars.getValue();
+        if (entry.dummy)
+        {
+            for (PokedexEntry entry1 : formes)
+            {
+                if (!entry1.dummy)
+                {
+                    data.put(entry1.getPokedexNb(), entry1);
+                    data2.put(entry.getTrimmedName(), entry1);
+                    // Set all the subformes base to this new one.
+                    for (PokedexEntry e : formes)
+                    {
+                        // Set the forme.
+                        e.setBaseForme(entry1);
+                        // Initialize some things.
+                        e.getBaseForme();
+                    }
+                    vars.setValue(entry1);
+                    break;
+                }
+            }
+
+        }
+    }
+
+    private static void checkGenderFormes(List<PokedexEntry> formes, Map.Entry<Integer, PokedexEntry> vars)
+    {
+        PokedexEntry entry = vars.getValue();
+        PokedexEntry female = entry.getForGender(IPokemob.FEMALE);
+        PokedexEntry male = entry.getForGender(IPokemob.MALE);
+
+        /** If the forme has both male and female entries, replace the base
+         * forme with the male forme. */
+        if (male != female && male != entry && female != entry)
+        {
+            male.base = true;
+            male.male = male;
+            female.male = male;
+            male.female = female;
+            entry.dummy = true;
+            data.put(male.getPokedexNb(), male);
+            data2.put(entry.getTrimmedName(), male);
+            vars.setValue(male);
+            // Set all the subformes base to this new one.
+            for (PokedexEntry e : formes)
+            {
+                // Set the forme.
+                e.setBaseForme(male);
+                // Initialize some things.
+                e.getBaseForme();
+            }
+            entry = male;
+        }
+    }
+
     private static void initFormes(List<PokedexEntry> formes, PokedexEntry base)
     {
         base.copyToGenderFormes();
-        PokecubeMod.log("Processing " + base + " " + formes);
+        if (PokecubeMod.debug) PokecubeMod.log("Processing " + base + " " + formes);
         for (PokedexEntry e : formes)
         {
             e.forms.clear();
@@ -654,11 +697,11 @@ public class Database
                 {
                     data = new SpawnData(entry);
                     entry.setSpawnData(data);
-                    System.out.println("Overwriting spawns for " + entry);
+                    if (PokecubeMod.debug) PokecubeMod.log("Overwriting spawns for " + entry);
                 }
-                else
+                else if (PokecubeMod.debug)
                 {
-                    System.out.println("Editing spawns for " + entry);
+                    PokecubeMod.log("Editing spawns for " + entry);
                 }
                 PokedexEntryLoader.handleAddSpawn(data, xmlEntry);
                 if (data.matchers.isEmpty())
@@ -760,23 +803,30 @@ public class Database
         {
             if (e.base) addEntry(e);
         }
-        int cleaned = 0;
+        int dummies = 0;
         for (PokedexEntry p : allFormes)
         {
             bar.step(p.getName());
             if (!Pokedex.getInstance().getRegisteredEntries().contains(p))
             {
-                if (p.base && p != getEntry(p.getPokedexNb()))
-                {
-                    cleaned++;
-                }
+                if (p.dummy) dummies++;
                 else removedNums.add(p.getPokedexNb());
                 toRemove.add(p);
                 removed.add(p);
             }
         }
         Collections.sort(toRemove, COMPARATOR);
-        PokecubeMod.log("Removing " + toRemove);
+        List<PokedexEntry> messageList = Lists.newArrayList(toRemove);
+        messageList.removeIf(new java.util.function.Predicate<PokedexEntry>()
+        {
+            @Override
+            public boolean test(PokedexEntry t)
+            {
+                return t.dummy;
+            }
+
+        });
+        if (PokecubeMod.debug) PokecubeMod.log("Removing " + messageList);
         ProgressManager.pop(bar);
         bar = ProgressManager.push("Removal", toRemove.size());
         for (PokedexEntry p : toRemove)
@@ -810,8 +860,8 @@ public class Database
 
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
-        PokecubeMod.log("Removed " + removedNums.size() + " Missing Pokemon and " + (toRemove.size() - cleaned)
-                + " missing Formes");
+        if (PokecubeMod.debug) PokecubeMod.log("Removed " + removedNums.size() + " Missing Pokemon and "
+                + (toRemove.size() - dummies) + " missing Formes");
 
         toRemove.clear();
         bar = ProgressManager.push("Relations", allFormes.size());

@@ -107,7 +107,7 @@ public class CommonProxy implements IGuiHandler
             String output = prettyGson.toJson(this);
             try
             {
-                PokecubeMod.log("Saving " + cacheFile);
+                if (PokecubeMod.debug) PokecubeMod.log("Saving " + cacheFile);
                 cacheFile.getParentFile().mkdirs();
                 FileWriter writer = new FileWriter(cacheFile);
                 writer.append(output);
@@ -387,13 +387,13 @@ public class CommonProxy implements IGuiHandler
             name = name.replace("file:", "");
             name = name.replaceAll("(.jar)(.*)", ".jar");
             resourceDir = new File(name);
-            PokecubeMod.log(Level.INFO, "Checking in " + resourceDir + " " + mod);
+            if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Checking in " + resourceDir + " " + mod);
             checkInFolder(resourceDir, ret, file, files);
         }
         else
         {
             resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
-            PokecubeMod.log(Level.INFO, "Checking in " + validModJars);
+            if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Checking in " + validModJars);
             for (File temp : validModJars)
             {
                 checkInFolder(temp, ret, file, files);

@@ -64,19 +64,29 @@ public class GuiAnimate extends GuiScreen
     {
         PokedexEntry entry = null;
         if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
+        String[] gender = buttonList.get(12).displayString.split(":");
+        byte sexe = IPokemob.NOSEXE;
+        if (gender[1].equalsIgnoreCase("m"))
+        {
+            sexe = IPokemob.MALE;
+        }
+        else if (gender[1].equalsIgnoreCase("f"))
+        {
+            sexe = IPokemob.FEMALE;
+        }
         if (button.id == 2)
         {
             int num = (entry = Pokedex.getInstance().getNext(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
             else pokedexNb = (entry = Pokedex.getInstance().getFirstEntry()).getPokedexNb();
-            mob = entry.getName();
+            mob = entry.getForGender(sexe).getName();
         }
         else if (button.id == 1)
         {
             int num = (entry = Pokedex.getInstance().getPrevious(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
             else pokedexNb = (entry = Pokedex.getInstance().getLastEntry()).getPokedexNb();
-            mob = entry.getName();
+            mob = entry.getForGender(sexe).getName();
         }
         else if (button.id == 3)
         {
@@ -89,8 +99,7 @@ public class GuiAnimate extends GuiScreen
             {
                 entry = entry.getBaseForme();
             }
-            ((ClientProxy) ModPokecubeML.proxy).reloadModel(entry);
-            for (PokedexEntry e : entry.forms.values())
+            for (PokedexEntry e : Database.getFormes(entry))
             {
                 ((ClientProxy) ModPokecubeML.proxy).reloadModel(e);
             }
@@ -143,10 +152,7 @@ public class GuiAnimate extends GuiScreen
             entry = Database.getEntry(mob);
             if (entry != null)
             {
-                PokedexEntry adder = entry.getBaseForme() == null ? entry : entry.getBaseForme();
-                List<PokedexEntry> formes = Lists.newArrayList(adder.forms.values());
-                if (!formes.contains(adder)) formes.add(adder);
-
+                List<PokedexEntry> formes = Lists.newArrayList(Database.getFormes(entry));
                 Collections.sort(formes, new Comparator<PokedexEntry>()
                 {
                     @Override
@@ -171,9 +177,7 @@ public class GuiAnimate extends GuiScreen
             entry = Database.getEntry(mob);
             if (entry != null)
             {
-                PokedexEntry adder = entry.getBaseForme() == null ? entry : entry.getBaseForme();
-                List<PokedexEntry> formes = Lists.newArrayList(adder.forms.values());
-                if (!formes.contains(adder)) formes.add(adder);
+                List<PokedexEntry> formes = Lists.newArrayList(Database.getFormes(entry));
                 Collections.sort(formes, new Comparator<PokedexEntry>()
                 {
                     @Override
@@ -197,21 +201,26 @@ public class GuiAnimate extends GuiScreen
         {
             IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
             if (pokemob == null) return;
-            forme.setText(pokemob.getPokedexEntry().getName());
-            info.setText("" + pokemob.getSpecialInfo());
             if (button.id == 13)
             {
                 if (pokemob.getSexe() == IPokemob.MALE)
                 {
-                    pokemob.setSexe(IPokemob.FEMALE);
+                    entry = pokemob.getEvolutionEntry().getForGender((IPokemob.FEMALE));
                     button.displayString = "sexe:F";
                 }
                 else if (pokemob.getSexe() == IPokemob.FEMALE)
                 {
-                    pokemob.setSexe(IPokemob.MALE);
+                    entry = pokemob.getEvolutionEntry().getForGender((IPokemob.MALE));
                     button.displayString = "sexe:M";
                 }
+                mob = entry.getName();
             }
+            else
+            {
+            }
+            forme.setText(entry.getName());
+            info.setText("" + pokemob.getSpecialInfo());
+
         }
     }
 

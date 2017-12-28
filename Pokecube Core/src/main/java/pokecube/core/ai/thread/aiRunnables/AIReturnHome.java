@@ -56,8 +56,9 @@ public class AIReturnHome extends AIBase
         PokedexEntry entry = mob.getPokedexEntry();
         boolean activeTime = false;
         for (TimePeriod active : entry.activeTimes())
-        {
-            if (active.contains(entity.getEntityWorld().getWorldTime()))
+        {// TODO find some way to determine actual length of day for things like
+         // AR support.
+            if (active.contains(entity.getEntityWorld().getWorldTime(), 24000))
             {
                 activeTime = true;
             }

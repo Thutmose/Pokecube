@@ -1,15 +1,10 @@
 package pokecube.core.moves.animations.presets.parametric;
 
-import java.util.Random;
-
 import org.nfunk.jep.JEP;
 
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemDye;
 import net.minecraft.world.IWorldEventListener;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveAnimation;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.animations.AnimPreset;
 import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
@@ -31,29 +26,6 @@ public class CylindricalFunction extends MoveAnimationBase
     public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
 
-    }
-
-    @Override
-    public void initColour(long time, float partialTicks, Move_Base move)
-    {
-        if (customColour) return;
-        if (particle.equals("airbubble"))
-        {
-
-        }
-        else if (particle.equals("aurora"))
-        {
-            int rand = ItemDye.DYE_COLORS[new Random(time / 10).nextInt(ItemDye.DYE_COLORS.length)];
-            rgba = 0x61000000 + rand;
-        }
-        else if (particle.equals("iceshard"))
-        {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
-        }
-        else
-        {
-            rgba = getColourFromMove(move, 255);
-        }
     }
 
     @Override

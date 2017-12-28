@@ -102,6 +102,8 @@ public class SpawnListEntry
         }
         boolean day = value.day;
         boolean night = value.night;
+        boolean dusk = value.dusk;
+        boolean dawn = value.dawn;
         boolean water = value.water;
         boolean air = value.air;
         if (water)
@@ -120,6 +122,16 @@ public class SpawnListEntry
         {
             if (day) times = times + ", ";
             times = times + I18n.format("pokewatch.spawns.night");
+        }
+        if (dusk)
+        {
+            if (day || night) times = times + ", ";
+            times = times + I18n.format("pokewatch.spawns.dusk");
+        }
+        if (dawn)
+        {
+            if (day || night || dawn) times = times + ", ";
+            times = times + I18n.format("pokewatch.spawns.dawn");
         }
         output.addAll(fontRender.listFormattedStringToWidth(times, width));
         String rate = "";

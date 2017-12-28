@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -170,8 +171,7 @@ public class RenderPokemobs extends RenderPokemob
                         {
                             entry = entry.getBaseForme();
                         }
-                        ((ClientProxy) ModPokecubeML.proxy).reloadModel(entry);
-                        for (PokedexEntry e : entry.forms.values())
+                        for (PokedexEntry e : Database.getFormes(entry))
                         {
                             ((ClientProxy) ModPokecubeML.proxy).reloadModel(e);
                         }

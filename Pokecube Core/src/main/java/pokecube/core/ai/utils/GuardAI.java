@@ -97,11 +97,13 @@ public class GuardAI extends EntityAIBase
         {
             System.out.println(entity.getCapability(EventsHandler.GUARDAI_CAP, null));
             return false;
-        }
+        } // TODO find some way to determine actual length of day for things
+          // like
+          // AR support.
         if (null == entity || entity.isDead || capability.getActiveTime() == null
                 || capability.getPos() == null) { return false; }
         if (capability.getActiveTime() != TimePeriod.fullDay && !capability.getActiveTime()
-                .contains((int) (entity.getEntityWorld().getWorldTime() % 24000L))) { return false; }
+                .contains(entity.getEntityWorld().getWorldTime(), 24000)) { return false; }
         BlockPos pos = capability.getPos();
         if (pos.equals(BlockPos.ORIGIN)) return false;
         double distanceToGuardPointSq = entity.getDistanceSq(capability.getPos());

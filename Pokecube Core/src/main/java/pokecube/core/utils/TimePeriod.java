@@ -63,15 +63,16 @@ public final class TimePeriod
         return wrapped ? time <= startTime || time >= endTime : (time >= startTime && time <= endTime);
     }
 
-    public boolean contains(int time)
+    public boolean contains(long time, long dayLength)
     {
         time = time % 24000;
-        return wrapped ? time >= startTick || time <= endTick : (time >= startTick && time <= endTick);
+        return (time >= startTick && time <= endTick);
     }
 
-    public boolean contains(long time)
+    public boolean overlaps(TimePeriod other)
     {
-        time = time % 24000;
-        return contains((int) time);
+        if (null != other) { return (this.startTick < other.endTick && this.endTick > other.startTick); }
+        return false;
     }
+
 }

@@ -122,6 +122,29 @@ public class SpawnEvent extends Event
                 super(entry_, location_, world_);
             }
         }
+
+        /** This is used to edit the pokedex entry directly before the mob is
+         * constructed. It allows bypassing all of the rest of the spawn */
+        public static class Final extends Pick
+        {
+            public Final(PokedexEntry entry_, Vector3 location_, World worldObj_)
+            {
+                super(entry_, location_, worldObj_);
+            }
+
+            private String args = "";
+
+            public String getSpawnArgs()
+            {
+                return args;
+            }
+
+            public void setSpawnArgs(String args)
+            {
+                if (args == null) args = "";
+                this.args = args;
+            }
+        }
     }
 
     /** Called after spawn lvl for a mob is chosen, use setLevel if you wish to

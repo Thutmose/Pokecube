@@ -420,7 +420,7 @@ public class PokecubeSerializer
         while (next.hasNext())
         {
             Ticket ticket = next.next();
-            if (!ticket.getModId().equals("pokecube")) continue;
+            if (!ticket.getModId().equals("pokecube") || !ticket.isPlayerTicket()) continue;
             if (!ticket.getModData().hasKey("pos"))
             {
                 PokecubeMod.log("invalid ticket, no saved pos");

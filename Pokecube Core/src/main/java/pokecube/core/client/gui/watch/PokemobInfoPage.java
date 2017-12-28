@@ -133,16 +133,7 @@ public class PokemobInfoPage extends PageWithSubPages
         {
             // Cycle Form.
             PokedexEntry entry = pokemob.getPokedexEntry();
-            PokedexEntry base = entry.base ? entry : entry.getBaseForme();
-            List<PokedexEntry> forms = Lists.newArrayList(base.forms.values());
-            if (!forms.contains(entry))
-            {
-                forms.add(0, entry);
-            }
-            if (!forms.contains(base))
-            {
-                forms.add(0, base);
-            }
+            List<PokedexEntry> forms = Lists.newArrayList(Database.getFormes(entry));
             int index = forms.indexOf(pokemob.getPokedexEntry());
             if (index != -1)
             {

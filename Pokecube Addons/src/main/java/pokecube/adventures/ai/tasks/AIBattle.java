@@ -2,8 +2,6 @@ package pokecube.adventures.ai.tasks;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,6 +12,7 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
@@ -79,7 +78,7 @@ public class AIBattle extends AITrainerBase
         IPokemob out = trainer.getOutMob();
         if (trainer.canMegaEvolve() && out != null && out.getPokedexEntry().hasMegaForm)
         {
-            List<PokedexEntry> formes = Lists.newArrayList(out.getPokedexEntry().forms.values());
+            List<PokedexEntry> formes = Database.getFormes(out.getPokedexEntry());
             if (!formes.isEmpty())
             {
                 int start = entity.getRNG().nextInt(formes.size());

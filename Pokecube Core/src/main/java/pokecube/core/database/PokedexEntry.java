@@ -1192,7 +1192,7 @@ public class PokedexEntry
 
     public PokedexEntry getForGender(byte gender)
     {
-        if (!base && getBaseForme() != null) return getBaseForme().getForGender(gender);
+        if (!base && isGenderForme && getBaseForme() != null) return getBaseForme().getForGender(gender);
         if (male == null) male = this;
         if (female == null) female = this;
         return gender == IPokemob.MALE ? male : female;

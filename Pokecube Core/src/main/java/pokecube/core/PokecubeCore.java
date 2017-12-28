@@ -285,42 +285,12 @@ public class PokecubeCore extends PokecubeMod
         if (entity != null)
         {
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
-            pokemob = pokemob.setPokedexEntry(entry);
-            entity = pokemob.getEntity();
-        }
-        return entity;
-    }
-
-    /** Creates a new instance of an entity in the world for the pokemob
-     * specified by its pokedex number.
-     * 
-     * @param pokedexNb
-     *            the pokedex number
-     * @param world
-     *            the {@link World} where to spawn
-     * @return the {@link Entity} instance or null if a problem occurred */
-    public Entity createPokemob(int pokedexNb, World world)
-    {
-        Entity entity = null;
-        Class<?> clazz = null;
-        if (!registered.get(pokedexNb)) return null;
-        try
-        {
-            clazz = getEntityClassFromPokedexNumber(pokedexNb);
-
-            if (clazz != null)
+            if (pokemob.getPokedexEntry() != entry)
             {
-                entity = (Entity) clazz.getConstructor(new Class[] { World.class }).newInstance(new Object[] { world });
+                System.out.println(entry + " " + pokemob.getPokedexEntry() + " " + clazz);
+                pokemob = pokemob.setPokedexEntry(entry);
+                entity = pokemob.getEntity();
             }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        if (entity == null)
-        {
-            System.err.println("Problem with entity with pokedexNb: " + pokedexNb);
-            System.err.println(clazz + " " + pokedexmap);
         }
         return entity;
     }
@@ -335,16 +305,16 @@ public class PokecubeCore extends PokecubeMod
      * If no Pokemob has been registered for this pokedex number, it returns
      * <code>null</code>.
      * 
-     * @param pokedexNb
+     * @param entry
      *            the pokedex number
      * @return the {@link Class} of the pokemob */
     @SuppressWarnings("rawtypes")
     @Override
-    public Class getEntityClassFromPokedexNumber(int pokedexNb)
+    public Class getEntityClassForEntry(PokedexEntry entry)
     {
         try
         {
-            return pokedexmap.get(Database.getEntry(new Integer(pokedexNb)));
+            return pokedexmap.get(entry);
         }
         catch (Exception e)
         {

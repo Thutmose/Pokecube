@@ -228,8 +228,7 @@ public class JERCompat
                 pokemob.setShiny(false);
                 pokemob.setSize(1);
                 JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
-                JERAPI.getMobRegistry().registerRenderHook(
-                        PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);
+                JERAPI.getMobRegistry().registerRenderHook(PokecubeMod.core.getEntityClassForEntry(e), POKEMOB);
             }
         }
     }

@@ -145,18 +145,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     }
 
     @Override
-    public void registerPokemobModel(int nb, ModelBase model, Object mod)
-    {
-    }
-
-    @Override
     public void registerPokemobModel(String name, ModelBase model, Object mod)
-    {
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public void registerPokemobRenderer(int nb, IRenderFactory renderer, Object mod)
     {
     }
 

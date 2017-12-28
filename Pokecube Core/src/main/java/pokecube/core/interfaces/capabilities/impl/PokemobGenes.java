@@ -434,7 +434,7 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
                 gene = new SpeciesGene();
                 info = gene.getValue();
                 info.entry = classMap.get(getEntity().getClass());
-                if (entry == null)
+                if (info.entry == null)
                 {
                     if (getEntity().getClass().getSimpleName().startsWith("GenericPokemob_"))
                     {
@@ -452,22 +452,23 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
                 }
                 info.value = Tools.getSexe(info.entry.getSexeRatio(), new Random());
                 info.entry = info.entry.getForGender(info.value);
+                info = info.clone();
                 // Generate the basic genes
                 genesSpecies.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesSpecies.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesSpecies.refreshExpressed();
-
                 // Set the expressed gene to the info made above, this is to
                 // override the gene from merging parents which results in the
                 // child state.
                 genesSpecies.getExpressed().setValue(info);
             }
             info = genesSpecies.getExpressed().getValue();
-            info.entry = info.entry.getForGender(info.value);
+            info.entry = entry = info.entry.getForGender(info.value);
         }
+        if (entry != null) return entry;
         SpeciesInfo info = genesSpecies.getExpressed().getValue();
         assert info.entry != null;
-        return info.entry;
+        return entry = info.entry;
     }
 
     @Override
@@ -476,12 +477,10 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
         PokedexEntry entry = getPokedexEntry();
         SpeciesInfo info = genesSpecies.getExpressed().getValue();
         if (newEntry == null || newEntry == entry) return this;
+        this.entry = newEntry;
         IPokemob ret = this;
         info.entry = newEntry;
-        if (newEntry.getPokedexNb() != getPokedexNb())
-        {
-            ret = megaEvolve(newEntry);
-        }
+        ret = megaEvolve(newEntry);
         if (entity.getEntityWorld() != null)
             ret.setSize((float) (ret.getSize() / PokecubeMod.core.getConfig().scalefactor));
         if (entity.getEntityWorld() != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)

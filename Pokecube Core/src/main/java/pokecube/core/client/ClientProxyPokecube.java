@@ -506,18 +506,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
     }
 
-    /** Used to register a model for the pokemob
-     * 
-     * @param nb
-     *            - the pokedex number
-     * @param model
-     *            - the model */
-    @Override
-    public void registerPokemobModel(int nb, ModelBase model, Object mod)
-    {
-        registerPokemobModel(Database.getEntry(nb).getName(), model, mod);
-    }
-
     @Override
     public void registerPokemobModel(String name, ModelBase model, Object mod)
     {
@@ -541,19 +529,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
     }
 
-    /** Used to register a custom renderer for the pokemob
-     * 
-     * @param nb
-     *            - the pokedex number
-     * @param renderer
-     *            - the renderer */
-    @Override
-    public void registerPokemobRenderer(int nb, IRenderFactory renderer, Object mod)
-    {
-        RenderingRegistry.registerEntityRenderingHandler(PokecubeCore.instance.getEntityClassFromPokedexNumber(nb),
-                renderer);
-    }
-
     @Override
     public void registerPokemobRenderer(String name, IRenderFactory renderer, Object mod)
     {
@@ -564,7 +539,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         else
         {
             PokedexEntry entry = Database.getEntry(name);
-            Class<? extends Entity> c = PokecubeCore.instance.getEntityClassFromPokedexNumber(entry.getPokedexNb());
+            Class<? extends Entity> c = PokecubeCore.instance.getEntityClassForEntry(entry);
             RenderingRegistry.registerEntityRenderingHandler(c, renderer);
             Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(c,
                     renderer.createRenderFor(Minecraft.getMinecraft().getRenderManager()));

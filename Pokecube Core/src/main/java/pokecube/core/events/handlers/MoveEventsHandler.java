@@ -425,7 +425,7 @@ public class MoveEventsHandler
 
         boolean user = evt.isFromUser();
         IPokemob applied = user ? attacker : target;
-        if (applied.getHeldItem() != null)
+        if (applied != null && applied.getHeldItem() != null)
         {
             HeldItemHandler.processHeldItemUse(move, applied, applied.getHeldItem());
         }

@@ -94,8 +94,9 @@ public class AIHungry extends AIBase
         v.set(entity);
         sleepy = pokemob.getEntity().getAttackTarget() == null;
         if (sleepy) for (TimePeriod p : pokemob.getPokedexEntry().activeTimes())
-        {
-            if (p != null && p.contains(entity.getEntityWorld().getWorldTime()))
+        {// TODO find some way to determine actual length of day for things like
+         // AR support.
+            if (p != null && p.contains(entity.getEntityWorld().getWorldTime(), 24000)) ;
             {
                 sleepy = false;
                 break;

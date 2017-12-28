@@ -81,13 +81,7 @@ public final class TimePeriod
 		return (time >= startTime && time <= endTime);
 	}
 	
-	public boolean contains(int time)
-	{
-		time = time%24000;
-		return (time >= startTick && time <= endTick);
-	}
-	
-	public boolean contains(long time)
+	public boolean contains(long time, long dayLength)
 	{
 		time = time%24000;
 		return (time >= startTick && time <= endTick);

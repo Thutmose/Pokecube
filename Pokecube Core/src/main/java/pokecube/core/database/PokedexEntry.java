@@ -92,6 +92,8 @@ public class PokedexEntry
         public int                level        = -1;
         public String             move         = "";
         public boolean            nightOnly    = false;
+        public boolean            dawnOnly     = false;
+        public boolean            duskOnly     = false;
         public PokedexEntry       preEvolution;
         public boolean            rainOnly     = false;
         public float              randomFactor = 1.0f;
@@ -131,6 +133,8 @@ public class PokedexEntry
             {
                 if (data.time.equalsIgnoreCase("day")) dayOnly = true;
                 if (data.time.equalsIgnoreCase("night")) nightOnly = true;
+                if (data.time.equalsIgnoreCase("dusk")) duskOnly = true;
+                if (data.time.equalsIgnoreCase("dawn")) dawnOnly = true;
             }
             if (data.trade != null) this.traded = data.trade;
             if (data.rain != null) this.rainOnly = data.rain;
@@ -219,11 +223,13 @@ public class PokedexEntry
                 }
             }
             ret = ret && rightMove;
-            boolean rightTime = dayOnly == nightOnly;
+            boolean rightTime = dayOnly == nightOnly && dayOnly == duskOnly && duskOnly == dawnOnly;
             if (!rightTime)
             {
-                Entity poke = mob.getEntity();
-                rightTime = dayOnly ? poke.getEntityWorld().isDaytime() : !poke.getEntityWorld().isDaytime();
+                // TODO better way to choose current time.
+                double time = mob.getEntity().getEntityWorld().getWorldTime() / 24000;
+                rightTime = dayOnly ? day.contains(time)
+                        : nightOnly ? night.contains(time) : duskOnly ? dusk.contains(time) : dawn.contains(time);
             }
             ret = ret && rightTime;
             if (happy)

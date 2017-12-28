@@ -32,6 +32,8 @@ public class SpawnBiomeMatcher
     public static final QName TYPESBLACKLIST  = new QName("typesBlacklist");
     public static final QName NIGHT           = new QName("night");
     public static final QName DAY             = new QName("day");
+    public static final QName DUSK            = new QName("dusk");
+    public static final QName DAWN            = new QName("dawn");
     public static final QName AIR             = new QName("air");
     public static final QName WATER           = new QName("water");
     public static final QName MINLIGHT        = new QName("minLight");
@@ -42,6 +44,9 @@ public class SpawnBiomeMatcher
     public static class SpawnCheck
     {
         public final boolean   day;
+        public final boolean   dusk;
+        public final boolean   dawn;
+        public final boolean   night;
         public final Material  material;
         public final float     light;
         public final Biome     biome;
@@ -53,7 +58,12 @@ public class SpawnBiomeMatcher
         {
             this.world = world;
             this.location = location;
-            day = world.isDaytime();
+            // TODO better way to choose current time.
+            double time = world.getWorldTime() / 24000;
+            day = PokedexEntry.day.contains(time);
+            dusk = PokedexEntry.dusk.contains(time);
+            dawn = PokedexEntry.dawn.contains(time);
+            night = PokedexEntry.night.contains(time);
             material = location.getBlockMaterial(world);
             int lightBlock = world.getLightFor(EnumSkyBlock.BLOCK, location.getPos());
             int lightDay = world.getLightFor(EnumSkyBlock.SKY, location.getPos());
@@ -81,7 +91,9 @@ public class SpawnBiomeMatcher
     public float                      minLight             = 0;
     public float                      maxLight             = 1;
     public boolean                    day                  = true;
+    public boolean                    dusk                 = true;
     public boolean                    night                = true;
+    public boolean                    dawn                 = true;
     public boolean                    air                  = true;
     public boolean                    water                = false;
 
@@ -180,6 +192,14 @@ public class SpawnBiomeMatcher
         if (spawnRule.values.containsKey(NIGHT))
         {
             night = Boolean.parseBoolean(spawnRule.values.get(NIGHT));
+        }
+        if (spawnRule.values.containsKey(DUSK))
+        {
+            dusk = Boolean.parseBoolean(spawnRule.values.get(DUSK));
+        }
+        if (spawnRule.values.containsKey(DAWN))
+        {
+            dawn = Boolean.parseBoolean(spawnRule.values.get(DAWN));
         }
         if (spawnRule.values.containsKey(WATER))
         {
@@ -361,9 +381,10 @@ public class SpawnBiomeMatcher
 
     private boolean conditionsMatch(SpawnCheck checker)
     {
-        boolean isDay = checker.day;
-        if (isDay && !day) return false;
-        if (!isDay && !night) return false;
+        if (checker.day && !day) return false;
+        if (checker.night && !night) return false;
+        if (checker.dusk && !dusk) return false;
+        if (checker.dawn && !dawn) return false;
         Material m = checker.material;
         boolean isWater = m == Material.WATER;
         if (isWater && !water) return false;

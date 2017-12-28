@@ -264,7 +264,7 @@ public class Database
         {
             File file = new File(CONFIGLOC + name);
             file.getParentFile().mkdirs();
-            PokecubeMod.log("Copying Database File: " + file);
+            if (PokecubeMod.debug) PokecubeMod.log("Copying Database File: " + file);
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
             for (int i = 0; i < rows.size(); i++)
             {
@@ -834,6 +834,8 @@ public class Database
             bar.step(p.getName());
             if (p == getEntry(p.pokedexNb))
             {
+                if (p.dummy)
+                    PokecubeMod.log("Error with " + p + ", It is still listed as base forme, as well as being dummy.");
                 data.remove(p.pokedexNb);
                 baseFormes.remove(p.pokedexNb);
                 formLists.remove(p.pokedexNb);

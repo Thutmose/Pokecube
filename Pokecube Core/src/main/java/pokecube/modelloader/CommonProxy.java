@@ -573,7 +573,7 @@ public class CommonProxy implements IGuiHandler
     boolean[] providesModels(String modid, Object mod, String... entry)
     {
         CachedLocs cached = getCached(modid, true);
-        if (cached.has != null) { return cached.has; }
+        if (cached.has != null && cached.has.length == entry.length) { return cached.has; }
         ResourceLocation[] tex;
         boolean[] ret = new boolean[entry.length];
         Set<String> files = Sets.newHashSet();

@@ -46,7 +46,6 @@ import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
-import pokecube.core.database.moves.MoveEntryLoader;
 import pokecube.core.database.moves.MovesParser;
 import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.database.recipes.XMLRecipeHandler;
@@ -477,11 +476,6 @@ public class Database
             ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, e.event, e.sound, "registryName");
             GameRegistry.register(e.event);
         }
-    }
-
-    public static void loadMoves(String file)
-    {
-        MoveEntryLoader.loadMoves(file);
     }
 
     private static void loadSpawns()

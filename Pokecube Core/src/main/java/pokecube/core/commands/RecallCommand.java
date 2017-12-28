@@ -1,6 +1,7 @@
 package pokecube.core.commands;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -116,7 +117,7 @@ public class RecallCommand extends CommandBase
                         {
                             mob = CapabilityPokemob.getPokemobFor(cube.sendOut());
                             if (mob != null) mob.returnToPokecube();
-                            else PokecubeMod.log(cube.getEntityItem().getDisplayName());
+                            else PokecubeMod.log(Level.WARNING, cube.getEntityItem().getDisplayName());
                         }
                         else cube.setDead();
                     }

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -129,7 +131,7 @@ public class ModPokecubeML implements IMobProvider
         populateAddonMods();
         PokecubeTerrainChecker.init();
         Database.init();
-        PokecubeMod.log("Registering Moves");
+        if (PokecubeMod.debug) PokecubeMod.log("Registering Moves");
         MovesAdder.registerMoves();
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
     }
@@ -172,10 +174,14 @@ public class ModPokecubeML implements IMobProvider
         proxy.searchModels();
         if (PokecubeMod.debug)
         {
-            for (PokedexEntry e : Database.allFormes)
+            List<PokedexEntry> all = Lists.newArrayList(Database.allFormes);
+            all.sort(Database.COMPARATOR);
+            StringBuilder builder = new StringBuilder("All Pokedex Entries:");
+            for (PokedexEntry e : all)
             {
-                PokecubeMod.log(e.getName());
+                builder.append("\n-   ").append(e.getName());
             }
+            PokecubeMod.log(builder.toString());
         }
         for (String s : addedPokemon)
         {
@@ -192,17 +198,69 @@ public class ModPokecubeML implements IMobProvider
     @SubscribeEvent
     public void RegisterPokemobsEvent(RegisterPokemobsEvent.Register event)
     {
+        // Debug output list of missing mobs, as well as where they were
+        // searched for.
+        if (PokecubeMod.debug)
+        {
+            List<String> vars = Lists.newArrayList(proxy.notFound.keySet());
+            vars.removeAll(addedPokemon);
+            vars.removeIf(new Predicate<String>()
+            {
+                @Override
+                public boolean test(String t)
+                {
+                    PokedexEntry entry = Database.getEntry(t);
+                    return entry == null || entry.dummy;
+                }
+            });
+            ModPokecubeML.sort(vars);
+            for (String s : vars)
+            {
+                PokecubeMod.log("No " + s + " found in " + proxy.notFound.get(s));
+            }
+        }
+        // Sort and cleanup dummies from registration list.
         sort(addedPokemon);
+        addedPokemon.removeIf(new Predicate<String>()
+        {
+            @Override
+            public boolean test(String t)
+            {
+                PokedexEntry entry = Database.getEntry(t);
+                return entry == null || entry.dummy;
+            }
+        });
         for (String s : addedPokemon)
         {
             if (PokecubeMod.debug) PokecubeMod.log("reg: " + s);
             registerMob(s);
+        }
+        // Debug output list of registerd mobs, the reg: log above is for if
+        // things go wrong, to know which one it went wrong on.
+        if (PokecubeMod.debug)
+        {
+            List<String> vars = Lists.newArrayList(addedPokemon);
+            ModPokecubeML.sort(vars);
+            vars.replaceAll(new UnaryOperator<String>()
+            {
+                @Override
+                public String apply(String t)
+                {
+                    PokedexEntry entry = Database.getEntry(t);
+                    return entry.getName();
+                }
+            });
+            for (String s : vars)
+            {
+                PokecubeMod.log("No " + s + " found in " + proxy.notFound.get(s));
+            }
         }
     }
 
     @SubscribeEvent
     public void RegisterPokemobsEvent(RegisterPokemobsEvent.Post event)
     {
+        /** Cleanup modids and texture paths. */
         for (PokedexEntry e : Database.allFormes)
         {
             if (e.getBaseForme() != null && e.getModId() == null)
@@ -234,7 +292,7 @@ public class ModPokecubeML implements IMobProvider
             }
             else
             {
-                PokecubeMod.log("No XML for " + mob);
+                PokecubeMod.log(Level.WARNING, "No XML for " + mob);
             }
         }
         catch (Exception e1)
@@ -301,7 +359,8 @@ public class ModPokecubeML implements IMobProvider
                                     {
                                         PokedexEntry pEntry = Database.getEntry(xmlentry.name);
                                         if (PokecubeMod.debug) PokecubeMod.log("Adding " + pEntry);
-                                        addedPokemon.add(pEntry.getTrimmedName().toLowerCase(Locale.ENGLISH));
+                                        if (!addedPokemon.contains(pEntry.getTrimmedName()))
+                                            addedPokemon.add(pEntry.getTrimmedName());
                                     }
                                 }
                                 else if (name.equals("_moves_"))

@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 
@@ -209,7 +210,6 @@ public class RecipeHandler
         }
         String name = "pokeadvrecipes.xml";
         File temp1 = new File(CONFIGLOC + name);
-        PokecubeMod.log("Setting");
         if (!temp1.exists() || Config.instance.forceRecipes)
         {
             ArrayList<String> rows = Database.getFile("/assets/pokecube_adventures/database/" + name);
@@ -227,8 +227,7 @@ public class RecipeHandler
             }
             catch (Exception e)
             {
-                PokecubeMod.log(name + " " + n);
-                e.printStackTrace();
+                PokecubeMod.log(Level.WARNING, name + " " + n, e);
             }
         }
         name = "pokeadvrewards.xml";

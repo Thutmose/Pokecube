@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -421,7 +422,7 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     private void postInit(FMLPostInitializationEvent evt)
     {
-        PokecubeMod.log("Pokecube Core Post Init");
+        if (PokecubeMod.debug) PokecubeMod.log("Pokecube Core Post Init");
         PokecubeItems.init();
         Database.postInit();
         StarterInfo.processStarterInfo(config.defaultStarts);
@@ -455,7 +456,7 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void registerSounds(FMLPostInitializationEvent evt)
     {
-        PokecubeMod.log("Regstering Sounds");
+        if (PokecubeMod.debug) PokecubeMod.log("Regstering Sounds");
         Database.initSounds(evt);
     }
 
@@ -463,7 +464,7 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void registerMobs(FMLPreInitializationEvent evt)
     {
-        System.out.println("Regstering Mobs");
+        if (PokecubeMod.debug) PokecubeMod.log("Regstering Mobs");
         CompatWrapper.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
         CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
                 true);
@@ -588,8 +589,7 @@ public class PokecubeCore extends PokecubeMod
             }
             catch (ClassNotFoundException e)
             {
-                System.err.println("Error Making Class for  " + entry);
-                e.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error Making Class for  " + entry, e);
             }
         }
         else
@@ -616,7 +616,14 @@ public class PokecubeCore extends PokecubeMod
     {
         /** Dummy entries are not to be registered, they are just there for
          * copying values from. */
-        if (entry.dummy) { return; }
+        if (entry.dummy)
+        {
+            if (debug)
+            {
+                PokecubeMod.log("Skipping Dummy: " + entry);
+            }
+            return;
+        }
         if (pokedexmap == null)
         {
             pokedexmap = new HashMap();

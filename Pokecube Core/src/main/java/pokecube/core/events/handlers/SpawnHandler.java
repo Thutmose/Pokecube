@@ -765,7 +765,7 @@ public final class SpawnHandler
                             ExplosionCustom boom = new ExplosionCustom(world, null, location, energy).setMeteor(true);
                             String message = "Meteor at " + v + " with Direction of " + direction + " and energy of "
                                     + energy;
-                            PokecubeMod.log(message);
+                            if (PokecubeMod.debug) PokecubeMod.log(message);
                             boom.doExplosion();
                             PokecubeSerializer.getInstance().addMeteorLocation(v);
 

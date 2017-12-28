@@ -465,7 +465,7 @@ public class Database
         for (PokedexEntry e : allFormes)
         {
             if (e.getModId() == null || e.event != null) continue;
-            
+
             if (e.customSound != null) e.setSound("mobs." + Database.trim(e.customSound));
             else if (e.base) e.setSound("mobs." + e.getTrimmedName());
             else e.setSound("mobs." + e.getBaseForme().getTrimmedName());
@@ -840,7 +840,7 @@ public class Database
         for (PokedexEntry p : toRemove)
         {
             bar.step(p.getName());
-            if (p == getEntry(p.pokedexNb))
+            if (p == getEntry(p.pokedexNb) && !p.dummy)
             {
                 data.remove(p.pokedexNb);
                 baseFormes.remove(p.pokedexNb);

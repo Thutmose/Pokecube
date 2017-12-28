@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -211,8 +212,7 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
                     {
                         mobEntry = mobEntry.getBaseForme();
                     }
-                    ((ClientProxy) ModPokecubeML.proxy).reloadModel(mobEntry);
-                    for (PokedexEntry e : mobEntry.forms.values())
+                    for (PokedexEntry e : Database.getFormes(mobEntry))
                     {
                         ((ClientProxy) ModPokecubeML.proxy).reloadModel(e);
                     }

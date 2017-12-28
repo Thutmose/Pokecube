@@ -503,7 +503,7 @@ public class Database
             ModContainer mc = Loader.instance().activeModContainer();
             for (ModContainer cont : Loader.instance().getActiveModList())
             {
-                if (cont.getModId().equals("pokecube_mobs"))
+                if (cont.getModId().equals(e.getModId()))
                 {
                     Loader.instance().setActiveModContainer(cont);
                     break;

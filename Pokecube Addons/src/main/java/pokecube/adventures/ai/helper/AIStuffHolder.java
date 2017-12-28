@@ -34,11 +34,10 @@ public class AIStuffHolder implements IAIMob, ICapabilityProvider
         return capability == IAIMob.THUTMOBAI;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        return hasCapability(capability, facing) ? (T) this : null;
+        return hasCapability(capability, facing) ? IAIMob.THUTMOBAI.cast(this) : null;
     }
 
 }

@@ -26,11 +26,10 @@ public class ProviderPokemob implements ITeslaProducer, ICapabilityProvider
         return capability == TeslaHandler.TESLA_PRODUCER;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        return (capability == TeslaHandler.TESLA_PRODUCER) ? (T) this : null;
+        return (capability == TeslaHandler.TESLA_PRODUCER) ? TeslaHandler.TESLA_PRODUCER.cast(this) : null;
     }
 
     @Override

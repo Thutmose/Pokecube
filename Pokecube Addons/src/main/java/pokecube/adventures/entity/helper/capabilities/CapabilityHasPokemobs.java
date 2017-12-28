@@ -729,11 +729,10 @@ public class CapabilityHasPokemobs
             return capability == HASPOKEMOBS_CAP;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            return hasCapability(capability, facing) ? (T) this : null;
+            return hasCapability(capability, facing) ? HASPOKEMOBS_CAP.cast(this) : null;
         }
 
         @Override

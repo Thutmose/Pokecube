@@ -27,10 +27,9 @@ public class ProviderCloner implements ITeslaConsumer, ICapabilityProvider
         return capability == TeslaHandler.TESLA_CONSUMER;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        return (capability == TeslaHandler.TESLA_CONSUMER) ? (T) this : null;
+        return (capability == TeslaHandler.TESLA_CONSUMER) ? TeslaHandler.TESLA_CONSUMER.cast(this) : null;
     }
 }

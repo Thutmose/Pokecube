@@ -163,11 +163,10 @@ public class EnergyHandler
             return capability == CapabilityEnergy.ENERGY;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            return (capability == CapabilityEnergy.ENERGY) ? (T) this : null;
+            return (capability == CapabilityEnergy.ENERGY) ? CapabilityEnergy.ENERGY.cast(this) : null;
         }
 
         @Override
@@ -206,11 +205,10 @@ public class EnergyHandler
             return capability == CapabilityEnergy.ENERGY;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            return (capability == CapabilityEnergy.ENERGY) ? (T) this : null;
+            return (capability == CapabilityEnergy.ENERGY) ? CapabilityEnergy.ENERGY.cast(this) : null;
         }
     }
 
@@ -242,11 +240,10 @@ public class EnergyHandler
             return capability == CapabilityEnergy.ENERGY;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            return (capability == CapabilityEnergy.ENERGY) ? (T) this : null;
+            return (capability == CapabilityEnergy.ENERGY) ? CapabilityEnergy.ENERGY.cast(this) : null;
         }
     }
 
@@ -278,11 +275,10 @@ public class EnergyHandler
             return capability == CapabilityEnergy.ENERGY;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            return (capability == CapabilityEnergy.ENERGY) ? (T) this : null;
+            return (capability == CapabilityEnergy.ENERGY) ? CapabilityEnergy.ENERGY.cast(this) : null;
         }
     }
 
@@ -302,11 +298,10 @@ public class EnergyHandler
             return capability == CapabilityEnergy.ENERGY;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            return (capability == CapabilityEnergy.ENERGY) ? (T) this : null;
+            return (capability == CapabilityEnergy.ENERGY) ? CapabilityEnergy.ENERGY.cast(this) : null;
         }
 
         @Override

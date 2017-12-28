@@ -151,11 +151,10 @@ public class CapabilityNPCMessages
             return capability == MESSAGES_CAP;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            return hasCapability(capability, facing) ? (T) this : null;
+            return hasCapability(capability, facing) ? MESSAGES_CAP.cast(this) : null;
         }
 
         @Override

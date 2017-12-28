@@ -429,21 +429,11 @@ public class CommonProxy implements IGuiHandler
             return;
         }
         ArrayList<String> entries = Lists.newArrayList();
-        for (PokedexEntry entry : Database.allFormes)
+        for (PokedexEntry entry : Database.getSortedFormes())
         {
             String name = entry.getTrimmedName();
             entries.add(name);
         }
-        Collections.sort(entries, new Comparator<String>()
-        {
-            @Override
-            public int compare(String o1, String o2)
-            {
-                PokedexEntry e1 = Database.getEntry(o1);
-                PokedexEntry e2 = Database.getEntry(o2);
-                return Database.COMPARATOR.compare(e1, e2);
-            }
-        });
         String[] entryArr = entries.toArray(new String[0]);
         boolean[] has = new boolean[entryArr.length];
         for (int i = 0; i < has.length; i++)

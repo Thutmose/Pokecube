@@ -1005,7 +1005,7 @@ public class GuiPokedex extends GuiScreen
                 PokedexEntry entry = Database.getEntry(pokemobTextField.getText());
                 if (entry == null)
                 {
-                    for (PokedexEntry e : Database.allFormes)
+                    for (PokedexEntry e : Database.getSortedFormes())
                     {
                         String translated = I18n.format(e.getUnlocalizedName());
                         if (translated.equalsIgnoreCase(pokemobTextField.getText()))

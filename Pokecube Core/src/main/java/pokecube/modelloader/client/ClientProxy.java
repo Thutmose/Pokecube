@@ -77,8 +77,8 @@ public class ClientProxy extends CommonProxy
         {
             bar.step(mod);
             IMobProvider provider = mobProviders.get(mod);
-            ProgressBar bar2 = ProgressManager.push("Checking Pokemob Models", Database.allFormes.size());
-            for (PokedexEntry p : Database.allFormes)
+            ProgressBar bar2 = ProgressManager.push("Checking Pokemob Models", Database.getSortedFormes().size());
+            for (PokedexEntry p : Database.getSortedFormes())
             {
                 bar2.step(p.getName());
                 String name = p.getTrimmedName().toLowerCase(Locale.ENGLISH);
@@ -175,8 +175,8 @@ public class ClientProxy extends CommonProxy
 
         if (AnimationLoader.loaded)
         {
-            bar = ProgressManager.push("Preloading Models", Database.allFormes.size());
-            for (PokedexEntry entry : Database.allFormes)
+            bar = ProgressManager.push("Preloading Models", Database.getSortedFormes().size());
+            for (PokedexEntry entry : Database.getSortedFormes())
             {
                 if ((ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
                 {

@@ -213,7 +213,7 @@ public class JERCompat
     private void registerMobs()
     {
         System.out.println("Registering Mobs for JER");
-        for (PokedexEntry e : Database.allFormes)
+        for (PokedexEntry e : Database.getSortedFormes())
         {
             LootDrop[] drops = getDrops(e);
             if (drops == null) continue;

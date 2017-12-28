@@ -62,11 +62,12 @@ public class JERCompat
                                                                       entity.prevRotationYawHead = entity.rotationYawHead;
                                                                       entity.prevRotationPitch = entity.rotationPitch;
                                                                       float size = Math.max(
-                                                                              pokemob.getPokedexEntry().width * mobScale,
+                                                                              pokemob.getPokedexEntry().width
+                                                                                      * mobScale,
                                                                               Math.max(
                                                                                       pokemob.getPokedexEntry().height
                                                                                               * mobScale,
-                                                                                              pokemob.getPokedexEntry().length
+                                                                                      pokemob.getPokedexEntry().length
                                                                                               * mobScale));
                                                                       float zoom = (float) (1f / Math.pow(size, 0.7));
                                                                       renderInfo.scale = zoom;
@@ -222,8 +223,7 @@ public class JERCompat
             pokemob.setShiny(false);
             pokemob.setSize(1);
             JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
-            JERAPI.getMobRegistry()
-                    .registerRenderHook(PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);
+            JERAPI.getMobRegistry().registerRenderHook(PokecubeMod.core.getEntityClassForEntry(e), POKEMOB);
         }
     }
 

@@ -57,17 +57,7 @@ public abstract class CommonProxy
         return FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(player);
     }
 
-    public abstract void registerPokemobModel(int nb, ModelBase model, Object mod);
-
     public abstract void registerPokemobModel(String name, ModelBase model, Object mod);
-
-    /** Used to register a custom renderer for the pokemob
-     * 
-     * @param nb
-     *            - the pokedex number
-     * @param renderer
-     *            - the renderer */
-    public abstract void registerPokemobRenderer(int nb, IRenderFactory renderer, Object mod);
 
     public abstract void registerPokemobRenderer(String name, IRenderFactory renderer, Object mod);;
 }

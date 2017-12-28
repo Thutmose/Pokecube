@@ -185,14 +185,15 @@ public class AIMate extends AIBase
             pokemob.resetLoveStatus();
             return null;
         }
+        boolean gendered = pokemob.getSexe() == IPokemob.MALE || pokemob.getSexe() == IPokemob.FEMALE;
         for (int i = 0; i < targetMates.size(); i++)
         {
             IPokemob entityanimal = CapabilityPokemob.getPokemobFor(targetMates.get(i));
             EntityAnimal animal = (EntityAnimal) targetMates.get(i);
+            if (gendered && !transforms && entityanimal.getSexe() != pokemob.getSexe()) continue;
             if (entityanimal == this || entityanimal.getPokemonAIState(IMoveConstants.TAMED) != pokemob
                     .getPokemonAIState(IMoveConstants.TAMED) || !entityanimal.getPokedexEntry().breeds)
                 continue;
-
             boolean otherTransforms = false;
             for (String s : entityanimal.getMoves())
             {

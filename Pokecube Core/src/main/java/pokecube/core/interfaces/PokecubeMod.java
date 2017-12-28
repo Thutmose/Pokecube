@@ -198,7 +198,7 @@ public abstract class PokecubeMod
      *            the pokedex number
      * @return the {@link Class} of the pokemob */
     @SuppressWarnings("rawtypes")
-    public abstract Class getEntityClassFromPokedexNumber(int pokedexNb);
+    public abstract Class getEntityClassForEntry(PokedexEntry entry);
 
     public abstract IEntityProvider getEntityProvider();
 

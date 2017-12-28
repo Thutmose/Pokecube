@@ -95,7 +95,7 @@ public class JEICompat implements IModPlugin
         registry.addRecipeClickArea(GuiCloner.class, 88, 32, 28, 23, REANIMATOR);
 
         List<PokemobRecipe> pokemobEvolRecipes = Lists.newArrayList();
-        for (PokedexEntry e : Database.allFormes)
+        for (PokedexEntry e : Database.getSortedFormes())
         {
             if (e.evolutions != null)
             {
@@ -113,7 +113,7 @@ public class JEICompat implements IModPlugin
         {
             interactionLogic = PokedexEntry.class.getDeclaredField("interactionLogic");
             interactionLogic.setAccessible(true);
-            for (PokedexEntry e : Database.allFormes)
+            for (PokedexEntry e : Database.getSortedFormes())
             {
                 try
                 {
@@ -203,7 +203,7 @@ public class JEICompat implements IModPlugin
     {
         System.out.println("JEI INIT INGREDIENTS");
         Set<PokedexEntry> relevant = Sets.newHashSet();
-        for (PokedexEntry e : Database.allFormes)
+        for (PokedexEntry e : Database.getSortedFormes())
         {
             if (e.evolutions != null && !e.evolutions.isEmpty())
             {
@@ -229,7 +229,7 @@ public class JEICompat implements IModPlugin
         {
             interactionLogic = PokedexEntry.class.getDeclaredField("interactionLogic");
             interactionLogic.setAccessible(true);
-            for (PokedexEntry e : Database.allFormes)
+            for (PokedexEntry e : Database.getSortedFormes())
             {
                 try
                 {

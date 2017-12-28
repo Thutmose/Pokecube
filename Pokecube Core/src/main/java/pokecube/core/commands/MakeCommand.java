@@ -86,7 +86,7 @@ public class MakeCommand extends CommandBase
                                     }
                                 }
                             }
-                            ArrayList<PokedexEntry> entries = Lists.newArrayList(Database.allFormes);
+                            ArrayList<PokedexEntry> entries = Lists.newArrayList(Database.getSortedFormes());
                             Collections.shuffle(entries);
                             Iterator<PokedexEntry> iterator = entries.iterator();
                             if (name.equalsIgnoreCase("random"))
@@ -186,7 +186,7 @@ public class MakeCommand extends CommandBase
         if (args.length == 1)
         {
             String text = args[0];
-            for (PokedexEntry entry : Database.allFormes)
+            for (PokedexEntry entry : Database.getSortedFormes())
             {
                 String check = entry.getName().toLowerCase(java.util.Locale.ENGLISH);
                 if (check.startsWith(text.toLowerCase(java.util.Locale.ENGLISH)))

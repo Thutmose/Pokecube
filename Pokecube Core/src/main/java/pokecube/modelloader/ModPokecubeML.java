@@ -174,8 +174,7 @@ public class ModPokecubeML implements IMobProvider
         proxy.searchModels();
         if (PokecubeMod.debug)
         {
-            List<PokedexEntry> all = Lists.newArrayList(Database.allFormes);
-            all.sort(Database.COMPARATOR);
+            List<PokedexEntry> all = Database.getSortedFormes();
             StringBuilder builder = new StringBuilder("All Pokedex Entries:");
             for (PokedexEntry e : all)
             {
@@ -271,7 +270,7 @@ public class ModPokecubeML implements IMobProvider
     public void RegisterPokemobsEvent(RegisterPokemobsEvent.Post event)
     {
         /** Cleanup modids and texture paths. */
-        for (PokedexEntry e : Database.allFormes)
+        for (PokedexEntry e : Database.getSortedFormes())
         {
             if (e.getBaseForme() != null && e.getModId() == null)
             {

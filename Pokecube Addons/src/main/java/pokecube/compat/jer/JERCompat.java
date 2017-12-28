@@ -217,7 +217,7 @@ public class JERCompat
     private void registerMobs()
     {
         PokecubeMod.log("Registering Mobs for JER");
-        for (PokedexEntry e : Database.allFormes)
+        for (PokedexEntry e : Database.getSortedFormes())
         {
             Entity poke = PokecubeMod.core.createPokemob(e, PokecubeCore.proxy.getWorld());
             if (poke == null) continue;

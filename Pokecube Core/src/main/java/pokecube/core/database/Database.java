@@ -140,7 +140,8 @@ public class Database
     public static List<ItemStack>                           starterPack      = Lists.newArrayList();
     public static Int2ObjectOpenHashMap<PokedexEntry>       data             = new Int2ObjectOpenHashMap<>();
     public static HashMap<String, PokedexEntry>             data2            = new HashMap<String, PokedexEntry>();
-    public static HashSet<PokedexEntry>                     allFormes        = new HashSet<PokedexEntry>();
+    static HashSet<PokedexEntry>                            allFormes        = new HashSet<PokedexEntry>();
+    private static List<PokedexEntry>                       sortedFormes     = Lists.newArrayList();
     public static HashMap<Integer, PokedexEntry>            baseFormes       = new HashMap<Integer, PokedexEntry>();
     public static HashMap<String, ArrayList<PokedexEntry>>  mobReplacements  = new HashMap<String, ArrayList<PokedexEntry>>();
     public static Int2ObjectOpenHashMap<List<PokedexEntry>> formLists        = new Int2ObjectOpenHashMap<>();
@@ -195,6 +196,18 @@ public class Database
         missingno.stats[5] = 29;
         missingno.addMoves(Lists.newArrayList(), Maps.newHashMap());
         missingno.addMove("skyattack");
+    }
+    static int lastCount = -1;
+
+    public static List<PokedexEntry> getSortedFormes()
+    {
+        if (lastCount != sortedFormes.size())
+        {
+            sortedFormes.clear();
+            sortedFormes.addAll(allFormes);
+            sortedFormes.sort(COMPARATOR);
+        }
+        return sortedFormes;
     }
 
     /** These are used for config added databasea <br>
@@ -323,7 +336,9 @@ public class Database
             data2.put(name, var);
             return var;
         }
-        for (PokedexEntry e : allFormes)
+        List<PokedexEntry> toProcess = Lists.newArrayList(allFormes);
+        toProcess.sort(COMPARATOR);
+        for (PokedexEntry e : toProcess)
         {
             String s = e.getTrimmedName();
             if (s.equals(newName))
@@ -491,7 +506,9 @@ public class Database
 
     public static void initSounds(Object registry)
     {
-        for (PokedexEntry e : allFormes)
+        List<PokedexEntry> toProcess = Lists.newArrayList(allFormes);
+        toProcess.sort(COMPARATOR);
+        for (PokedexEntry e : toProcess)
         {
             if (e.getModId() == null || e.event != null) continue;
 

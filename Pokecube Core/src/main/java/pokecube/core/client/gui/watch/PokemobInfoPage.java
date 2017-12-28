@@ -200,7 +200,7 @@ public class PokemobInfoPage extends PageWithSubPages
                 String text = search.getText();
                 text = Database.trim(text);
                 List<String> ret = new ArrayList<String>();
-                for (PokedexEntry entry : Database.allFormes)
+                for (PokedexEntry entry : Database.getSortedFormes())
                 {
                     String check = entry.getTrimmedName();
                     if (check.startsWith(text))
@@ -248,7 +248,7 @@ public class PokemobInfoPage extends PageWithSubPages
                 // search.
                 if (newEntry == null)
                 {
-                    for (PokedexEntry e : Database.allFormes)
+                    for (PokedexEntry e : Database.getSortedFormes())
                     {
                         String translated = I18n.format(e.getUnlocalizedName());
                         if (translated.equalsIgnoreCase(search.getText()))

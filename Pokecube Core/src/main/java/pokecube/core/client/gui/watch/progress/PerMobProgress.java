@@ -111,7 +111,7 @@ public class PerMobProgress extends Progress
         {
             String text = this.text.getText();
             List<String> ret = new ArrayList<String>();
-            for (PokedexEntry entry : Database.allFormes)
+            for (PokedexEntry entry : Database.getSortedFormes())
             {
                 String check = entry.getName().toLowerCase(java.util.Locale.ENGLISH);
                 if (check.startsWith(text.toLowerCase(java.util.Locale.ENGLISH)))

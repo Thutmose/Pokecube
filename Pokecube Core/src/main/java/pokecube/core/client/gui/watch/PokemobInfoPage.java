@@ -94,12 +94,14 @@ public class PokemobInfoPage extends PageWithSubPages
         String prev = "<";
         this.watch.getButtons().add(new PageButton(watch.getButtons().size(), x + 64, y - 70, 12, 12, next, this));
         this.watch.getButtons().add(new PageButton(watch.getButtons().size(), x - 76, y - 70, 12, 12, prev, this));
-        PageButton buttonNext = new PageButton(watch.getButtons().size(), x - 46, y + 4, 12, 12, next, this);
-        PageButton buttonPrev = new PageButton(watch.getButtons().size() + 1, x - 76, y + 4, 12, 12, prev, this);
-        PageButton formCycle = new PageButton(watch.getButtons().size() + 2, x - 65, y + 4, 20, 12, "-", this);
+        PageButton buttonNext = new PageButton(watch.getButtons().size(), x - 46, y + 4, 12, 20, next, this);
+        PageButton buttonPrev = new PageButton(watch.getButtons().size() + 1, x - 76, y + 4, 12, 20, prev, this);
+        PageButton formCycle = new PageButton(watch.getButtons().size() + 2, x - 65, y + 4, 20, 9, "\u2500", this);
+        PageButton playSound = new PageButton(watch.getButtons().size() + 3, x - 65, y + 13, 20, 10, "\u266B", this);
         this.watch.getButtons().add(buttonNext);
         this.watch.getButtons().add(buttonPrev);
         this.watch.getButtons().add(formCycle);
+        this.watch.getButtons().add(playSound);
     }
 
     @Override
@@ -140,6 +142,10 @@ public class PokemobInfoPage extends PageWithSubPages
                 entry = forms.get((index + 1) % forms.size());
                 initPages(pokemob.megaEvolve(entry));
             }
+        }
+        else if (button.id == 8)
+        {
+            watch.player.playSound(pokemob.getSound(), 0.5f, 1.0F);
         }
         super.actionPerformed(button);
     }
@@ -192,11 +198,12 @@ public class PokemobInfoPage extends PageWithSubPages
             if (keyCode == Keyboard.KEY_TAB)
             {
                 String text = search.getText();
+                text = Database.trim(text);
                 List<String> ret = new ArrayList<String>();
                 for (PokedexEntry entry : Database.allFormes)
                 {
-                    String check = entry.getName().toLowerCase(java.util.Locale.ENGLISH);
-                    if (check.startsWith(text.toLowerCase(java.util.Locale.ENGLISH)))
+                    String check = entry.getTrimmedName();
+                    if (check.startsWith(text))
                     {
                         String name = entry.getName();
                         if (name.contains(" "))
@@ -237,6 +244,26 @@ public class PokemobInfoPage extends PageWithSubPages
             {
                 PokedexEntry entry = pokemob.getPokedexEntry();
                 PokedexEntry newEntry = Database.getEntry(search.getText());
+                // Search to see if maybe it was a translated name put into the
+                // search.
+                if (newEntry == null)
+                {
+                    for (PokedexEntry e : Database.allFormes)
+                    {
+                        String translated = I18n.format(e.getUnlocalizedName());
+                        if (translated.equalsIgnoreCase(search.getText()))
+                        {
+                            Database.data2.put(translated, e);
+                            entry = e;
+                            break;
+                        }
+                    }
+                    // If the pokedex entry is not actually registered, use
+                    // old
+                    // entry.
+                    if (Pokedex.getInstance().getIndex(entry) == null) entry = null;
+                }
+
                 if (newEntry != null)
                 {
                     search.setText(newEntry.getName());

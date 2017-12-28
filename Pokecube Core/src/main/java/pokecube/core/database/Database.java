@@ -46,7 +46,6 @@ import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
-import pokecube.core.database.moves.MoveEntryLoader;
 import pokecube.core.database.moves.MovesParser;
 import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.database.recipes.XMLRecipeHandler;
@@ -485,11 +484,6 @@ public class Database
             if (SoundEvent.REGISTRY.containsKey(e.sound)) continue;
             if (!SoundEvent.REGISTRY.containsKey(e.sound)) GameData.register_impl(e.event);
         }
-    }
-
-    public static void loadMoves(String file)
-    {
-        MoveEntryLoader.loadMoves(file);
     }
 
     private static void loadSpawns()

@@ -166,11 +166,10 @@ public class GeneticsManager
             return capability == IMobGenetics.GENETICS_CAP;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            if (hasCapability(capability, facing)) return (T) genetics;
+            if (hasCapability(capability, facing)) return IMobGenetics.GENETICS_CAP.cast(genetics);
             return null;
         }
 

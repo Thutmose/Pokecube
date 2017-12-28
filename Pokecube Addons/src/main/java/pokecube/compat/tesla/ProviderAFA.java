@@ -27,10 +27,9 @@ public class ProviderAFA implements ITeslaConsumer, ICapabilityProvider
         return facing == EnumFacing.DOWN && capability == TeslaHandler.TESLA_CONSUMER;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        return (facing == EnumFacing.DOWN && capability == TeslaHandler.TESLA_CONSUMER) ? (T) this : null;
+        return hasCapability(capability, facing) ? TeslaHandler.TESLA_CONSUMER.cast(this) : null;
     }
 }

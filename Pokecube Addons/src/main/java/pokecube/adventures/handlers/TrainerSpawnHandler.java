@@ -114,12 +114,10 @@ public class TrainerSpawnHandler
                     EventsHandler.storage.readNBT(EventsHandler.GUARDAI_CAP, this, null, nbt);
                 }
 
-                @SuppressWarnings("unchecked") // There isnt anything sane we
-                                               // can do about this.
                 @Override
                 public <T> T getCapability(Capability<T> capability, EnumFacing facing)
                 {
-                    if (EventsHandler.GUARDAI_CAP != null && capability == EventsHandler.GUARDAI_CAP) return (T) this;
+                    if (hasCapability(capability, facing)) return EventsHandler.GUARDAI_CAP.cast(this);
                     return null;
                 }
 

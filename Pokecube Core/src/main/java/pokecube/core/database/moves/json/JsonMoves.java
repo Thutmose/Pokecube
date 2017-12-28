@@ -247,6 +247,33 @@ public class JsonMoves
             FileWriter writer = new FileWriter(animationFile);
             writer.append(output);
             writer.close();
+
+            MovesJson cleaned = new MovesJson();
+            for (MoveJsonEntry entry : moves.moves)
+            {
+                MoveJsonEntry newEntry = new MoveJsonEntry();
+                for (Field f : MoveJsonEntry.class.getFields())
+                {
+                    if (!f.getName().equals("animations"))
+                    {
+                        try
+                        {
+                            f.set(newEntry, f.get(entry));
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                cleaned.moves.add(newEntry);
+            }
+
+            output = prettyGson.toJson(cleaned);
+            writer = new FileWriter(movesFile);
+            writer.append(output);
+            writer.close();
+
         }
         catch (Exception e)
         {

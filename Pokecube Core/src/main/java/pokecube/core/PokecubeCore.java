@@ -274,8 +274,7 @@ public class PokecubeCore extends PokecubeMod
         }
         if (entity == null)
         {
-            System.err.println("Problem with entity with: " + entity);
-            System.err.println(clazz + " " + entry);
+            log(Level.SEVERE, "Problem with entity with: " + entity + " " + entry);
         }
 
         if (entity != null)
@@ -283,7 +282,7 @@ public class PokecubeCore extends PokecubeMod
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
             if (pokemob.getPokedexEntry() != entry)
             {
-                System.out.println(entry + " " + pokemob.getPokedexEntry() + " " + clazz);
+                if (debug) log(entry + " " + pokemob.getPokedexEntry() + " " + clazz);
                 pokemob = pokemob.setPokedexEntry(entry);
                 entity = pokemob.getEntity();
             }
@@ -586,6 +585,7 @@ public class PokecubeCore extends PokecubeMod
             {
                 c = loader.generatePokemobClass(entry);
                 registerPokemonByClass(c, createEgg, mod, entry);
+                if (debug) log("Generated class " + c + " for " + entry);
             }
             catch (ClassNotFoundException e)
             {
@@ -595,6 +595,7 @@ public class PokecubeCore extends PokecubeMod
         else
         {
             registerPokemonByClass(c, createEgg, mod, entry);
+            if (debug) log("Loaded class " + c + " for " + entry);
         }
     }
 
@@ -638,7 +639,7 @@ public class PokecubeCore extends PokecubeMod
                 // directly.
                 if (pokedexmap.containsKey(entry))
                 {
-                    PokecubeMod.log("Error: Tried to register a second " + entry);
+                    PokecubeMod.log("Error: " + mod + " Tried to register a second " + entry);
                     return;
                 }
 

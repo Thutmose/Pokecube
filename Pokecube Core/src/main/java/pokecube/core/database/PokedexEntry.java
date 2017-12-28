@@ -643,7 +643,17 @@ public class PokedexEntry
     /** Times not included here the pokemob will go to sleep when idle. */
     @CopyToGender
     protected List<TimePeriod>                  activeTimes      = new ArrayList<TimePeriod>();
+    /** if True, this is considered the "main" form for the type, this is what
+     * is returned from any number based lookups. */
     public boolean                              base             = false;
+    /** If True, this form won't be registered, this is used for mobs with a
+     * single base template form, and then a bunch of alternate ones for things
+     * to be copied from. */
+    public boolean                              dummy            = false;
+    /** If the forme is supposed to have a custom sound, rather than using base,
+     * it will be set to this. */
+    protected String                            customSound      = null;
+
     @CopyToGender
     private PokedexEntry                        baseForme        = null;
     /** Initial Happiness of the pokemob */

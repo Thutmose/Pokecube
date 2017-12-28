@@ -457,6 +457,8 @@ public class PokedexEntryLoader
         @XmlAttribute
         public Boolean   breed      = true;
         @XmlAttribute
+        public Boolean   dummy      = true;
+        @XmlAttribute
         public Boolean   starter    = false;
         @XmlAttribute
         public Boolean   ridable    = true;
@@ -468,6 +470,8 @@ public class PokedexEntryLoader
         public String    gender     = "";
         @XmlAttribute
         public String    genderBase = "";
+        @XmlAttribute
+        public String    sound      = null;
         @XmlElement(name = "STATS")
         public StatsNode stats;
         @XmlElement(name = "MOVES")
@@ -1009,7 +1013,7 @@ public class PokedexEntryLoader
 
     public static XMLDatabase initDatabase(File file) throws Exception
     {
-        PokecubeMod.log("Initializing Database: " + file);
+        if (PokecubeMod.debug) PokecubeMod.log("Initializing Database: " + file);
         if (file.getName().endsWith(".json"))
         {
             try
@@ -1500,7 +1504,7 @@ public class PokedexEntryLoader
                     {
                         stack = Tools.getStack(rule.item.values);
                     }
-                    if (rule.item != null) PokecubeMod.log(stack + " " + rule.item.values);
+                    if (rule.item != null) if (PokecubeMod.debug) PokecubeMod.log(stack + " " + rule.item.values);
                     if ((move == null || move.isEmpty()) && !CompatWrapper.isValid(stack)
                             && (ability == null || ability.isEmpty()))
                     {
@@ -1560,6 +1564,7 @@ public class PokedexEntryLoader
     {
         String name = xmlEntry.name;
         PokedexEntry entry = Database.getEntry(name);
+        if (xmlEntry.sound != null) entry.customSound = xmlEntry.sound;
         StatsNode stats = xmlEntry.stats;
         Moves moves = xmlEntry.moves;
         if (stats != null) try

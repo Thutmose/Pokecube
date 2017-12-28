@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraft.world.IWorldEventListener;
 import pokecube.core.interfaces.IMoveAnimation;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.AnimPreset;
 import pokecube.core.moves.animations.MoveAnimationBase;
@@ -15,13 +14,6 @@ public class ParticlesOnTarget extends MoveAnimationBase
 {
     public ParticlesOnTarget()
     {
-    }
-
-    @Override
-    public void initColour(long time, float partialTicks, Move_Base move)
-    {
-        if (customColour) return;
-        rgba = getColourFromMove(move, 255);
     }
 
     @Override

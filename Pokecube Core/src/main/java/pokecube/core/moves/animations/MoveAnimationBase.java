@@ -1,13 +1,16 @@
 package pokecube.core.moves.animations;
 
+import java.util.Random;
+
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemDye;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
 
 public abstract class MoveAnimationBase implements IMoveAnimation
 {
     protected String  particle;
-    protected int     rgba;
+    protected int     rgba            = 0xFFFFFFFF;
     protected int     duration        = 5;
     protected int     applicationTick = -1;
     protected int     particleLife    = 5;
@@ -42,7 +45,31 @@ public abstract class MoveAnimationBase implements IMoveAnimation
         return duration;
     }
 
-    public abstract void initColour(long time, float partialTicks, Move_Base move);
+    public void initColour(long time, float partialTicks, Move_Base move)
+    {
+        if (customColour) return;
+        if (particle.equals("airbubble"))
+        {
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+        }
+        else if (particle.equals("aurora"))
+        {
+            int rand = ItemDye.DYE_COLORS[new Random(time / 10).nextInt(ItemDye.DYE_COLORS.length)];
+            rgba = 0x61000000 + rand;
+        }
+        else if (particle.equals("iceshard"))
+        {
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+        }
+        else if (particle.equals("spark"))
+        {
+            rgba = 0x78000000 + EnumDyeColor.YELLOW.getMapColor().colorValue;
+        }
+        else
+        {
+            rgba = getColourFromMove(move, 255);
+        }
+    }
 
     @Override
     public void setDuration(int duration)
@@ -81,7 +108,18 @@ public abstract class MoveAnimationBase implements IMoveAnimation
                 }
             }
         }
-        if (colour == null) return;
+        if (colour == null)
+        {
+            try
+            {
+                rgba = Integer.parseInt(val);
+            }
+            catch (NumberFormatException e)
+            {
+
+            }
+            return;
+        }
         rgba = colour.getMapColor().colorValue + 0x01000000 * alpha;
         customColour = true;
     }

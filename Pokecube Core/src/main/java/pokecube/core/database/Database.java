@@ -16,6 +16,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -133,47 +135,48 @@ public class Database
         POKEMON, MOVES
     }
 
-    public static boolean                                  FORCECOPY        = true;
-    public static boolean                                  FORCECOPYRECIPES = true;
-    public static boolean                                  FORCECOPYREWARDS = true;
-    public static List<ItemStack>                          starterPack      = Lists.newArrayList();
-    public static Int2ObjectOpenHashMap<PokedexEntry>      data             = new Int2ObjectOpenHashMap<>();
-    public static HashMap<String, PokedexEntry>            data2            = new HashMap<String, PokedexEntry>();
-    public static HashSet<PokedexEntry>                    allFormes        = new HashSet<PokedexEntry>();
-    public static HashMap<Integer, PokedexEntry>           baseFormes       = new HashMap<Integer, PokedexEntry>();
-    public static HashMap<String, ArrayList<PokedexEntry>> mobReplacements  = new HashMap<String, ArrayList<PokedexEntry>>();
+    public static boolean                                   FORCECOPY        = true;
+    public static boolean                                   FORCECOPYRECIPES = true;
+    public static boolean                                   FORCECOPYREWARDS = true;
+    public static List<ItemStack>                           starterPack      = Lists.newArrayList();
+    public static Int2ObjectOpenHashMap<PokedexEntry>       data             = new Int2ObjectOpenHashMap<>();
+    public static HashMap<String, PokedexEntry>             data2            = new HashMap<String, PokedexEntry>();
+    public static HashSet<PokedexEntry>                     allFormes        = new HashSet<PokedexEntry>();
+    public static HashMap<Integer, PokedexEntry>            baseFormes       = new HashMap<Integer, PokedexEntry>();
+    public static HashMap<String, ArrayList<PokedexEntry>>  mobReplacements  = new HashMap<String, ArrayList<PokedexEntry>>();
+    public static Int2ObjectOpenHashMap<List<PokedexEntry>> formLists        = new Int2ObjectOpenHashMap<>();
 
-    public static List<PokedexEntry>                       spawnables       = new ArrayList<PokedexEntry>();
-    public static final String                             DBLOCATION       = "/assets/pokecube/database/";
+    public static List<PokedexEntry>                        spawnables       = new ArrayList<PokedexEntry>();
+    public static final String                              DBLOCATION       = "/assets/pokecube/database/";
 
-    public static final String                             CONFIGLOC        = "." + File.separator + "config"
+    public static final String                              CONFIGLOC        = "." + File.separator + "config"
             + File.separator + "pokecube" + File.separator + "database" + File.separator;
 
-    static HashSet<String>                                 defaultDatabases = Sets.newHashSet();
-    private static HashSet<String>                         spawnDatabases   = Sets.newHashSet();
-    private static Set<String>                             dropDatabases    = Sets.newHashSet();
-    private static Set<String>                             heldDatabases    = Sets.newHashSet();
+    static HashSet<String>                                  defaultDatabases = Sets.newHashSet();
+    private static HashSet<String>                          spawnDatabases   = Sets.newHashSet();
+    private static Set<String>                              dropDatabases    = Sets.newHashSet();
+    private static Set<String>                              heldDatabases    = Sets.newHashSet();
 
-    public static final PokedexEntry                       missingno        = new PokedexEntry(0, "missingno");
+    public static final PokedexEntry                        missingno        = new PokedexEntry(0, "missingno");
 
-    public static final Comparator<PokedexEntry>           COMPARATOR       = new Comparator<PokedexEntry>()
-                                                                            {
-                                                                                @Override
-                                                                                public int compare(PokedexEntry o1,
-                                                                                        PokedexEntry o2)
-                                                                                {
-                                                                                    int diff = o1.getPokedexNb()
-                                                                                            - o2.getPokedexNb();
-                                                                                    if (diff == 0)
-                                                                                    {
-                                                                                        if (o1.base && !o2.base)
-                                                                                            diff = -1;
-                                                                                        else if (o2.base && !o1.base)
-                                                                                            diff = 1;
-                                                                                    }
-                                                                                    return diff;
-                                                                                }
-                                                                            };
+    public static final Comparator<PokedexEntry>            COMPARATOR       = new Comparator<PokedexEntry>()
+                                                                             {
+                                                                                 @Override
+                                                                                 public int compare(PokedexEntry o1,
+                                                                                         PokedexEntry o2)
+                                                                                 {
+                                                                                     int diff = o1.getPokedexNb()
+                                                                                             - o2.getPokedexNb();
+                                                                                     if (diff == 0)
+                                                                                     {
+                                                                                         if (o1.base && !o2.base)
+                                                                                             diff = -1;
+                                                                                         else if (o2.base && !o1.base)
+                                                                                             diff = 1;
+                                                                                     }
+                                                                                     return diff;
+                                                                                 }
+                                                                             };
 
     // Init some stuff for the missignno entry.
     static
@@ -231,23 +234,19 @@ public class Database
         heldDatabases.add(file);
     }
 
-    public static boolean compare(String a, String b)
+    public static List<PokedexEntry> getFormes(PokedexEntry variant)
     {
-        boolean ret = false;
-        ret = a.toLowerCase(java.util.Locale.ENGLISH).replaceAll("(\\W)", "")
-                .equals(b.toLowerCase(java.util.Locale.ENGLISH).replaceAll("(\\W)", ""));
-        return ret;
+        return getFormes(variant.getPokedexNb());
+    }
+
+    public static List<PokedexEntry> getFormes(int number)
+    {
+        return formLists.get(number);
     }
 
     public static String convertMoveName(String moveNameFromBulbapedia)
     {
-        String ret = "";
-        String name = moveNameFromBulbapedia.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "");
-        String[] args = name.split(" ");
-        for (int i = 0; i < args.length; i++)
-        {
-            ret += args[i];
-        }
+        String ret = trim(moveNameFromBulbapedia);
         return ret;
     }
 
@@ -301,18 +300,29 @@ public class Database
         return mob.getPokedexEntry();
     }
 
+    static String trim(String name)
+    {
+        // English locale to prevent issues with turkish letters.
+        name = name.toLowerCase(Locale.ENGLISH);
+        // Replace all non word chars.
+        name = name.replaceAll("([\\W])", "");
+        return name;
+    }
+
     public static PokedexEntry getEntry(String name)
     {
         PokedexEntry ret = null;
         if (name == null) return null;
         if (name.trim().isEmpty()) return null;
         if (data2.containsKey(name)) return data2.get(name);
+        String newName = trim(name);
         for (PokedexEntry e : allFormes)
         {
-            String s = e.getName();
-            if (compare(s, name))
+            String s = e.getTrimmedName();
+            if (s.equals(newName))
             {
                 data2.put(name, e);
+                data2.put(newName, e);
                 data2.put(s, e);
                 return e;
             }
@@ -448,7 +458,7 @@ public class Database
             // bad.");
         }
         PokedexEntryLoader.writeCompoundDatabase();
-
+        initFormLists();
         PokecubeMod.log("Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");
     }
 
@@ -495,6 +505,124 @@ public class Database
         for (String s : heldDatabases)
         {
             if (s != null) loadHeld(s);
+        }
+    }
+
+    private static void initFormLists()
+    {
+        ProgressBar bar = ProgressManager.push("Form Processing", baseFormes.size());
+        for (Map.Entry<Integer, PokedexEntry> vars : baseFormes.entrySet())
+        {
+            PokedexEntry entry = vars.getValue();
+            bar.step(entry.getName());
+            List<PokedexEntry> formes = Lists.newArrayList();
+            Set<PokedexEntry> set = Sets.newHashSet();
+            set.addAll(entry.forms.values());
+            set.add(entry);
+            /** Collect all the different forms we can for this mob. */
+            for (PokedexEntry e : allFormes)
+                if (e.getPokedexNb() == entry.getPokedexNb()) set.add(e);
+            PokedexEntry female = entry.getForGender(IPokemob.FEMALE);
+            PokedexEntry male = entry.getForGender(IPokemob.MALE);
+            set.add(male);
+            set.add(female);
+            formes.addAll(set);
+            formes.sort(COMPARATOR);
+
+            /** First init the formes, to copy the stuff over from the current
+             * base forme if needed. */
+            if (formes.size() > 1) initFormes(formes, entry);
+            /** If the forme has both male and female entries, replace the base
+             * forme with the male forme. */
+            if (male != female && male != entry && female != entry)
+            {
+                male.base = true;
+                male.male = male;
+                female.male = male;
+                male.female = female;
+                data.put(male.getPokedexNb(), male);
+                data2.put(entry.getTrimmedName(), male);
+                vars.setValue(male);
+                // Set all the subformes base to this new one.
+                for (PokedexEntry e : formes)
+                {
+                    // Set the forme.
+                    e.setBaseForme(male);
+                    // Initialize some things.
+                    e.getBaseForme();
+                }
+                entry = male;
+            }
+            formLists.put(entry.getPokedexNb(), formes);
+        }
+        ProgressManager.pop(bar);
+    }
+
+    private static void initFormes(List<PokedexEntry> formes, PokedexEntry base)
+    {
+        base.copyToGenderFormes();
+        PokecubeMod.log("Processing " + base + " " + formes);
+        for (PokedexEntry e : formes)
+        {
+            e.forms.clear();
+            for (PokedexEntry e1 : formes)
+            {
+                if (e1 != e) e.forms.put(e1.getTrimmedName(), e1);
+            }
+            if (base != e)
+            {
+                e.setBaseForme(base);
+                base.copyToForm(e);
+                if (e.height <= 0)
+                {
+                    e.height = base.height;
+                    e.width = base.width;
+                    e.length = base.length;
+                    e.childNumbers = base.childNumbers;
+                    e.species = base.species;
+                    e.mobType = base.mobType;
+                    e.catchRate = base.catchRate;
+                    e.mass = base.mass;
+                    e.drops = base.drops;
+                    PokecubeMod.log("Error with " + e);
+                }
+                if (e.species == null)
+                {
+                    e.childNumbers = base.childNumbers;
+                    e.species = base.species;
+                    PokecubeMod.log(e + " Has no Species");
+                }
+                if (e.type1 == null)
+                {
+                    e.type1 = base.type1;
+                    e.type2 = base.type2;
+                    if (PokecubeMod.debug) PokecubeMod.log("Copied Types from " + base + " to " + e);
+                }
+                boolean noAbilities;
+                if (noAbilities = e.abilities.isEmpty()) e.abilities.addAll(base.abilities);
+                if (noAbilities && e.abilitiesHidden.isEmpty()) e.abilitiesHidden.addAll(base.abilitiesHidden);
+            }
+            if (e.mobType == null)
+            {
+                e.mobType = PokecubeMod.Type.NORMAL;
+                PokecubeMod.log(e + " Has no Mob Type");
+            }
+            if (e.type2 == null) e.type2 = PokeType.unknown;
+            if (e.interactionLogic.actions.isEmpty())
+            {
+                if (e.getBaseForme() != null)
+                {
+                    if (e.getBaseForme().interactionLogic.actions.isEmpty())
+                    {
+                        InteractionLogic.initForEntry(e);
+                    }
+                    e.interactionLogic.actions = e.getBaseForme().interactionLogic.actions;
+                }
+                else
+                {
+                    InteractionLogic.initForEntry(e);
+                }
+            }
         }
     }
 
@@ -632,12 +760,17 @@ public class Database
         {
             if (e.base) addEntry(e);
         }
+        int cleaned = 0;
         for (PokedexEntry p : allFormes)
         {
             bar.step(p.getName());
             if (!Pokedex.getInstance().getRegisteredEntries().contains(p))
             {
-                if (p.base) removedNums.add(p.getPokedexNb());
+                if (p.base && p != getEntry(p.getPokedexNb()))
+                {
+                    cleaned++;
+                }
+                else removedNums.add(p.getPokedexNb());
                 toRemove.add(p);
                 removed.add(p);
             }
@@ -649,95 +782,21 @@ public class Database
         for (PokedexEntry p : toRemove)
         {
             bar.step(p.getName());
-            if (p.base)
+            if (p == getEntry(p.pokedexNb))
             {
                 data.remove(p.pokedexNb);
                 baseFormes.remove(p.pokedexNb);
+                formLists.remove(p.pokedexNb);
+            }
+            else if (formLists.containsKey(p.pokedexNb))
+            {
+                formLists.get(p.pokedexNb).remove(p);
             }
             spawnables.remove(p);
         }
 
-        allFormes.removeAll(toRemove);
-        ProgressManager.pop(bar);
-        System.err.println("Removed " + removedNums.size() + " Missing Pokemon");
-
-        bar = ProgressManager.push("Base Formes", allFormes.size());
-        toRemove.clear();
-        List<PokedexEntry> sortedEntries = Lists.newArrayList();
-        sortedEntries.addAll(Database.allFormes);
-        Collections.sort(sortedEntries, COMPARATOR);
-
-        for (PokedexEntry e : sortedEntries)
+        for (PokedexEntry e : allFormes)
         {
-            bar.step(e.getName());
-            PokedexEntry base = baseFormes.get(e.pokedexNb);
-
-            if (base == null)
-            {
-                toRemove.add(e);
-                continue;
-            }
-            if (base == e)
-            {
-                base.copyToGenderFormes();
-            }
-
-            if (base != e)
-            {
-                base.copyToForm(e);
-                if (e.height <= 0)
-                {
-                    e.height = base.height;
-                    e.width = base.width;
-                    e.length = base.length;
-                    e.childNumbers = base.childNumbers;
-                    e.species = base.species;
-                    e.mobType = base.mobType;
-                    e.catchRate = base.catchRate;
-                    e.mass = base.mass;
-                    e.drops = base.drops;
-                    PokecubeMod.log("Error with " + e);
-                }
-                if (e.species == null)
-                {
-                    e.childNumbers = base.childNumbers;
-                    e.species = base.species;
-                    PokecubeMod.log(e + " Has no Species");
-                }
-                if (e.type1 == null)
-                {
-                    e.type1 = base.type1;
-                    e.type2 = base.type2;
-                }
-                boolean noAbilities;
-                if (noAbilities = e.abilities.isEmpty()) e.abilities.addAll(base.abilities);
-                if (noAbilities && e.abilitiesHidden.isEmpty()) e.abilitiesHidden.addAll(base.abilitiesHidden);
-            }
-            else
-            {
-                e.setBaseForme(e);
-            }
-            if (e.mobType == null)
-            {
-                e.mobType = PokecubeMod.Type.NORMAL;
-                PokecubeMod.log(e + " Has no Mob Type");
-            }
-            if (e.type2 == null) e.type2 = PokeType.unknown;
-            if (e.interactionLogic.actions.isEmpty())
-            {
-                if (e.getBaseForme() != null)
-                {
-                    if (e.getBaseForme().interactionLogic.actions.isEmpty())
-                    {
-                        InteractionLogic.initForEntry(e);
-                    }
-                    e.interactionLogic.actions = e.getBaseForme().interactionLogic.actions;
-                }
-                else
-                {
-                    InteractionLogic.initForEntry(e);
-                }
-            }
             List<EvolutionData> invalidEvos = Lists.newArrayList();
             for (EvolutionData d : e.evolutions)
             {
@@ -747,18 +806,14 @@ public class Database
                 }
             }
             e.evolutions.removeAll(invalidEvos);
-
-            if (!Pokedex.getInstance().getRegisteredEntries().contains(e))
-            {
-                toRemove.add(e);
-                removed.add(e);
-                spawnables.remove(e);
-            }
         }
-        PokecubeMod.log(toRemove.size() + " Pokemon Formes Removed");
+
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
-        Collections.sort(removed, COMPARATOR);
+        PokecubeMod.log("Removed " + removedNums.size() + " Missing Pokemon and " + (toRemove.size() - cleaned)
+                + " missing Formes");
+
+        toRemove.clear();
         bar = ProgressManager.push("Relations", allFormes.size());
         for (PokedexEntry p : allFormes)
         {

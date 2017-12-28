@@ -614,7 +614,10 @@ public final class SpawnHandler
                 {
                     if (dbe.getPokedexNb() > 0)
                     {
-                        entityliving = (EntityLiving) PokecubeMod.core.createPokemob(dbe, world);
+                        SpawnEvent.Pick.Final event = new SpawnEvent.Pick.Final(dbe, point, world);
+                        MinecraftForge.EVENT_BUS.post(event);
+                        if (event.getPicked() == null) continue;
+                        entityliving = (EntityLiving) PokecubeMod.core.createPokemob(event.getPicked(), world);
                         entityliving.setHealth(entityliving.getMaxHealth());
                         entityliving.setLocationAndAngles((double) x + 0.5F, (double) y + 0.5F, (double) z + 0.5F,
                                 world.rand.nextFloat() * 360.0F, 0.0F);
@@ -624,7 +627,12 @@ public final class SpawnHandler
                                     entry.getLevel(matcher), entry.getVariance(matcher))) != null)
                             {
                                 IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityliving);
-                                if (matcher.spawnRule.values.containsKey(SpawnBiomeMatcher.SPAWNCOMMAND))
+                                if (!event.getSpawnArgs().isEmpty())
+                                {
+                                    String[] args = event.getSpawnArgs().split(" ");
+                                    MakeCommand.setToArgs(args, pokemob, 0, v, false);
+                                }
+                                else if (matcher.spawnRule.values.containsKey(SpawnBiomeMatcher.SPAWNCOMMAND))
                                 {
                                     String[] args = matcher.spawnRule.values.get(SpawnBiomeMatcher.SPAWNCOMMAND)
                                             .split(" ");

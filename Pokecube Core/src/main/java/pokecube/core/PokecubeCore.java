@@ -618,7 +618,13 @@ public class PokecubeCore extends PokecubeMod
         {
             pokedexmap = new HashMap();
         }
-        String name = entry.getTrimmedName().replace(":", "");
+        String name = entry.getTrimmedName();
+        if (entry.base && entry != Database.getEntry(entry.getPokedexNb()))
+        {
+//            if (PokecubeMod.debug)
+                PokecubeMod.log("Not Registering original base for " + entry + " as base has changed.");
+            return;
+        }
         if (clazz != null)
         {
             try
@@ -631,7 +637,7 @@ public class PokecubeCore extends PokecubeMod
                 modid:
                 if (entry.getModId() == null)
                 {
-                    for (PokedexEntry e : entry.forms.values())
+                    for (PokedexEntry e : Database.getFormes(entry))
                     {
                         if (e.getModId() != null)
                         {

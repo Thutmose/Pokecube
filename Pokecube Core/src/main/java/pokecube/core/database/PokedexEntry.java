@@ -707,7 +707,7 @@ public class PokedexEntry
     protected HashMap<ItemStack, PokedexEntry>  formeItems       = Maps.newHashMap();
     /** Map of forms assosciated with this one. */
     @CopyToGender
-    public Map<String, PokedexEntry>            forms            = new HashMap<String, PokedexEntry>();
+    protected Map<String, PokedexEntry>         forms            = new HashMap<String, PokedexEntry>();
 
     /** Used to stop gender formes from spawning, spawning rate is done by
      * gender ratio of base forme instead. */
@@ -848,6 +848,9 @@ public class PokedexEntry
     @CopyToGender
     public float                                width            = -1;
 
+    /** Cached trimmed name. */
+    private String                              trimmedName;
+
     public PokedexEntry(int nb, String name)
     {
         this.name = name;
@@ -882,9 +885,9 @@ public class PokedexEntry
 
     protected void addForm(PokedexEntry form)
     {
-        String key = form.name.toLowerCase(java.util.Locale.ENGLISH).trim().replaceAll("forme", "form").replaceAll(" ",
-                "");
-        form.baseName = name.split(" ")[0];
+        if (forms.containsValue(form)) return;
+        String key = form.getTrimmedName();
+        form.baseName = this.getTrimmedName();
         form.setBaseForme(this);
         forms.put(key, form);
     }
@@ -962,11 +965,6 @@ public class PokedexEntry
 
     public void copyToForm(PokedexEntry e)
     {
-        if (!Pokedex.getInstance().isRegistered(e))
-        {
-            PokecubeMod.log(e + " is not registered.");
-            return;
-        }
         if (e.baseForme != null && e.baseForme != this)
             throw new IllegalArgumentException("Cannot add a second base form");
         e.pokedexNb = pokedexNb;
@@ -1190,14 +1188,6 @@ public class PokedexEntry
         return gender == IPokemob.MALE ? male : female;
     }
 
-    /** @param form
-     * @return the forme of the pokemob with the assosciated name. */
-    public PokedexEntry getForm(String form)
-    {
-        return forms
-                .get(form.toLowerCase(java.util.Locale.ENGLISH).trim().replaceAll("forme", "form").replaceAll(" ", ""));
-    }
-
     public int getGen()
     {
         if (pokedexNb < 152) return 1;
@@ -1305,10 +1295,8 @@ public class PokedexEntry
      * @return */
     public String getTrimmedName()
     {
-        String name = this.name.toLowerCase(Locale.ENGLISH);
-        // Replace all non word chars.
-        name = name.replaceAll("([\\W])", "");
-        return name;
+        if (trimmedName != null) return trimmedName;
+        return trimmedName = Database.trim(name);
     }
 
     /** @return the pokedexNb */
@@ -1489,8 +1477,7 @@ public class PokedexEntry
 
     public boolean hasForm(String form)
     {
-        return forms.containsKey(
-                form.toLowerCase(java.util.Locale.ENGLISH).trim().replaceAll("forme", "form").replaceAll(" ", ""));
+        return forms.containsKey(Database.trim(form));
     }
 
     public boolean hasPrey()
@@ -1720,7 +1707,7 @@ public class PokedexEntry
         if (getModId() == null)
         {
 
-            for (PokedexEntry e : this.forms.values())
+            for (PokedexEntry e : Database.getFormes(this))
             {
                 if (e.getModId() != null)
                 {

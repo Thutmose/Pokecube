@@ -128,7 +128,7 @@ public class AbilityManager
                     addAbility((Class<? extends Ability>) candidateClass);
                 }
             }
-            PokecubeMod.log("Registered " + num + " Abilities");
+            if (PokecubeMod.debug) PokecubeMod.log("Registered " + num + " Abilities");
         }
         catch (Exception e)
         {

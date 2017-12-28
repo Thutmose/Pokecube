@@ -35,7 +35,7 @@ public class LegendaryConditions
                     num++;
                 }
             }
-            PokecubeMod.log("Detected " + num + " Legendary Conditions.");
+            if (PokecubeMod.debug) PokecubeMod.log("Detected " + num + " Legendary Conditions.");
         }
         catch (Exception e)
         {

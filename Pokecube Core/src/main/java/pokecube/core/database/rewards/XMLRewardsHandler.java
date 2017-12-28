@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -181,7 +182,7 @@ public class XMLRewardsHandler
                 }
                 catch (Exception e1)
                 {
-                    PokecubeMod.log("Error loading book for " + lang);
+                    PokecubeMod.log(Level.WARNING, "Error loading book for " + lang, e1);
                 }
                 name = table.get(tagKey);
                 if (name == null)
@@ -313,7 +314,7 @@ public class XMLRewardsHandler
         }
         catch (NullPointerException e)
         {
-            PokecubeMod.log("Error with a recipe, Error for: " + recipe + " " + e.getMessage());
+            PokecubeMod.log(Level.WARNING, "Error with a recipe, Error for: " + recipe, e);
         }
     }
 }

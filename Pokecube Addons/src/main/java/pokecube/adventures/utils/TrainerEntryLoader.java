@@ -157,7 +157,7 @@ public class TrainerEntryLoader
                 catch (Exception e)
                 {
                     PokecubeMod.log(Level.WARNING,
-                            "Error with weight for " + type.name + " " + rule.values + " " + entry.spawns);
+                            "Error with weight for " + type.name + " " + rule.values + " " + entry.spawns, e);
                     continue;
                 }
                 SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);

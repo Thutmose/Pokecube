@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import com.google.common.collect.Sets;
 
@@ -210,7 +211,7 @@ public class Config extends ConfigBase
             }
             catch (Exception e)
             {
-                PokecubeMod.log("No Class Found: " + s);
+                if (PokecubeMod.debug) PokecubeMod.log(Level.WARNING, "No Class Found for Custom Trainer: " + s);
             }
         }
         TileEntityAFA.initParser(afaCostFunction, afaCostFunctionShiny);

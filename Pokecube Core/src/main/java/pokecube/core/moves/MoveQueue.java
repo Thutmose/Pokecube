@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -62,8 +63,10 @@ public class MoveQueue
                 {
                     System.err.println(evt.world);
                     Thread.dumpStack();
-                    PokecubeMod.log("Critical Error with world for dimension " + evt.world.provider.getDimension()
-                            + " It is somehow ticking when not loaded, this should not happen.");
+                    PokecubeMod.log(Level.SEVERE,
+                            "Critical Error with world for dimension " + evt.world.provider.getDimension()
+                                    + " It is somehow ticking when not loaded, this should not happen.",
+                            new Exception());
                     return;
                 }
                 queue.executeMoves();

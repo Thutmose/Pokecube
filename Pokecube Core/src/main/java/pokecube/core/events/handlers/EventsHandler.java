@@ -974,7 +974,7 @@ public class EventsHandler
                 @Override
                 public <T> T getCapability(Capability<T> capability, EnumFacing facing)
                 {
-                    if (GUARDAI_CAP != null && capability == GUARDAI_CAP) return (T) this;
+                    if (GUARDAI_CAP != null && capability == GUARDAI_CAP) return GUARDAI_CAP.cast(this);
                     return null;
                 }
 

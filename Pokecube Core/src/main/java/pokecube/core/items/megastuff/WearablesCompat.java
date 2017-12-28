@@ -81,7 +81,7 @@ public class WearablesCompat
                 sz = s * 1.5f;
                 GL11.glPushMatrix();
                 GL11.glTranslatef(dx, dy, dz);
-                GL11.glScalef(sx*0.75f, sy, sz);
+                GL11.glScalef(sx * 0.75f, sy, sz);
                 GL11.glRotatef(-90, 1, 0, 0);
                 Minecraft.getMinecraft().renderEngine.bindTexture(strap);
                 EnumDyeColor ret = EnumDyeColor.GRAY;
@@ -313,11 +313,10 @@ public class WearablesCompat
             return capability == WEARABLE_CAP;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            if (WEARABLE_CAP != null && capability == WEARABLE_CAP) return (T) this;
+            if (WEARABLE_CAP != null && capability == WEARABLE_CAP) return WEARABLE_CAP.cast(this);
             return null;
         }
 
@@ -364,11 +363,10 @@ public class WearablesCompat
             return capability == WEARABLE_CAP;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            if (WEARABLE_CAP != null && capability == WEARABLE_CAP) return (T) this;
+            if (WEARABLE_CAP != null && capability == WEARABLE_CAP) return WEARABLE_CAP.cast(this);
             return null;
         }
 

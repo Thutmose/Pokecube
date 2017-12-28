@@ -89,13 +89,15 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
         return false;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
         if (!hasCapability(MEGA_CAP, facing)) return null;
         if (MEGA_CAP != null && capability == MEGA_CAP)
-            return (T) ((stack.getItem() instanceof IMegaCapability) ? stack.getItem() : (T) this);
+        {
+            Object object = (stack.getItem() instanceof IMegaCapability) ? stack.getItem() : this;
+            return MEGA_CAP.cast((IMegaCapability) object);
+        }
         return null;
     }
 

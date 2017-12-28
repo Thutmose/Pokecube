@@ -112,11 +112,10 @@ public class CapabilityHasRewards
             return capability == REWARDS_CAP;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing)
         {
-            return hasCapability(capability, facing) ? (T) this : null;
+            return hasCapability(capability, facing) ? REWARDS_CAP.cast(this) : null;
         }
 
         @Override

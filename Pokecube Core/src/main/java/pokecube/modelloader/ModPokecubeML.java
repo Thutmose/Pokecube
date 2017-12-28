@@ -294,13 +294,13 @@ public class ModPokecubeML implements IMobProvider
                                 boolean mobsDatabase = name.equals("_mobs_");
                                 if (mobsDatabase)
                                 {
-                                    PokecubeMod.log("Adding From " + name + " " + s);
+                                    if (PokecubeMod.debug) PokecubeMod.log("Adding From " + name + " " + s);
                                     XMLDatabase database = PokedexEntryLoader.initDatabase(zip.getInputStream(entry),
                                             s.endsWith(".json"));
                                     for (XMLPokedexEntry xmlentry : database.pokemon)
                                     {
                                         PokedexEntry pEntry = Database.getEntry(xmlentry.name);
-                                        PokecubeMod.log("Adding " + pEntry);
+                                        if (PokecubeMod.debug) PokecubeMod.log("Adding " + pEntry);
                                         addedPokemon.add(pEntry.getTrimmedName().toLowerCase(Locale.ENGLISH));
                                     }
                                 }
@@ -343,11 +343,11 @@ public class ModPokecubeML implements IMobProvider
             {
                 e.setModId(ID);
             }
-            PokecubeMod.core.registerPokemon(true, this, e);
+            if (!Pokedex.getInstance().isRegistered(e)) PokecubeMod.core.registerPokemon(true, this, e);
         }
         else if (e == null)
         {
-            System.err.println("Failed to register " + mob);
+            PokecubeMod.log("Failed to register " + mob);
         }
     }
 

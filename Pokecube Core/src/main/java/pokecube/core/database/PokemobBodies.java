@@ -12,6 +12,7 @@ import pokecube.core.database.PokedexEntryLoader.BodyPart;
 import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class PokemobBodies
 {
@@ -82,7 +83,7 @@ public class PokemobBodies
                     body.parts.add(new PokemobPart(part));
                 }
                 bodyMap.put(entry, body);
-                System.out.println(entry + " " + body);
+                if (PokecubeMod.debug) PokecubeMod.log(entry + " " + body);
             }
         }
     }

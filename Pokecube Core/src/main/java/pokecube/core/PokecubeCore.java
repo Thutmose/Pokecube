@@ -614,26 +614,30 @@ public class PokecubeCore extends PokecubeMod
     @Override
     public void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry)
     {
+        /** Dummy entries are not to be registered, they are just there for
+         * copying values from. */
+        if (entry.dummy) { return; }
         if (pokedexmap == null)
         {
             pokedexmap = new HashMap();
         }
         String name = entry.getTrimmedName();
-        if (entry.base && entry != Database.getEntry(entry.getPokedexNb()))
-        {
-//            if (PokecubeMod.debug)
-                PokecubeMod.log("Not Registering original base for " + entry + " as base has changed.");
-            return;
-        }
         if (clazz != null)
         {
             try
             {
+                // Entries should only be registered once, if an addon wants to
+                // overwrite an existing one, it should just edit the entry
+                // directly.
                 if (pokedexmap.containsKey(entry))
                 {
                     PokecubeMod.log("Error: Tried to register a second " + entry);
                     return;
                 }
+
+                // In some cases, the modid isn't loaded in, this makes it to
+                // one of the form modids, as generally they will be added by
+                // the same mod.
                 modid:
                 if (entry.getModId() == null)
                 {

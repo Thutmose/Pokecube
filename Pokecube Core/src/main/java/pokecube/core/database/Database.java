@@ -206,6 +206,7 @@ public class Database
             sortedFormes.clear();
             sortedFormes.addAll(allFormes);
             sortedFormes.sort(COMPARATOR);
+            lastCount = sortedFormes.size();
         }
         return sortedFormes;
     }

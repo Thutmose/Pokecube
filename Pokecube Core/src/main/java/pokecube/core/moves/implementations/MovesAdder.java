@@ -75,7 +75,7 @@ public class MovesAdder implements IMoveConstants
     {
         List<Class<?>> foundClasses;
         // Register moves.
-        PokecubeMod.log("Autodecting Moves...");
+        if (PokecubeMod.debug) PokecubeMod.log("Autodecting Moves...");
         try
         {
             foundClasses = ClassFinder.find(MovesAdder.class.getPackage().getName());
@@ -95,7 +95,7 @@ public class MovesAdder implements IMoveConstants
                     registerMove(move);
                 }
             }
-            PokecubeMod.log("Registered " + num + " Custom Moves");
+            if (PokecubeMod.debug) PokecubeMod.log("Registered " + num + " Custom Moves");
         }
         catch (Exception e)
         {
@@ -166,6 +166,6 @@ public class MovesAdder implements IMoveConstants
                 }
             }
         }
-        PokecubeMod.log("Registered " + num + " Database Moves");
+        if (PokecubeMod.debug) PokecubeMod.log("Registered " + num + " Database Moves");
     }
 }

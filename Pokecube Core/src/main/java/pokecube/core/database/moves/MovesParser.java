@@ -91,7 +91,7 @@ public class MovesParser
         }
         catch (NumberFormatException e)
         {
-            PokecubeMod.log("Error with " + entry.readableName);
+            PokecubeMod.log(Level.WARNING, "Error with " + entry.readableName, e);
             return;
         }
         String yes = "Yes";
@@ -190,8 +190,8 @@ public class MovesParser
             }
             catch (NumberFormatException e)
             {
-                PokecubeMod.log("Error parsing fixed damage for " + entry.readableName + " " + entry.secondaryEffect
-                        + " " + var);
+                PokecubeMod.log(Level.WARNING, "Error parsing fixed damage for " + entry.readableName + " "
+                        + entry.secondaryEffect + " " + var, e);
             }
         }
     }

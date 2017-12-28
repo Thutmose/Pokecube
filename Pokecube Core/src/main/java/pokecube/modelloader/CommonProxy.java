@@ -202,6 +202,8 @@ public class CommonProxy implements IGuiHandler
     private static final char                        SLASH          = '/';
 
     HashMap<String, XMLLocs>                         xmlFiles       = Maps.newHashMap();
+    public Map<String, String>                       notFound       = Maps.newHashMap();
+    public Set<String>                               found          = Sets.newHashSet();
 
     private void addXML(ResourceLocation xml, Object location)
     {
@@ -419,7 +421,7 @@ public class CommonProxy implements IGuiHandler
 
     public void searchModels()
     {
-        PokecubeMod.log("Searching for Models...");
+        if (PokecubeMod.debug) PokecubeMod.log("Searching for Models...");
         ArrayList<String> toAdd = ModPokecubeML.addedPokemon;
         if (toAdd == null)
         {
@@ -481,13 +483,21 @@ public class CommonProxy implements IGuiHandler
             ProgressBar bar2 = ProgressManager.push("Pokemob", hasArr.length);
             for (int i = 0; i < hasArr.length; i++)
             {
+                String entry = entryArr[i];
+                PokedexEntry pokeentry = Database.getEntry(entry);
                 if (!hasArr[i] || has[i])
                 {
                     bar2.step("skip");
+                    if (!found.contains(entry) && !pokeentry.dummy)
+                    {
+                        String path = modId + ":" + mod.getModelDirectory(pokeentry);
+                        if (notFound.containsKey(entry)) path = notFound.get(entry) + ", " + path;
+                        notFound.put(entry, path);
+                    }
                     continue;
                 }
-                String entry = entryArr[i];
-                PokedexEntry pokeentry = Database.getEntry(entry);
+                found.add(entry);
+                notFound.remove(entry);
                 pokeentry.setModId(modId);
                 bar2.step(entry);
                 if (!toAdd.contains(entry)) toAdd.add(entry);
@@ -573,7 +583,7 @@ public class CommonProxy implements IGuiHandler
     boolean[] providesModels(String modid, Object mod, String... entry)
     {
         CachedLocs cached = getCached(modid, true);
-        if (cached.has != null && cached.has.length == entry.length) { return cached.has; }
+        if (!PokecubeMod.debug && cached.has != null && cached.has.length == entry.length) { return cached.has; }
         ResourceLocation[] tex;
         boolean[] ret = new boolean[entry.length];
         Set<String> files = Sets.newHashSet();

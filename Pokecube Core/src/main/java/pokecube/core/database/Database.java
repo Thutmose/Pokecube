@@ -156,7 +156,7 @@ public class Database
     private static Set<String>                              dropDatabases    = Sets.newHashSet();
     private static Set<String>                              heldDatabases    = Sets.newHashSet();
 
-    public static final PokedexEntry                        missingno        = new PokedexEntry(0, "missingno");
+    public static final PokedexEntry                        missingno        = new PokedexEntry(0, "MissingNo");
 
     public static final Comparator<PokedexEntry>            COMPARATOR       = new Comparator<PokedexEntry>()
                                                                              {
@@ -172,6 +172,9 @@ public class Database
                                                                                              diff = -1;
                                                                                          else if (o2.base && !o1.base)
                                                                                              diff = 1;
+                                                                                         else diff = o1.getName()
+                                                                                                 .compareTo(
+                                                                                                         o2.getName());
                                                                                      }
                                                                                      return diff;
                                                                                  }
@@ -297,7 +300,7 @@ public class Database
         return mob.getPokedexEntry();
     }
 
-    static String trim(String name)
+    public static String trim(String name)
     {
         // English locale to prevent issues with turkish letters.
         name = name.toLowerCase(Locale.ENGLISH);
@@ -424,7 +427,7 @@ public class Database
             }
             catch (Exception e1)
             {
-                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s + " " + e1);
+                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s, e1);
             }
         }
         for (String s : configDatabases.get(EnumDatabase.POKEMON.ordinal()))
@@ -435,7 +438,7 @@ public class Database
             }
             catch (Exception e)
             {
-                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + "pokemobs" + File.separator + s + " " + e);
+                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + "pokemobs" + File.separator + s, e);
             }
         }
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Load());
@@ -448,7 +451,7 @@ public class Database
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.SEVERE, "Error with databases " + e);
+            PokecubeMod.log(Level.SEVERE, "Error with databases ", e);
             allFormes.add(missingno);
             // TODO autoregister missingno here?
             // throw new RuntimeException("Database loading failed, this is very
@@ -456,6 +459,26 @@ public class Database
         }
         PokedexEntryLoader.writeCompoundDatabase();
         initFormLists();
+
+        if (PokecubeMod.debug)
+        {
+            List<PokedexEntry> dummies = Lists.newArrayList();
+            for (PokedexEntry entry : allFormes)
+            {
+                if (entry.dummy)
+                {
+                    dummies.add(entry);
+                }
+            }
+            dummies.sort(Database.COMPARATOR);
+            StringBuilder builder = new StringBuilder("Dummy Pokedex Entries:");
+            for (PokedexEntry e : dummies)
+            {
+                builder.append("\n-   ").append(e.getName());
+            }
+            PokecubeMod.log(builder.toString());
+        }
+
         PokecubeMod.log("Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");
     }
 
@@ -513,6 +536,7 @@ public class Database
     private static void initFormLists()
     {
         ProgressBar bar = ProgressManager.push("Form Processing", baseFormes.size());
+        if (PokecubeMod.debug) PokecubeMod.log("Processing Form Lists");
         for (Map.Entry<Integer, PokedexEntry> vars : baseFormes.entrySet())
         {
             PokedexEntry entry = vars.getValue();
@@ -525,20 +549,27 @@ public class Database
             for (PokedexEntry e : allFormes)
                 if (e.getPokedexNb() == entry.getPokedexNb()) set.add(e);
             formes.addAll(set);
-            formes.sort(COMPARATOR);
-
-            /** First init the formes, to copy the stuff over from the current
-             * base forme if needed. */
-            if (formes.size() > 1) initFormes(formes, entry);
-            /** Then check if the base form, or any others, are dummy forms, and
-             * replace them. */
-            checkDummies(formes, vars);
-            /** Then Check if the entry should be replaced with a gender
-             * version */
-            checkGenderFormes(formes, vars);
+            /** If only 1 form, no point in processing this. */
+            if (formes.size() > 1)
+            {
+                formes.sort(COMPARATOR);
+                /** First init the formes, to copy the stuff over from the
+                 * current base forme if needed. */
+                initFormes(formes, entry);
+                /** Then check if the base form, or any others, are dummy forms,
+                 * and replace them. */
+                checkDummies(formes, vars);
+                /** Then Check if the entry should be replaced with a gender
+                 * version */
+                checkGenderFormes(formes, vars);
+            }
             entry = vars.getValue();
             formLists.put(entry.getPokedexNb(), formes);
         }
+        int dummies = 0;
+        for (PokedexEntry e : allFormes)
+            if (e.dummy) dummies++;
+        if (PokecubeMod.debug) PokecubeMod.log("Processed Form Lists, found " + dummies + " Dummy Forms.");
         ProgressManager.pop(bar);
     }
 
@@ -555,6 +586,8 @@ public class Database
             {
                 if (!entry1.dummy)
                 {
+                    entry1.base = true;
+                    entry.base = false;
                     data.put(entry1.getPokedexNb(), entry1);
                     data2.put(entry.getTrimmedName(), entry1);
                     // Set all the subformes base to this new one.
@@ -588,6 +621,7 @@ public class Database
             female.male = male;
             male.female = female;
             entry.dummy = true;
+            entry.base = false;
             data.put(male.getPokedexNb(), male);
             data2.put(entry.getTrimmedName(), male);
             vars.setValue(male);
@@ -791,7 +825,7 @@ public class Database
 
     public static void postInit()
     {
-        PokecubeMod.log("Post Init of Database.");
+        if (PokecubeMod.debug) PokecubeMod.log("Post Init of Database.");
         PokedexEntryLoader.postInit();
         loadSpawns();
         loadDrops();
@@ -828,7 +862,16 @@ public class Database
             }
 
         });
-        if (PokecubeMod.debug) PokecubeMod.log("Removing " + messageList);
+        if (PokecubeMod.debug)
+        {
+            messageList.sort(Database.COMPARATOR);
+            StringBuilder builder = new StringBuilder("UnRegistered Pokedex Entries:");
+            for (PokedexEntry e : messageList)
+            {
+                builder.append("\n-   ").append(e.getName());
+            }
+            PokecubeMod.log(builder.toString());
+        }
         ProgressManager.pop(bar);
         bar = ProgressManager.push("Removal", toRemove.size());
         for (PokedexEntry p : toRemove)

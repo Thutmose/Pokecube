@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
@@ -82,7 +83,7 @@ public class Mod_Pokecube_Helper
             }
             catch (Exception e)
             {
-                PokecubeMod.log("Error checking if " + block + " is wood or leaves");
+                PokecubeMod.log(Level.WARNING, "Error checking if " + block + " is wood or leaves", e);
             }
         }
         for (String s : config.blocksLeaves)

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.Random;
 
 import javax.vecmath.Vector3f;
@@ -1120,7 +1121,7 @@ public class PokedexEntry
                 baseName = getBaseForme().getBaseName();
             }
             else baseName = name;
-            if (getBaseForme() == this) PokecubeMod.log("Error with " + this);
+            if (getBaseForme() == this) PokecubeMod.log(Level.WARNING, "Error with " + this);
         }
         return baseName;
     }

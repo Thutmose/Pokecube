@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -184,7 +185,7 @@ public class TypeTrainer
 
         List<PokedexEntry> values = Lists.newArrayList();
         if (type.pokemon != null) values.addAll(type.pokemon);
-        else PokecubeMod.log("No mobs for " + type);
+        else PokecubeMod.log(Level.WARNING, "No mobs for " + type);
 
         for (int i = 0; i < number; i++)
         {
@@ -282,7 +283,7 @@ public class TypeTrainer
                 toRemove.add(t);
             }
         }
-        if (!toRemove.isEmpty()) PokecubeMod.log("Removing Trainer Types: " + toRemove);
+        if (PokecubeMod.debug) if (!toRemove.isEmpty()) PokecubeMod.log("Removing Trainer Types: " + toRemove);
         for (TypeTrainer t : toRemove)
         {
             typeMap.remove(t.name);

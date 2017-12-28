@@ -3,6 +3,7 @@ package pokecube.core.database.recipes;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -159,7 +160,7 @@ public class XMLRecipeHandler
         }
         catch (NullPointerException e)
         {
-            PokecubeMod.log("Error with a recipe, Error for: " + recipe + " " + e.getMessage());
+            PokecubeMod.log(Level.WARNING, "Error with a recipe, Error for: " + recipe, e);
         }
     }
 }

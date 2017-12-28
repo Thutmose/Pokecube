@@ -457,7 +457,7 @@ public class PokedexEntryLoader
         @XmlAttribute
         public Boolean   breed      = true;
         @XmlAttribute
-        public Boolean   dummy      = true;
+        public Boolean   dummy      = false;
         @XmlAttribute
         public Boolean   starter    = false;
         @XmlAttribute
@@ -989,6 +989,7 @@ public class PokedexEntryLoader
             if (Database.getEntry(entry.name) == null)
             {
                 PokedexEntry pentry = new PokedexEntry(entry.number, entry.name);
+                pentry.dummy = entry.dummy;
                 if (entry.base)
                 {
                     pentry.base = entry.base;

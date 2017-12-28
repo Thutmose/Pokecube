@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.logging.Level;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
@@ -791,7 +792,7 @@ public class Config extends ConfigBase
                 }
                 catch (Exception e)
                 {
-                    PokecubeCore.log("No Sound for " + s);
+                    PokecubeCore.log(Level.WARNING, "No Sound for " + s, e);
                     failed = true;
                     break;
                 }

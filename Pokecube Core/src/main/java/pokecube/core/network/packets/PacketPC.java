@@ -166,7 +166,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
             if (container != null && container.pcTile != null)
             {
                 boolean owned = message.data.getBoolean("O");
-                PokecubeMod.log("Bind PC Packet: "+owned + " " + player);
+                if (PokecubeMod.debug) PokecubeMod.log("Bind PC Packet: " + owned + " " + player);
                 if (owned)
                 {
                     container.pcTile.toggleBound();

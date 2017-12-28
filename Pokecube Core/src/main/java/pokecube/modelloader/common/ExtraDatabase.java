@@ -93,11 +93,13 @@ public class ExtraDatabase
                 {
                     if (f.name != null)
                     {
-                        ModPokecubeML.addedPokemon.add(f.name);
+                        String name = Database.trim(f.name);
+                        if (!ModPokecubeML.addedPokemon.contains(name)) ModPokecubeML.addedPokemon.add(name);
                         boolean has = false;
                         for (XMLPokedexEntry e : entries)
                         {
-                            if (e.name.equals(f.name))
+                            String eName = Database.trim(e.name);
+                            if (eName.equals(name))
                             {
                                 has = true;
                                 break;

@@ -107,7 +107,7 @@ public class PokecubeDimensionManager
         }
         else
         {
-            PokecubeMod.log("Creating Base DimensionID for " + player);
+            if (PokecubeMod.debug) PokecubeMod.log("Creating Base DimensionID for " + player);
             dim = DimensionManager.getNextFreeDimId();
             tag.setInteger("secretPowerDimID", dim);
             PokecubePlayerDataHandler.saveCustomData(player);
@@ -233,7 +233,7 @@ public class PokecubeDimensionManager
             }
         }
         id++;
-        PokecubeMod.log("Registering Pokecube Secret Base Dimension type at id " + id);
+        if (PokecubeMod.debug) PokecubeMod.log("Registering Pokecube Secret Base Dimension type at id " + id);
         SECRET_BASE_TYPE = DimensionType.register("pokecube_secretbase", "_pokecube", id, WorldProviderSecretBase.class,
                 PokecubeMod.core.getConfig().basesLoaded);
     }
@@ -296,12 +296,12 @@ public class PokecubeDimensionManager
 
     public void onServerStop(FMLServerStoppingEvent event)
     {
-        PokecubeMod.log("Stopping server");
+        if (PokecubeMod.debug) PokecubeMod.log("Stopping server");
     }
 
     public void onServerStart(FMLServerStartingEvent event) throws IOException
     {
-        PokecubeMod.log("Starting server, Pokecube Registering Dimensions");
+        if (PokecubeMod.debug) PokecubeMod.log("Starting server, Pokecube Registering Dimensions");
         ISaveHandler saveHandler = event.getServer().getEntityWorld().getSaveHandler();
         File file = saveHandler.getMapFileFromName("PokecubeDimensionIDs");
         dims.clear();

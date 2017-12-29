@@ -35,6 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
+import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.SpawnBiomeMatcher;
@@ -219,6 +220,7 @@ public class JERCompat
         PokecubeMod.log("Registering Mobs for JER");
         for (PokedexEntry e : Database.getSortedFormes())
         {
+            if (!Pokedex.getInstance().isRegistered(e)) continue;
             Entity poke = PokecubeMod.core.createPokemob(e, PokecubeCore.proxy.getWorld());
             if (poke == null) continue;
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(poke);

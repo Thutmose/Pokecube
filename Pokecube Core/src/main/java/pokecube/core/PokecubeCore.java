@@ -267,7 +267,8 @@ public class PokecubeCore extends PokecubeMod
         Class<?> clazz = null;
         if (entry == null || !registered.get(entry.getPokedexNb()))
         {
-            PokecubeMod.log(Level.WARNING, "Attempted to create unregistered mob, " + entry);
+            PokecubeMod.log(Level.WARNING, "Attempted to create unregistered mob, " + entry,
+                    new IllegalArgumentException());
             return null;
         }
         try

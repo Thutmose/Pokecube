@@ -201,7 +201,7 @@ public class Database
 
     public static List<PokedexEntry> getSortedFormes()
     {
-        if (lastCount != sortedFormes.size())
+        if (lastCount != allFormes.size())
         {
             sortedFormes.clear();
             sortedFormes.addAll(allFormes);
@@ -931,8 +931,11 @@ public class Database
             }
             e.evolutions.removeAll(invalidEvos);
         }
-
+        System.out.println(
+                "before" + getSortedFormes().size() + " " + Pokedex.getInstance().getRegisteredEntries().size());
         allFormes.removeAll(toRemove);
+        System.out.println(
+                "after" + getSortedFormes().size() + " " + Pokedex.getInstance().getRegisteredEntries().size());
         ProgressManager.pop(bar);
         if (PokecubeMod.debug) PokecubeMod.log("Removed " + removedNums.size() + " Missing Pokemon and "
                 + (toRemove.size() - dummies) + " missing Formes");

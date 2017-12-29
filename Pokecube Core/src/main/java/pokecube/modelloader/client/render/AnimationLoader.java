@@ -208,7 +208,8 @@ public class AnimationLoader
                 if (entry.getBaseForme() != null)
                     animation = new ResourceLocation(anim.replace(entry.getTrimmedName().toLowerCase(Locale.ENGLISH),
                             entry.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
-                else PokecubeMod.log(Level.WARNING, "Error with locating animation data for " + entry, e3);
+                else if (PokecubeMod.debug)
+                    PokecubeMod.log(Level.WARNING, "Error with locating animation data for " + entry, e3);
             }
             if (model != null)
             {

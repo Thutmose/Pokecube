@@ -207,7 +207,7 @@ public class PokecubeCore extends PokecubeMod
         Database.spawnables.clear();
         for (PokedexEntry dbe : Database.getSortedFormes())
         {
-            if (dbe.getSpawnData() != null)
+            if (dbe.getSpawnData() != null && Pokedex.getInstance().isRegistered(dbe))
             {
                 dbe.getSpawnData().postInit();
                 Database.spawnables.add(dbe);

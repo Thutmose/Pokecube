@@ -1736,6 +1736,7 @@ public class PokedexEntry
             {
                 if (e.getModId() != null)
                 {
+                    PokecubeMod.log("Set MODID for Sounds:"+this+" "+e.getModId());
                     this.setModId(e.getModId());
                     break modid;
                 }

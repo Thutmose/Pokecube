@@ -1025,7 +1025,7 @@ public class PokedexEntryLoader
             {
                 if (e instanceof FileNotFoundException)
                 {
-                    PokecubeMod.log(Level.WARNING, "No Database of " + file + ", Skipping.");
+                    if (PokecubeMod.debug) PokecubeMod.log(Level.WARNING, "No Database of " + file + ", Skipping.");
                 }
                 else PokecubeMod.log(Level.WARNING, "Error with " + file, e);
             }

@@ -217,7 +217,7 @@ public class JERCompat
     @SuppressWarnings("unchecked")
     private void registerMobs()
     {
-        PokecubeMod.log("Registering Mobs for JER");
+        if (PokecubeMod.debug) PokecubeMod.log("Registering Mobs for JER");
         for (PokedexEntry e : Database.getSortedFormes())
         {
             if (!Pokedex.getInstance().isRegistered(e)) continue;
@@ -237,7 +237,7 @@ public class JERCompat
 
     private void registerOres()
     {
-        PokecubeMod.log("Registering Ores for JER");
+        if (PokecubeMod.debug) PokecubeMod.log("Registering Ores for JER");
         ItemStack fossilStone = PokecubeItems.getStack("fossilstone");
         DistributionBase distrubution = new DistributionSquare(5, 44, 12 / 265f);
         Restriction restriction = new Restriction(new BiomeRestriction(BiomeDatabase.getBiome("desertHills"),
@@ -260,7 +260,7 @@ public class JERCompat
 
     private void registerPlants()
     {
-        PokecubeMod.log("Registering Crops for JER");
+        if (PokecubeMod.debug) PokecubeMod.log("Registering Crops for JER");
         for (Integer i : BerryManager.berryCrops.keySet())
         {
             Block crop = BerryManager.berryCrops.get(i);

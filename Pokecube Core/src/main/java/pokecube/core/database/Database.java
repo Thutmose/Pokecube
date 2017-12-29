@@ -507,15 +507,19 @@ public class Database
 
     public static void initSounds(Object registry)
     {
-        List<PokedexEntry> toProcess = Lists.newArrayList(allFormes);
+        List<PokedexEntry> toProcess = Lists.newArrayList(Pokedex.getInstance().getRegisteredEntries());
         toProcess.sort(COMPARATOR);
         for (PokedexEntry e : toProcess)
         {
             if (e.getModId() == null || e.event != null) continue;
 
-            if (e.customSound != null) e.setSound("mobs." + Database.trim(e.customSound));
-            else if (e.base) e.setSound("mobs." + e.getTrimmedName());
-            else e.setSound("mobs." + e.getBaseForme().getTrimmedName());
+            if (e.sound == null)
+            {
+                if (e.customSound != null) e.setSound("mobs." + Database.trim(e.customSound));
+                else if (e.base) e.setSound("mobs." + e.getTrimmedName());
+                else e.setSound("mobs." + e.getBaseForme().getTrimmedName());
+            }
+            if (PokecubeMod.debug) PokecubeMod.log(e + " has Sound: " + e.sound);
             e.event = new SoundEvent(e.sound);
             // Fix the annoying warning about wrong mod container...
             ModContainer mc = Loader.instance().activeModContainer();

@@ -264,8 +264,9 @@ public class PokecubeSerializer
     {
         Integer dimension = world.provider.getDimension();
         HashMap<BlockPos, Ticket> tickets = chunks.get(dimension);
-        if (tickets == null) return null;
-        return tickets.get(location);
+        Ticket ret = null;
+        if (tickets == null || (ret = tickets.get(location)) == null || !ret.isPlayerTicket()) return null;
+        return ret;
     }
 
     public void addChunks(World world, BlockPos location, EntityLivingBase placer)
@@ -287,17 +288,15 @@ public class PokecubeSerializer
                 {
                     ticket = ForgeChunkManager.requestPlayerTicket(PokecubeCore.instance,
                             placer.getCachedUniqueIdString(), world, ForgeChunkManager.Type.NORMAL);
+                    NBTTagCompound pos = new NBTTagCompound();
+                    pos.setInteger("x", location.getX());
+                    pos.setInteger("y", location.getY());
+                    pos.setInteger("z", location.getZ());
+                    ticket.getModData().setTag("pos", pos);
+                    ChunkPos chunk = world.getChunkFromBlockCoords(location).getPos();
+                    ForgeChunkManager.forceChunk(ticket, chunk);
+                    tickets.put(location, ticket);
                 }
-                else ticket = ForgeChunkManager.requestTicket(PokecubeCore.instance, world,
-                        ForgeChunkManager.Type.NORMAL);
-                NBTTagCompound pos = new NBTTagCompound();
-                pos.setInteger("x", location.getX());
-                pos.setInteger("y", location.getY());
-                pos.setInteger("z", location.getZ());
-                ticket.getModData().setTag("pos", pos);
-                ChunkPos chunk = world.getChunkFromBlockCoords(location).getPos();
-                ForgeChunkManager.forceChunk(ticket, chunk);
-                tickets.put(location, ticket);
             }
         }
         catch (Throwable e)

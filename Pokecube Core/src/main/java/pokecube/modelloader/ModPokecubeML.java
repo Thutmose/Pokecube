@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -148,12 +147,6 @@ public class ModPokecubeML implements IMobProvider
 
     private void postInitPokemobs()
     {
-        for (PokedexEntry p : Pokedex.getInstance().getRegisteredEntries())
-        {
-            p.setSound("mobs." + p.getTrimmedName());
-            p.getSoundEvent();
-            p.updateMoves();
-        }
         PokecubeMod.log("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
                 + Pokedex.getInstance().getRegisteredEntries().size() + " Formes");
     }
@@ -274,6 +267,7 @@ public class ModPokecubeML implements IMobProvider
         {
             if (e.getBaseForme() != null && e.getModId() == null)
             {
+                PokecubeMod.log("Set MODID:" + this + " " + e.getModId());
                 e.texturePath = e.getBaseForme().texturePath;
                 e.setModId(e.getBaseForme().getModId());
             }
@@ -398,14 +392,13 @@ public class ModPokecubeML implements IMobProvider
         PokedexEntry e;
         if ((e = Database.getEntry(mob)) != null)
         {
-            if (e.getBaseForme() != null
-                    && textureProviders.containsKey(e.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)))
+            if (e.getBaseForme() != null && textureProviders.containsKey(e.getTrimmedName()))
             {
-                e.setModId(textureProviders.get(e.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
+                e.setModId(textureProviders.get(e.getTrimmedName()));
             }
-            else if (textureProviders.containsKey(e.getTrimmedName().toLowerCase(Locale.ENGLISH)))
+            else if (textureProviders.containsKey(e.getTrimmedName()))
             {
-                e.setModId(textureProviders.get(e.getTrimmedName().toLowerCase(Locale.ENGLISH)));
+                e.setModId(textureProviders.get(e.getTrimmedName()));
             }
             else
             {

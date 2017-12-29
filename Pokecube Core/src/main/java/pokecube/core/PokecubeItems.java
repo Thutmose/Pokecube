@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.healtable.BlockHealTable;
@@ -253,7 +254,11 @@ public class PokecubeItems extends Items
     {
         if (!CompatWrapper.isValid(stack))
             System.out.println(new NullPointerException("Cannot add null stack to holdables " + stack));
-        else heldItems.add(stack);
+        else
+        {
+            OreDictionary.registerOre("pokemob_held", stack);
+            heldItems.add(stack);
+        }
     }
 
     public static void addToHoldables(String item)

@@ -10,7 +10,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -36,10 +35,9 @@ public class ItemHeldItems extends Item
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
     {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("type"))
+        if (stack.getItemDamage() < variants.size())
         {
-            String s = stack.getTagCompound().getString("type");
-            list.add(s);
+            list.add(variants.get(stack.getItemDamage()));
         }
     }
 
@@ -59,11 +57,9 @@ public class ItemHeldItems extends Item
     {
         if (tab != getCreativeTab()) return;
         ItemStack stack;
-        for (String s : variants)
+        for (int i = 0; i < variants.size(); i++)
         {
-            stack = new ItemStack(itemIn);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("type", s);
+            stack = new ItemStack(itemIn, 1, i);
             subItems.add(stack);
         }
         for (IInspectReward reward : PokedexInspector.rewards)
@@ -80,18 +76,8 @@ public class ItemHeldItems extends Item
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        String name = super.getUnlocalizedName();
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "???";
-            if (tag != null)
-            {
-                String stackname = tag.getString("type");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
-            }
-            name = "item." + variant;
-        }
+        if (stack.getItemDamage() >= variants.size()) return super.getUnlocalizedName();
+        String name = "item." + variants.get(stack.getItemDamage());
         return name;
     }
 }

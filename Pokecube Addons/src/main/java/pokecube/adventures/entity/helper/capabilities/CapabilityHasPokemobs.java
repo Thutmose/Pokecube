@@ -28,16 +28,13 @@ import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.PAEventsHandler;
 import pokecube.adventures.events.PAEventsHandler.DataParamHolder;
-import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.network.packets.PacketTrainer;
-import pokecube.core.PokecubeItems;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -580,22 +577,22 @@ public class CapabilityHasPokemobs
 
         public void checkItemAchievement(ItemStack item, EntityPlayer player)
         {
-            Achievement stat = null;
-            if (item.getItem() instanceof ItemBadge)
-            {
-                for (String s : ItemBadge.variants)
-                {
-                    if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
-                    {
-                        stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
-                        break;
-                    }
-                }
-            }
-            if (stat != null)
-            {
-                player.addStat(stat);
-            }
+//            Achievement stat = null;
+//            if (item.getItem() instanceof ItemBadge)
+//            {
+//                for (String s : ItemBadge.variants)
+//                {
+//                    if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
+//                    {
+//                        stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
+//                        break;
+//                    }
+//                }
+//            }
+//            if (stat != null)
+//            {
+//                player.addStat(stat);
+//            }
         }
 
         public void checkDefeatAchievement(EntityPlayer player)

@@ -236,6 +236,7 @@ item.berry.hate1.desc=%1$s somewhat hates this.
 item.berry.hate2.desc=%1$s hates this a lot.
 item.berry.hate3.desc=%1$s hates this very much.
 
+item.badgeunknown.name=??? badge
 item.badgenormal.name=Normal badge
 item.badgefighting.name=Fighting badge
 item.badgeflying.name=Flying badge

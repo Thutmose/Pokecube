@@ -25,19 +25,18 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.achievements.AchievementDefeatLeader;
 import pokecube.adventures.achievements.AchievementDefeatTrainer;
-import pokecube.adventures.achievements.AchievementGetBadge;
 import pokecube.adventures.comands.BattleCommand;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.DefaultRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.DefaultMessager;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
@@ -51,7 +50,6 @@ import pokecube.adventures.handlers.ItemHandler;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.EntityTarget;
-import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.legends.LegendaryConditions;
 import pokecube.adventures.network.PacketPokeAdv;
@@ -61,7 +59,6 @@ import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer.MessageHandlerServer;
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeCore;
-import pokecube.core.PokecubeItems;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.core.common.commands.CommandConfig;
@@ -174,13 +171,13 @@ public class PokecubeAdv
         beatLeader.registerStat();
         AchievementPage.getAchievementPage(0).getAchievements().add(beatLeader);
         AchievementPage.getAchievementPage(0).getAchievements().add(beatTrainer);
-        for (String s : ItemBadge.variants)
-        {
-            Achievement badge = new AchievementGetBadge("pokeadv." + s, "achievement.pokeadv.get." + s, x, y++,
-                    PokecubeItems.getStack(s), beatLeader);
-            badge.registerStat();
-            AchievementPage.getAchievementPage(0).getAchievements().add(badge);
-        }
+//        for (String s : ItemBadge.variants)
+//        {
+//            Achievement badge = new AchievementGetBadge("pokeadv." + s, "achievement.pokeadv.get." + s, x, y++,
+//                    PokecubeItems.getStack(s), beatLeader);
+//            badge.registerStat();
+//            AchievementPage.getAchievementPage(0).getAchievements().add(badge);
+//        }
     }
 
     @EventHandler

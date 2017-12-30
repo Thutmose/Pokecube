@@ -295,8 +295,7 @@ public class WearablesCompat
         @Override
         public thut.wearables.EnumWearable getSlot(ItemStack stack)
         {
-            String name = stack.getItem().getUnlocalizedName(stack).replace("item.", "");
-            return thut.wearables.EnumWearable.valueOf(ItemMegawearable.wearables.get(name));
+            return thut.wearables.EnumWearable.valueOf(ItemMegawearable.getSlot(stack.getItemDamage()));
         }
 
         @SideOnly(Side.CLIENT)

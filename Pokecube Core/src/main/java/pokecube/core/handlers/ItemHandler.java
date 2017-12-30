@@ -30,7 +30,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -60,6 +59,7 @@ import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemHeldItems;
 import pokecube.core.items.berries.BerryManager;
+import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
@@ -264,12 +264,10 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         megaring.setCreativeTab(creativeTabPokecube);
         register(megaring.setRegistryName(PokecubeMod.ID, "megaring"), registry);
-        for (String s : ItemMegawearable.wearables.keySet())
+        for (int i = 0; i < ItemMegawearable.getWearableCount(); i++)
         {
-            ItemStack stack = new ItemStack(PokecubeItems.megaring);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("type", s);
-            PokecubeItems.addSpecificItemStack(s, stack);
+            ItemStack stack = new ItemStack(PokecubeItems.megaring, 1, i);
+            PokecubeItems.addSpecificItemStack(ItemMegawearable.getWearable(i), stack);
         }
 
         for (String s : PokecubeCore.core.getConfig().customMegaStones)
@@ -277,17 +275,15 @@ public class ItemHandler extends Mod_Pokecube_Helper
             if (!HeldItemHandler.megaVariants.contains(s.toLowerCase(Locale.ENGLISH)))
                 HeldItemHandler.megaVariants.add(s.toLowerCase(Locale.ENGLISH));
         }
+        if (PokecubeCore.core.getConfig().customMegaStones.length > 0) HeldItemHandler.sortMegaVariants();
 
         megastone.setCreativeTab(creativeTabPokecube);
         register(megastone.setRegistryName(PokecubeMod.ID, "megastone"), registry);
-        for (int n = 0; n < HeldItemHandler.megaVariants.size(); n++)
+        for (int n = 0; n < ItemMegastone.getStonesCount(); n++)
         {
-            String s = HeldItemHandler.megaVariants.get(n);
-            ItemStack stack = new ItemStack(PokecubeItems.megastone);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("pokemon", s);
-            PokecubeItems.addSpecificItemStack(s, stack);
-            if (n > 1) PokecubeItems.addToHoldables(s);
+            ItemStack stack = new ItemStack(PokecubeItems.megastone, 1, n);
+            PokecubeItems.addSpecificItemStack(ItemMegastone.getStone(n), stack);
+            if (n > 1) PokecubeItems.addToHoldables(stack);
         }
 
         revive.setCreativeTab(creativeTabPokecube);
@@ -364,14 +360,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
         }
 
         PokecubeItems.register(PokecubeItems.held, registry);
-        for (String s : ItemHeldItems.variants)
+        for (int i = 0; i < ItemHeldItems.variants.size(); i++)
         {
-            ItemStack stack = new ItemStack(PokecubeItems.held);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("type", s);
+            ItemStack stack = new ItemStack(PokecubeItems.held, 1, i);
+            String s = ItemHeldItems.variants.get(i);
             PokecubeItems.addSpecificItemStack(s, stack);
             PokecubeItems.addToEvos(s);
-            PokecubeItems.addToHoldables(s);
         }
 
         berryJuice = (new ItemFood(6, 0.6f, false)).setUnlocalizedName("berryjuice");
@@ -388,13 +382,11 @@ public class ItemHandler extends Mod_Pokecube_Helper
         vitamins.setCreativeTab(creativeTabPokecube);
         register(vitamins.setRegistryName(PokecubeMod.ID, "vitamins"), registry);
 
-        for (String s : ItemVitamin.vitamins)
+        for (int i = 0; i < ItemVitamin.vitamins.size(); i++)
         {
-            ItemStack stack = new ItemStack(vitamins);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("vitamin", s);
-            PokecubeItems.addSpecificItemStack(s, stack);
-            PokecubeItems.addToHoldables(s);
+            ItemStack stack = new ItemStack(vitamins, 1, i);
+            PokecubeItems.addSpecificItemStack(ItemVitamin.vitamins.get(i), stack);
+            PokecubeItems.addToHoldables(stack);
         }
     }
 }

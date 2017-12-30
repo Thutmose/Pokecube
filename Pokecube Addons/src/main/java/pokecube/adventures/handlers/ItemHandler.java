@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -44,13 +43,11 @@ public class ItemHandler
     public static void addBadges(Object registry)
     {
         PokecubeItems.register(badges, registry);
-        for (String s : ItemBadge.variants)
+        for (PokeType type : PokeType.values())
         {
-            ItemStack stack = new ItemStack(badges);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("type", s);
-            PokecubeItems.addSpecificItemStack(s, stack);
-            PokecubeItems.addToHoldables(s);
+            ItemStack stack = new ItemStack(badges, 1, type.ordinal());
+            PokecubeItems.addSpecificItemStack("badge_" + type.name, stack);
+            PokecubeItems.addToHoldables(stack);
         }
     }
 

@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import pokecube.core.PokecubeItems;
@@ -17,12 +16,10 @@ public class HeldItemTextureHandler
         @Override
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
-            NBTTagCompound tag = stack.getTagCompound();
             String variant = "???";
-            if (tag != null)
+            if (stack.getItemDamage() < ItemHeldItems.variants.size())
             {
-                String stackname = tag.getString("type");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
+                variant = ItemHeldItems.variants.get(stack.getItemDamage());
             }
             return getLocation(variant);
         }
@@ -30,7 +27,8 @@ public class HeldItemTextureHandler
 
     public static ModelResourceLocation getLocation(String name)
     {
-        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/held"), "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
+        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/held"),
+                "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     public static void registerItemModels()

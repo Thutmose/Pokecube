@@ -4,11 +4,11 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import pokecube.core.PokecubeItems;
 import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.items.megastuff.ItemMegastone;
 
 public class MegaStoneTextureHandler
 {
@@ -17,13 +17,7 @@ public class MegaStoneTextureHandler
         @Override
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "megastone";
-            if (tag != null)
-            {
-                String stackname = tag.getString("pokemon");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
-            }
+            String variant = ItemMegastone.getStone(stack.getItemDamage());
             return getLocation(variant);
         }
     }

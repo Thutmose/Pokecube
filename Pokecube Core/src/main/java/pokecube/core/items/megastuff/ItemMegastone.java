@@ -1,18 +1,47 @@
 package pokecube.core.items.megastuff;
 
+import java.util.Collection;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.handlers.HeldItemHandler;
 
 public class ItemMegastone extends Item
 {
+    private static int                        index      = 0;
+    private static Int2ObjectArrayMap<String> stoneIndex = new Int2ObjectArrayMap<>();
+
+    public static void resetMap()
+    {
+        index = 0;
+        stoneIndex.clear();
+    }
+
+    public static void registerStone(String name)
+    {
+        stoneIndex.put(index++, name);
+    }
+
+    public static int getStonesCount()
+    {
+        return index;
+    }
+
+    public static Collection<String> getStones()
+    {
+        return stoneIndex.values();
+    }
+
+    public static String getStone(int id)
+    {
+        return stoneIndex.get(id);
+    }
+
     public ItemMegastone()
     {
         super();
@@ -26,9 +55,9 @@ public class ItemMegastone extends Item
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
     {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("pokemon"))
+        if (stack.getItemDamage() < getStonesCount())
         {
-            String s = stack.getTagCompound().getString("pokemon");
+            String s = getStone(stack.getItemDamage());
             list.add(s);
         }
     }
@@ -49,11 +78,9 @@ public class ItemMegastone extends Item
     {
         if (tab != getCreativeTab()) return;
         ItemStack stack;
-        for (String s : HeldItemHandler.megaVariants)
+        for (int i = 0; i < getStonesCount(); i++)
         {
-            stack = new ItemStack(itemIn);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("pokemon", s);
+            stack = new ItemStack(itemIn, 1, i);
             subItems.add(stack);
         }
     }
@@ -62,17 +89,8 @@ public class ItemMegastone extends Item
     public String getUnlocalizedName(ItemStack stack)
     {
         String name = super.getUnlocalizedName(stack);
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "megastone";
-            if (tag != null)
-            {
-                String stackname = tag.getString("pokemon");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
-            }
-            name = "item." + variant;
-        }
+        int damage = stack.getItemDamage();
+        name = "item." + getStone(damage);
         return name;
     }
 }

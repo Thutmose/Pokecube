@@ -6,24 +6,25 @@
   },
   "variants": {
     "type": {
-      "badgenormal": {"textures": {"layer0": "pokecube_adventures:items/badgenormal"}},
-      "badgefighting": {"textures": {"layer0": "pokecube_adventures:items/badgefighting"}},
-      "badgeflying": {"textures": {"layer0": "pokecube_adventures:items/badgeflying"}},
-      "badgepoison": {"textures": {"layer0": "pokecube_adventures:items/badgepoison"}},
-      "badgeground": {"textures": {"layer0": "pokecube_adventures:items/badgeground"}},
-      "badgerock": {"textures": {"layer0": "pokecube_adventures:items/badgerock"}},
-      "badgebug": {"textures": {"layer0": "pokecube_adventures:items/badgebug"}},
-      "badgeghost": {"textures": {"layer0": "pokecube_adventures:items/badgeghost"}},
-      "badgesteel": {"textures": {"layer0": "pokecube_adventures:items/badgesteel"}},
-      "badgefire": {"textures": {"layer0": "pokecube_adventures:items/badgefire"}},
-      "badgewater": {"textures": {"layer0": "pokecube_adventures:items/badgewater"}},
-      "badgegrass": {"textures": {"layer0": "pokecube_adventures:items/badgegrass"}},
-      "badgeelectric": {"textures": {"layer0": "pokecube_adventures:items/badgeelectric"}},
-      "badgepsychic": {"textures": {"layer0": "pokecube_adventures:items/badgepsychic"}},
-      "badgeice": {"textures": {"layer0": "pokecube_adventures:items/badgeice"}},
-      "badgedragon": {"textures": {"layer0": "pokecube_adventures:items/badgedragon"}},
-      "badgedark": {"textures": {"layer0": "pokecube_adventures:items/badgedark"}},
-      "badgefairy": {"textures": {"layer0": "pokecube_adventures:items/badgefairy"}}
+      "???": {"textures": {"layer0": "pokecube_adventures:items/badgeunknown"}},
+      "normal": {"textures": {"layer0": "pokecube_adventures:items/badgenormal"}},
+      "fighting": {"textures": {"layer0": "pokecube_adventures:items/badgefighting"}},
+      "flying": {"textures": {"layer0": "pokecube_adventures:items/badgeflying"}},
+      "poison": {"textures": {"layer0": "pokecube_adventures:items/badgepoison"}},
+      "ground": {"textures": {"layer0": "pokecube_adventures:items/badgeground"}},
+      "rock": {"textures": {"layer0": "pokecube_adventures:items/badgerock"}},
+      "bug": {"textures": {"layer0": "pokecube_adventures:items/badgebug"}},
+      "ghost": {"textures": {"layer0": "pokecube_adventures:items/badgeghost"}},
+      "steel": {"textures": {"layer0": "pokecube_adventures:items/badgesteel"}},
+      "fire": {"textures": {"layer0": "pokecube_adventures:items/badgefire"}},
+      "water": {"textures": {"layer0": "pokecube_adventures:items/badgewater"}},
+      "grass": {"textures": {"layer0": "pokecube_adventures:items/badgegrass"}},
+      "electric": {"textures": {"layer0": "pokecube_adventures:items/badgeelectric"}},
+      "psychic": {"textures": {"layer0": "pokecube_adventures:items/badgepsychic"}},
+      "ice": {"textures": {"layer0": "pokecube_adventures:items/badgeice"}},
+      "dragon": {"textures": {"layer0": "pokecube_adventures:items/badgedragon"}},
+      "dark": {"textures": {"layer0": "pokecube_adventures:items/badgedark"}},
+      "fairy": {"textures": {"layer0": "pokecube_adventures:items/badgefairy"}}
     }
   }
 }

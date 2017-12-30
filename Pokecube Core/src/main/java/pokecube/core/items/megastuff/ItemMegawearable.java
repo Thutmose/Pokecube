@@ -1,10 +1,12 @@
 package pokecube.core.items.megastuff;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -13,19 +15,47 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMegawearable extends Item
 {
-    public static Map<String, String> wearables = Maps.newHashMap();
+    private static int                        index         = 0;
+
+    private static Int2ObjectArrayMap<String> wearableIndex = new Int2ObjectArrayMap<>();
+    private static Map<String, String>        wearables     = Maps.newHashMap();
+
+    public static void registerWearable(String name, String slot)
+    {
+        wearableIndex.put(index++, name);
+        wearables.put(name, slot);
+    }
+
+    public static int getWearableCount()
+    {
+        return index;
+    }
+
+    public static Collection<String> getWearables()
+    {
+        return wearableIndex.values();
+    }
+
+    public static String getWearable(int id)
+    {
+        return wearableIndex.get(id);
+    }
+
+    public static String getSlot(int id)
+    {
+        return wearables.get(wearableIndex.get(id));
+    }
 
     static
     {
-        wearables.put("megaring", "FINGER");
-        wearables.put("megabelt", "WAIST");
-        wearables.put("megahat", "HAT");
+        registerWearable("megaring", "FINGER");
+        registerWearable("megabelt", "WAIST");
+        registerWearable("megahat", "HAT");
     }
 
     public ItemMegawearable()
@@ -58,13 +88,9 @@ public class ItemMegawearable extends Item
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
         if (tab != getCreativeTab()) return;
-        ItemStack stack;
-        for (String s : wearables.keySet())
+        for (int i = 0; i < getWearableCount(); i++)
         {
-            stack = new ItemStack(itemIn);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("type", s);
-            subItems.add(stack);
+            subItems.add(new ItemStack(this, 1, i));
         }
     }
 
@@ -72,17 +98,8 @@ public class ItemMegawearable extends Item
     public String getUnlocalizedName(ItemStack stack)
     {
         String name = super.getUnlocalizedName(stack);
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "megaring";
-            if (tag != null)
-            {
-                String stackname = tag.getString("type");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
-            }
-            name = "item." + variant;
-        }
+        String variant = getWearable(stack.getItemDamage());
+        name = "item." + variant;
         return name;
     }
 

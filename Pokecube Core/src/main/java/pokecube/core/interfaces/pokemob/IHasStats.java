@@ -1,5 +1,6 @@
 package pokecube.core.interfaces.pokemob;
 
+import net.minecraft.entity.IEntityOwnable;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -89,7 +90,8 @@ public interface IHasStats extends IHasEntry
     default int getCatchRate()
     {
         return getPokedexEntry().isShadowForme ? 0
-                : getPokemonAIState(DENYCAPTURE) ? 0 : getPokedexEntry().getCatchRate();
+                : getPokemonAIState(DENYCAPTURE) ? 0
+                        : getEntity() instanceof IEntityOwnable ? getPokedexEntry().getCatchRate() : 0;
     }
 
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}

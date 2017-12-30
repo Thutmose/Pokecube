@@ -4,11 +4,13 @@ import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubeBlocks;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -17,6 +19,7 @@ import java.util.regex.Pattern;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
@@ -29,6 +32,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.oredict.OreDictionary;
@@ -41,9 +45,11 @@ import pokecube.core.blocks.pokecubeTable.BlockPokecubeTable;
 import pokecube.core.blocks.repel.BlockRepel;
 import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.database.Database;
+import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
+import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemFossil;
 import pokecube.core.items.ItemHeldItems;
@@ -61,20 +67,12 @@ import thut.lib.CompatWrapper;
 
 public class PokecubeItems extends Items
 {
-    private static HashMap<String, ItemStack>        itemstacks     = new HashMap<String, ItemStack>();
-    private static HashMap<String, Item>             items          = new HashMap<String, Item>();
-
-    private static HashMap<String, Block>            blocks         = new HashMap<String, Block>();
+    private static Set<String>                       items          = Sets.newHashSet();
 
     private static HashMap<ResourceLocation, Item[]> pokecubes      = new HashMap<ResourceLocation, Item[]>();
 
     /** Items that are allowed to be held by pokemobs */
     public static HashSet<ItemStack>                 heldItems      = new HashSet<ItemStack>();
-
-    private static HashSet<Block>                    allBlocks      = new HashSet<Block>();
-
-    /** Items which will be considered for evolution by pokemobs */
-    public static HashSet<ItemStack>                 evoItems       = new HashSet<ItemStack>();
 
     /** contains pokecubes that should be rendered using the default renderer */
     private static Set<ResourceLocation>             cubeIds        = new HashSet<>();
@@ -187,30 +185,22 @@ public class PokecubeItems extends Items
      * @param item */
     public static void addGeneric(String name, Object item)
     {
-        if (items.containsKey(name.toLowerCase(java.util.Locale.ENGLISH).trim())) return;
+        name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
+        if (items.contains(name)) return;
 
+        items.add(name);
         if (item instanceof ItemStack)
         {
-            itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), (ItemStack) item);
-            Item i = ((ItemStack) item).getItem();
-            items.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), i);
-            Block b = Block.getBlockFromItem(i);
-            if (b != null) blocks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), b);
+            OreDictionary.registerOre(name, (ItemStack) item);
         }
         if (item instanceof Item)
         {
-            items.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), (Item) item);
-            itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), new ItemStack((Item) item));
-            if (Block.getBlockFromItem((Item) item) != null)
-                blocks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), Block.getBlockFromItem((Item) item));
+            OreDictionary.registerOre(name, (Item) item);
         }
         if (item instanceof Block)
         {
-            blocks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), (Block) item);
-            itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), new ItemStack((Block) item));
-            items.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), Item.getItemFromBlock((Block) item));
+            OreDictionary.registerOre(name, (Block) item);
         }
-
     }
 
     public static void addMeteorDrop(ItemStack stack, int weight)
@@ -235,13 +225,13 @@ public class PokecubeItems extends Items
      * @param item */
     public static void addSpecificItemStack(String name, ItemStack item)
     {
-        itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), item);
+        OreDictionary.registerOre(name.toLowerCase(java.util.Locale.ENGLISH).trim(), item);
     }
 
     public static void addToEvos(ItemStack stack)
     {
         if (!isValidHeldItem(stack)) addToHoldables(stack);
-        if (CompatWrapper.isValid(stack) && !isValidEvoItem(stack)) evoItems.add(stack);
+        if (CompatWrapper.isValid(stack) && !isValidEvoItem(stack)) OreDictionary.registerOre("pokemob_evo", stack);
     }
 
     public static void addToEvos(String item)
@@ -257,7 +247,8 @@ public class PokecubeItems extends Items
         else
         {
             OreDictionary.registerOre("pokemob_held", stack);
-            heldItems.add(stack);
+            heldItems.clear();
+            heldItems.addAll(OreDictionary.getOres("pokemob_held"));
         }
     }
 
@@ -285,18 +276,10 @@ public class PokecubeItems extends Items
         }
     }
 
-    public static HashSet<Block> getAllBlocks()
-    {
-        if (allBlocks.size() == 0)
-        {
-            initAllBlocks();
-        }
-        return allBlocks;
-    }
-
     public static Block getBlock(String name)
     {
-        return blocks.get(name.toLowerCase(java.util.Locale.ENGLISH).trim());
+        Item item = getItem(name);
+        return item == null ? null : Block.getBlockFromItem(item);
     }
 
     public static ResourceLocation getCubeId(Block item)
@@ -395,22 +378,22 @@ public class PokecubeItems extends Items
     {
         Item item = Item.REGISTRY.getObject(new ResourceLocation(name));
         if (item != null) return item;
-
-        return items.get(name.toLowerCase(java.util.Locale.ENGLISH).trim());
+        name = name.toLowerCase(Locale.ENGLISH).trim();
+        NonNullList<ItemStack> stack = OreDictionary.getOres(name);
+        if (stack.size() > 0) item = stack.get(0).getItem();
+        return item;
     }
 
     public static ItemStack getRandomMeteorDrop()
     {
         if (meteorDrops.size() == 0) return CompatWrapper.nullStack;
-        Collections.shuffle(meteorDrops);
-        return meteorDrops.get(0);
+        return meteorDrops.get(new Random().nextInt(meteorDrops.size()));
     }
 
     public static ItemStack getRandomSpawnerDrop()
     {
         if (spawnerDrops.size() == 0) return CompatWrapper.nullStack;
-        Collections.shuffle(spawnerDrops);
-        return spawnerDrops.get(0);
+        return spawnerDrops.get(new Random().nextInt(spawnerDrops.size()));
     }
 
     public static ItemStack getStack(String name)
@@ -421,59 +404,25 @@ public class PokecubeItems extends Items
     public static ItemStack getStack(String name, boolean stacktrace)
     {
         if (name == null) return CompatWrapper.nullStack;
-        name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
-        if (itemstacks.containsKey(name) && CompatWrapper.isValid(itemstacks.get(name)))
-            return itemstacks.get(name).copy();
-
-        String key = "";
-        int n = 0;
-        for (String s : itemstacks.keySet())
+        Item item = getItem(name);
+        if (item != null) { return new ItemStack(item); }
+        if (!OreDictionary.doesOreNameExist(name) && PokecubeMod.debug)
         {
-            String[] args = s.split(":");
-            if (args.length > 1)
-            {
-                if (args[1].equals(name))
-                {
-                    n++;
-                    key = s;
-                }
-            }
+            PokecubeMod.log(Level.WARNING, name + " Not found in list of items.", new NullPointerException());
         }
-        if (n > 1)
-        {
-            System.err.println("Multiple instances of " + name + " Please specify with modid");
-        }
-        if (!key.isEmpty())
-        {
-            itemstacks.put(name, itemstacks.get(key));
-            return itemstacks.get(name).copy();
-        }
-        System.err.println(name + " Not found in list of items.");
-        if (stacktrace)
-        {
-            Thread.dumpStack();
-        }
-        return CompatWrapper.nullStack;
+        NonNullList<ItemStack> stacks = OreDictionary.getOres(name);
+        return stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0);
     }
 
     public static void init()
     {
         initVanillaHeldItems();
-
-        for (int i = 0; i < Short.MAX_VALUE; i++)
-        {
-            Item item = Item.getItemById(i);
-            if (item != null)
-            {
-                addGeneric(item.getRegistryName().toString(), item);
-            }
-
-        }
         grasses.clear();
-        for (Block b : getAllBlocks())
+        Iterator<Block> iter = Block.REGISTRY.iterator();
+        while (iter.hasNext())
         {
+            Block b = iter.next();
             if (grasses.contains(b)) continue;
-
             if (b.getDefaultState().getMaterial() == Material.GRASS) grasses.add(b);
             if (b.getDefaultState().getMaterial() == Blocks.RED_FLOWER.getDefaultState().getMaterial()) grasses.add(b);
             if (b.getDefaultState().getMaterial() == Blocks.TALLGRASS.getDefaultState().getMaterial())
@@ -482,15 +431,6 @@ public class PokecubeItems extends Items
                 PokecubeItems.grasses.add(b);
         }
         postInitFossils();
-    }
-
-    public static void initAllBlocks()
-    {
-        allBlocks.clear();
-        for (int i = 0; i < 4096; i++)
-        {
-            if (Block.getBlockById(i) != null) allBlocks.add(Block.getBlockById(i));
-        }
     }
 
     private static void initVanillaHeldItems()
@@ -530,6 +470,7 @@ public class PokecubeItems extends Items
     {
         boolean ret = false;
         if (!CompatWrapper.isValid(stack)) return false;
+        NonNullList<ItemStack> evoItems = OreDictionary.getOres("pokemob_evo");
         for (ItemStack s : evoItems)
         {
             if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
@@ -539,47 +480,14 @@ public class PokecubeItems extends Items
 
     public static boolean isValidHeldItem(ItemStack stack)
     {
-        boolean ret = false;
         if (!CompatWrapper.isValid(stack)) return false;
-        boolean hasANull = false;
+        if (stack.hasCapability(IPokemobUseable.USABLEITEM_CAP, null)) return true;
+        List<ItemStack> heldItems = OreDictionary.getOres("pokemob_held");
         for (ItemStack s : heldItems)
         {
-            if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
-            hasANull = hasANull || !CompatWrapper.isValid(s);
+            if (Tools.isSameStack(s, stack)) return true;
         }
-        while (hasANull)
-        {
-            for (ItemStack s : heldItems)
-            {
-                hasANull = false;
-                if (!CompatWrapper.isValid(s))
-                {
-                    heldItems.remove(s);
-                    hasANull = true;
-                    break;
-                }
-            }
-        }
-        hasANull = false;
-        for (ItemStack s : evoItems)
-        {
-            if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
-            hasANull = hasANull || !CompatWrapper.isValid(s);
-        }
-        while (hasANull)
-        {
-            for (ItemStack s : heldItems)
-            {
-                hasANull = false;
-                if (!CompatWrapper.isValid(s))
-                {
-                    heldItems.remove(s);
-                    hasANull = true;
-                    break;
-                }
-            }
-        }
-        return ret;
+        return false;
     }
 
     public static void loadTime(NBTTagCompound nbt)
@@ -631,10 +539,10 @@ public class PokecubeItems extends Items
         for (ItemStack s : fossils.keySet())
         {
             PokedexEntry num = fossils.get(s);
-            if (!PokecubeMod.registered.get(num.getPokedexNb()))
+            if (!Pokedex.getInstance().isRegistered(num))
             {
                 toRemove.add(s);
-                System.out.println("Should remove " + Database.getEntry(num.getPokedexNb()) + " " + s.getDisplayName());
+                if (PokecubeMod.debug) PokecubeMod.log("Removing Fossil " + num + " " + s.getDisplayName());
             }
         }
         for (ItemStack s : toRemove)
@@ -676,18 +584,6 @@ public class PokecubeItems extends Items
     public static void registerItemTexture(Item item, int meta, ModelResourceLocation loc)
     {
         ModelLoader.setCustomModelResourceLocation(item, meta, loc);
-    }
-
-    public static void removeFromEvos(String item)
-    {
-        ItemStack stack = getStack(item);
-        evoItems.remove(stack);
-    }
-
-    public static void removeFromHoldables(String item)
-    {
-        ItemStack stack = getStack(item);
-        heldItems.remove(stack);
     }
 
     public static void saveTime(NBTTagCompound nbt)

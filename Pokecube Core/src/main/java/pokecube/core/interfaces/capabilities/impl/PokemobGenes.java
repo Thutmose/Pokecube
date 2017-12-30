@@ -55,6 +55,7 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     public static void registerClass(Class<? extends EntityLiving> clazz, PokedexEntry entry)
     {
         if (classMap.containsValue(entry)) throw new IllegalArgumentException("Cannot register " + entry + " twice!");
+        PokecubeMod.pokedexmap.put(entry, clazz);
         classMap.put(clazz, entry);
     }
 

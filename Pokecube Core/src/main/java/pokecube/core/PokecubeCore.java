@@ -263,7 +263,7 @@ public class PokecubeCore extends PokecubeMod
     {
         Entity entity = null;
         Class<?> clazz = null;
-        if (entry == null || !registered.get(entry.getPokedexNb()))
+        if (entry == null || !Pokedex.getInstance().isRegistered(entry))
         {
             PokecubeMod.log(Level.WARNING, "Attempted to create unregistered mob, " + entry,
                     new IllegalArgumentException());
@@ -423,13 +423,13 @@ public class PokecubeCore extends PokecubeMod
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
         helper.postInit();
         removeAllMobs();
+        PokecubeItems.init();
     }
 
     @EventHandler
     private void postInit(FMLPostInitializationEvent evt)
     {
         if (PokecubeMod.debug) PokecubeMod.log("Pokecube Core Post Init");
-        PokecubeItems.init();
         Database.postInit();
         StarterInfo.processStarterInfo();
         AbilityManager.init();
@@ -673,7 +673,6 @@ public class PokecubeCore extends PokecubeMod
                     pokemobEggs.put(new Integer(entry.getPokedexNb()),
                             CompatWrapper.getEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
                 }
-                pokedexmap.put(entry, clazz);
                 PokemobGenes.registerClass(clazz, entry);
                 registered.set(entry.getPokedexNb());
                 Pokedex.getInstance().registerPokemon(entry);

@@ -3,17 +3,16 @@
  */
 package pokecube.core;
 
-import static pokecube.core.PokecubeItems.removeFromHoldables;
 import static pokecube.core.handlers.Config.GUICHOOSEFIRSTPOKEMOB_ID;
 import static pokecube.core.handlers.Config.GUIDISPLAYPOKECUBEINFO_ID;
 import static pokecube.core.handlers.Config.GUIDISPLAYTELEPORTINFO_ID;
 import static pokecube.core.handlers.Config.GUIPC_ID;
 import static pokecube.core.handlers.Config.GUIPOKECENTER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEDEX_ID;
-import static pokecube.core.handlers.Config.GUIPOKEWATCH_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBAI_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBSPAWNER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOB_ID;
+import static pokecube.core.handlers.Config.GUIPOKEWATCH_ID;
 import static pokecube.core.handlers.Config.GUITMTABLE_ID;
 import static pokecube.core.handlers.Config.GUITRADINGTABLE_ID;
 
@@ -163,8 +162,6 @@ public class Mod_Pokecube_Helper
         addToList(config.getIndustrial(), config.blocksIndustrial);
         addToList(config.getWoodTypes(), config.blocksWood);
         addToList(config.getPlantTypes(), config.blocksLeaves);
-
-        removeFromHoldables("tm");
     }
 
     public void registerSound(SoundEvent sound, ResourceLocation location)

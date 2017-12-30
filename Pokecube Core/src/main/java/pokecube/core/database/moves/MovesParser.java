@@ -1,6 +1,5 @@
 package pokecube.core.database.moves;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -11,7 +10,6 @@ import javax.annotation.Nullable;
 
 import pokecube.core.database.Database;
 import pokecube.core.database.moves.MoveEntry.Category;
-import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.database.moves.json.JsonMoves.MoveJsonEntry;
 import pokecube.core.database.moves.json.JsonMoves.MovesJson;
 import pokecube.core.interfaces.IMoveConstants;
@@ -59,10 +57,8 @@ public class MovesParser
         return false;
     }
 
-    public static void load(File file) throws IOException
+    public static void load(MovesJson moves) throws IOException
     {
-        JsonMoves.loadMoves(file);
-        MovesJson moves = JsonMoves.getMoves(file);
         for (int i = 0; i < moves.moves.size(); i++)
         {
             MoveJsonEntry entry = moves.moves.get(i);

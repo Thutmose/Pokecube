@@ -1,12 +1,17 @@
 package pokecube.core.moves.implementations;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 
+import pokecube.core.database.Database;
+import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.moves.MoveEntry;
+import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveAnimation;
@@ -43,19 +48,19 @@ public class MovesAdder implements IMoveConstants
     {
         for (Move_Base move : MovesUtils.moves.values())
         {
-            if (move.getAnimation() == null)
+            if (move.move.baseEntry != null && move.move.baseEntry.animations != null
+                    && !move.move.baseEntry.animations.isEmpty())
             {
-                if (move.move.baseEntry != null && move.move.baseEntry.animations != null
-                        && !move.move.baseEntry.animations.isEmpty())
-                {
-                    move.setAnimation(new AnimationMultiAnimations(move.move));
-                    continue;
-                }
-                String anim = move.move.animDefault;
-                if (anim == null) continue;
-                IMoveAnimation animation = MoveAnimationHelper.getAnimationPreset(anim);
-                if (animation != null) move.setAnimation(animation);
+                if (PokecubeMod.debug)
+                    PokecubeMod.log(move.move.name + ": animations: " + move.move.baseEntry.animations);
+                move.setAnimation(new AnimationMultiAnimations(move.move));
+                continue;
             }
+            String anim = move.move.animDefault;
+            if (anim == null || anim.equals("none")) continue;
+            if (PokecubeMod.debug) PokecubeMod.log(move.move.name + ": preset animation: " + move.move.animDefault);
+            IMoveAnimation animation = MoveAnimationHelper.getAnimationPreset(anim);
+            if (animation != null) move.setAnimation(animation);
         }
     }
 
@@ -68,6 +73,21 @@ public class MovesAdder implements IMoveConstants
     {
         registerAutodetect();
         registerRemainder();
+        // Reload the moves databases to apply the animations to the newly added
+        // moves.
+        for (String s : Database.configDatabases.get(EnumDatabase.MOVES.ordinal()))
+        {
+            try
+            {
+                File moves = new File(Database.CONFIGLOC + s);
+                File anims = new File(Database.CONFIGLOC + "animations.json");
+                JsonMoves.merge(anims, moves);
+            }
+            catch (Exception e1)
+            {
+                PokecubeMod.log(Level.SEVERE, "Error with " + Database.CONFIGLOC + s, e1);
+            }
+        }
     }
 
     // Finds all Move_Basics inside this package and registers them.

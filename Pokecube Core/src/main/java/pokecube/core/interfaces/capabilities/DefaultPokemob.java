@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.pathfinding.PathNodeType;
@@ -99,6 +100,25 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
             setTargetID(-1);
             getEntity().getEntityData().setString("lastMoveHitBy", "");
         }
+        else if (entity != null)
+        {
+            /** Ensure that the target being set is actually a valid target. */
+            if (entity == getEntity())
+            {
+                getEntity().setAttackTarget(null);
+                return;
+            }
+            else if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwner() == getOwner())
+            {
+                getEntity().setAttackTarget(null);
+                return;
+            }
+            else if (!AIFindTarget.validTargets.apply(entity))
+            {
+                getEntity().setAttackTarget(null);
+                return;
+            }
+        }
         if (entity == null || remote) return;
         setPokemonAIState(SITTING, false);
         setTargetID(entity.getEntityId());
@@ -141,7 +161,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
     @Override
     public boolean selfManaged()
     {
-        return true;
+        return false;
     }
 
     @Override

@@ -5,8 +5,6 @@ package pokecube.core.entity.pokemobs.helper;
 
 import javax.annotation.Nullable;
 
-import org.nfunk.jep.JEP;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
@@ -17,14 +15,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
-import pokecube.core.database.Pokedex;
-import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.events.KillEvent;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -33,16 +27,11 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
 public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 {
-    double      moveSpeed;
-    private int killCounter = 0;
-    private int resetTick   = 0;
-
     public EntityStatsPokemob(World world)
     {
         super(world);
@@ -59,7 +48,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         // Knockback Resistance - default 0.0D - min 0.0D - max 1.0D
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(10);
         // Movement Speed - default 0.699D - min 0.0D - max Double.MAX_VALUE
-        moveSpeed = 0.6f;
+        float moveSpeed = 0.6f;
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
         // Attack Damage - default 2.0D - min 0.0D - max Doubt.MAX_VALUE
     }
@@ -84,7 +73,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
             // Don't apply the damage from the burning when on fire, the status
             // should handle that.
             if (source.isFireDamage() && (pokemobCap.getStatus() & IMoveConstants.STATUS_BRN) >= 0) { return false; }
-            
+
             if (source.isExplosion() && sourceMob != null
                     && pokemobCap.isType(PokeType.getType("ghost"))) { return false; }
 
@@ -239,96 +228,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         }
 
         return super.isEntityInvulnerable(source);
-    }
-
-    /** This method gets called when the entity kills another one. */
-    @Override
-    public void onKillEntity(EntityLivingBase attacked)
-    {
-        if (getEntityWorld().isRemote) return;
-        IPokemob attacker = pokemobCap;
-        IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
-        if (PokecubeCore.core.getConfig().nonPokemobExp && attackedMob == null)
-        {
-            JEP parser = new JEP();
-            parser.initFunTab(); // clear the contents of the function table
-            parser.addStandardFunctions();
-            parser.initSymTab(); // clear the contents of the symbol table
-            parser.addStandardConstants();
-            parser.addComplex();
-            parser.addVariable("h", 0);
-            parser.addVariable("a", 0);
-            parser.parseExpression(PokecubeCore.core.getConfig().nonPokemobExpFunction);
-            parser.setVarValue("h", attacked.getMaxHealth());
-            parser.setVarValue("a", attacked.getTotalArmorValue());
-            int exp = (int) parser.getValue();
-            if (parser.hasError()) exp = 0;
-            attacker.setExp(attacker.getExp() + exp, true);
-            return;
-        }
-        if (attackedMob != null && attacked.getHealth() <= 0)
-        {
-            boolean giveExp = !attackedMob.isShadow();
-            if (killCounter == 0)
-            {
-                resetTick = ticksExisted;
-            }
-            killCounter++;
-            if (resetTick < ticksExisted - 100)
-            {
-                killCounter = 0;
-            }
-            giveExp = giveExp && killCounter <= 5;
-            boolean pvp = attackedMob.getPokemonAIState(IMoveConstants.TAMED)
-                    && (attackedMob.getPokemonOwner() instanceof EntityPlayer);
-            if (pvp && !PokecubeMod.core.getConfig().pvpExp)
-            {
-                giveExp = false;
-            }
-            if ((attackedMob.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
-            {
-                giveExp = false;
-            }
-            KillEvent event = new KillEvent(attacker, attackedMob, giveExp);
-            MinecraftForge.EVENT_BUS.post(event);
-            giveExp = event.giveExp;
-            if (event.isCanceled())
-            {
-
-            }
-            else if (giveExp)
-            {
-                attacker.setExp(attacker.getExp() + Tools.getExp(
-                        (float) (pvp ? PokecubeMod.core.getConfig().pvpExpMultiplier
-                                : PokecubeCore.core.getConfig().expScaleFactor),
-                        attackedMob.getBaseXP(), attackedMob.getLevel()), true);
-                byte[] evsToAdd = Pokedex.getInstance().getEntry(attackedMob.getPokedexNb()).getEVs();
-                attacker.addEVs(evsToAdd);
-            }
-            Entity targetOwner = attackedMob.getPokemonOwner();
-            pokemobCap.displayMessageToOwner(
-                    new TextComponentTranslation("pokemob.action.faint.enemy", attackedMob.getPokemonDisplayName()));
-            if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner)
-            {
-                setAttackTarget((EntityLivingBase) targetOwner);
-            }
-            else
-            {
-                setAttackTarget(null);
-            }
-            if (pokemobCap.getPokedexEntry().isFood(attackedMob.getPokedexEntry())
-                    && attacker.getPokemonAIState(IMoveConstants.HUNTING))
-            {
-                attacker.eat(getAttackTarget());
-                if (attacked instanceof EntityPokemob) ((EntityPokemob) attacked).wasEaten = true;
-                attacker.setPokemonAIState(IMoveConstants.HUNTING, false);
-                getNavigator().clearPathEntity();
-            }
-        }
-        else
-        {
-            setAttackTarget(null);
-        }
     }
 
     @Override

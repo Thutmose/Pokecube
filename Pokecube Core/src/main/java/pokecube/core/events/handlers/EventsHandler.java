@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
+import org.nfunk.jep.JEP;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -33,6 +35,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -56,6 +59,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
@@ -68,6 +72,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -90,6 +95,7 @@ import pokecube.core.entity.pokemobs.genetics.GeneticsManager.GeneticsProvider;
 import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
+import pokecube.core.events.KillEvent;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
@@ -792,6 +798,43 @@ public class EventsHandler
         dropper.setHeldItem(CompatWrapper.nullStack);
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void dropEvent(LivingDropsEvent event)
+    {
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getEntity());
+        if (pokemob != null)
+        {
+            event.getEntityLiving().captureDrops = true;
+            if (!pokemob.getPokemonAIState(IMoveConstants.TAMED))
+            {
+                for (int i = 0; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
+                {
+                    ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
+                    if (!stack.isEmpty()) event.getEntityLiving().entityDropItem(stack.copy(), 0.0f);
+                    pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
+                }
+                if (pokemob.getPokedexEntry().lootTable == null)
+                {
+                    List<ItemStack> drops = pokemob.getPokedexEntry().getRandomDrops(event.getLootingLevel());
+                    for (ItemStack stack : drops)
+                    {
+                        if (event.getEntityLiving().isBurning() && stack != CompatWrapper.nullStack)
+                        {
+                            ItemStack newDrop = FurnaceRecipes.instance().getSmeltingResult(stack);
+                            if (!newDrop.isEmpty()) stack = newDrop.copy();
+                        }
+                        if (!stack.isEmpty()) event.getEntityLiving().entityDropItem(stack, 0.5f);
+                    }
+                }
+            }
+            else
+            {
+                event.getDrops().clear();
+            }
+            event.getEntityLiving().captureDrops = false;
+        }
+    }
+
     @SubscribeEvent
     public void KillEvent(pokecube.core.events.KillEvent evt)
     {
@@ -845,7 +888,12 @@ public class EventsHandler
         DamageSource damageSource = evt.getSource();
         if (damageSource instanceof PokemobDamageSource)
         {
-            ((PokemobDamageSource) damageSource).getImmediateSource().onKillEntity(evt.getEntityLiving());
+            damageSource.getImmediateSource().onKillEntity(evt.getEntityLiving());
+        }
+        IPokemob attacker = CapabilityPokemob.getPokemobFor(damageSource.getImmediateSource());
+        if (attacker != null && damageSource.getImmediateSource() instanceof EntityLiving)
+        {
+            handleExp((EntityLiving) damageSource.getImmediateSource(), attacker, evt.getEntityLiving());
         }
     }
 
@@ -1080,6 +1128,81 @@ public class EventsHandler
                 PacketPokecube.sendMessage(event.getEntityPlayer(), pokecube.getEntityId(),
                         pokecube.world.getTotalWorldTime() + pokecube.resetTime);
             }
+        }
+    }
+
+    private void handleExp(EntityLiving pokemob, IPokemob attacker, EntityLivingBase attacked)
+    {
+        IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
+        if (PokecubeCore.core.getConfig().nonPokemobExp && attackedMob == null)
+        {
+            JEP parser = new JEP();
+            parser.initFunTab(); // clear the contents of the function table
+            parser.addStandardFunctions();
+            parser.initSymTab(); // clear the contents of the symbol table
+            parser.addStandardConstants();
+            parser.addComplex();
+            parser.addVariable("h", 0);
+            parser.addVariable("a", 0);
+            parser.parseExpression(PokecubeCore.core.getConfig().nonPokemobExpFunction);
+            parser.setVarValue("h", attacked.getMaxHealth());
+            parser.setVarValue("a", attacked.getTotalArmorValue());
+            int exp = (int) parser.getValue();
+            if (parser.hasError()) exp = 0;
+            attacker.setExp(attacker.getExp() + exp, true);
+            return;
+        }
+        if (attackedMob != null && attacked.getHealth() <= 0)
+        {
+            boolean giveExp = !attackedMob.isShadow();
+            boolean pvp = attackedMob.getPokemonAIState(IMoveConstants.TAMED)
+                    && (attackedMob.getPokemonOwner() instanceof EntityPlayer);
+            if (pvp && !PokecubeMod.core.getConfig().pvpExp)
+            {
+                giveExp = false;
+            }
+            if ((attackedMob.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
+            {
+                giveExp = false;
+            }
+            KillEvent event = new KillEvent(attacker, attackedMob, giveExp);
+            MinecraftForge.EVENT_BUS.post(event);
+            giveExp = event.giveExp;
+            if (event.isCanceled())
+            {
+
+            }
+            else if (giveExp)
+            {
+                attacker.setExp(attacker.getExp() + Tools.getExp(
+                        (float) (pvp ? PokecubeMod.core.getConfig().pvpExpMultiplier
+                                : PokecubeCore.core.getConfig().expScaleFactor),
+                        attackedMob.getBaseXP(), attackedMob.getLevel()), true);
+                byte[] evsToAdd = Pokedex.getInstance().getEntry(attackedMob.getPokedexNb()).getEVs();
+                attacker.addEVs(evsToAdd);
+            }
+            Entity targetOwner = attackedMob.getPokemonOwner();
+            attacker.displayMessageToOwner(
+                    new TextComponentTranslation("pokemob.action.faint.enemy", attackedMob.getPokemonDisplayName()));
+            if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner)
+            {
+                pokemob.setAttackTarget((EntityLivingBase) targetOwner);
+            }
+            else
+            {
+                pokemob.setAttackTarget(null);
+            }
+            if (attacker.getPokedexEntry().isFood(attackedMob.getPokedexEntry())
+                    && attacker.getPokemonAIState(IMoveConstants.HUNTING))
+            {
+                attacker.eat(pokemob.getAttackTarget());
+                attacker.setPokemonAIState(IMoveConstants.HUNTING, false);
+                pokemob.getNavigator().clearPathEntity();
+            }
+        }
+        else
+        {
+            pokemob.setAttackTarget(null);
         }
     }
 }

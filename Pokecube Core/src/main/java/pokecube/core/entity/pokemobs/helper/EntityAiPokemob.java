@@ -17,7 +17,6 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -31,7 +30,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.pokemob.PokemobAILook;
-import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.ai.utils.PokemobJumpHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
@@ -42,7 +40,6 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
-import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.ILogicRunnable;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -483,31 +480,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.limbSwing += this.limbSwingAmount;
     }
 
-    public void moveRelative(float strafe, float up, float forward, float friction)
-    {
-        float f = strafe * strafe + up * up + forward * forward;
-
-        if (f >= 1.0E-4F)
-        {
-            f = MathHelper.sqrt(f);
-
-            if (f < 1.0F)
-            {
-                f = 1.0F;
-            }
-
-            f = friction / f;
-            strafe = strafe * f;
-            up = up * f;
-            forward = forward * f;
-            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F);
-            float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F);
-            this.motionX += (double) (strafe * f2 - forward * f1);
-            this.motionY += (double) up;
-            this.motionZ += (double) (forward * f2 + strafe * f1);
-        }
-    }
-
     @Override
     protected void onDeathUpdate()
     {
@@ -521,7 +493,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (!pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
         {
-            AISaveHandler.instance().removeAI(this);
             if (this.getHeldItemMainhand() != CompatWrapper.nullStack) PokecubeItems.deValidate(getHeldItemMainhand());
         }
         super.onDeathUpdate();
@@ -551,14 +522,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         if (pokemobCap.getPokedexEntry().floats() || pokemobCap.getPokedexEntry().flys()) fallDistance = 0;
         dimension = getEntityWorld().provider.getDimension();
+        // Ensure that these use the pokecube ones instead of vanilla
+        this.navigator = getNavigator();
+        this.moveHelper = getMoveHelper();
+        this.jumpHelper = getJumpHelper();
         super.onUpdate();
-        for (ILogicRunnable logic : pokemobCap.aiStuff.aiLogic)
+        if (!pokemobCap.selfManaged()) for (ILogicRunnable logic : pokemobCap.getAI().aiLogic)
         {
             logic.doServerTick(getEntityWorld());
-        }
-        if (egg != null && egg.isDead)
-        {
-            egg = null;
         }
         headRotationOld = headRotation;
         if (looksWithInterest)
@@ -607,35 +578,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
     }
 
-    /////////////////////////// Interaction
-    /////////////////////////// logic/////////////////////////////////////////////////////
-    // 1.11
-    public boolean processInteract(EntityPlayer player, EnumHand hand)
-    {
-        return processInteract(player, hand, player.getHeldItem(hand));
-    }
-
-    // 1.10
-    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
-    {
-        return false;
-    }
-
-    @Override
-    public void setAttackTarget(EntityLivingBase entity)
-    {
-        if (entity != null && entity.equals(pokemobCap.getPokemonOwner())) { return; }
-        if (entity != null && entity.equals(this)) { return; }
-        super.setAttackTarget(entity);
-    }
-
     @Override
     public void setDead()
     {
         if (addedToChunk)
         {
             PokecubeSerializer.getInstance().removePokemob(pokemobCap);
-            AISaveHandler.instance().removeAI(this);
             if (pokemobCap.getHome() != null && pokemobCap.getHome().getY() > 0
                     && getEntityWorld().isAreaLoaded(pokemobCap.getHome(), 2))
             {
@@ -661,43 +609,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             isJumping = pokemobCap.getPokemonAIState(IMoveConstants.JUMPING);
         }
-    }
-
-    @Override
-    protected void updateEntityActionState()
-    {
-        ++this.idleTime;
-        this.getEntityWorld().profiler.startSection("checkDespawn");
-        this.despawnEntity();
-        this.getEntityWorld().profiler.endSection();
-        this.getEntityWorld().profiler.startSection("sensing");
-        this.senses.clearSensingCache();
-        this.getEntityWorld().profiler.endSection();
-        this.getEntityWorld().profiler.startSection("targetSelector");
-        this.targetTasks.onUpdateTasks();
-        this.getEntityWorld().profiler.endSection();
-        this.getEntityWorld().profiler.startSection("goalSelector");
-        this.tasks.onUpdateTasks();
-        this.getEntityWorld().profiler.endSection();
-        this.getEntityWorld().profiler.startSection("navigation");
-        this.getNavigator().onUpdateNavigation();
-        this.getEntityWorld().profiler.endSection();
-        this.getEntityWorld().profiler.startSection("mob tick");
-        // Run last tick's results from AI stuff
-        pokemobCap.aiStuff.runServerThreadTasks(getEntityWorld());
-        // Schedule AIStuff to tick for next tick.
-        AIThreadManager.scheduleAITick(pokemobCap.aiStuff);
-        this.updateAITasks();
-        this.getEntityWorld().profiler.endSection();
-        this.getEntityWorld().profiler.startSection("controls");
-        this.getEntityWorld().profiler.startSection("move");
-        this.getMoveHelper().onUpdateMoveHelper();
-        this.getEntityWorld().profiler.endStartSection("look");
-        this.getLookHelper().onUpdateLook();
-        this.getEntityWorld().profiler.endStartSection("jump");
-        this.getJumpHelper().doJump();
-        this.getEntityWorld().profiler.endSection();
-        this.getEntityWorld().profiler.endSection();
     }
 
     @Override

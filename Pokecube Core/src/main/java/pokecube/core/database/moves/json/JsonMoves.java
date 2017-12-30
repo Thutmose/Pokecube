@@ -12,10 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import pokecube.core.database.moves.MovesParser;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.implementations.MovesAdder;
 
 public class JsonMoves
 {
@@ -42,6 +47,13 @@ public class JsonMoves
         public String  duration  = "5";
         public String  starttick = "0";
         public boolean applyAfter;
+
+        @Override
+        public String toString()
+        {
+            return "preset: " + preset + " duration:" + duration + " starttick:" + starttick + " applyAfter:"
+                    + applyAfter;
+        }
     }
 
     public static class MoveJsonEntry
@@ -228,9 +240,10 @@ public class JsonMoves
                     return arg0.name.compareTo(arg1.name);
                 }
             });
-
+            Map<String, MoveJsonEntry> entryMap = Maps.newHashMap();
             for (MoveJsonEntry entry : moves.moves)
             {
+                entryMap.put(entry.name, entry);
                 for (AnimationsJson anims : animations.moves)
                 {
                     if (convertMoveName(anims.name).equals(convertMoveName(entry.name)))
@@ -242,6 +255,15 @@ public class JsonMoves
                     }
                 }
             }
+            MovesParser.load(moves);
+            for (Move_Base move : MovesUtils.moves.values())
+            {
+                MoveJsonEntry entry = entryMap.get(move.name);
+                if (entry != null) move.move.baseEntry = entry;
+                else PokecubeMod.log(Level.SEVERE, "No Entry for " + move.name);
+            }
+            if (PokecubeMod.debug) PokecubeMod.log("Processed " + MovesUtils.moves.size() + " Moves.");
+            MovesAdder.postInitMoves();
             write(movesFile);
             String output = prettyGson.toJson(animations);
             FileWriter writer = new FileWriter(animationFile);
@@ -273,7 +295,6 @@ public class JsonMoves
             writer = new FileWriter(movesFile);
             writer.append(output);
             writer.close();
-
         }
         catch (Exception e)
         {

@@ -218,8 +218,10 @@ public class ModPokecubeML implements IMobProvider
             ModPokecubeML.sort(vars);
             for (String s : vars)
             {
-                PokecubeMod.log("No " + s + " found in " + proxy.notFound.get(s));
+                String var = proxy.notFound.get(s);
+                if (var != null && !var.trim().contains("null")) PokecubeMod.log("No " + s + " found in " + var);
             }
+            proxy.notFound.clear();
         }
         // Sort and cleanup dummies from registration list.
         sort(addedPokemon);

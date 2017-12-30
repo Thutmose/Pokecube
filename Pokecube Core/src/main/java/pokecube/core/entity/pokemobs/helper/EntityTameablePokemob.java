@@ -14,9 +14,6 @@ import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.IInventoryChangedListener;
-import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumFacing;
@@ -41,7 +38,7 @@ import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityAnimal implements IInventoryChangedListener, IShearable,
+public abstract class EntityTameablePokemob extends EntityAnimal implements IShearable,
         IEntityOwnable, IMobColourable, IRangedAttackMob, IEntityAdditionalSpawnData, IJumpingMount
 {
 
@@ -71,13 +68,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
     public boolean canBeHeld(ItemStack itemStack)
     {
         return PokecubeItems.isValidHeldItem(itemStack);
-    }
-
-    @Override
-    public Entity changeDimension(int dimensionIn)
-    {
-        Entity ret = super.changeDimension(dimensionIn);
-        return ret;
     }
 
     /** Used to get the state without continually looking up in dataManager.
@@ -153,22 +143,12 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
             if (last < getEntityWorld().getTotalWorldTime() - (action.cooldown + rand.nextInt(1 + action.variance))
                     && !getEntityWorld().isRemote)
             {
-                setSheared(false);
+                pokemobCap.setPokemonAIState(IMoveConstants.SHEARED, false);
             }
 
             return !getSheared();
         }
         return false;
-    }
-
-    // 1.11
-    public void onInventoryChanged(IInventory inventory)
-    {
-    }
-
-    // 1.10
-    public void onInventoryChanged(InventoryBasic inventory)
-    {
     }
 
     @Override
@@ -178,7 +158,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         if (pokemobCap.getPokedexEntry().interact(key))
         {
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-            setSheared(true);
+            pokemobCap.setPokemonAIState(IMoveConstants.SHEARED, true);
             getEntityData().setLong("lastSheared", getEntityWorld().getTotalWorldTime());
             List<ItemStack> list = pokemobCap.getPokedexEntry().getInteractResult(key);
             Interaction action = pokemobCap.getPokedexEntry().interactionLogic.actions
@@ -195,20 +175,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
             return ret;
         }
         return null;
-    }
-
-    @Override
-    public void onUpdate()
-    {
-        super.onUpdate();
-        portalCounter = -1000;// TODO replace this with actual dupe fix for
-                              // nether portals.
-    }
-
-    /** make a sheep sheared if set to true */
-    public void setSheared(boolean sheared)
-    {
-        pokemobCap.setPokemonAIState(IMoveConstants.SHEARED, sheared);
     }
 
     @Override

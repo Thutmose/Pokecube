@@ -77,13 +77,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     }
 
     @Override
-    public double getYOffset()
-    {
-        double ret = yOffset;
-        return ret;// - 1.6F;
-    }
-
-    @Override
     public void onUpdate()
     {
         super.onUpdate();

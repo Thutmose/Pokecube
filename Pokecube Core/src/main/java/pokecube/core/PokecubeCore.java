@@ -52,7 +52,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
@@ -99,7 +98,6 @@ import pokecube.core.moves.MoveQueue.MoveQueuer;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.moves.animations.MoveAnimationHelper;
-import pokecube.core.moves.implementations.MovesAdder;
 import pokecube.core.network.EntityProvider;
 import pokecube.core.network.NetworkWrapper;
 import pokecube.core.network.PokecubePacketHandler;
@@ -436,7 +434,6 @@ public class PokecubeCore extends PokecubeMod
         StarterInfo.processStarterInfo();
         AbilityManager.init();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
-        MovesAdder.postInitMoves();
     }
 
     @SubscribeEvent
@@ -788,7 +785,6 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void WorldLoadEvent(FMLServerStartedEvent evt)
     {
-        AISaveHandler.instance();
         PokecubePlayerStats.initMap();
         MoveAnimationHelper.Instance().clear();
     }
@@ -802,7 +798,6 @@ public class PokecubeCore extends PokecubeMod
         InventoryPC.clearPC();
         PokecubePlayerStats.reset();
         if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
-        AISaveHandler.clearInstance();
         if (debug)
         {
             // limit to 1% precision

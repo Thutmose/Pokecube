@@ -26,7 +26,6 @@ import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
 import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
-import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokemobDataManager;
 import pokecube.core.ai.utils.PokemobMoveHelper;
@@ -224,7 +223,7 @@ public abstract class PokemobBase implements IPokemob
     public GuardAI                 guardAI;
     public PokemobAIUtilityMove    utilMoveAI;
     public LogicMountedControl     controller;
-    public AIStuff                 aiStuff;
+    protected AIStuff              aiStuff;
 
     public PathNavigate            navi;
     public PokemobMoveHelper       mover;

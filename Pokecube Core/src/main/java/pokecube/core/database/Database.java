@@ -46,7 +46,6 @@ import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
-import pokecube.core.database.moves.MovesParser;
 import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.database.recipes.XMLRecipeHandler;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipe;
@@ -444,9 +443,7 @@ public class Database
             {
                 File moves = new File(CONFIGLOC + s);
                 File anims = new File(Database.CONFIGLOC + "animations.json");
-                JsonMoves.loadMoves(moves);
                 JsonMoves.merge(anims, moves);
-                MovesParser.load(moves);
             }
             catch (Exception e1)
             {

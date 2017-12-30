@@ -19,7 +19,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
-import pokecube.core.database.moves.MovesParser;
 import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.Move_Base;
@@ -201,9 +200,7 @@ public class Commands extends CommandBase
             {
                 File moves = new File(Database.CONFIGLOC + args[1] + ".json");
                 File anims = new File(Database.CONFIGLOC + args[2] + ".json");
-                JsonMoves.loadMoves(moves);
                 JsonMoves.merge(anims, moves);
-                MovesParser.load(moves);
             }
             catch (Exception e)
             {

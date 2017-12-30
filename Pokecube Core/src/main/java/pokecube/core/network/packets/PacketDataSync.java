@@ -26,7 +26,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
-import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.handlers.Config;
@@ -204,7 +203,6 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             if (message.data.getBoolean("I"))
             {
                 PokecubeSerializer.getInstance().clearInstance();
-                AISaveHandler.clearInstance();
                 GuiInfoMessages.clear();
                 GuiTeleport.create();
                 try

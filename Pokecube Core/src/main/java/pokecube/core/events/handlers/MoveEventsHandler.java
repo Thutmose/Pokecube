@@ -161,19 +161,23 @@ public class MoveEventsHandler
         if (state.getMaterial().isReplaceable() && flamNext != 0)
         {
             location.setBlock(world, Blocks.FIRE);
+            return true;
         }
         else if (prevState.getMaterial().isReplaceable()
                 && state.getBlock().getFlammability(world, location.getPos(), EnumFacing.UP) != 0)
         {
             prevBlock.setBlock(world, Blocks.FIRE);
+            return true;
         }
         else if (location.getBlock(world) == Blocks.SNOW_LAYER)
         {
             location.setAir(world);
+            return true;
         }
         else if (prevBlock.getBlock(world) == Blocks.SNOW_LAYER)
         {
             prevBlock.setAir(world);
+            return true;
         }
         if (move.getPWR() < FIRESTRONG) { return attemptSmelt(attacker, location); }
         Block block = state.getBlock();
@@ -249,6 +253,7 @@ public class MoveEventsHandler
         else if (world.isAirBlock(pos.up()) && state.isNormalCube())
         {
             world.setBlockState(pos.up(), Blocks.SNOW_LAYER.getDefaultState());
+            return true;
         }
         return false;
     }
@@ -264,10 +269,12 @@ public class MoveEventsHandler
         if (state.getBlock() == Blocks.FIRE)
         {
             location.setAir(world);
+            return true;
         }
         else if (prevState.getBlock() == Blocks.FIRE)
         {
             prevBlock.setAir(world);
+            return true;
         }
         if (move.getPWR() < WATERSTRONG) { return false; }
         Block block = state.getBlock();

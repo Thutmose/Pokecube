@@ -431,13 +431,7 @@ public class MovesUtils implements IMoveConstants
         Move_Base move = getMoveFromName(moveName);
         if (move == null) return 1;
         statusMultiplier *= move.getPostDelayFactor(attacker);
-        if (moveName == MOVE_NONE)
-        {
-            move = getMoveFromName(MOVE_TACKLE);
-        }
-        float pp = move.getPP();
-        float ppFactor = (float) Math.sqrt(pp / 40f);
-        return ppFactor * statusMultiplier;
+        return statusMultiplier;
     }
 
     public static int getAttackDelay(IPokemob attacker, String moveName, boolean distanced, boolean playerTarget)

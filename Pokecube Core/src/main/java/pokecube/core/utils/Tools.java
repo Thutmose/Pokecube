@@ -320,6 +320,11 @@ public class Tools
     public static Entity getPointedEntity(Entity entity, double distance, Predicate<Entity> selector)
     {
         Vec3d vec3 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        Vector3 loc = getPointedLocation(entity, distance);
+        if (loc != null)
+        {
+            distance = loc.distanceTo(Vector3.getNewVector().set(vec3));
+        }
         double d0 = distance;
         Vec3d vec31 = entity.getLook(0);
         Vec3d vec32 = vec3.addVector(vec31.x * d0, vec31.y * d0, vec31.z * d0);

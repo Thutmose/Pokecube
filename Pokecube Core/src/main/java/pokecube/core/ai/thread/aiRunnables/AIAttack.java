@@ -391,7 +391,7 @@ public class AIAttack extends AIBase implements IAICombat
             {
                 if (delayTime <= 0 && (attacker.addedToChunk))
                 {
-                    applyDelay(pokemob, move.name, distanced);
+                    delayTime = pokemob.getAttackCooldown();
                     delay = canUseMove;
                 }
                 shouldPath = false;
@@ -438,7 +438,7 @@ public class AIAttack extends AIBase implements IAICombat
                 shouldPath = false;
                 setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
                 targetLoc.clear();
-                applyDelay(pokemob, move.name, distanced);
+                delayTime = pokemob.getAttackCooldown();
             }
         }
         // If there is a target location, and it should path to it, queue a path
@@ -448,12 +448,6 @@ public class AIAttack extends AIBase implements IAICombat
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
             if (path != null) addEntityPath(attacker, path, movementSpeed);
         }
-    }
-
-    private void applyDelay(IPokemob pokemob, String name, boolean distanced)
-    {
-        delayTime = MovesUtils.getAttackDelay(pokemob, name, distanced, entityTarget instanceof EntityPlayer);
-        pokemob.setAttackCooldown(delayTime);
     }
 
     @Override

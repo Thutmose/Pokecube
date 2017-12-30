@@ -2,10 +2,12 @@ package pokecube.core.interfaces.capabilities.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
@@ -38,6 +40,65 @@ public abstract class PokemobMoves extends PokemobSexed
         {
             targetLocation = Vector3.getNewVector().set(target);
         }
+
+        String attack;
+        if (this.getPokemonAIState(IMoveConstants.TAMED))
+        {
+            // A tamed pokemon should not attack a player
+            // but it must keep it as a target.
+            attack = getMove(getMoveIndex());
+            if (attack == null)
+            {
+                new Exception().getStackTrace();
+                return;
+            }
+
+            if (attack.equalsIgnoreCase(MOVE_METRONOME))
+            {
+                attack = null;
+                ArrayList<MoveEntry> moves = new ArrayList<MoveEntry>(MoveEntry.values());
+                while (attack == null)
+                {
+                    Collections.shuffle(moves);
+                    MoveEntry move = moves.iterator().next();
+                    if (move != null) attack = move.name;
+
+                }
+            }
+        }
+        else
+        {
+            // TODO do not pick a disabled move.
+            if (moveIndexCounter++ > rand.nextInt(3))
+            {
+                int nb = rand.nextInt(5);
+                String move = getMove(nb);
+                while (move == null && nb > 0)
+                {
+                    nb = rand.nextInt(nb);
+                }
+                moveIndexCounter = 0;
+                setMoveIndex(nb);
+            }
+            attack = getMove(getMoveIndex());
+        }
+        int index = getMoveIndex();
+        if (index < 4 && index >= 0)
+        {
+            if (getDisableTimer(index) > 0)
+            {
+                attack = "struggle";
+            }
+        }
+        Move_Base move = MovesUtils.getMoveFromName(attack);
+        if (move == null || move.move == null)
+        {
+            PokecubeMod.log(Level.SEVERE, getPokemonDisplayName() + " Has Used Unregistered Move: " + attack,
+                    new IllegalArgumentException());
+            return;
+        }
+        boolean distanced = (move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0;
+        this.setAttackCooldown(MovesUtils.getAttackDelay(this, attack, distanced, target instanceof EntityPlayer));
 
         PacketSyncMoveUse.sendUpdate(this);
         if (target instanceof EntityLiving)
@@ -115,64 +176,6 @@ public abstract class PokemobMoves extends PokemobSexed
                 displayMessageToOwner(mess);
                 return;
             }
-        }
-
-        String attack;
-        if (this.getPokemonAIState(IMoveConstants.TAMED))
-        {
-            // A tamed pokemon should not attack a player
-            // but it must keep it as a target.
-            attack = getMove(getMoveIndex());
-            if (attack == null)
-            {
-                new Exception().getStackTrace();
-                return;
-            }
-
-            if (attack.equalsIgnoreCase(MOVE_METRONOME))
-            {
-                attack = null;
-                ArrayList<MoveEntry> moves = new ArrayList<MoveEntry>(MoveEntry.values());
-                while (attack == null)
-                {
-                    Collections.shuffle(moves);
-                    MoveEntry move = moves.iterator().next();
-                    if (move != null) attack = move.name;
-
-                }
-            }
-        }
-        else
-        {
-            // TODO do not pick a disabled move.
-            if (moveIndexCounter++ > rand.nextInt(3))
-            {
-                int nb = rand.nextInt(5);
-                String move = getMove(nb);
-
-                while (move == null && nb > 0)
-                {
-                    nb = rand.nextInt(nb);
-                }
-                moveIndexCounter = 0;
-                setMoveIndex(nb);
-            }
-            attack = getMove(getMoveIndex());
-        }
-        int index = getMoveIndex();
-        if (index < 4 && index >= 0)
-        {
-            if (getDisableTimer(index) > 0)
-            {
-                attack = "struggle";
-            }
-        }
-        Move_Base move = MovesUtils.getMoveFromName(attack);
-        if (move == null || move.move == null)
-        {
-            System.err.println("SOMEONE USING NULL MOVE " + attack);
-            Thread.dumpStack();
-            return;
         }
         if (here == null) here = Vector3.getNewVector();
         here.set(getEntity()).addTo(0, getEntity().getEyeHeight(), 0);

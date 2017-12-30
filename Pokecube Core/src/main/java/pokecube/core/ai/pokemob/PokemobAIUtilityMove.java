@@ -96,16 +96,10 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         if (dist < var1)
         {
-            applyDelay(pokemon, move.name, (move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0);
             pokemon.executeMove(null, destination, 0);
             entity.getNavigator().clearPathEntity();
             pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             destination = null;
         }
-    }
-
-    private void applyDelay(IPokemob pokemob, String name, boolean distanced)
-    {
-        pokemob.setAttackCooldown(MovesUtils.getAttackDelay(pokemob, name, distanced, false));
     }
 }

@@ -260,7 +260,8 @@ public class JsonMoves
             {
                 MoveJsonEntry entry = entryMap.get(move.name);
                 if (entry != null) move.move.baseEntry = entry;
-                else PokecubeMod.log(Level.SEVERE, "No Entry for " + move.name);
+                else if (!move.name.startsWith("pokemob.status"))
+                    PokecubeMod.log(Level.SEVERE, "No Entry for " + move.name);
             }
             if (PokecubeMod.debug) PokecubeMod.log("Processed " + MovesUtils.moves.size() + " Moves.");
             MovesAdder.postInitMoves();

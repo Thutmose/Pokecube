@@ -198,10 +198,6 @@ public class AICombatMovement extends AIBase
         diff = diff * diff;
         if (!(dist >= diff && dist <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false)) { return; }
         pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
-        if (PokecubeCore.debug)
-        {
-            PokecubeMod.log(Level.INFO, "Leap: " + attacker);
-        }
         Vector3 targetLoc = Vector3.getNewVector().set(target);
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);
         Vector3 dir = targetLoc.subtract(leaperLoc);
@@ -214,9 +210,9 @@ public class AICombatMovement extends AIBase
             new Exception().printStackTrace();
             dir.clear();
         }
-        if (dir.magSq() > 3)
+        if (PokecubeCore.debug)
         {
-            PokecubeMod.log(Level.INFO, "Leap Error? : " + attacker + " " + dir);
+            PokecubeMod.log(Level.INFO, "Leap: " + attacker + " " + dir);
         }
         double dy = Math.abs(dir.y);
         if (!attacker.onGround && dy > pokemob.getSize() * pokemob.getPokedexEntry().height && dy < 3) dir.y *= 2;

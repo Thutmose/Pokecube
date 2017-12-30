@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BerryGenManager.GenericGrower;
 import pokecube.core.blocks.berries.BerryGenManager.PalmGrower;
@@ -79,9 +80,6 @@ public class BerryManager
     {
         berryNames.put(id, name);
         berryFlavours.put(id, new int[] { spicy, dry, sweet, bitter, sour });
-        PokecubeItems.addSpecificItemStack(name + "berry", new ItemStack(PokecubeItems.berries, 1, id));
-        PokecubeItems.addSpecificItemStack(name, new ItemStack(PokecubeItems.berries, 1, id));
-        PokecubeItems.addToHoldables(name);
         if (effect != null)
         {
             UsableItemEffects.BerryUsable.effects.put(id, effect);
@@ -102,6 +100,20 @@ public class BerryManager
                 return berryCrop;
         }
         return null;
+    }
+
+    public static void initBerries()
+    {
+        OreDictionary.registerOre("berry", new ItemStack(PokecubeItems.berries, 1, OreDictionary.WILDCARD_VALUE));
+        for (int id : berryNames.keySet())
+        {
+            String name = berryNames.get(id);
+            ItemStack stack = new ItemStack(PokecubeItems.berries, 1, id);
+            PokecubeItems.addSpecificItemStack(name + "berry", stack);
+            OreDictionary.registerOre(name + "Berry", stack);
+            PokecubeItems.addSpecificItemStack(name, stack);
+            PokecubeItems.addToHoldables(name);
+        }
     }
 
     public static ItemStack getBerryItem(int id)

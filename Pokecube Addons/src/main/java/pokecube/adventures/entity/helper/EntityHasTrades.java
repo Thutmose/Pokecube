@@ -26,6 +26,8 @@ import thut.lib.CompatWrapper;
 
 public abstract class EntityHasTrades extends EntityAgeable implements IMerchant, INpc, IEntityAdditionalSpawnData
 {
+    public static final int      VERSION       = 3;
+
     protected boolean            clear         = false;
     protected boolean            shouldrefresh = false;
     /** This villager's current customer. */
@@ -109,8 +111,8 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         int i = 3 + this.rand.nextInt(4);
         if (recipe.getRewardsExp())
         {
-            this.getEntityWorld().spawnEntity(
-                    new EntityXPOrb(this.getEntityWorld(), this.posX, this.posY + 0.5D, this.posZ, i));
+            this.getEntityWorld()
+                    .spawnEntity(new EntityXPOrb(this.getEntityWorld(), this.posX, this.posY + 0.5D, this.posZ, i));
         }
     }
 
@@ -171,7 +173,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     public void writeEntityToNBT(NBTTagCompound nbt)
     {
         super.writeEntityToNBT(nbt);
-        nbt.setInteger("version", 2);
+        nbt.setInteger("version", VERSION);
         if (this.itemList != null)
         {
             checkTradeIntegrity();
@@ -183,7 +185,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-        if (nbt.hasKey("Offers", 10) && nbt.getInteger("version") == 2)
+        if (nbt.hasKey("Offers", 10) && nbt.getInteger("version") == VERSION)
         {
             NBTTagCompound nbttagcompound = nbt.getCompoundTag("Offers");
             this.itemList = new MerchantRecipeList(nbttagcompound);

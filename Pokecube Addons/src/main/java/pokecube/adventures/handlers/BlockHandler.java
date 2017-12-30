@@ -1,7 +1,6 @@
 package pokecube.adventures.handlers;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.BlockAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
@@ -48,16 +47,10 @@ public class BlockHandler
         warppad.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
 
         cloner.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(cloner, registry);// ItemBlockCloner.class
-        PokecubeItems.addSpecificItemStack("extractor", new ItemStack(cloner, 1, 2));
-        PokecubeItems.addSpecificItemStack("splicer", new ItemStack(cloner, 1, 1));
-        PokecubeItems.addSpecificItemStack("reanimator", new ItemStack(cloner, 1, 0));
+        PokecubeItems.register(cloner, registry);
 
         afa.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(afa, registry);// ItemBlockAFA.class
-        PokecubeItems.addSpecificItemStack("daycare", new ItemStack(afa, 1, 1));
-        PokecubeItems.addSpecificItemStack("commander", new ItemStack(afa, 1, 2));
-        PokecubeItems.addSpecificItemStack("afa", new ItemStack(afa, 1, 0));
+        PokecubeItems.register(afa, registry);
 
         siphon.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(siphon, registry);

@@ -566,18 +566,14 @@ public class PokecubeItems extends Items
     @SuppressWarnings("unchecked")
     public static void register(Object o, Object registry)
     {
-        String name = null;
         if (o instanceof Item && registry instanceof IForgeRegistry<?>)
         {
             ((IForgeRegistry<Item>) registry).register((Item) o);
-            name = ((Item) o).getRegistryName().getResourcePath();
         }
         else if (o instanceof Block && registry instanceof IForgeRegistry<?>)
         {
             ((IForgeRegistry<Block>) registry).register((Block) o);
-            name = ((Block) o).getRegistryName().getResourcePath();
         }
-        if (name != null) addGeneric(name, o);
     }
 
     public static void registerFossil(ItemStack fossil, int number)

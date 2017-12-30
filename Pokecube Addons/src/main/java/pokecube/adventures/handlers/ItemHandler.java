@@ -54,7 +54,8 @@ public class ItemHandler
 
     public static void registerItems(Object registry)
     {
-        Item expshare = (new ItemExpShare()).setUnlocalizedName("exp_share").setRegistryName(PokecubeAdv.ID, "exp_share");
+        Item expshare = (new ItemExpShare()).setUnlocalizedName("exp_share").setRegistryName(PokecubeAdv.ID,
+                "exp_share");
         expshare.setHasSubtypes(true);
         expshare.setCreativeTab(creativeTabPokecube);
         register(expshare, registry);
@@ -122,10 +123,16 @@ public class ItemHandler
         ItemBlock item = new ItemBlockCloner(BlockHandler.cloner);
         item.setRegistryName(BlockHandler.cloner.getRegistryName());
         register(item, registry);
+        PokecubeItems.addSpecificItemStack("extractor", new ItemStack(BlockHandler.cloner, 1, 2));
+        PokecubeItems.addSpecificItemStack("splicer", new ItemStack(BlockHandler.cloner, 1, 1));
+        PokecubeItems.addSpecificItemStack("reanimator", new ItemStack(BlockHandler.cloner, 1, 0));
 
         item = new ItemBlockAFA(BlockHandler.afa);
         item.setRegistryName(BlockHandler.afa.getRegistryName());
         register(item, registry);
+        PokecubeItems.addSpecificItemStack("daycare", new ItemStack(BlockHandler.afa, 1, 1));
+        PokecubeItems.addSpecificItemStack("commander", new ItemStack(BlockHandler.afa, 1, 2));
+        PokecubeItems.addSpecificItemStack("afa", new ItemStack(BlockHandler.afa, 1, 0));
 
         item = new ItemBlock(BlockHandler.siphon);
         item.setRegistryName(BlockHandler.siphon.getRegistryName());

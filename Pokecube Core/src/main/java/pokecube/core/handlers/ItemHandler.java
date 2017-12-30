@@ -114,16 +114,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
         {
             registerItemTexture(PokecubeItems.berries, 0, new ModelResourceLocation("pokecube:berry", "inventory"));
         }
-        for (Integer i : BerryManager.berryNames.keySet())
-        {
-            String name = BerryManager.berryNames.get(i);
-            ItemStack berry = BerryManager.getBerryItem(name);
-            OreDictionary.registerOre("berry", berry);
-            OreDictionary.registerOre("berry" + name, berry);
-            OreDictionary.registerOre(name + "Berry", berry);
-            name = name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
-            OreDictionary.registerOre("berry" + name, berry);
-        }
+        // Register the berries.
+        BerryManager.initBerries();
     }
 
     private static void addFossilBlocks(Object registry)
@@ -156,18 +148,15 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         Block nest = PokecubeItems.nest;
         nest.setRegistryName(PokecubeMod.ID, "pokemobnest");
-        register(nest, registry);// ItemBlockMeta.class
+        register(nest, registry);
 
         tradingtable.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         tradingtable.setRegistryName(PokecubeMod.ID, "tradingtable");
-        register(tradingtable, registry);// ItemBlockTradingTable.class
-        PokecubeItems.addSpecificItemStack("tmtable", new ItemStack(tradingtable, 1, 8));
+        register(tradingtable, registry);
 
         pc.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         pc.setRegistryName(PokecubeMod.ID, "pc");
-        register(pc, registry);// ItemBlockPC.class
-        PokecubeItems.addSpecificItemStack("pctop", new ItemStack(pc, 1, 8));
-        PokecubeItems.addSpecificItemStack("pcbase", new ItemStack(pc, 1, 0));
+        register(pc, registry);
     }
 
     private static void registerItemBlocks(Object registry)
@@ -175,10 +164,14 @@ public class ItemHandler extends Mod_Pokecube_Helper
         ItemBlock item = new ItemBlockPC(pc);
         item.setRegistryName(PokecubeMod.ID, "pc");
         register(item, registry);
+        PokecubeItems.addSpecificItemStack("pctop", new ItemStack(pc, 1, 8));
+        PokecubeItems.addSpecificItemStack("pcbase", new ItemStack(pc, 1, 0));
 
         item = new ItemBlockTradingTable(tradingtable);
         item.setRegistryName(PokecubeMod.ID, "tradingtable");
         register(item, registry);
+        PokecubeItems.addSpecificItemStack("tradingtable", new ItemStack(tradingtable, 1, 0));
+        PokecubeItems.addSpecificItemStack("tmtable", new ItemStack(tradingtable, 1, 8));
 
         item = new ItemBlockMeta(PokecubeItems.nest);
         item.setRegistryName(PokecubeMod.ID, "pokemobnest");

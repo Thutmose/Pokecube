@@ -4,11 +4,10 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import pokecube.adventures.handlers.ItemHandler;
-import pokecube.adventures.items.ItemBadge;
+import pokecube.core.utils.PokeType;
 
 public class BadgeTextureHandler
 {
@@ -17,12 +16,12 @@ public class BadgeTextureHandler
         @Override
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
-            NBTTagCompound tag = stack.getTagCompound();
+            int num = stack.getItemDamage();
             String variant = "???";
-            if (tag != null)
+            if (num >= 0 && num < PokeType.values().length)
             {
-                String stackname = tag.getString("type");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
+                String stackname = PokeType.values()[num].name;
+                variant = stackname;
             }
             return getLocation(variant);
         }
@@ -30,15 +29,16 @@ public class BadgeTextureHandler
 
     public static ModelResourceLocation getLocation(String name)
     {
-        return new ModelResourceLocation(new ResourceLocation("pokecube_adventures", "item/badge"), "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
+        return new ModelResourceLocation(new ResourceLocation("pokecube_adventures", "item/badge"),
+                "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     public static void registerItemModels()
     {
         ModelLoader.setCustomMeshDefinition(ItemHandler.badges, new MegaStone());
-        for (String s : ItemBadge.variants)
+        for (PokeType type : PokeType.values())
         {
-            registerItemVariant("type=" + s);
+            registerItemVariant("type=" + type.name);
         }
     }
 

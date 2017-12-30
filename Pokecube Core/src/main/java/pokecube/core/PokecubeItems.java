@@ -528,11 +528,11 @@ public class PokecubeItems extends Items
     private static void postInitFossils()
     {
         List<ItemStack> toRemove = Lists.newArrayList();
-        for (String s : HeldItemHandler.fossilVariants)
+        HeldItemHandler.sortFossilVariants();
+        for (int i = 0; i < HeldItemHandler.fossilVariants.size(); i++)
         {
-            ItemStack stack = new ItemStack(PokecubeItems.fossil);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("pokemon", s);
+            ItemStack stack = new ItemStack(PokecubeItems.fossil, 1, i);
+            String s = HeldItemHandler.fossilVariants.get(i);
             PokecubeItems.addSpecificItemStack(s, stack);
             PokecubeItems.registerFossil(stack, s);
         }

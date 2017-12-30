@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,7 +16,7 @@ public class ItemVitamin extends Item implements IMoveConstants
 {
     public static List<String> vitamins = Lists.newArrayList();
 
-    public static ItemVitamin instance;
+    public static ItemVitamin  instance;
 
     public ItemVitamin()
     {
@@ -42,11 +41,9 @@ public class ItemVitamin extends Item implements IMoveConstants
     {
         if (!this.isInCreativeTab(tab)) return;
         ItemStack stack;
-        for (String s : vitamins)
+        for (int i = 0; i < vitamins.size(); i++)
         {
-            stack = new ItemStack(this);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("vitamin", s);
+            stack = new ItemStack(this, 1, i);
             subItems.add(stack);
         }
     }
@@ -55,17 +52,8 @@ public class ItemVitamin extends Item implements IMoveConstants
     public String getUnlocalizedName(ItemStack stack)
     {
         String name = super.getUnlocalizedName(stack);
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "vitamin";
-            if (tag != null)
-            {
-                String stackname = tag.getString("vitamin");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
-            }
-            name = "item." + variant;
-        }
+        int i = stack.getItemDamage();
+        if (i < vitamins.size()) name = "item." + vitamins.get(i);
         return name;
     }
 }

@@ -278,7 +278,7 @@ public class TradeEntryLoader
             for (PokeType type : PokeType.values())
                 if (type != PokeType.unknown)
                 {
-                    ItemStack badge = PokecubeItems.getStack("badge" + type);
+                    ItemStack badge = PokecubeItems.getStack("badge_" + type);
                     if (CompatWrapper.isValid(badge))
                     {
                         Map<QName, String> values;
@@ -308,7 +308,7 @@ public class TradeEntryLoader
             for (PokeType type : PokeType.values())
                 if (type != PokeType.unknown)
                 {
-                    ItemStack badge = PokecubeItems.getStack("badge" + type);
+                    ItemStack badge = PokecubeItems.getStack("badge_" + type);
                     if (CompatWrapper.isValid(badge))
                     {
                         Map<QName, String> values = trade.sell.values;

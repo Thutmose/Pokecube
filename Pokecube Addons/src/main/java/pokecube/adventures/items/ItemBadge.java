@@ -1,6 +1,5 @@
 package pokecube.adventures.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -11,7 +10,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,23 +19,11 @@ import thut.lib.CompatItem;
 
 public class ItemBadge extends CompatItem
 {
-    public static ArrayList<String> variants = Lists.newArrayList();
-
-    static
-    {
-        for (PokeType type : PokeType.values())
-        {
-            if (type != PokeType.unknown)
-            {
-                variants.add("badge" + type.name);
-            }
-        }
-    }
 
     public static boolean isBadge(ItemStack stackIn)
     {
-        return stackIn != null && stackIn.getItem() instanceof ItemBadge && stackIn.hasTagCompound()
-                && stackIn.getTagCompound().hasKey("type");
+        return stackIn != null && stackIn.getItem() instanceof ItemBadge
+                && stackIn.getItemDamage() < PokeType.values().length;
     }
 
     public ItemBadge()
@@ -53,9 +39,9 @@ public class ItemBadge extends CompatItem
     @Override
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> list, ITooltipFlag advanced)
     {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("type"))
+        if (stack.getItemDamage() < PokeType.values().length)
         {
-            String s = stack.getTagCompound().getString("type");
+            String s = PokeType.getTranslatedName(PokeType.values()[stack.getItemDamage()]);
             list.add(s);
         }
     }
@@ -75,11 +61,9 @@ public class ItemBadge extends CompatItem
         List<ItemStack> subItems = Lists.newArrayList();
         if (!this.isInCreativeTab(tab)) return subItems;
         ItemStack stack;
-        for (String s : variants)
+        for (int i = 0; i < PokeType.values().length; i++)
         {
-            stack = new ItemStack(itemIn);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("type", s);
+            stack = new ItemStack(itemIn, 1, i);
             subItems.add(stack);
         }
         return subItems;
@@ -89,16 +73,9 @@ public class ItemBadge extends CompatItem
     public String getUnlocalizedName(ItemStack stack)
     {
         String name = super.getUnlocalizedName();
-        if (stack.hasTagCompound())
+        if (stack.getItemDamage() < PokeType.values().length)
         {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "???";
-            if (tag != null)
-            {
-                String stackname = tag.getString("type");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
-            }
-            name = "item." + variant;
+            name = "item.badge" + PokeType.values()[stack.getItemDamage()];
         }
         return name;
     }

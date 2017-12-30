@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import pokecube.core.items.vitamins.ItemVitamin;
@@ -16,12 +15,11 @@ public class VitaminTextureHandler
         @Override
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
-            NBTTagCompound tag = stack.getTagCompound();
             String variant = "vitamin";
-            if (tag != null)
+            int damage = stack.getItemDamage();
+            if (damage < ItemVitamin.vitamins.size())
             {
-                String stackname = tag.getString("vitamin");
-                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
+                variant = ItemVitamin.vitamins.get(damage);
             }
             return getLocation(variant);
         }
@@ -29,7 +27,8 @@ public class VitaminTextureHandler
 
     public static ModelResourceLocation getLocation(String name)
     {
-        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/vitamins"), "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
+        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/vitamins"),
+                "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     public static void registerItemModels()

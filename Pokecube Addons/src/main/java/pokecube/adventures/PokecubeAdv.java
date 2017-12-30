@@ -24,15 +24,15 @@ import pokecube.adventures.advancements.Triggers;
 import pokecube.adventures.comands.BattleCommand;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.DefaultRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.DefaultMessager;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
@@ -150,33 +150,6 @@ public class PokecubeAdv
         if (conf.legendaryConditions) new LegendaryConditions();
         RecipeHandler.register();
         DBLoader.load();
-        registerAchieves();
-    }
-
-    private void registerAchieves()
-    {
-        // int x = -3;
-        // int y = -2;
-        // Achievement beatTrainer = new
-        // AchievementDefeatTrainer("pokeadv.defeat.trainer",
-        // "pokeadv.defeat.trainer", x,
-        // y++, Items.IRON_SWORD, null);
-        // beatTrainer.registerStat();
-        // Achievement beatLeader = new
-        // AchievementDefeatLeader("pokeadv.defeat.leader",
-        // "pokeadv.defeat.leader", x, y++,
-        // Items.DIAMOND_SWORD, null);
-        // beatLeader.registerStat();
-        // AchievementPage.getAchievementPage(0).getAchievements().add(beatLeader);
-        // AchievementPage.getAchievementPage(0).getAchievements().add(beatTrainer);
-        // for (String s : ItemBadge.variants)
-        // {
-        // Achievement badge = new AchievementGetBadge("pokeadv." + s,
-        // "achievement.pokeadv.get." + s, x, y++,
-        // PokecubeItems.getStack(s), beatLeader);
-        // badge.registerStat();
-        // AchievementPage.getAchievementPage(0).getAchievements().add(badge);
-        // }
     }
 
     @EventHandler

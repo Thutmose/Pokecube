@@ -252,13 +252,13 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":pokecube_table", "inventory"));
 
-        item2 = Item.getItemFromBlock(PokecubeItems.getBlock("pc"));
+        item2 = Item.getItemFromBlock(PokecubeItems.pc);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":pc_base", "inventory"));
         ModelLoader.setCustomModelResourceLocation(item2, 8,
                 new ModelResourceLocation(PokecubeMod.ID + ":pc_top", "inventory"));
 
-        item2 = Item.getItemFromBlock(PokecubeItems.getBlock("tradingtable"));
+        item2 = Item.getItemFromBlock(PokecubeItems.tradingtable);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":tradingtable", "inventory"));
         ModelLoader.setCustomModelResourceLocation(item2, 8,

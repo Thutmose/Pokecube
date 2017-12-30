@@ -381,6 +381,18 @@ public class PokecubeItems extends Items
         name = name.toLowerCase(Locale.ENGLISH).trim();
         NonNullList<ItemStack> stack = OreDictionary.getOres(name);
         if (stack.size() > 0) item = stack.get(0).getItem();
+        if (item == null)
+        {
+            for (ResourceLocation l : Item.REGISTRY.getKeys())
+            {
+                if (l.getResourcePath().equals(name))
+                {
+                    item = Item.REGISTRY.getObject(l);
+                    addSpecificItemStack(name, new ItemStack(item, 1, OreDictionary.WILDCARD_VALUE));
+                    return item;
+                }
+            }
+        }
         return item;
     }
 

@@ -238,7 +238,7 @@ public class JERCompat
     private void registerOres()
     {
         if (PokecubeMod.debug) PokecubeMod.log("Registering Ores for JER");
-        ItemStack fossilStone = PokecubeItems.getStack("fossilstone");
+        ItemStack fossilStone = new ItemStack(PokecubeItems.fossilStone);
         DistributionBase distrubution = new DistributionSquare(5, 44, 12 / 265f);
         Restriction restriction = new Restriction(new BiomeRestriction(BiomeDatabase.getBiome("desertHills"),
                 BiomeDatabase.getBiome("desert"), BiomeDatabase.getBiome("jungle"),

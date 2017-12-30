@@ -225,11 +225,13 @@ public class PokedexEntry
                 }
             }
             ret = ret && rightMove;
-            boolean rightTime = dayOnly == nightOnly && dayOnly == duskOnly && duskOnly == dawnOnly;
+            boolean rightTime = !dayOnly && !nightOnly && !dawnOnly && !duskOnly;
             if (!rightTime)
             {
                 // TODO better way to choose current time.
-                double time = mob.getEntity().getEntityWorld().getWorldTime() / 24000;
+                double time = mob.getEntity().getEntityWorld().getWorldTime() / 24000d;
+                System.out.println(
+                        dayOnly + " " + nightOnly + " " + dawnOnly + " " + duskOnly + " " + rightTime + " " + time);
                 rightTime = dayOnly ? day.contains(time)
                         : nightOnly ? night.contains(time) : duskOnly ? dusk.contains(time) : dawn.contains(time);
             }
@@ -1736,7 +1738,7 @@ public class PokedexEntry
             {
                 if (e.getModId() != null)
                 {
-                    PokecubeMod.log("Set MODID for Sounds:"+this+" "+e.getModId());
+                    PokecubeMod.log("Set MODID for Sounds:" + this + " " + e.getModId());
                     this.setModId(e.getModId());
                     break modid;
                 }

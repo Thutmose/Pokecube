@@ -87,7 +87,7 @@ public class ContributorManager
             InputStream in = con.getInputStream();
             InputStreamReader reader = new InputStreamReader(in);
             Contributors newContribs = GSON.fromJson(reader, Contributors.class);
-            System.out.println(newContribs);
+            if (PokecubeMod.debug) PokecubeMod.log(newContribs + "");
             if (newContribs != null)
             {
                 contributors.contributors.addAll(newContribs.contributors);

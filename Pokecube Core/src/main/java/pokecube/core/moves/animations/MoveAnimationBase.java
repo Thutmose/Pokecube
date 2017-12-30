@@ -53,6 +53,11 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     public void initColour(long time, float partialTicks, Move_Base move)
     {
         if (customColour) return;
+        if (particle == null)
+        {
+            rgba = getColourFromMove(move, 255);
+            return;
+        }
         if (particle.equals("airbubble"))
         {
             rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();

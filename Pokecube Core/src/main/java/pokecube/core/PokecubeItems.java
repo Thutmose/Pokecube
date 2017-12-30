@@ -30,6 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import pokecube.core.blocks.fossil.BlockFossilStone;
@@ -50,6 +51,11 @@ import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.berries.ItemBerry;
+import pokecube.core.items.loot.functions.MakeBerry;
+import pokecube.core.items.loot.functions.MakeFossil;
+import pokecube.core.items.loot.functions.MakeHeldItem;
+import pokecube.core.items.loot.functions.MakeMegastone;
+import pokecube.core.items.loot.functions.MakeVitamin;
 import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
@@ -129,6 +135,15 @@ public class PokecubeItems extends Items
             .setResistance(4F).setUnlocalizedName("fossilstone").setRegistryName(PokecubeMod.ID, "fossilstone");
 
     public static boolean                            resetTimeTags  = false;
+
+    static
+    {
+        LootFunctionManager.registerFunction(new MakeBerry.Serializer());
+        LootFunctionManager.registerFunction(new MakeMegastone.Serializer());
+        LootFunctionManager.registerFunction(new MakeHeldItem.Serializer());
+        LootFunctionManager.registerFunction(new MakeFossil.Serializer());
+        LootFunctionManager.registerFunction(new MakeVitamin.Serializer());
+    }
 
     /** Registers a pokecube id, the Object[] is an array with the item or block
      * assosicated with the unfilled and filled cubes. example: Object cubes =

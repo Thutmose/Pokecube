@@ -585,8 +585,7 @@ public class EventsHandler
                 }
             }
             // Use shiny charm to make shiny
-            if (isOwner && CompatWrapper.isValid(held)
-                    && ItemStack.areItemStackTagsEqual(held, PokecubeItems.getStack("shiny_charm")))
+            if (isOwner && Tools.isSameStack(held, PokecubeItems.getStack("shiny_charm")))
             {
                 if (player.isSneaking())
                 {

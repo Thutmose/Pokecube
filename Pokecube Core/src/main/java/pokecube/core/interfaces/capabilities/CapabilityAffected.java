@@ -15,10 +15,12 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import pokecube.core.events.OngoingTickEvent;
 import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
 import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect.AddType;
@@ -65,6 +67,7 @@ public class CapabilityAffected
     {
         EntityLivingBase                                 entity;
         final List<IOngoingEffect>                       effects = Lists.newArrayList();
+        IOngoingEffect[]                                 cachedArray;
         final Map<ResourceLocation, Set<IOngoingEffect>> map     = Maps.newHashMap();
 
         public DefaultAffected()
@@ -87,13 +90,13 @@ public class CapabilityAffected
         }
 
         @Override
-        public synchronized List<IOngoingEffect> getEffects()
+        public List<IOngoingEffect> getEffects()
         {
             return effects;
         }
 
         @Override
-        public synchronized void clearEffects()
+        public void clearEffects()
         {
             effects.clear();
             for (Set<IOngoingEffect> set : map.values())
@@ -101,7 +104,7 @@ public class CapabilityAffected
         }
 
         @Override
-        public synchronized boolean addEffect(IOngoingEffect effect)
+        public boolean addEffect(IOngoingEffect effect)
         {
             if (effect.allowMultiple())
             {
@@ -135,13 +138,13 @@ public class CapabilityAffected
         }
 
         @Override
-        public synchronized Collection<IOngoingEffect> getEffects(ResourceLocation id)
+        public Collection<IOngoingEffect> getEffects(ResourceLocation id)
         {
             return map.get(id);
         }
 
         @Override
-        public synchronized void removeEffects(ResourceLocation id)
+        public void removeEffects(ResourceLocation id)
         {
             Collection<IOngoingEffect> set = getEffects(id);
             effects.removeAll(set);
@@ -149,7 +152,7 @@ public class CapabilityAffected
         }
 
         @Override
-        public synchronized void removeEffect(IOngoingEffect effect)
+        public void removeEffect(IOngoingEffect effect)
         {
             Collection<IOngoingEffect> set = getEffects(effect.getID());
             effects.remove(effect);
@@ -167,6 +170,27 @@ public class CapabilityAffected
         {
             if (hasCapability(capability, facing)) return AFFECTED_CAP.cast(this);
             return null;
+        }
+
+        @Override
+        public void tick()
+        {
+            Set<IOngoingEffect> stale = Sets.newHashSet();
+            cachedArray = effects.toArray(new IOngoingEffect[effects.size()]);
+            for (IOngoingEffect effect : cachedArray)
+            {
+                if (!MinecraftForge.EVENT_BUS.post(new OngoingTickEvent(getEntity(), effect)))
+                {
+                    int duration = effect.getDuration();
+                    if (duration > 0) duration = duration - 1;
+                    effect.setDuration(duration);
+                    effect.affectTarget(this);
+                    if (effect.getDuration() == 0) stale.add(effect);
+                }
+                else if (effect.getDuration() == 0) stale.add(effect);
+            }
+            for (IOngoingEffect effect : stale)
+                removeEffect(effect);
         }
     }
 }

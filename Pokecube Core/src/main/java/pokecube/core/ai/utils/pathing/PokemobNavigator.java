@@ -16,7 +16,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
-import thut.api.pathing.Paths;
 
 /** This is overridden from the vanilla one to allow using a custom,
  * multi-threaded pathfinder. It also does some pokemob specific checks for
@@ -25,21 +24,13 @@ import thut.api.pathing.Paths;
  * which are close enough to the end, like when a mob is just idling around. */
 public class PokemobNavigator extends PathNavigate
 {
-    private Vector3      v               = Vector3.getNewVector();
-    private Vector3      v1              = Vector3.getNewVector();
-
-    private boolean      canDive;
-
-    private boolean      canFly;
-    public final Paths   pathfinder;
-
-    final IPokemob       pokemob;
-    private PokedexEntry lastEntry;
-    private PathNavigate wrapped;
-
-    long                 lastCacheUpdate = 0;
-
-    int                  sticks          = 0;
+    private Vector3        v               = Vector3.getNewVector();
+    private Vector3        v1              = Vector3.getNewVector();
+    private boolean        canDive;
+    private boolean        canFly;
+    private final IPokemob pokemob;
+    private PokedexEntry   lastEntry;
+    private PathNavigate   wrapped;
 
     public PokemobNavigator(IPokemob pokemob, World world)
     {
@@ -48,7 +39,6 @@ public class PokemobNavigator extends PathNavigate
         this.world = world;
         this.pokemob = pokemob;
         canDive = pokemob.swims();
-        pathfinder = new Paths(world);
     }
 
     private PathNavigate makeSwimingNavigator()
@@ -99,8 +89,9 @@ public class PokemobNavigator extends PathNavigate
     @Override
     public boolean canNavigate()
     {
-        if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || pokemob.getStatus() == IPokemob.STATUS_SLP
-                || pokemob.getStatus() == IPokemob.STATUS_FRZ || pokemob.getPokemonAIState(IMoveConstants.CONTROLLED)
+        if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0
+                || (pokemob.getStatus() & IPokemob.STATUS_FRZ) > 0
+                || pokemob.getPokemonAIState(IMoveConstants.CONTROLLED)
                 || pokemob.getPokemonAIState(IMoveConstants.NOPATHING))
             return false;
         if (pokemob.getPokemonAIState(IPokemob.SITTING)) return false;
@@ -145,6 +136,7 @@ public class PokemobNavigator extends PathNavigate
     @Override
     public Path getPathToEntityLiving(Entity entityIn)
     {
+        if (!this.canNavigate()) { return null; }
         checkValues();
         return wrapped.getPathToEntityLiving(entityIn);
     }
@@ -152,6 +144,7 @@ public class PokemobNavigator extends PathNavigate
     @Override
     public Path getPathToPos(BlockPos pos)
     {
+        if (!this.canNavigate()) { return null; }
         checkValues();
         if (shouldPath(pos))
         {

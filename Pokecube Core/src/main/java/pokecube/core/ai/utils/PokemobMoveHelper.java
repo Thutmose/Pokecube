@@ -25,18 +25,6 @@ public class PokemobMoveHelper extends EntityMoveHelper
     }
 
     @Override
-    public double getSpeed()
-    {
-        return super.getSpeed();
-    }
-
-    @Override
-    public boolean isUpdating()
-    {
-        return super.isUpdating();
-    }
-
-    @Override
     public void onUpdateMoveHelper()
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
@@ -133,12 +121,5 @@ public class PokemobMoveHelper extends EntityMoveHelper
             this.entity.getJumpHelper().setJumping();
             this.action = EntityMoveHelper.Action.JUMPING;
         }
-    }
-
-    /** Sets the speed and location to move to */
-    @Override
-    public void setMoveTo(double x, double y, double z, double speedIn)
-    {
-        super.setMoveTo(x, y, z, speedIn);
     }
 }

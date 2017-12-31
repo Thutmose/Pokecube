@@ -3,19 +3,15 @@ package pokecube.core.interfaces.entity;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.INBTSerializable;
-import pokecube.core.events.OngoingTickEvent;
 import pokecube.core.interfaces.PokecubeMod;
 
 public interface IOngoingAffected extends INBTSerializable<NBTTagList>
@@ -111,24 +107,7 @@ public interface IOngoingAffected extends INBTSerializable<NBTTagList>
 
     void removeEffect(IOngoingEffect effect);
 
-    default void tick()
-    {
-        Set<IOngoingEffect> stale = Sets.newHashSet();
-        for (IOngoingEffect effect : getEffects())
-        {
-            if (!MinecraftForge.EVENT_BUS.post(new OngoingTickEvent(getEntity(), effect)))
-            {
-                int duration = effect.getDuration();
-                if (duration > 0) duration = duration - 1;
-                effect.setDuration(duration);
-                effect.affectTarget(this);
-                if (effect.getDuration() == 0) stale.add(effect);
-            }
-            else if (effect.getDuration() == 0) stale.add(effect);
-        }
-        for (IOngoingEffect effect : stale)
-            removeEffect(effect);
-    }
+    void tick();
 
     @Override
     default void deserializeNBT(NBTTagList nbt)

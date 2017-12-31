@@ -206,7 +206,7 @@ public class PokecubeItems extends Items
         items.add(name);
         if (item instanceof ItemStack)
         {
-            OreDictionary.registerOre(name, (ItemStack) item);
+            OreDictionary.registerOre(name, ((ItemStack) item).copy());
         }
         if (item instanceof Item)
         {
@@ -240,13 +240,13 @@ public class PokecubeItems extends Items
      * @param item */
     public static void addSpecificItemStack(String name, ItemStack item)
     {
-        OreDictionary.registerOre(name.toLowerCase(java.util.Locale.ENGLISH).trim(), item);
+        OreDictionary.registerOre(name.toLowerCase(java.util.Locale.ENGLISH).trim(), item.copy());
     }
 
     public static void addToEvos(ItemStack stack)
     {
         if (!isValidHeldItem(stack)) addToHoldables(stack);
-        if (CompatWrapper.isValid(stack) && !isValidEvoItem(stack)) OreDictionary.registerOre("pokemob_evo", stack);
+        if (CompatWrapper.isValid(stack) && !isValidEvoItem(stack)) OreDictionary.registerOre("pokemob_evo", stack.copy());
     }
 
     public static void addToEvos(String item)
@@ -261,7 +261,7 @@ public class PokecubeItems extends Items
             System.out.println(new NullPointerException("Cannot add null stack to holdables " + stack));
         else
         {
-            OreDictionary.registerOre("pokemob_held", stack);
+            OreDictionary.registerOre("pokemob_held", stack.copy());
             heldItems.clear();
             heldItems.addAll(OreDictionary.getOres("pokemob_held"));
         }
@@ -414,13 +414,13 @@ public class PokecubeItems extends Items
     public static ItemStack getRandomMeteorDrop()
     {
         if (meteorDrops.size() == 0) return CompatWrapper.nullStack;
-        return meteorDrops.get(new Random().nextInt(meteorDrops.size()));
+        return meteorDrops.get(new Random().nextInt(meteorDrops.size())).copy();
     }
 
     public static ItemStack getRandomSpawnerDrop()
     {
         if (spawnerDrops.size() == 0) return CompatWrapper.nullStack;
-        return spawnerDrops.get(new Random().nextInt(spawnerDrops.size()));
+        return spawnerDrops.get(new Random().nextInt(spawnerDrops.size())).copy();
     }
 
     public static ItemStack getStack(String name)
@@ -436,7 +436,7 @@ public class PokecubeItems extends Items
             PokecubeMod.log(Level.WARNING, name + " Not found in list of items.", new NullPointerException());
         }
         NonNullList<ItemStack> stacks = OreDictionary.getOres(name);
-        if (!stacks.isEmpty()) return stacks.get(0);
+        if (!stacks.isEmpty()) return stacks.get(0).copy();
         Item item = getItem(name);
         if (item != null) { return new ItemStack(item); }
         return CompatWrapper.nullStack;

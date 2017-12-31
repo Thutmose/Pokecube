@@ -8,12 +8,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.TagNames;
@@ -279,39 +281,25 @@ public class PokecubeManager
         if (isFilled(stack))
         {
             int serialization = Tools.getHealedPokemobSerialization();
-            NBTTagCompound entityTag = stack.getTagCompound().getCompoundTag(TagNames.POKEMOB);
-            NBTTagCompound poketag = TagNames.getPokecubePokemobTag(stack.getTagCompound());
             stack.setItemDamage(serialization);
             try
             {
-                byte oldStatus = PokecubeManager.getStatus(stack);
-                entityTag.setShort("Fire", (short) -1);
-                entityTag.setShort("DeathTime", (short) 0);
-                entityTag.setInteger("HurtByTimestamp", 0);
-                if (oldStatus > IMoveConstants.STATUS_NON)
+                IPokemob pokemob = itemToPokemob(stack, PokecubeCore.getWorld());
+                if (pokemob != null)
                 {
-                    String itemName = stack.getDisplayName();
-                    if (itemName.contains(" (")) itemName = itemName.substring(0, itemName.lastIndexOf(" "));
-                    stack.setStackDisplayName(itemName);
+                    pokemob.healStatus();
+                    pokemob.healChanges();
+                    pokemob.getEntity().setHealth(pokemob.getStat(Stats.HP, false));
+                    ItemStack healed = pokemobToItem(pokemob);
+                    stack.setTagCompound(healed.getTagCompound());
+                    pokemob.getEntity().setDead();
                 }
-                float maxHealth = 0;
-                NBTTagList attrList = entityTag.getTagList("Attributes", 10);
-                for (int i = 0; i < attrList.tagCount(); ++i)
-                {
-                    NBTTagCompound nbttagcompound = attrList.getCompoundTagAt(i);
-                    String name = nbttagcompound.getString("Name");
-                    if (name.equals("generic.maxHealth"))
-                    {
-                        maxHealth = (float) nbttagcompound.getDouble("Base");
-                        break;
-                    }
-                }
-                entityTag.setFloat("Health", maxHealth);
             }
             catch (Throwable e)
             {
                 e.printStackTrace();
             }
+            NBTTagCompound poketag = TagNames.getPokecubePokemobTag(stack.getTagCompound());
             poketag.getCompoundTag(TagNames.AITAG).setInteger(TagNames.HUNGER,
                     -PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
             PokecubeManager.setStatus(stack, IMoveConstants.STATUS_NON);

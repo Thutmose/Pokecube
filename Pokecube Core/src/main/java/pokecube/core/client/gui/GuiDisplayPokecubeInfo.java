@@ -58,6 +58,7 @@ import pokecube.core.interfaces.pokemob.commandhandlers.MoveToHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.StanceHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.MovesUtils.AbleStatus;
 import pokecube.core.network.pokemobs.PacketCommand;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -404,7 +405,11 @@ public class GuiDisplayPokecubeInfo extends Gui
                         // Draw cooldown box
                         float timer = 1;
                         Move_Base lastMove;
-                        if ((lastMove = MovesUtils.getMoveFromName(originalPokemob.getLastMoveUsed())) != null)
+                        if (MovesUtils.isAbleToUseMoves(originalPokemob) != AbleStatus.ABLE)
+                        {
+                            timer = 0;
+                        }
+                        else if ((lastMove = MovesUtils.getMoveFromName(originalPokemob.getLastMoveUsed())) != null)
                         {
                             timer -= (originalPokemob.getAttackCooldown() / (float) MovesUtils.getAttackDelay(
                                     originalPokemob, originalPokemob.getLastMoveUsed(),

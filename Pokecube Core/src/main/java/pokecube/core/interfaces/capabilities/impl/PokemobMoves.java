@@ -19,7 +19,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.entity.IOngoingAffected;
-import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketSyncMoveUse;
@@ -238,8 +237,7 @@ public abstract class PokemobMoves extends PokemobSexed
         IOngoingAffected affected = CapabilityAffected.getAffected(getEntity());
         if (affected != null)
         {
-            for (IOngoingEffect effect : affected.getEffects(PersistantStatusEffect.ID))
-                effect.setDuration(0);
+            affected.removeEffects(PersistantStatusEffect.ID);
         }
         dataManager.set(params.STATUSDW, (byte) 0);
     }
@@ -277,7 +275,22 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public boolean setStatus(byte status, int turns)
     {
-        if (getStatus() != STATUS_NON) { return false; }
+        non:
+        if (getStatus() != STATUS_NON)
+        {
+            // Check if we actually have a status, if we do not, then we can
+            // apply one.
+            IOngoingAffected affected = CapabilityAffected.getAffected(getEntity());
+            if (affected.getEffects(PersistantStatusEffect.ID) == null) break non;
+            return false;
+        }
+        else
+        {
+            IOngoingAffected affected = CapabilityAffected.getAffected(getEntity());
+            affected.removeEffects(PersistantStatusEffect.ID);
+            dataManager.set(params.STATUSDW, status);
+            return true;
+        }
         if (status == STATUS_BRN && isType(PokeType.getType("fire"))) return false;
         if (status == STATUS_PAR && isType(PokeType.getType("electric"))) return false;
         if (status == STATUS_FRZ && isType(PokeType.getType("ice"))) return false;

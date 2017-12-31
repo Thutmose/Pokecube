@@ -2,6 +2,7 @@ package pokecube.core.interfaces.entity.impl;
 
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 
@@ -213,12 +214,28 @@ public class PersistantStatusEffect extends BaseEffect
     {
         super(ID);
         this.status = Status.getStatus(status);
+        if (this.status == null)
+        {
+            PokecubeMod.log(Level.WARNING, "Error setting of status.", new IllegalArgumentException());
+        }
         this.setDuration(timer);
     }
 
     @Override
     public void affectTarget(IOngoingAffected target)
     {
+        if (status == null)
+        {
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(target.getEntity());
+            if (pokemob == null || pokemob.getStatus() == IMoveConstants.STATUS_NON)
+            {
+                setDuration(0);
+            }
+            else if (pokemob != null)
+            {
+                status = Status.getStatus(pokemob.getStatus());
+            }
+        }
         IStatusEffect effect = EFFECTMAP.get(status);
         if (effect != null)
         {

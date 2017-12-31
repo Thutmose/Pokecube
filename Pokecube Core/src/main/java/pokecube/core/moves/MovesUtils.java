@@ -859,8 +859,11 @@ public class MovesUtils implements IMoveConstants
         useMove(getMoveFromName(move), user, target, start, end);
     }
 
+    /** @param attacker
+     * @return can attacker use its currently selected move. */
     public static boolean canUseMove(IPokemob attacker)
     {
+        if (isAbleToUseMoves(attacker) != AbleStatus.ABLE) return false;
         if (attacker.getAttackCooldown() <= 0)
         {
             int index = attacker.getMoveIndex();
@@ -879,5 +882,21 @@ public class MovesUtils implements IMoveConstants
             return true;
         }
         return false;
+    }
+
+    /** @param attacker
+     * @return is attacker able to use any moves, this doesn't check attack
+     *         cooldown, instead checks things like status or ai */
+    public static AbleStatus isAbleToUseMoves(IPokemob attacker)
+    {
+        if (!attacker.isRoutineEnabled(AIRoutine.AGRESSIVE)) return AbleStatus.AIOFF;
+        if ((attacker.getStatus() & STATUS_SLP) > 0) return AbleStatus.SLEEP;
+        if ((attacker.getStatus() & STATUS_FRZ) > 0) return AbleStatus.FREEZE;
+        return AbleStatus.ABLE;
+    }
+
+    public static enum AbleStatus
+    {
+        ABLE, SLEEP, FREEZE, AIOFF, GENERICUNABLE;
     }
 }

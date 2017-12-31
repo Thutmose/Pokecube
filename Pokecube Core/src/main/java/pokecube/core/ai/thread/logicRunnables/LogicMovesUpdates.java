@@ -8,6 +8,8 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.MovesUtils.AbleStatus;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -61,8 +63,15 @@ public class LogicMovesUpdates extends LogicBase
 
         if (!world.isRemote)
         {
-            int num = pokemob.getAttackCooldown();
-            if (num > 0) pokemob.setAttackCooldown(num - 1);
+            if (MovesUtils.isAbleToUseMoves(pokemob) == AbleStatus.ABLE)
+            {
+                int num = pokemob.getAttackCooldown();
+                if (num > 0) pokemob.setAttackCooldown(num - 1);
+            }
+            else if (pokemob.getLastMoveUsed() != null)
+            {
+                pokemob.setAttackCooldown(MovesUtils.getAttackDelay(pokemob, pokemob.getLastMoveUsed(), false, false));
+            }
         }
 
         for (int i = 0; i < 4; i++)

@@ -5,12 +5,21 @@ package pokecube.core;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CreativeTabPokecubes extends CreativeTabs
 {
+    @ObjectHolder(value = "pokecube:pokecube")
+    public static final Item POKECUBE = null;
+    @ObjectHolder(value = "pokecube:pokeseal")
+    public static final Item POKESEAL = null;
+
+    public ItemStack         stack;
+
     /** @param par1
      * @param par2Str */
     public CreativeTabPokecubes(int par1, String par2Str)
@@ -23,8 +32,7 @@ public class CreativeTabPokecubes extends CreativeTabs
     @SideOnly(Side.CLIENT)
     public ItemStack getTabIconItem()
     {
-        ItemStack stack = PokecubeItems.getStack("pokecube");
-        if (stack == null) stack = PokecubeItems.getStack("pokeseal");
+        if (stack == null) stack = new ItemStack(POKECUBE == null ? POKESEAL : POKECUBE);
         return stack;
     }
 

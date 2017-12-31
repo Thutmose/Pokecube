@@ -245,6 +245,7 @@ public class EntityPokecube extends EntityPokecubeBase
         if (isLoot) motionX = motionZ = 0;
         super.onUpdate();
         if (isLoot) return;
+        this.renderYawOffset = 0;
         boolean releasing = isReleasing();
 
         if (shooter != null && shootingEntity == null)
@@ -254,15 +255,39 @@ public class EntityPokecube extends EntityPokecubeBase
 
         if (releasing)
         {
-            motionX = motionY = motionZ = 0;
-            // TODO make the cube rotate to keep facing the pokemob it just
-            // released.
             Entity mob = getReleased();
-            IPokemob released = CapabilityPokemob.getPokemobFor(mob);
-            if (released == null || mob.isDead || !released.getPokemonAIState(IMoveConstants.EXITINGCUBE))
-                this.setDead();
+            if (mob != null)
+            {
+                Vector3 diff = Vector3.getNewVector().set(mob).subtractFrom(v0.set(this));
+
+                if (diff.magSq() < 4)
+                {
+                    diff.norm().reverse().scalarMultBy(0.25 * diff.magSq() / 4d);
+                    motionX = diff.x;
+                    motionY = diff.y;
+                    motionZ = diff.z;
+                }
+                else
+                {
+                    motionX = motionY = motionZ = 0;
+                }
+
+                IPokemob released = CapabilityPokemob.getPokemobFor(mob);
+                diff.set(mob);
+                this.getLookHelper().setLookPosition(diff.x, diff.y, diff.z, 360, 0);
+                this.getLookHelper().onUpdateLook();
+                this.rotationYaw = -this.rotationYawHead;
+                if (released == null || mob.isDead || !released.getPokemonAIState(IMoveConstants.EXITINGCUBE))
+                    this.setDead();
+            }
+            else this.setDead();
             return;
         }
+
+        this.getLookHelper().setLookPosition(posX + motionX, posY + motionY, posZ + motionZ, 360, 0);
+        this.getLookHelper().onUpdateLook();
+        this.rotationYaw = -this.rotationYawHead;
+
         if (PokecubeManager.isFilled(getItem())
                 || (getItem().hasTagCompound() && getItem().getTagCompound().hasKey(TagNames.MOBID)))
             time--;
@@ -480,6 +505,7 @@ public class EntityPokecube extends EntityPokecubeBase
     {
         super.readEntityFromNBT(nbt);
         isLoot = nbt.getBoolean("isLoot");
+        setReleasing(nbt.getBoolean("releasing"));
         if (nbt.hasKey("resetTime")) resetTime = nbt.getLong("resetTime");
         players.clear();
         loot.clear();
@@ -532,6 +558,10 @@ public class EntityPokecube extends EntityPokecubeBase
         super.writeEntityToNBT(nbt);
         nbt.setLong("resetTime", resetTime);
         nbt.setBoolean("isLoot", isLoot);
+        if (isReleasing())
+        {
+            nbt.setBoolean("releasing", true);
+        }
         NBTTagList nbttaglist = new NBTTagList();
         for (CollectEntry entry : players)
         {

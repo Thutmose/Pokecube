@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
@@ -20,8 +21,10 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.EvolveEvent;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
@@ -84,6 +87,69 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
+    }
+
+    static class MegaEvoTicker
+    {
+        final World          world;
+        final Entity         mob;
+        IPokemob             pokemob;
+        final PokedexEntry   mega;
+        final ITextComponent message;
+        final long           evoTime;
+        boolean              set = false;
+
+        MegaEvoTicker(PokedexEntry mega, long evoTime, IPokemob evolver, ITextComponent message)
+        {
+            this.mob = evolver.getEntity();
+            this.world = mob.getEntityWorld();
+            this.evoTime = this.world.getTotalWorldTime() + evoTime;
+            this.message = message;
+            this.mega = mega;
+            this.pokemob = evolver;
+
+            // Flag as evolving
+            pokemob.setPokemonAIState(EVOLVING, true);
+            pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+            pokemob.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
+
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void tick(WorldTickEvent evt)
+        {
+            if (evt.world != world || evt.phase != Phase.END) return;
+            if (!mob.addedToChunk || mob.isDead)
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                return;
+            }
+            if (evt.world.getTotalWorldTime() >= evoTime)
+            {
+                if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME) && pokemob.getOwner() instanceof EntityPlayerMP)
+                    Triggers.MEGAEVOLVEPOKEMOB.trigger((EntityPlayerMP) pokemob.getOwner(), pokemob);
+                int evoTicks = pokemob.getEvolutionTicks();
+                pokemob = pokemob.megaEvolve(mega);
+
+                /** Flag the new mob as evolving to continue the animation
+                 * effects. */
+                pokemob.setPokemonAIState(EVOLVING, true);
+                pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+                pokemob.setEvolutionTicks(evoTicks);
+
+                if (message != null)
+                {
+                    pokemob.displayMessageToOwner(message);
+                }
+                MinecraftForge.EVENT_BUS.unregister(this);
+            }
+        }
+    }
+
+    public static void setDelayedMegaEvolve(IPokemob evolver, PokedexEntry newForm, ITextComponent message)
+    {
+        new MegaEvoTicker(newForm, PokecubeMod.core.getConfig().evolutionTicks / 2, evolver, message);
     }
 
     default void cancelEvolve()
@@ -193,7 +259,8 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         IPokemob thisMob = CapabilityPokemob.getPokemobFor(thisEntity);
         Entity evolution = thisEntity;
         IPokemob evoMob = thisMob;
-        if (newEntry != null && newEntry != getPokedexEntry())
+        PokedexEntry oldEntry = getPokedexEntry();
+        if (newEntry != null && newEntry != oldEntry)
         {
             setPokemonAIState(EVOLVING, true);
 
@@ -209,7 +276,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
 
             // Sync health and nickname
             ((EntityLivingBase) evolution).setHealth(thisEntity.getHealth());
-            if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
+            if (this.getPokemonNickname().equals(oldEntry.getName())) this.setPokemonNickname("");
 
             // Sync tags besides the ones that define species and form.
             NBTTagCompound tag = thisMob.writePokemobData();
@@ -235,6 +302,19 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             evolution.copyLocationAndAnglesFrom(thisEntity);
             EntityTools.copyEntityTransforms((EntityLivingBase) evolution, thisEntity);
 
+            // Sync ability back, or store old ability.
+            if (newEntry.isMega)
+            {
+                if (thisMob.getAbility() != null)
+                    evolution.getEntityData().setString("Ability", thisMob.getAbility().toString());
+            }
+            else if (oldEntry.isMega)
+            {
+                String ability = thisEntity.getEntityData().getString("Ability");
+                evolution.getEntityData().removeTag("Ability");
+                if (!ability.isEmpty()) evoMob.setAbility(AbilityManager.getAbility(ability));
+            }
+
             // Set this mob wild, then kill it.
             this.setPokemonOwner((UUID) null);
             thisEntity.setDead();
@@ -242,11 +322,6 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             // Schedule adding to world.
             if (thisEntity.addedToChunk)
             {
-                // Re-flag as evolving
-                evoMob.setPokemonAIState(EVOLVING, true);
-                evoMob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
-                evoMob.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
-
                 thisEntity.getEntityWorld().removeEntityDangerously(thisEntity);
                 evolution.getEntityWorld().spawnEntity(evolution);
                 PacketHandler.sendEntityUpdate(evolution);

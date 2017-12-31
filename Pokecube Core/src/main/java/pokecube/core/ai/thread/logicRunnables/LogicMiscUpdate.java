@@ -268,7 +268,6 @@ public class LogicMiscUpdate extends LogicBase
         {
             pokemob.setTraded(false);
         }
-
         int num = pokemob.getEvolutionTicks();
         if (num > 0)
         {

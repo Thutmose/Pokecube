@@ -531,7 +531,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.moveHelper = getMoveHelper();
         this.jumpHelper = getJumpHelper();
         super.onUpdate();
-        if (!pokemobCap.selfManaged()) for (ILogicRunnable logic : pokemobCap.getAI().aiLogic)
+        if (pokemobCap.selfManaged()) for (ILogicRunnable logic : pokemobCap.getAI().aiLogic)
         {
             logic.doServerTick(getEntityWorld());
         }

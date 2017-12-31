@@ -3,8 +3,8 @@ package pokecube.core.network.pokemobs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -14,12 +14,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.abilities.AbilityManager;
-import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ICanEvolve;
 import pokecube.core.items.megastuff.MegaCapability;
 import thut.core.common.commands.CommandTools;
 
@@ -109,30 +108,23 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                         new TextComponentTranslation("pokecube.mega.noring", pokemob.getPokemonDisplayName()));
                 return;
             }
-            PokedexEntry megaEntry = pokemob.getPokedexEntry().getEvo(pokemob);
-            if (megaEntry != null && megaEntry.getPokedexNb() == pokemob.getPokedexEntry().getPokedexNb())
+            PokedexEntry newEntry = pokemob.getPokedexEntry().getEvo(pokemob);
+            if (newEntry != null && newEntry.getPokedexNb() == pokemob.getPokedexEntry().getPokedexNb())
             {
                 String old = pokemob.getPokemonDisplayName().getFormattedText();
-                if (pokemob.getPokedexEntry() == megaEntry)
+                if (pokemob.getPokedexEntry() == newEntry)
                 {
-                    pokemob = pokemob.megaEvolve(pokemob.getPokedexEntry());
-                    megaEntry = pokemob.getPokedexEntry().getBaseForme();
-                    String ability = mob.getEntityData().getString("Ability");
-                    mob.getEntityData().removeTag("Ability");
-                    if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
-                    player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
-                            megaEntry.getUnlocalizedName()));
+                    pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
+                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
+                            newEntry.getUnlocalizedName());
+                    ICanEvolve.setDelayedMegaEvolve(pokemob, newEntry, mess);
                 }
                 else
                 {
-
-                    if (pokemob.getAbility() != null)
-                        mob.getEntityData().setString("Ability", pokemob.getAbility().toString());
-                    pokemob = pokemob.megaEvolve(megaEntry);
-                    player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
-                            megaEntry.getUnlocalizedName()));
+                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
+                            newEntry.getUnlocalizedName());
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
-                    Triggers.MEGAEVOLVEPOKEMOB.trigger((EntityPlayerMP) player, pokemob);
+                    ICanEvolve.setDelayedMegaEvolve(pokemob, newEntry, mess);
                 }
             }
             else
@@ -140,14 +132,11 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME))
                 {
                     String old = pokemob.getPokemonDisplayName().getFormattedText();
-                    pokemob = pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseForme());
-                    String ability = mob.getEntityData().getString("Ability");
-                    mob.getEntityData().removeTag("Ability");
-                    if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
+                    newEntry = pokemob.getPokedexEntry().getBaseForme();
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
-                    megaEntry = pokemob.getPokedexEntry();
-                    player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
-                            megaEntry.getUnlocalizedName()));
+                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
+                            newEntry.getUnlocalizedName());
+                    ICanEvolve.setDelayedMegaEvolve(pokemob, newEntry, mess);
                 }
                 else
                 {

@@ -111,7 +111,7 @@ public class MovesParser
         // boolean zMove = yes.equals(entry.zMove);
         move.defrosts = defrosts;
         move.mirrorcoated = mirror;
-        move.attackCategory += contact ? IMoveConstants.CATEGORY_CONTACT : IMoveConstants.CATEGORY_DISTANCE;
+        addCategory(contact ? IMoveConstants.CATEGORY_CONTACT : IMoveConstants.CATEGORY_DISTANCE, move);
         move.soundType = sound;
         move.isPunch = punch;
         move.snatch = snatch;
@@ -136,6 +136,7 @@ public class MovesParser
         String other = "Other";
         String special = "Special";
         String physical = "Physical";
+        move.category = 0;
         if (other.equals(category)) move.category = (byte) Category.OTHER.ordinal();
         if (special.equals(category)) move.category = (byte) Category.SPECIAL.ordinal();
         if (physical.equals(category)) move.category = (byte) Category.PHYSICAL.ordinal();
@@ -327,13 +328,13 @@ public class MovesParser
         boolean poison2 = matches(effect, PSNC);
         boolean confuse = effect.contains("confus");
         boolean flinch = effect.contains("flinch");
-        if (burn) move.statusChange += IMoveConstants.STATUS_BRN;
-        if (par) move.statusChange += IMoveConstants.STATUS_PAR;
-        if (frz) move.statusChange += IMoveConstants.STATUS_FRZ;
-        if (slp) move.statusChange += IMoveConstants.STATUS_SLP;
-        if (poison) move.statusChange += poison2 ? IMoveConstants.STATUS_PSN2 : IMoveConstants.STATUS_PSN;
-        if (confuse) move.change += IMoveConstants.CHANGE_CONFUSED;
-        if (flinch) move.change += IMoveConstants.CHANGE_FLINCH;
+        if (burn) addStatus(IMoveConstants.STATUS_BRN, move);
+        if (par) addStatus(IMoveConstants.STATUS_PAR, move);
+        if (frz) addStatus(IMoveConstants.STATUS_FRZ, move);
+        if (slp) addStatus(IMoveConstants.STATUS_SLP, move);
+        if (poison) addStatus(poison2 ? IMoveConstants.STATUS_PSN2 : IMoveConstants.STATUS_PSN, move);
+        if (confuse) addChange(IMoveConstants.CHANGE_CONFUSED, move);
+        if (flinch) addChange(IMoveConstants.CHANGE_FLINCH, move);
         int rate = getRate(entry.effectRate);
         if (confuse || flinch) move.chanceChance = rate / 100f;
         move.statusChance = rate / 100f;
@@ -342,6 +343,21 @@ public class MovesParser
             if (PokecubeMod.debug)
                 PokecubeMod.log(move.name + " Has Status Effects: " + move.statusChange + " " + move.statusChance);
         }
+    }
+
+    private static void addStatus(byte mask, MoveEntry move)
+    {
+        if ((move.statusChange & mask) == 0) move.statusChange += mask;
+    }
+
+    private static void addChange(byte mask, MoveEntry move)
+    {
+        if ((move.change & mask) == 0) move.change += mask;
+    }
+
+    private static void addCategory(byte mask, MoveEntry move)
+    {
+        if ((move.attackCategory & mask) == 0) move.attackCategory += mask;
     }
 
     private static int getRate(String chance)
@@ -363,7 +379,7 @@ public class MovesParser
     {
         String target = entry.target;
         String self = "Self";
-        if (self.equals(target))
+        if (self.equals(target) && (move.attackCategory & IMoveConstants.CATEGORY_SELF) == 0)
         {
             move.attackCategory += IMoveConstants.CATEGORY_SELF;
         }

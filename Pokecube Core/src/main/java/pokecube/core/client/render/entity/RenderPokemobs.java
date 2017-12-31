@@ -153,7 +153,6 @@ public class RenderPokemobs extends RenderPokemob
         {
             GlStateManager.pushMatrix();
             // // Handle held/shoulder, whenever entities can mount players...
-
             PokedexEntry entry = mob.getPokedexEntry();
             this.scale = (entry.height * mob.getSize());
             Render render = getRenderer(mob.getPokedexEntry());

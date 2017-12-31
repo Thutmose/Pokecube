@@ -844,9 +844,9 @@ public class EventsHandler
         if (killer != null && evt.giveExp)
         {
             EntityLivingBase owner = killer.getPokemonOwner();
-
+            ItemStack egg = PokecubeItems.getStack("luckyegg");
             ItemStack stack = killer.getHeldItem();
-            if (PokecubeItems.getStack("luckyegg").isItemEqual(stack))
+            if (Tools.isSameStack(stack, egg))
             {
                 int exp = killer.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor,
                         killed.getBaseXP(), killed.getLevel());
@@ -854,18 +854,19 @@ public class EventsHandler
             }
             if (owner != null)
             {
+                ItemStack share = PokecubeItems.getStack("exp_share");
                 List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(owner);
                 for (IPokemob mob : pokemobs)
                 {
                     if (mob != null)
                     {
                         IPokemob poke = mob;
-                        if (CompatWrapper.isValid(mob.getHeldItem()))
-                            if (mob.getHeldItem().isItemEqual(PokecubeItems.getStack("exp_share")))
-                            {
-                            int exp = poke.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor, killed.getBaseXP(), killed.getLevel());
+                        if (Tools.isSameStack(share, mob.getHeldItem()))
+                        {
+                            int exp = poke.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor,
+                                    killed.getBaseXP(), killed.getLevel());
                             poke.setExp(exp, true);
-                            }
+                        }
                     }
                 }
             }

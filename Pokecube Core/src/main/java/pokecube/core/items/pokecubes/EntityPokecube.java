@@ -255,7 +255,12 @@ public class EntityPokecube extends EntityPokecubeBase
         if (releasing)
         {
             motionX = motionY = motionZ = 0;
-            this.setDead();
+            // TODO make the cube rotate to keep facing the pokemob it just
+            // released.
+            Entity mob = getReleased();
+            IPokemob released = CapabilityPokemob.getPokemobFor(mob);
+            if (released == null || mob.isDead || !released.getPokemonAIState(IMoveConstants.EXITINGCUBE))
+                this.setDead();
             return;
         }
         if (PokecubeManager.isFilled(getItem())

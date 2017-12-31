@@ -35,6 +35,7 @@ import pokecube.modelloader.client.gui.GuiAnimate;
 import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.client.render.TabulaPackLoader;
 import pokecube.modelloader.common.Config;
+import pokecube.modelloader.common.ExtraDatabase;
 import pokecube.modelloader.items.ItemModelReloader;
 import thut.core.client.render.model.ModelFactory;
 
@@ -193,6 +194,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void reloadModel(PokedexEntry model)
     {
+        modModels.clear();
         TabulaPackLoader.remove(model);
         List<String> modList = Lists.newArrayList(modelProviders.keySet());
         Collections.sort(modList, new Comparator<String>()
@@ -211,7 +213,8 @@ public class ClientProxy extends CommonProxy
             if (found) break;
             IMobProvider provider = mobProviders.get(mod);
             PokedexEntry p = model;
-            String name = p.getTrimmedName().toLowerCase(Locale.ENGLISH);
+            String name = p.getTrimmedName();
+            boolean validModel = false;
             try
             {
                 // First check to see if it has an XML
@@ -228,31 +231,55 @@ public class ClientProxy extends CommonProxy
             }
             catch (Exception e)
             {
-                boolean validModel = false;
-                List<String> extensions = Lists.newArrayList(ModelFactory.getValidExtensions());
-                Collections.sort(extensions, Config.instance.extensionComparator);
-                for (String ext : extensions)
+                if (ExtraDatabase.resourceEntries.containsKey(name)) try
                 {
-                    try
+                    // Then check to see if maybe the XML was packaged inside
+                    // another.
+                    ResourceLocation tex = new ResourceLocation(mod,
+                            provider.getModelDirectory(p) + ExtraDatabase.resourceEntries.get(name) + ".xml");
+                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                    res.close();
+                    ArrayList<String> models = modModels.get(mod);
+                    if (models == null)
                     {
-                        // Then look for an ModelFactory model
-                        ResourceLocation tex = new ResourceLocation(mod,
-                                provider.getModelDirectory(p) + name + "." + ext);
-                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                        res.close();
-                        ArrayList<String> models = modModels.get(mod);
-                        if (models == null)
-                        {
-                            modModels.put(mod, models = new ArrayList<String>());
-                        }
-                        validModel = true;
-                        models.remove(name);
-                        if (!models.contains(name)) models.add(name);
-                        break;
+                        modModels.put(mod, models = new ArrayList<String>());
                     }
-                    catch (Exception e2)
-                    {
+                    models.remove(name);
+                    if (!models.contains(name)) models.add(name);
+                    validModel = true;
+                }
+                catch (Exception e2)
+                {
+                }
 
+                if (!validModel)
+                {
+                    name = p.getTrimmedName();
+                    List<String> extensions = Lists.newArrayList(ModelFactory.getValidExtensions());
+                    Collections.sort(extensions, Config.instance.extensionComparator);
+                    for (String ext : extensions)
+                    {
+                        try
+                        {
+                            // Then look for an ModelFactory model
+                            ResourceLocation tex = new ResourceLocation(mod,
+                                    provider.getModelDirectory(p) + name + "." + ext);
+                            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                            res.close();
+                            ArrayList<String> models = modModels.get(mod);
+                            if (models == null)
+                            {
+                                modModels.put(mod, models = new ArrayList<String>());
+                            }
+                            validModel = true;
+                            models.remove(name);
+                            if (!models.contains(name)) models.add(name);
+                            break;
+                        }
+                        catch (Exception e3)
+                        {
+
+                        }
                     }
                 }
 
@@ -284,7 +311,6 @@ public class ClientProxy extends CommonProxy
             {
                 HashSet<String> alternateFormes = Sets.newHashSet();
                 PokedexEntry entry = model;
-                name = entry.getTrimmedName().toLowerCase(Locale.ENGLISH);
                 if (!AnimationLoader.initModel(provider, mod + ":" + provider.getModelDirectory(entry) + name,
                         alternateFormes))
                 {
@@ -334,7 +360,26 @@ public class ClientProxy extends CommonProxy
             {
                 for (final String s : modModels.get(modid))
                 {
+                    PokedexEntry entry = Database.getEntry(s);
                     if (AnimationLoader.models.containsKey(s))
+                    {
+                        PokecubeCore.proxy.registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
+                        {
+                            @SuppressWarnings({ "rawtypes", "unchecked" })
+                            @Override
+                            public Render<? super EntityLiving> createRenderFor(RenderManager manager)
+                            {
+                                RenderAdvancedPokemobModel<?> renderer = new RenderAdvancedPokemobModel(s, manager, 1);
+                                if (entry != null && (ModPokecubeML.preload
+                                        || Config.instance.toPreload.contains(entry.getName())))
+                                {
+                                    renderer.preload();
+                                }
+                                return (Render<? super EntityLiving>) renderer;
+                            }
+                        }, mod);
+                    }
+                    if (TabulaPackLoader.modelMap.containsKey(entry))
                     {
                         PokecubeCore.proxy.registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
                         {
@@ -354,40 +399,6 @@ public class ClientProxy extends CommonProxy
                         }, mod);
                     }
                 }
-            }
-        }
-        for (PokedexEntry entry : TabulaPackLoader.modelMap.keySet())
-        {
-            if (entry == null) continue;
-
-            Object mod = null;
-            for (String modid : modelProviders.keySet())
-            {
-                if (modid.equalsIgnoreCase(entry.getModId()))
-                {
-                    mod = modelProviders.get(modid);
-                    break;
-                }
-            }
-            if (mod != null)
-            {
-                final String s = entry.getName();
-                PokecubeCore.proxy.registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
-                {
-                    @SuppressWarnings({ "rawtypes", "unchecked" })
-                    @Override
-                    public Render<? super EntityLiving> createRenderFor(RenderManager manager)
-                    {
-                        RenderAdvancedPokemobModel<?> renderer = new RenderAdvancedPokemobModel(s, manager, 1);
-                        PokedexEntry entry = Database.getEntry(s);
-                        if (entry != null
-                                && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
-                        {
-                            renderer.preload();
-                        }
-                        return (Render<? super EntityLiving>) renderer;
-                    }
-                }, mod);
             }
         }
     }

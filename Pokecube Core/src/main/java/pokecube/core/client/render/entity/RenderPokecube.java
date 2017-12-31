@@ -18,8 +18,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import pokecube.core.PokecubeItems;
+import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
 import pokecube.core.interfaces.IPokecube;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
@@ -47,6 +50,17 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
             GL11.glRotated(entity.rotationYaw, 0, 1, 0);
 
             EntityPokecube cube = (EntityPokecube) entity;
+
+            if (cube.isReleasing())
+            {
+                Entity mob = cube.getReleased();
+                IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+                if (pokemob != null)
+                {
+                    RenderPokemob.renderEffect(pokemob, f2 - cube.ticksExisted, LogicMiscUpdate.EXITCUBEDURATION,
+                            false);
+                }
+            }
 
             if (PokecubeManager.getTilt(cube.getItem()) > 0)
             {

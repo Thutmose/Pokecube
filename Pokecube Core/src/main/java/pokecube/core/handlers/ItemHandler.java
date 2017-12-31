@@ -96,9 +96,9 @@ public class ItemHandler extends Mod_Pokecube_Helper
         BerryManager.berryLeaf = new BlockBerryLeaf().setRegistryName(PokecubeMod.ID, "berryleaf")
                 .setUnlocalizedName("berryleaf");
         register(BerryManager.berryLeaf, registry);
-        register(log0, registry);// ItemBlockMeta.class
-        register(plank0, registry);// ItemBlockMeta.class
-        register(log1, registry);// ItemBlockMeta.class
+        register(log0, registry);
+        register(plank0, registry);
+        register(log1, registry);
         BerryManager.registerTrees();
     }
 
@@ -290,6 +290,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
         register(tm.setRegistryName(PokecubeMod.ID, "tm"), registry);
         addSpecificItemStack("rarecandy", new ItemStack(tm, 1, 20));
         addSpecificItemStack("emerald_shard", new ItemStack(tm, 1, 19));
+        addSpecificItemStack("shardEmerald", new ItemStack(tm, 1, 19));
+        addSpecificItemStack("nuggetEmerald", new ItemStack(tm, 1, 19));
     }
 
     public static void registerBlocks(IForgeRegistry<Block> iForgeRegistry)

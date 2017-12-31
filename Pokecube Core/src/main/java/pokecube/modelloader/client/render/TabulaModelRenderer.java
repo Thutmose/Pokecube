@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -105,12 +106,12 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
         if (mob != null)
         {
             s = (mob.getSize());
-            if (partialTick <= 1)
+            if (partialTick <= 1 && mob.getPokemonAIState(IMoveConstants.EXITINGCUBE))
             {
-                int ticks = mob.getEntity().ticksExisted;
-                if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5)
+                int ticks = -mob.getEvolutionTicks() + 50 + LogicMiscUpdate.EXITCUBEDURATION;
+                if (ticks <= LogicMiscUpdate.EXITCUBEDURATION / 2)
                 {
-                    float max = 5;
+                    float max = LogicMiscUpdate.EXITCUBEDURATION / 2;
                     s *= (ticks) / max;
                 }
             }

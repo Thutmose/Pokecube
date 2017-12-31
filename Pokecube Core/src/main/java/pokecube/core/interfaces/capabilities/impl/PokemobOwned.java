@@ -236,7 +236,9 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             RecallEvent evtrec = new RecallEvent(this);
             MinecraftForge.EVENT_BUS.post(evtrec);
             if (getEntity().getHealth() > 0 && evtrec.isCanceled()) { return; }
-
+            this.setEvolutionTicks(0);
+            this.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+            this.setPokemonAIState(IMoveConstants.EVOLVING, false);
             if (getPokemonAIState(MEGAFORME) || getPokedexEntry().isMega)
             {
                 this.setPokemonAIState(MEGAFORME, false);

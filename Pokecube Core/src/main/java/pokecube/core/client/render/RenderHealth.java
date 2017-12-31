@@ -3,7 +3,6 @@ package pokecube.core.client.render;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 
@@ -11,9 +10,9 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -38,11 +37,10 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
-import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -127,8 +125,7 @@ public class RenderHealth
         else
         {
             WorldClient client = mc.world;
-            Set<Entity> entities = ReflectionHelper.getPrivateValue(WorldClient.class, client,
-                    new String[] { "entityList", "field_73032_d", "J" });
+            List<Entity> entities = client.loadedEntityList;
             for (Entity entity : entities)
                 if (entity != null && entity instanceof EntityLivingBase && entity != mc.player
                         && entity.isInRangeToRender3d(renderingVector.getX(), renderingVector.getY(),

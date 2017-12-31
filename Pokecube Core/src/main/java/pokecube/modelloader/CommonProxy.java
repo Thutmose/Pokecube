@@ -488,12 +488,12 @@ public class CommonProxy implements IGuiHandler
                 }
                 found.add(entry);
                 notFound.remove(entry);
-                pokeentry.setModId(modId);
                 bar2.step(entry);
                 if (!toAdd.contains(entry)) toAdd.add(entry);
                 ModPokecubeML.textureProviders.put(entry, modId);
                 ResourceLocation xml = new ResourceLocation(modId, mod.getModelDirectory(pokeentry) + entry + ".xml");
                 pokeentry.texturePath = mod.getTextureDirectory(pokeentry);
+                pokeentry.setModId(modId);
                 try
                 {
                     List<String> list = fileAsList(modId, xml);

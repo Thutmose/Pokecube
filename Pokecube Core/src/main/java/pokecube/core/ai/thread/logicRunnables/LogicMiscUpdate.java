@@ -233,8 +233,8 @@ public class LogicMiscUpdate extends LogicBase
             if (!pokedex)
             {
                 float scale = entity.width * 2;
-                Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5,
-                        rand.nextDouble(), rand.nextDouble() - 0.5);
+                Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5, rand.nextDouble(),
+                        rand.nextDouble() - 0.5);
                 offset.scalarMultBy(scale);
                 particleLoc.addTo(offset);
             }

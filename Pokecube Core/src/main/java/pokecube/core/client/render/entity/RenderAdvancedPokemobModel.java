@@ -91,8 +91,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         GL11.glTranslated(x, y, z);
         if ((partialTick <= 1))
         {
-            RenderPokemob.renderEvolution(mob, yaw);
-            RenderPokemob.renderExitCube(mob, yaw);
+            boolean exitCube = mob.getPokemonAIState(IMoveConstants.EXITINGCUBE);
+            if (mob.isEvolving()) RenderPokemob.renderEvolution(mob, yaw);
+            if (exitCube) RenderPokemob.renderExitCube(mob, yaw);
         }
         float s = (mob.getSize());
         this.shadowSize = (float) (entity.addedToChunk ? Math.sqrt(s * mob.getPokedexEntry().width) : 0);

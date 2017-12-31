@@ -110,19 +110,6 @@ public class PokecubeSerializer
     private static final String      DATA           = "data";
     private static final String      METEORS        = "meteors";
     private static final String      LASTUID        = "lastUid";
-    public static final String       USERNAME       = "username";
-    public static final String       EXP            = "exp";
-    public static final String       SEXE           = "sexe";
-    public static final String       POKEDEXNB      = "pokedexNb";
-    public static final String       STATUS         = "status";
-    public static final String       HAPPY          = "happiness";
-    public static final String       NICKNAME       = "nickname";
-    public static final String       EVS            = "EVS";
-    public static final String       IVS            = "IVS";
-    public static final String       MOVES          = "MOVES";
-
-    public static final byte[]       noEVs          = new byte[] { Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE,
-            Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE };
 
     public static int                MeteorDistance = 3000 * 3000;
 
@@ -184,11 +171,7 @@ public class PokecubeSerializer
 
             if (!toNew)
             {
-                instance.myWorld = PokecubeCore.proxy.getWorld();// surface
-                                                                 // world folder
-                                                                 // will be used
-                                                                 // to save the
-                                                                 // file
+                instance.myWorld = PokecubeCore.proxy.getWorld();
                 serverId = PokecubeCore.proxy.getFolderName();
                 if (instance.myWorld != null) instance.saveHandler = instance.myWorld.getSaveHandler();
             }
@@ -199,40 +182,6 @@ public class PokecubeSerializer
         }
 
         return instance;
-    }
-
-    public static byte[] intArrayAsByteArray(int[] ints)
-    {
-        byte[] stats = new byte[] { (byte) ((ints[0] & 0xFF)), (byte) ((ints[0] >> 8 & 0xFF)),
-                (byte) ((ints[0] >> 16 & 0xFF)), (byte) ((ints[0] >> 24 & 0xFF)), (byte) ((ints[1] & 0xFF)),
-                (byte) ((ints[1] >> 8 & 0xFF)) };
-        return stats;
-    }
-
-    public static byte[] intAsModifierArray(int ints)
-    {
-        byte[] stats = new byte[] { (byte) ((ints & 15) - 6), (byte) ((ints >> 4 & 15) - 6),
-                (byte) ((ints >> 8 & 15) - 6), (byte) ((ints >> 12 & 15) - 6), (byte) ((ints >> 16 & 15) - 6),
-                (byte) ((ints >> 20 & 15) - 6), (byte) ((ints >> 24 & 15) - 6), (byte) ((ints >> 28 & 15) - 6) };
-        return stats;
-    }
-
-    public static byte[] longAsByteArray(Long l)
-    {
-        byte[] stats = new byte[] { (byte) ((l & 0xFFL)), (byte) ((l >> 8 & 0xffL)), (byte) ((l >> 16 & 0xFFL)),
-                (byte) ((l >> 24 & 0xFFL)), (byte) ((l >> 32 & 0xFFL)), (byte) ((l >> 40 & 0xFFL)) };
-        return stats;
-    }
-
-    public static int modifierArrayAsInt(byte[] stats)
-    {
-        if (stats.length != 8) return 0;
-        int value = 0;
-        for (int i = 7; i >= 0; i--)
-        {
-            value = (value << 4) + ((stats[i] + 6) & 15);
-        }
-        return value;
     }
 
     ISaveHandler                                       saveHandler;
@@ -249,8 +198,8 @@ public class PokecubeSerializer
 
     private PokecubeSerializer(MinecraftServer server)
     {
-        myWorld = PokecubeCore.proxy.getWorld();// surface world folder will be
-                                                // used to save the file
+        /** This data is saved to surface world's folder. */
+        myWorld = PokecubeCore.proxy.getWorld();
         serverId = PokecubeCore.proxy.getFolderName();
         if (myWorld != null) saveHandler = myWorld.getSaveHandler();
         pokemobsMap = new HashMap<Integer, IPokemob>();
@@ -301,7 +250,7 @@ public class PokecubeSerializer
         }
         catch (Throwable e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.WARNING, "Error adding chunks to load.", new Exception(e));
         }
         saveData();
     }

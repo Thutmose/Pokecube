@@ -32,6 +32,8 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -296,6 +298,14 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         HappinessType.applyHappiness(mob, HappinessType.TRADE);
         if (shootingEntity != null && !mob.getPokemonAIState(IMoveConstants.TAMED))
             mob.setPokemonOwner((shootingEntity));
+        if (mob.getPokemonAIState(IMoveConstants.MEGAFORME) || mob.getPokedexEntry().isMega)
+        {
+            mob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
+            IPokemob revert = mob.megaEvolve(mob.getPokedexEntry().getBaseForme());
+            if (revert != null) mob = revert;
+            if (mob.getEntity().getEntityData().hasKey(TagNames.ABILITY))
+                mob.setAbility(AbilityManager.getAbility(mob.getEntity().getEntityData().getString(TagNames.ABILITY)));
+        }
         ItemStack mobStack = PokecubeManager.pokemobToItem(mob);
         this.setItem(mobStack);
         if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
@@ -393,6 +403,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             entity1.popFromPokecube();
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
             entity1.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
+            entity1.setEvolutionTicks(50 + LogicMiscUpdate.EXITCUBEDURATION);
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)
             {
@@ -421,7 +432,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 NBTTagCompound mobTag = tag.getCompoundTag(TagNames.OTHERMOB);
                 ResourceLocation id = new ResourceLocation(tag.getString(TagNames.MOBID));
                 Entity newMob = EntityList.createEntityByIDFromName(id, getEntityWorld());
-                System.out.println(newMob+" "+id);
+                System.out.println(newMob + " " + id);
                 if (newMob != null && newMob instanceof EntityLivingBase)
                 {
                     newMob.readFromNBT(mobTag);
@@ -438,7 +449,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                     tag.removeTag(TagNames.OTHERMOB);
                     tag.removeTag("display");
                     tag.removeTag("tilt");
-                    if(tag.hasNoTags()) getItem().setTagCompound(null);
+                    if (tag.hasNoTags()) getItem().setTagCompound(null);
                     entityDropItem(getItem(), 0.5f);
                     setReleased(newMob);
                     motionX = motionY = motionZ = 0;

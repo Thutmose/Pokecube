@@ -3,13 +3,15 @@ package pokecube.core.client.render.entity;
 import java.awt.Color;
 import java.util.Random;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -21,6 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -40,82 +43,11 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     public static final ResourceLocation FRZ = Resources.STATUS_FRZ;
     public static final ResourceLocation PAR = Resources.STATUS_PAR;
 
-    public static void renderEvolution(IPokemob pokemob, float par2)
+    public static void renderEvolution(IPokemob pokemob, float partialTick)
     {
-        float f1 = 0, f2 = 0;
-
-        boolean evolving = pokemob.getEvolutionTicks() > 0;
-
-        if (evolving)
+        if (pokemob.isEvolving())
         {
-            f1 = (pokemob.getEvolutionTicks() + par2) / 200.0F;
-            f2 = 0.0F;
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder worldrenderer = tessellator.getBuffer();
-            RenderHelper.disableStandardItemLighting();
-
-            if (f1 > 0.8F)
-            {
-                f2 = (f1 - 0.8F) / 0.2F;
-            }
-
-            Random random = new Random(432L);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glShadeModel(GL11.GL_SMOOTH);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
-            GL11.glEnable(GL11.GL_CULL_FACE);
-            GL11.glDepthMask(false);
-            GL11.glPushMatrix();
-            GL11.glTranslatef(0.0F, pokemob.getPokedexEntry().height * pokemob.getSize() / 2, 0.0F);
-            PokedexEntry entry = pokemob.getEvolutionEntry();
-
-            int color1 = entry.getType1().colour;
-            int color2 = entry.getType2().colour;
-
-            if (entry.getType2() == PokeType.unknown)
-            {
-                color2 = color1;
-            }
-
-            Color col1 = new Color(color1);
-            Color col2 = new Color(color2);
-
-            float scale = pokemob.getPokedexEntry().length;
-            for (int i = 0; i < (f1 + f1 * f1) / 2.0F * 60.0F; ++i)
-            {
-                GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
-                GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
-                float f4 = random.nextFloat() * 20.0F * scale + 5.0F * scale + f2 * 10.0F;
-                float f3 = random.nextFloat() * 2.0F * scale + 1.0F * scale + f2 * 2.0F;
-                worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
-                worldrenderer.pos(0.0D, 0.0D, 0.0D)
-                        .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1)))
-                        .endVertex();
-                worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
-                        .endVertex();
-                worldrenderer.pos(0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
-                        .endVertex();
-                worldrenderer.pos(0.0D, f4, 1.0F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
-                        .endVertex();
-                worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
-                        .endVertex();
-                tessellator.draw();
-            }
-            GL11.glPopMatrix();
-            GL11.glDepthMask(true);
-            GL11.glDisable(GL11.GL_CULL_FACE);
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glShadeModel(GL11.GL_FLAT);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-            RenderHelper.enableStandardItemLighting();
+            renderEffect(pokemob, partialTick, PokecubeCore.core.getConfig().evolutionTicks, true);
         }
     }
 
@@ -123,8 +55,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.EXITINGCUBE)) return;
         Entity entity = pokemob.getEntity();
-        int ticks = entity.ticksExisted;
-        if (ticks > 20) return;
         NBTTagCompound sealTag = PokecubeManager.getSealTag(entity);
         if (sealTag != null && !sealTag.hasNoTags())
         {
@@ -171,70 +101,82 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                         ItemDye.DYE_COLORS[sealTag.getInteger("dye")] | 0xFF000000);
             }
         }
-        float f1 = ((float) ticks * 5 + partialTick) / 200.0F;
-        float f2 = 0.0F;
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder worldrenderer = tessellator.getBuffer();
-        RenderHelper.disableStandardItemLighting();
+    }
 
-        if (f1 > 0.8F)
-        {
-            f2 = (f1 - 0.8F) / 0.2F;
-        }
-
-        Random random = new Random(432L);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDepthMask(false);
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, pokemob.getPokedexEntry().height * pokemob.getSize() / 2, 0.0F);
-
-        int color1 = pokemob.getType1().colour;
-        int color2 = pokemob.getType2().colour;
-
-        if (pokemob.getType2() == PokeType.unknown)
+    public static void renderEffect(IPokemob pokemob, float partialTick, int duration, boolean scaleMob)
+    {
+        int ticks = pokemob.getEvolutionTicks();
+        PokedexEntry entry = pokemob.getPokedexEntry();
+        int color1 = entry.getType1().colour;
+        int color2 = entry.getType2().colour;
+        if (entry.getType2() == PokeType.unknown)
         {
             color2 = color1;
         }
         Color col1 = new Color(color1);
         Color col2 = new Color(color2);
+        ticks = ticks - 50;
+        ticks = duration - ticks;
 
-        float scale = pokemob.getPokedexEntry().length;
-        for (int i = 0; i < (f1 + f1 * f1) / 2.0F * 60.0F; ++i)
+        float scale = 0.25f;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        RenderHelper.disableStandardItemLighting();
+        float time = 40 * ((float) ticks + partialTick) / duration;
+        float f = time / (200f);
+        float f1 = 0.0F;
+        if (f > 0.8F)
+        {
+            f1 = (f - 0.8F) / 0.2F;
+        }
+        Random random = new Random(432L);
+        GlStateManager.disableTexture2D();
+        GlStateManager.shadeModel(7425);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableCull();
+        GlStateManager.depthMask(false);
+        GlStateManager.pushMatrix();
+        if (scaleMob)
+        {
+            float mobScale = pokemob.getSize();
+            Vector3f dims = entry.getModelSize();
+            scale = 0.1f * Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
+            GL11.glTranslatef(0.0F, dims.y * pokemob.getSize() / 2, 0.0F);
+        }
+        for (int i = 0; (float) i < (f + f * f) / 2.0F * 100.0F; ++i)
         {
             GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.rotate(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
-            float f4 = random.nextFloat() * 20.0F * scale + 5.0F * scale + f2 * 10.0F;
-            float f3 = random.nextFloat() * 2.0F * scale + 1.0F * scale + f2 * 2.0F;
-            worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
-            worldrenderer.pos(0.0D, 0.0D, 0.0D)
+            GlStateManager.rotate(random.nextFloat() * 360.0F + f * 90.0F, 0.0F, 0.0F, 1.0F);
+            float f2 = (random.nextFloat() * 20.0F + 5.0F + f1 * 10.0F) * scale;
+            float f3 = (random.nextFloat() * 2.0F + 1.0F + f1 * 2.0F) * scale;
+            bufferbuilder.begin(6, DefaultVertexFormats.POSITION_COLOR);
+            bufferbuilder.pos(0.0D, 0.0D, 0.0D)
                     .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1))).endVertex();
-            worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
-                    .endVertex();
-            worldrenderer.pos(0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
-                    .endVertex();
-            worldrenderer.pos(0.0D, f4, 1.0F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-            worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
-                    .endVertex();
+            bufferbuilder.pos(-0.866D * (double) f3, (double) f2, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            bufferbuilder.pos(0.866D * (double) f3, (double) f2, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            bufferbuilder.pos(0.0D, (double) f2, (double) (1.0F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            bufferbuilder.pos(-0.866D * (double) f3, (double) f2, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
             tessellator.draw();
         }
 
-        GL11.glPopMatrix();
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glShadeModel(GL11.GL_FLAT);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GlStateManager.popMatrix();
+        GlStateManager.depthMask(true);
+        GlStateManager.disableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.shadeModel(7424);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableAlpha();
         RenderHelper.enableStandardItemLighting();
     }
 
@@ -425,7 +367,8 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         this.renderLivingAt(entity, x, y, z);
         GL11.glPushMatrix();
         int ticks = entity.ticksExisted;
-        if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(partialTick <= 1))
+        boolean exitCube = mob.getPokemonAIState(IMoveConstants.EXITINGCUBE);
+        if (exitCube && ticks <= 5 && !(partialTick <= 1))
         {
             float max = 5;// ;
             float s = (ticks) / max;
@@ -433,8 +376,8 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         }
         if ((partialTick <= 1))
         {
-            renderEvolution(mob, partialTick);
-            renderExitCube(mob, partialTick);
+            if (mob.isEvolving()) renderEvolution(mob, partialTick);
+            if (exitCube) renderExitCube(mob, partialTick);
         }
         GL11.glPopMatrix();
         float f = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
@@ -443,8 +386,8 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
         float f8 = this.handleRotationFloat(entity, partialTick);
         this.applyRotations(entity, f8, f, partialTick);
-        
-        //This section here is what was prepareScale
+
+        // This section here is what was prepareScale
         float f4 = 0.0625F;
         GlStateManager.enableRescaleNormal();
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);

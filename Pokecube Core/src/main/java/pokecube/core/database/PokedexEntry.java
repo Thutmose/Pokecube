@@ -1718,6 +1718,11 @@ public class PokedexEntry
      *            the modId to set */
     public void setModId(String modId)
     {
+        if (PokecubeMod.debug && this.modId != null)
+        {
+            PokecubeMod.log(Level.INFO, "Modid changed to: " + modId + " for " + this + " from " + this.modId,
+                    new Exception());
+        }
         this.modId = modId;
     }
 

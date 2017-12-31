@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -180,6 +179,7 @@ public class AnimationLoader
                 s.replace(provider.getModelDirectory(entry), provider.getTextureDirectory(entry)) + ".png");
         List<String> extensions = Lists.newArrayList(ModelFactory.getValidExtensions());
         Collections.sort(extensions, Config.instance.extensionComparator);
+
         for (String ext : extensions)
         {
             try
@@ -205,11 +205,22 @@ public class AnimationLoader
             }
             catch (Exception e3)
             {
-                if (entry.getBaseForme() != null)
-                    animation = new ResourceLocation(anim.replace(entry.getTrimmedName().toLowerCase(Locale.ENGLISH),
-                            entry.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
+                if (entry.getBaseForme() != null) animation = new ResourceLocation(
+                        anim = anim.replace(entry.getTrimmedName(), entry.getBaseForme().getTrimmedName()));
                 else if (PokecubeMod.debug)
                     PokecubeMod.log(Level.WARNING, "Error with locating animation data for " + entry, e3);
+                if (PokecubeMod.debug) PokecubeMod.log("Setting animation xml for " + entry + " to " + animation);
+                try
+                {
+                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(animation);
+                    res.close();
+                }
+                catch (Exception e)
+                {
+                    if (PokecubeMod.debug)
+                        PokecubeMod.log(Level.WARNING, "Error with locating animation data for " + entry, e);
+                }
+
             }
             if (model != null)
             {
@@ -220,7 +231,7 @@ public class AnimationLoader
                 }
                 else
                 {
-                    System.err.println("Attmpted to register a model for un-registered pokemob " + name);
+                    PokecubeMod.log(Level.WARNING, "Attmpted to register a model for un-registered pokemob " + name);
                 }
             }
             else
@@ -242,7 +253,7 @@ public class AnimationLoader
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.WARNING, "Error Loading Model " + entry, e);
         }
         return model != null;
     }

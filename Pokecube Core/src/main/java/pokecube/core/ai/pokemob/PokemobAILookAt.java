@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
-public class PokemobAILook extends EntityAIBase
+public class PokemobAILookAt extends EntityAIBase
 {
     protected EntityLiving            theWatcher;
     /** The closest entity which is being watched by this one. */
@@ -28,12 +28,12 @@ public class PokemobAILook extends EntityAIBase
     private int                       idleTime;
     protected Class<? extends Entity> watchedClass;
 
-    public PokemobAILook(EntityLiving entitylivingIn, Class<? extends Entity> watchTargetClass, float maxDistance)
+    public PokemobAILookAt(EntityLiving entitylivingIn, Class<? extends Entity> watchTargetClass, float maxDistance)
     {
         this(entitylivingIn, watchTargetClass, maxDistance, 0.02f);
     }
 
-    public PokemobAILook(EntityLiving entitylivingIn, Class<? extends Entity> watchTargetClass, float maxDistance,
+    public PokemobAILookAt(EntityLiving entitylivingIn, Class<? extends Entity> watchTargetClass, float maxDistance,
             float chanceIn)
     {
         this.theWatcher = entitylivingIn;

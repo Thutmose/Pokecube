@@ -12,6 +12,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.lwjgl.input.Keyboard;
 
@@ -534,13 +535,21 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         if (Database.getEntry(name) == null)
         {
-            Thread.dumpStack();
+            PokecubeMod.log(Level.SEVERE, "Attempted to register renderer for unknown mob: " + name,
+                    new IllegalArgumentException());
         }
         else
         {
             PokedexEntry entry = Database.getEntry(name);
             Class<? extends Entity> c = PokecubeCore.instance.getEntityClassForEntry(entry);
+
+            if (PokecubeMod.debug) PokecubeMod.log("Registering Renderer for " + entry + " " + name + " " + c + " "
+                    + renderer.createRenderFor(Minecraft.getMinecraft().getRenderManager()));
+
+            /** Register this for when the rendermanager is refreshed */
             RenderingRegistry.registerEntityRenderingHandler(c, renderer);
+            /** Register this here for when just updating renderer at runtime
+             * (say from reloading models) */
             Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(c,
                     renderer.createRenderFor(Minecraft.getMinecraft().getRenderManager()));
         }

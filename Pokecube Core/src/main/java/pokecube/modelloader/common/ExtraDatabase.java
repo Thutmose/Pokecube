@@ -77,6 +77,9 @@ public class ExtraDatabase
     @XmlRootElement(name = "ModelAnimator")
     public static class XMLFile
     {
+        /** This gets populated with the actual name of the base pokedex entry
+         * assosciated with this file.. */
+        String                name;
         @XmlElement
         XMLModel              model;
         @XmlElement(name = "details")
@@ -87,6 +90,7 @@ public class ExtraDatabase
         void init(PokedexEntry base) throws NullPointerException
         {
             if (base == null) { throw new NullPointerException("Null Base Entry"); }
+            name = base.getTrimmedName();
             if (model != null && model.customTex != null)
             {
                 for (XMLForme f : model.customTex.entries)
@@ -118,11 +122,16 @@ public class ExtraDatabase
         }
     }
 
-    static HashMap<String, AddedXML>        xmls    = Maps.newHashMap();
+    static HashMap<String, AddedXML>        xmls            = Maps.newHashMap();
 
-    static Set<AddedXML>                    toAdd   = Sets.newHashSet();
+    static Set<AddedXML>                    toAdd           = Sets.newHashSet();
 
-    static HashMap<String, XMLPokedexEntry> entries = Maps.newHashMap();
+    static HashMap<String, XMLPokedexEntry> entries         = Maps.newHashMap();
+
+    /** Map of trimmedname -> xml file found in. This is to allow specifying
+     * that a particular model actually exists, even if no specific model or xml
+     * is found by that name. */
+    public static HashMap<String, String>   resourceEntries = Maps.newHashMap();
 
     public static void addXMLEntry(String modId, String mobName, List<String> xml)
     {
@@ -197,16 +206,18 @@ public class ExtraDatabase
             ProgressBar loading = ProgressManager.push("XML Files", file.entries.size());
             for (XMLPokedexEntry fileEntry : file.entries)
             {
-                if (PokecubeMod.debug) PokecubeMod.log("ResourceEntry: " + fileEntry.name);
                 loading.step(fileEntry.name);
                 XMLPokedexEntry old = PokedexEntryLoader.database.map.get(fileEntry.name);
                 PokedexEntry other = Database.getEntry(fileEntry.name);
+                if (PokecubeMod.debug) PokecubeMod.log("ResourceEntry: " + fileEntry.name + " " + file.name);
+                if (other != null) resourceEntries.put(other.getTrimmedName(), file.name);
 
                 // Ensure that the loaded forms inherit the same texture path as
                 // the base forms.
                 if (other != null && !other.base)
                 {
                     other.texturePath = other.getBaseForme().texturePath;
+                    other.setModId(other.getBaseForme().getModId());
                 }
                 if (old != null) PokedexEntryLoader.mergeNonDefaults(PokedexEntryLoader.missingno, fileEntry, old);
                 else

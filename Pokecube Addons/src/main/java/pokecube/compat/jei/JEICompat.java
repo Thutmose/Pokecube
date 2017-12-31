@@ -13,7 +13,6 @@ import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
-import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -21,7 +20,6 @@ import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
 import mezz.jei.config.Config.IngredientBlacklistType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
@@ -165,37 +163,6 @@ public class JEICompat implements IModPlugin
     @Override
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry)
     {
-        // TODO Auto-generated method stub
-        Item item = PokecubeItems.megastone;
-        subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
-        {
-            @Override
-            public String apply(ItemStack itemStack)
-            {
-                if (itemStack.hasTagCompound()) return itemStack.getTagCompound().getString("pokemon");
-                return NONE;
-            }
-        });
-        item = PokecubeItems.held;
-        subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
-        {
-            @Override
-            public String apply(ItemStack itemStack)
-            {
-                if (itemStack.hasTagCompound()) return itemStack.getTagCompound().getString("type");
-                return NONE;
-            }
-        });
-        item = PokecubeItems.fossil;
-        subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
-        {
-            @Override
-            public String apply(ItemStack itemStack)
-            {
-                if (itemStack.hasTagCompound()) return itemStack.getTagCompound().getString("pokemon");
-                return NONE;
-            }
-        });
     }
 
     @Override

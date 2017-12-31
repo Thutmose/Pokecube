@@ -269,7 +269,7 @@ public class ModPokecubeML implements IMobProvider
         {
             if (e.getBaseForme() != null && e.getModId() == null)
             {
-                PokecubeMod.log("Set MODID:" + this + " " + e.getModId());
+                PokecubeMod.log("Set MODID: " + this + " " + e.getModId());
                 e.texturePath = e.getBaseForme().texturePath;
                 e.setModId(e.getBaseForme().getModId());
             }
@@ -394,17 +394,20 @@ public class ModPokecubeML implements IMobProvider
         PokedexEntry e;
         if ((e = Database.getEntry(mob)) != null)
         {
-            if (e.getBaseForme() != null && textureProviders.containsKey(e.getTrimmedName()))
+            if (e.getModId() == null)
             {
-                e.setModId(textureProviders.get(e.getTrimmedName()));
-            }
-            else if (textureProviders.containsKey(e.getTrimmedName()))
-            {
-                e.setModId(textureProviders.get(e.getTrimmedName()));
-            }
-            else
-            {
-                e.setModId(ID);
+                if (e.getBaseForme() != null && textureProviders.containsKey(e.getTrimmedName()))
+                {
+                    e.setModId(textureProviders.get(e.getTrimmedName()));
+                }
+                else if (textureProviders.containsKey(e.getTrimmedName()))
+                {
+                    e.setModId(textureProviders.get(e.getTrimmedName()));
+                }
+                else
+                {
+                    e.setModId(ID);
+                }
             }
             if (!Pokedex.getInstance().isRegistered(e)) PokecubeMod.core.registerPokemon(true, this, e);
         }

@@ -187,7 +187,7 @@ public class AICombatMovement extends AIBase
         {
             if (targ.getEntity().getAttackTarget() != attacker)
             {
-                targ.getEntity().setAttackTarget(attacker);
+                addTargetInfo(targ.getEntity(), attacker);
             }
         }
         double d0 = this.attacker.posX - this.target.posX;

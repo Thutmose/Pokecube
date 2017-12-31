@@ -31,6 +31,7 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketSyncNewMoves;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.IMobGenetics;
@@ -195,61 +196,60 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         if (newEntry != null && newEntry != getPokedexEntry())
         {
             setPokemonAIState(EVOLVING, true);
-            if (newEntry.getPokedexNb() != getPokedexNb())
+
+            evolution = PokecubeMod.core.createPokemob(newEntry, thisEntity.getEntityWorld());
+            if (evolution == null)
             {
-                evolution = PokecubeMod.core.createPokemob(newEntry, thisEntity.getEntityWorld());
-                if (evolution == null)
-                {
-                    System.err.println("No Entry for " + newEntry);
-                    return thisMob;
-                }
-                evoMob = CapabilityPokemob.getPokemobFor(evolution);
-                // Flag the mob as evolving.
-                evoMob.setPokemonAIState(EVOLVING, true);
-
-                // Sync health and nickname
-                ((EntityLivingBase) evolution).setHealth(thisEntity.getHealth());
-                if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
-
-                // Sync tags besides the ones that define species and form.
-                NBTTagCompound tag = thisMob.writePokemobData();
-                tag.getCompoundTag(TagNames.OWNERSHIPTAG).removeTag(TagNames.POKEDEXNB);
-                tag.getCompoundTag(TagNames.VISUALSTAG).removeTag(TagNames.FORME);
-                evoMob.readPokemobData(tag);
-
-                // Sync held item
-                evoMob.setHeldItem(thisMob.getHeldItem());
-
-                // Sync genes
-                IMobGenetics oldGenes = thisEntity.getCapability(IMobGenetics.GENETICS_CAP, null);
-                IMobGenetics newGenes = evolution.getCapability(IMobGenetics.GENETICS_CAP, null);
-                newGenes.getAlleles().putAll(oldGenes.getAlleles());
-                GeneticsManager.handleEpigenetics(evoMob);
-                evoMob.onGenesChanged();
-                // Set entry, this should fix expressed species gene.
-                evoMob.setPokedexEntry(newEntry);
-
-                // Sync entity data, UUID and location.
-                evolution.getEntityData().merge(thisEntity.getEntityData());
-                evolution.setUniqueId(thisEntity.getUniqueID());
-                evolution.copyLocationAndAnglesFrom(thisEntity);
-
-                // Set this mob wild, then kill it.
-                this.setPokemonOwner((UUID) null);
-                thisEntity.setDead();
-
-                // Schedule adding to world.
-                if (thisEntity.addedToChunk)
-                {
-                    long evoTime = thisEntity.getEntityWorld().getTotalWorldTime() + 2;
-                    new EvoTicker(thisEntity.getEntityWorld(), evoTime, evolution, thisMob.getPokemonDisplayName());
-                }
+                System.err.println("No Entry for " + newEntry);
+                return thisMob;
             }
-            else
+            evoMob = CapabilityPokemob.getPokemobFor(evolution);
+            // Flag the mob as evolving.
+            evoMob.setPokemonAIState(EVOLVING, true);
+
+            // Sync health and nickname
+            ((EntityLivingBase) evolution).setHealth(thisEntity.getHealth());
+            if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
+
+            // Sync tags besides the ones that define species and form.
+            NBTTagCompound tag = thisMob.writePokemobData();
+            tag.getCompoundTag(TagNames.OWNERSHIPTAG).removeTag(TagNames.POKEDEXNB);
+            tag.getCompoundTag(TagNames.VISUALSTAG).removeTag(TagNames.FORME);
+            evoMob.readPokemobData(tag);
+
+            // Sync held item
+            evoMob.setHeldItem(thisMob.getHeldItem());
+
+            // Sync genes
+            IMobGenetics oldGenes = thisEntity.getCapability(IMobGenetics.GENETICS_CAP, null);
+            IMobGenetics newGenes = evolution.getCapability(IMobGenetics.GENETICS_CAP, null);
+            newGenes.getAlleles().putAll(oldGenes.getAlleles());
+            GeneticsManager.handleEpigenetics(evoMob);
+            evoMob.onGenesChanged();
+            // Set entry, this should fix expressed species gene.
+            evoMob.setPokedexEntry(newEntry);
+
+            // Sync entity data, UUID and location.
+            evolution.getEntityData().merge(thisEntity.getEntityData());
+            evolution.setUniqueId(thisEntity.getUniqueID());
+            evolution.copyLocationAndAnglesFrom(thisEntity);
+            EntityTools.copyEntityTransforms((EntityLivingBase) evolution, thisEntity);
+
+            // Set this mob wild, then kill it.
+            this.setPokemonOwner((UUID) null);
+            thisEntity.setDead();
+
+            // Schedule adding to world.
+            if (thisEntity.addedToChunk)
             {
-                evolution = thisEntity;
-                evoMob.setPokedexEntry(newEntry);
-                evoMob.setAbility(newEntry.getAbility(thisMob.getAbilityIndex(), evoMob));
+                // Re-flag as evolving
+                evoMob.setPokemonAIState(EVOLVING, true);
+                evoMob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+                evoMob.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
+
+                thisEntity.getEntityWorld().removeEntityDangerously(thisEntity);
+                evolution.getEntityWorld().spawnEntity(evolution);
+                PacketHandler.sendEntityUpdate(evolution);
             }
         }
         return evoMob;

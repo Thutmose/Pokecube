@@ -246,7 +246,8 @@ public class PokecubeItems extends Items
     public static void addToEvos(ItemStack stack)
     {
         if (!isValidHeldItem(stack)) addToHoldables(stack);
-        if (CompatWrapper.isValid(stack) && !isValidEvoItem(stack)) OreDictionary.registerOre("pokemob_evo", stack.copy());
+        if (CompatWrapper.isValid(stack) && !isValidEvoItem(stack))
+            OreDictionary.registerOre("pokemob_evo", stack.copy());
     }
 
     public static void addToEvos(String item)
@@ -271,13 +272,6 @@ public class PokecubeItems extends Items
     {
         ItemStack stack = getStack(item);
         addToHoldables(stack);
-    }
-
-    public static boolean contains(String name)
-    {
-        return getBlock(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null
-                || getItem(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null
-                || getStack(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null;
     }
 
     public static void deValidate(ItemStack stack)
@@ -617,7 +611,7 @@ public class PokecubeItems extends Items
         int num = 0;
         if (nbt == null || i == null)
         {
-            System.err.println("No Data");
+            PokecubeMod.log(Level.WARNING, "No Data to save for Item Validations.");
             return;
         }
         for (Long l : i)

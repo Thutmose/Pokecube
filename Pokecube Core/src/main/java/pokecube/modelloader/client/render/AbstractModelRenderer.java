@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
@@ -129,12 +130,12 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
             float sy = (float) getScale().y;
             float sz = (float) getScale().z;
             s = (mob.getSize());
-            if (partialTick <= 1)
+            if (partialTick <= 1 && mob.getPokemonAIState(IMoveConstants.EXITINGCUBE))
             {
-                int ticks = mob.getEntity().ticksExisted;
-                if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5)
+                int ticks = -mob.getEvolutionTicks() + 50 + LogicMiscUpdate.EXITCUBEDURATION;
+                if (ticks <= LogicMiscUpdate.EXITCUBEDURATION / 2)
                 {
-                    float max = 5;
+                    float max = LogicMiscUpdate.EXITCUBEDURATION / 2;
                     s *= (ticks) / max;
                 }
             }

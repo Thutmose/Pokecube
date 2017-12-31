@@ -431,14 +431,15 @@ public class PokecubeItems extends Items
     public static ItemStack getStack(String name, boolean stacktrace)
     {
         if (name == null) return CompatWrapper.nullStack;
-        Item item = getItem(name);
-        if (item != null) { return new ItemStack(item); }
         if (!OreDictionary.doesOreNameExist(name) && PokecubeMod.debug)
         {
             PokecubeMod.log(Level.WARNING, name + " Not found in list of items.", new NullPointerException());
         }
         NonNullList<ItemStack> stacks = OreDictionary.getOres(name);
-        return stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0);
+        if (!stacks.isEmpty()) return stacks.get(0);
+        Item item = getItem(name);
+        if (item != null) { return new ItemStack(item); }
+        return CompatWrapper.nullStack;
     }
 
     public static void init()

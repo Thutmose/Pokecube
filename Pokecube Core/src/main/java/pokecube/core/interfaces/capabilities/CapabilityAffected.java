@@ -66,7 +66,7 @@ public class CapabilityAffected
         EntityLivingBase                                 entity;
         final List<IOngoingEffect>                       effects = Lists.newArrayList();
         final Map<ResourceLocation, Set<IOngoingEffect>> map     = Maps.newHashMap();
-        
+
         public DefaultAffected()
         {
         }
@@ -76,7 +76,7 @@ public class CapabilityAffected
             this.entity = entity;
             for (ResourceLocation id : EFFECTS.keySet())
             {
-                map.put(id, Sets.newHashSet());
+                map.put(id, Sets.newConcurrentHashSet());
             }
         }
 
@@ -87,13 +87,13 @@ public class CapabilityAffected
         }
 
         @Override
-        public List<IOngoingEffect> getEffects()
+        public synchronized List<IOngoingEffect> getEffects()
         {
             return effects;
         }
 
         @Override
-        public void clearEffects()
+        public synchronized void clearEffects()
         {
             effects.clear();
             for (Set<IOngoingEffect> set : map.values())
@@ -101,7 +101,7 @@ public class CapabilityAffected
         }
 
         @Override
-        public boolean addEffect(IOngoingEffect effect)
+        public synchronized boolean addEffect(IOngoingEffect effect)
         {
             if (effect.allowMultiple())
             {
@@ -135,13 +135,13 @@ public class CapabilityAffected
         }
 
         @Override
-        public Collection<IOngoingEffect> getEffects(ResourceLocation id)
+        public synchronized Collection<IOngoingEffect> getEffects(ResourceLocation id)
         {
             return map.get(id);
         }
 
         @Override
-        public void removeEffects(ResourceLocation id)
+        public synchronized void removeEffects(ResourceLocation id)
         {
             Collection<IOngoingEffect> set = getEffects(id);
             effects.removeAll(set);
@@ -149,7 +149,7 @@ public class CapabilityAffected
         }
 
         @Override
-        public void removeEffect(IOngoingEffect effect)
+        public synchronized void removeEffect(IOngoingEffect effect)
         {
             Collection<IOngoingEffect> set = getEffects(effect.getID());
             effects.remove(effect);

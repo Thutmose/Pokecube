@@ -145,7 +145,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                     mob.getEntityData().removeTag("Ability");
                     if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
-                    megaEntry = pokemob.getPokedexEntry().getBaseForme();
+                    megaEntry = pokemob.getPokedexEntry();
                     player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             megaEntry.getUnlocalizedName()));
                 }

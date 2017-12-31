@@ -247,6 +247,12 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                 base.returnToPokecube();
                 return;
             }
+            /** If this has fainted, status should be reset. */
+            if (getEntity().getHealth() <= 0)
+            {
+                healStatus();
+                healChanges();
+            }
 
             Entity owner = getPokemonOwner();
             this.setPokemonAIState(IMoveConstants.NOMOVESWAP, false);

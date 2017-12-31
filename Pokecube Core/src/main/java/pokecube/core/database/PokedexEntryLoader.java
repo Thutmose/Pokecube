@@ -38,9 +38,11 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
+import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
@@ -100,6 +102,7 @@ public class PokedexEntryLoader
     public static class MegaEvoRule implements MegaRule
     {
         ItemStack          stack;
+        String             oreDict;
         String             moveName;
         String             ability;
         final PokedexEntry baseForme;
@@ -119,9 +122,14 @@ public class PokedexEntryLoader
             boolean hasMove = true;
             boolean hasAbility = true;
             boolean rule = false;
+            if (oreDict != null)
+            {
+                stack = PokecubeItems.getStack(oreDict);
+                oreDict = null;
+            }
             if (CompatWrapper.isValid(stack))
             {
-                rightStack = Tools.isSameStack(stack, mobIn.getHeldItem());
+                rightStack = OreDictionary.containsMatch(false, NonNullList.withSize(1, stack), mobIn.getHeldItem());
                 rule = true;
             }
             if (moveName != null && !moveName.isEmpty())
@@ -1475,7 +1483,7 @@ public class PokedexEntryLoader
                     {
                         if (rule.preset.startsWith("Mega"))
                         {
-                            forme = entry.getName() + " " + rule.preset;
+                            forme = entry.getTrimmedName() + rule.preset.toLowerCase(Locale.ENGLISH);
                             if (rule.item_preset == null)
                                 rule.item_preset = entry.getTrimmedName() + rule.preset.toLowerCase(Locale.ENGLISH);
                         }
@@ -1498,6 +1506,7 @@ public class PokedexEntryLoader
                     ItemStack stack = CompatWrapper.nullStack;
                     if (item_preset != null && !item_preset.isEmpty())
                     {
+                        if (PokecubeMod.debug) PokecubeMod.log(forme + " " + item_preset);
                         stack = item_preset.isEmpty() ? CompatWrapper.nullStack
                                 : PokecubeItems.getStack(item_preset, false);
                     }
@@ -1514,6 +1523,7 @@ public class PokedexEntryLoader
                         continue;
                     }
                     MegaEvoRule mrule = new MegaEvoRule(entry);
+                    if (item_preset != null && !item_preset.isEmpty()) mrule.oreDict = item_preset;
                     if (ability != null) mrule.ability = ability;
                     if (move != null) mrule.moveName = move;
                     if (CompatWrapper.isValid(stack))

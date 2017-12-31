@@ -67,11 +67,6 @@ public class Move_Ongoing extends Move_Basic
         return true;
     }
 
-    public Class<? extends OngoingMoveEffect> getEffectClass()
-    {
-        return OngoingMoveEffect.class;
-    }
-
     public OngoingMoveEffect makeEffect()
     {
         OngoingMoveEffect effect = new OngoingMoveEffect();

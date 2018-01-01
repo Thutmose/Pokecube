@@ -1,5 +1,8 @@
 package pokecube.core.ai.thread.logicRunnables;
 
+import java.util.Collection;
+import java.util.logging.Level;
+
 import net.minecraft.init.SoundEvents;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -8,6 +11,10 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityAffected;
+import pokecube.core.interfaces.entity.IOngoingAffected;
+import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.MovesUtils.AbleStatus;
 import thut.api.maths.Vector3;
@@ -19,8 +26,9 @@ import thut.lib.CompatWrapper;
  * activating the held item (like berries) if it should be used. */
 public class LogicMovesUpdates extends LogicBase
 {
-    Vector3 v     = Vector3.getNewVector();
-    int     index = -1;
+    Vector3 v          = Vector3.getNewVector();
+    int     index      = -1;
+    int     statusTick = 0;
 
     public LogicMovesUpdates(IPokemob entity)
     {
@@ -145,6 +153,24 @@ public class LogicMovesUpdates extends LogicBase
                         new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
             }
             return;
+        }
+        else
+        {
+            /** Heals the status effects if the capability is soemhow removed,
+             * yet it still thinks it has a status. */
+            IOngoingAffected affected = CapabilityAffected.getAffected(pokemob.getEntity());
+            Collection<?> set = affected.getEffects(PersistantStatusEffect.ID);
+            if (set.isEmpty() && statusTick++ > 20)
+            {
+                PokecubeMod.log(Level.WARNING,
+                        "Fixed Broken Status " + pokemob.getStatus() + " for " + pokemob.getEntity());
+                statusTick = 0;
+                pokemob.healStatus();
+            }
+            else if (!set.isEmpty())
+            {
+                statusTick = 0;
+            }
         }
     }
 

@@ -284,7 +284,7 @@ public abstract class PokemobMoves extends PokemobSexed
             if (affected.getEffects(PersistantStatusEffect.ID) == null) break non;
             return false;
         }
-        else
+        else if (status == STATUS_NON)
         {
             IOngoingAffected affected = CapabilityAffected.getAffected(getEntity());
             affected.removeEffects(PersistantStatusEffect.ID);

@@ -283,6 +283,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         register(revive.setRegistryName(PokecubeMod.ID, "revive"), registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(revive, 0, new ModelResourceLocation("pokecube:revive", "inventory"));
+        addSpecificItemStack("revive", new ItemStack(revive));
         addToHoldables("revive");
 
         Item tm = PokecubeItems.tm;

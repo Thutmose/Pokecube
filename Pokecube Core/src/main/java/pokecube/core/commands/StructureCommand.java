@@ -12,10 +12,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
-import pokecube.core.database.worldgen.WorldgenHandler;
 import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.database.worldgen.WorldgenHandler;
 import pokecube.core.world.gen.WorldGenMultiTemplate;
-import pokecube.core.world.gen.WorldGenMultiTemplate.Template;
 import pokecube.core.world.gen.WorldGenTemplates;
 import pokecube.core.world.gen.WorldGenTemplates.TemplateGen;
 import pokecube.core.world.gen.template.PokecubeTemplates;
@@ -44,6 +43,7 @@ public class StructureCommand extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender cSender, String[] args) throws CommandException
     {
+        if (args.length == 0) throw new CommandException(getUsage(cSender));
         String structure = args[0];
         if (structure.equals("!reload"))
         {
@@ -89,20 +89,13 @@ public class StructureCommand extends CommandBase
             else if (generator instanceof WorldGenMultiTemplate)
             {
                 WorldGenMultiTemplate gen = (WorldGenMultiTemplate) generator;
-                WorldGenMultiTemplate old = gen;
-                generator = gen = new WorldGenMultiTemplate();
-                for (Template gen1 : old.subTemplates)
-                {
-                    Template newTemplate = new Template();
-                    newTemplate.template = new TemplateGen(gen1.template.template, matcher, 1, gen1.template.offset);
-                    gen.subTemplates.add(newTemplate);
-                }
                 gen.dir = dir;
                 gen.origin = pos;
                 gen.chance = 1;
             }
-            for (int x = chunkX - 3; x <= chunkX + 3; x++)
-                for (int z = chunkZ - 3; z <= chunkZ + 3; z++)
+            int dr = 4;
+            for (int x = chunkX - dr; x <= chunkX + dr; x++)
+                for (int z = chunkZ - dr; z <= chunkZ + dr; z++)
                 {
                     generator.generate(world.rand, x, z, world, world.getChunkProvider().chunkGenerator,
                             world.getChunkProvider());
@@ -117,6 +110,7 @@ public class StructureCommand extends CommandBase
                         gen.chance = 0;
                     }
                 }
+            CommandTools.sendMessage(cSender, "Generated " + structure + " " + generator);
         }
         else throw new CommandException("No Structure of that name found in config/pokecube/structures!");
     }

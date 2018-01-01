@@ -8,8 +8,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -21,7 +19,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -32,7 +29,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.contributors.Contributor;
 import pokecube.core.contributors.ContributorManager;
 import pokecube.core.database.Database;
@@ -243,6 +239,7 @@ public class PokecubeSerializer
                     pos.setInteger("z", location.getZ());
                     ticket.getModData().setTag("pos", pos);
                     ChunkPos chunk = world.getChunkFromBlockCoords(location).getPos();
+                    PokecubeMod.log("Forcing Chunk at " + location);
                     ForgeChunkManager.forceChunk(ticket, chunk);
                     tickets.put(location, ticket);
                 }
@@ -359,33 +356,6 @@ public class PokecubeSerializer
         if (temp instanceof NBTTagCompound)
         {
             PokecubeItems.loadTime((NBTTagCompound) temp);
-        }
-    }
-
-    public void reloadChunk(List<Ticket> tickets, World world)
-    {
-        Iterator<Ticket> next = tickets.iterator();
-        while (next.hasNext())
-        {
-            Ticket ticket = next.next();
-            if (!ticket.getModId().equals("pokecube") || !ticket.isPlayerTicket()) continue;
-            if (!ticket.getModData().hasKey("pos"))
-            {
-                PokecubeMod.log("invalid ticket, no saved pos");
-                ForgeChunkManager.releaseTicket(ticket);
-            }
-            else
-            {
-                NBTTagCompound posTag = ticket.getModData().getCompoundTag("pos");
-                BlockPos pos = new BlockPos(posTag.getInteger("x"), posTag.getInteger("y"), posTag.getInteger("z"));
-                TileEntity tile = world.getTileEntity(pos);
-                if (tile == null || !(tile instanceof TileHealTable))
-                {
-                    PokecubeMod.log("invalid ticket for " + pos);
-                    ForgeChunkManager.releaseTicket(ticket);
-                }
-                else ForgeChunkManager.forceChunk(ticket, new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
-            }
         }
     }
 

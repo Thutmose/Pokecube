@@ -24,6 +24,7 @@ import pokecube.core.events.StructureEvent;
 public class PokecubeTemplate extends Template
 {
     public final String name;
+    public String       expectedBiomeType = null;
 
     public PokecubeTemplate(String name)
     {
@@ -43,7 +44,10 @@ public class PokecubeTemplate extends Template
     {
         ITemplateProcessor processor = new TemplateProcessor(worldIn, pos, placementIn);
         this.addBlocksToWorld(worldIn, pos, processor, placementIn, 2);
-        MinecraftForge.EVENT_BUS.post(new StructureEvent.BuildStructure(pos, worldIn, name, getSize(), placementIn));
+        StructureEvent.BuildStructure event = new StructureEvent.BuildStructure(pos, worldIn, name, getSize(),
+                placementIn);
+        event.seBiomeType(expectedBiomeType);
+        MinecraftForge.EVENT_BUS.post(event);
     }
 
     @Override

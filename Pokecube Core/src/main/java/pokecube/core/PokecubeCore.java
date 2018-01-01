@@ -11,8 +11,11 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
+
+import com.google.common.collect.ListMultimap;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -21,13 +24,18 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.ISnooperInfo;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.datafix.FixTypes;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
+import net.minecraftforge.common.ForgeChunkManager.PlayerOrderedLoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -53,6 +61,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.blocks.berries.BerryGenManager;
+import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
 import pokecube.core.commands.CountCommand;
@@ -92,6 +101,12 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
 import pokecube.core.items.berries.BerryManager;
+import pokecube.core.items.loot.datafixers.BadgeFixer;
+import pokecube.core.items.loot.datafixers.FossilFixer;
+import pokecube.core.items.loot.datafixers.HeldItemFixer;
+import pokecube.core.items.loot.datafixers.MegaStoneFixer;
+import pokecube.core.items.loot.datafixers.MegaWearableFixer;
+import pokecube.core.items.loot.datafixers.VitaminFixer;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MoveQueue.MoveQueuer;
@@ -493,12 +508,42 @@ public class PokecubeCore extends PokecubeMod
         config.save();
         config.initDefaultStarts();
         events = new EventsHandler();
-        ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallback()
+        ForgeChunkManager.setForcedChunkLoadingCallback(this, new PlayerOrderedLoadingCallback()
         {
             @Override
             public void ticketsLoaded(List<Ticket> tickets, World world)
             {
-                PokecubeSerializer.getInstance().reloadChunk(tickets, world);
+                Iterator<Ticket> next = tickets.iterator();
+                while (next.hasNext())
+                {
+                    Ticket ticket = next.next();
+                    if (!ticket.getModId().equals(ID)) continue;
+                    if (!ticket.isPlayerTicket())
+                    {
+                        ForgeChunkManager.releaseTicket(ticket);
+                        continue;
+                    }
+                    NBTTagCompound posTag = ticket.getModData().getCompoundTag("pos");
+                    BlockPos pos = new BlockPos(posTag.getInteger("x"), posTag.getInteger("y"), posTag.getInteger("z"));
+                    TileEntity tile = world.getTileEntity(pos);
+                    if (!(tile instanceof TileHealTable))
+                    {
+                        PokecubeMod.log("invalid ticket for " + pos);
+                        ForgeChunkManager.releaseTicket(ticket);
+                    }
+                    else
+                    {
+                        ChunkPos location = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
+                        if (debug) PokecubeMod.log("Forcing Chunk at " + location);
+                        ForgeChunkManager.forceChunk(ticket, location);
+                    }
+                }
+            }
+
+            @Override
+            public ListMultimap<String, Ticket> playerTicketsLoaded(ListMultimap<String, Ticket> tickets, World world)
+            {
+                return tickets;
             }
 
         });
@@ -726,6 +771,12 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void serverLoad(FMLServerAboutToStartEvent event)
     {
+        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new MegaStoneFixer());
+        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new HeldItemFixer());
+        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new MegaWearableFixer());
+        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new FossilFixer());
+        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new VitaminFixer());
+        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new BadgeFixer());
     }
 
     @EventHandler

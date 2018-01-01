@@ -204,6 +204,7 @@ public abstract class TemplateStructureBase extends Village
             StructureBoundingBox buildBox = new StructureBoundingBox(boundingBox);
             buildBox.offset(0, this.averageGroundLevel - buildBox.minY + getOffset(), 0);
             this.templatePosition = new BlockPos(templatePosition.getX(), buildBox.minY, templatePosition.getZ());
+            System.out.println(buildBox + " " + templatePosition + " " + ((PokecubeTemplate) getTemplate()).name);
             this.placeSettings.setIgnoreEntities(worldIn.isRemote).setBoundingBox(boxIn);
             this.template.addBlocksToWorld(worldIn, this.templatePosition, this.placeSettings);
             Map<BlockPos, String> map = this.template.getDataBlocks(this.templatePosition, this.placeSettings);
@@ -238,6 +239,7 @@ public abstract class TemplateStructureBase extends Village
         offsetBox(boundingBox);
     }
 
+    @Override
     public void offset(int x, int y, int z)
     {
         super.offset(x, y, z);

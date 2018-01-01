@@ -183,6 +183,9 @@ public class PokecubeItems extends Items
         if (cubes[1] instanceof Item) items[1] = (Item) cubes[1];
         else if (cubes[1] instanceof Block) items[1] = Item.getItemFromBlock((Block) cubes[1]);
 
+        addSpecificItemStack(id.getResourcePath() + "cube", new ItemStack(items[0]));
+        addSpecificItemStack(id.getResourcePath() + "cube", new ItemStack(items[1], 1, OreDictionary.WILDCARD_VALUE));
+
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(items[0], new DispenserBehaviorPokecube());
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(items[1], new DispenserBehaviorPokecube());
 
@@ -550,7 +553,6 @@ public class PokecubeItems extends Items
     private static void postInitFossils()
     {
         List<ItemStack> toRemove = Lists.newArrayList();
-        HeldItemHandler.sortFossilVariants();
         for (int i = 0; i < HeldItemHandler.fossilVariants.size(); i++)
         {
             ItemStack stack = new ItemStack(PokecubeItems.fossil, 1, i);

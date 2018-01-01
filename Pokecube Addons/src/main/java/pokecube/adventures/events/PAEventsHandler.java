@@ -57,6 +57,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
+import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.lib.CompatWrapper;
 
@@ -146,20 +147,32 @@ public class PAEventsHandler
     public void StructureBuild(StructureEvent.BuildStructure event)
     {
         String name = event.getStructure();
-        if (name == null || !Config.biomeMap.containsKey(name = name.toLowerCase(java.util.Locale.ENGLISH))) { return; }
-        int biome = Config.biomeMap.get(name);
+        int biome;
+        if (event.getBiomeType() != null)
+        {
+            biome = BiomeType.getBiome(event.getBiomeType()).getType();
+        }
+        else
+        {
+            if (name == null
+                    || !Config.biomeMap.containsKey(name = name.toLowerCase(java.util.Locale.ENGLISH))) { return; }
+            biome = Config.biomeMap.get(name);
+        }
         Vector3 pos = Vector3.getNewVector();
         StructureBoundingBox bounds = event.getBoundingBox();
         for (int i = bounds.minX; i <= bounds.maxX; i++)
         {
-            for (int j = bounds.minY; j <= bounds.maxY; j++)
-            {
-                for (int k = bounds.minZ; k < bounds.maxZ; k++)
+            for (int k = bounds.minZ; k <= bounds.maxZ; k++)
+                if (event.getWorld().isChunkGeneratedAt(i >> 4, k >> 4))
                 {
-                    pos.set(i, j, k);
-                    TerrainManager.getInstance().getTerrian(event.getWorld(), pos).setBiome(pos, biome);
+                    for (int j = bounds.minY; j <= bounds.maxY; j++)
+                    {
+                        {
+                            pos.set(i, j, k);
+                            TerrainManager.getInstance().getTerrian(event.getWorld(), pos).setBiome(pos, biome);
+                        }
+                    }
                 }
-            }
         }
     }
 

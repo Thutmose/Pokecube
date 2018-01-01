@@ -19,6 +19,8 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.database.PokedexEntryLoader;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
@@ -27,6 +29,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.world.gen.WorldGenMultiTemplate;
 import pokecube.core.world.gen.WorldGenTemplates;
 import pokecube.core.world.gen.WorldGenTemplates.TemplateGen;
+import pokecube.core.world.gen.WorldGenTemplates.TemplateGen.TemplateSet;
 import pokecube.core.world.gen.template.PokecubeTemplates;
 
 public class WorldgenHandler
@@ -72,11 +75,22 @@ public class WorldgenHandler
     public static class Structure
     {
         public String    name;
-        float            chance;
+        /** In MultiStructures, this is the chance that the part will be picked.
+         * Parts are sorted by priority, then the first to have a successful
+         * pick is what is generated for that position. */
+        float            chance   = 1;
         int              offset;
         public String    biomeType;
         public SpawnRule spawn;
+        /** In MultiStructures, this is the relative position of the part. Only
+         * one part for each unique positon can be picked, the actual distance
+         * the structure spawns, is this scaled by the size of the intermediate
+         * parts. */
         public String    position;
+        public String    rotation;
+        public String    mirror;
+        /** lower numbers get put higher up the "pick list" */
+        public int       priority = 100;
     }
 
     public static Structures defaults = new Structures();
@@ -110,7 +124,7 @@ public class WorldgenHandler
             FileInputStream stream = new FileInputStream(file);
             InputStreamReader reader = new InputStreamReader(stream);
             dims = PokedexEntryLoader.gson.fromJson(reader, CustomDims.class);
-            PokecubeMod.log("Loaded Dims: "+dims.dims);
+            PokecubeMod.log("Loaded Dims: " + dims.dims);
         }
         catch (Exception e)
         {
@@ -170,6 +184,8 @@ public class WorldgenHandler
                 WorldGenTemplates.templates.add(template);
                 WorldGenTemplates.namedTemplates.put(struct.name, new TemplateGen(struct.name,
                         new SpawnBiomeMatcher(struct.spawn), struct.chance, struct.offset));
+                PokecubeMod.log("Loaded Structure: " + struct.name + " " + struct.spawn + " " + struct.chance + " "
+                        + struct.offset);
             }
             catch (Exception e)
             {
@@ -179,52 +195,65 @@ public class WorldgenHandler
         }
         for (MultiStructure struct : defaults.multiStructures)
         {
-            WorldGenMultiTemplate gen = new WorldGenMultiTemplate();
+            WorldGenMultiTemplate gen = new WorldGenMultiTemplate(new SpawnBiomeMatcher(struct.spawn));
+            gen.chance = struct.chance;
             gen.syncGround = struct.syncGround;
             for (Structure struct2 : struct.structures)
             {
                 try
                 {
-                    WorldGenTemplates.TemplateGen subGen = new TemplateGen(struct2.name,
-                            new SpawnBiomeMatcher(struct2.spawn), struct2.chance, struct2.offset);
+                    TemplateSet subGen = new TemplateSet(struct2.name, struct2.offset);
                     WorldGenMultiTemplate.Template template = new WorldGenMultiTemplate.Template();
                     template.template = subGen;
                     String[] args = struct2.position.split(",");
                     BlockPos pos = new BlockPos(Integer.parseInt(args[0]), Integer.parseInt(args[1]),
                             Integer.parseInt(args[2]));
-                    template.offset = pos;
+
+                    if (struct2.rotation != null) template.rotation = Rotation.valueOf(struct2.rotation);
+                    if (struct2.mirror != null) template.mirror = Mirror.valueOf(struct2.mirror);
+                    template.priority = struct2.priority;
+                    template.position = pos;
+                    template.chance = struct2.chance;
+                    template.biome = struct2.biomeType;
+                    gen.subTemplates.add(template);
                 }
                 catch (Exception e)
                 {
-                    System.out
-                            .println(struct2.name + " " + struct2.spawn + " " + struct2.chance + " " + struct2.offset);
-                    e.printStackTrace();
+                    PokecubeMod.log(Level.WARNING,
+                            (struct2.name + " " + struct2.spawn + " " + struct2.chance + " " + struct2.offset), e);
                 }
             }
+            PokecubeMod.log(struct.name + " " + gen.subTemplates + " " + struct.structures);
             if (!gen.subTemplates.isEmpty())
             {
                 WorldGenTemplates.templates.add(gen);
-                gen = new WorldGenMultiTemplate();
+                gen = new WorldGenMultiTemplate(new SpawnBiomeMatcher(struct.spawn));
                 gen.chance = struct.chance;
                 gen.syncGround = struct.syncGround;
+                PokecubeMod.log("Loaded Multi Structure: " + struct.name + " " + struct.spawn + " " + struct.chance);
                 for (Structure struct2 : struct.structures)
                 {
                     try
                     {
-                        WorldGenTemplates.TemplateGen subGen = new TemplateGen(struct2.name,
-                                new SpawnBiomeMatcher(struct2.spawn), struct2.chance, struct2.offset);
+                        TemplateSet subGen = new TemplateSet(struct2.name, struct2.offset);
                         WorldGenMultiTemplate.Template template = new WorldGenMultiTemplate.Template();
                         template.template = subGen;
                         String[] args = struct2.position.split(",");
                         BlockPos pos = new BlockPos(Integer.parseInt(args[0]), Integer.parseInt(args[1]),
                                 Integer.parseInt(args[2]));
-                        template.offset = pos;
+
+                        if (struct2.rotation != null) template.rotation = Rotation.valueOf(struct2.rotation);
+                        if (struct2.mirror != null) template.mirror = Mirror.valueOf(struct2.mirror);
+                        template.priority = struct2.priority;
+                        template.position = pos;
+                        template.chance = struct2.chance;
+                        template.biome = struct2.biomeType;
+                        gen.subTemplates.add(template);
                     }
                     catch (Exception e)
                     {
-                        System.out.println(
-                                struct2.name + " " + struct2.spawn + " " + struct2.chance + " " + struct2.offset);
-                        e.printStackTrace();
+                        PokecubeMod.log(Level.WARNING,
+                                (struct2.name + " " + struct2.spawn + " " + struct2.chance + " " + struct2.offset), e);
                     }
                 }
                 WorldGenTemplates.namedTemplates.put(struct.name, gen);
@@ -235,6 +264,9 @@ public class WorldgenHandler
     public static void reloadWorldgen()
     {
         PokecubeTemplates.clear();
+        WorldGenTemplates.templates.clear();
+        WorldGenTemplates.namedTemplates.clear();
+        WorldGenTemplates.TemplateGenStartBuilding.clear();
         init(DEFAULT);
         for (String s : PokecubeMod.core.getConfig().extraWorldgenDatabases)
         {

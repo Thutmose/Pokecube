@@ -59,6 +59,7 @@ public class ItemHandler
         expshare.setHasSubtypes(true);
         expshare.setCreativeTab(creativeTabPokecube);
         register(expshare, registry);
+        PokecubeItems.addSpecificItemStack("exp_share", new ItemStack(expshare));
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             PokecubeItems.registerItemTexture(expshare, 0,

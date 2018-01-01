@@ -16,6 +16,7 @@ public class StructureEvent extends Event
         private final StructureBoundingBox bounds;
         private final PlacementSettings    settings;
         private final String               structure;
+        private String                     structureOverride;
         private final World                world;
 
         public BuildStructure(BlockPos pos, World world, String name, BlockPos size, PlacementSettings settings)
@@ -23,11 +24,9 @@ public class StructureEvent extends Event
             this.structure = name;
             this.world = world;
             this.settings = settings;
-            EnumFacing dir = EnumFacing.NORTH;
-            if (settings.getRotation() != null)
-            {
-                dir = settings.getRotation().rotate(dir);
-            }
+            EnumFacing dir = EnumFacing.SOUTH;
+            if (settings.getMirror() != null) dir = settings.getMirror().mirror(dir);
+            if (settings.getRotation() != null) dir = settings.getRotation().rotate(dir);
             this.bounds = StructureBoundingBox.getComponentToAddBoundingBox(pos.getX(), pos.getY(), pos.getZ(), 0, 0, 0,
                     size.getX(), size.getY(), size.getZ(), dir);
         }
@@ -50,6 +49,16 @@ public class StructureEvent extends Event
         public StructureBoundingBox getBoundingBox()
         {
             return bounds;
+        }
+
+        public String getBiomeType()
+        {
+            return structureOverride;
+        }
+
+        public void seBiomeType(String structureOverride)
+        {
+            this.structureOverride = structureOverride;
         }
     }
 

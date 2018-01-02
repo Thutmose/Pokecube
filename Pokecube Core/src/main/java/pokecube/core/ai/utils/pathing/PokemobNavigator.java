@@ -24,8 +24,8 @@ import thut.api.maths.Vector3;
  * which are close enough to the end, like when a mob is just idling around. */
 public class PokemobNavigator extends PathNavigate
 {
-    private Vector3        v               = Vector3.getNewVector();
-    private Vector3        v1              = Vector3.getNewVector();
+    private Vector3        v  = Vector3.getNewVector();
+    private Vector3        v1 = Vector3.getNewVector();
     private boolean        canDive;
     private boolean        canFly;
     private final IPokemob pokemob;
@@ -136,7 +136,7 @@ public class PokemobNavigator extends PathNavigate
     @Override
     public Path getPathToEntityLiving(Entity entityIn)
     {
-        if (!this.canNavigate()) { return null; }
+        if (!this.canNavigate() || entityIn == null) { return null; }
         checkValues();
         return wrapped.getPathToEntityLiving(entityIn);
     }
@@ -144,7 +144,7 @@ public class PokemobNavigator extends PathNavigate
     @Override
     public Path getPathToPos(BlockPos pos)
     {
-        if (!this.canNavigate()) { return null; }
+        if (!this.canNavigate() || pos == null) { return null; }
         checkValues();
         if (shouldPath(pos))
         {

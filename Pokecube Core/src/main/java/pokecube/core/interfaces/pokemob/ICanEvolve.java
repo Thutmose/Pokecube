@@ -35,7 +35,6 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketSyncNewMoves;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.IMobGenetics;
@@ -301,7 +300,6 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             evolution.getEntityData().merge(thisEntity.getEntityData());
             evolution.setUniqueId(thisEntity.getUniqueID());
             evolution.copyLocationAndAnglesFrom(thisEntity);
-            EntityTools.copyEntityTransforms((EntityLivingBase) evolution, thisEntity);
 
             // Sync ability back, or store old ability.
             if (getPokemonAIState(IMoveConstants.MEGAFORME))

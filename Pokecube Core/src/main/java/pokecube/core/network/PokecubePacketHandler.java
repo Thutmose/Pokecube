@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import com.google.common.collect.Maps;
+import com.mojang.authlib.GameProfile;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -292,8 +293,14 @@ public class PokecubePacketHandler
                 {
                     continue;
                 }
-                String username = data[0].toLowerCase(java.util.Locale.ENGLISH);
-                if (specialStarters.containsKey(username)) continue;
+                Contributor contrib = ContributorManager.instance()
+                        .getContributor(new GameProfile(null, data[0].trim()));
+                if (contrib == null)
+                {
+                    if (PokecubeMod.debug) PokecubeMod.log("Error with contributor for " + data[0]);
+                    continue;
+                }
+                if (specialStarters.containsKey(contrib)) continue;
                 String[] pokemonData = new String[data.length - 1];
                 for (int i = 1; i < data.length; i++)
                 {
@@ -315,7 +322,7 @@ public class PokecubePacketHandler
                     }
                 }
                 StarterInfoContainer cont = new StarterInfoContainer(info);
-                specialStarters.put(username, cont);
+                specialStarters.put(contrib, cont);
             }
         }
 
@@ -336,22 +343,11 @@ public class PokecubePacketHandler
             }
         }
 
-        public int getNumber()
-        {
-            if (name == null) return 0;
-            PokedexEntry entry = Database.getEntry(name);
-            return entry == null ? 0 : entry.getPokedexNb();
-        }
-
         public ItemStack makeStack(EntityPlayer owner)
         {
-            return makeStack(owner, 0);
-        }
-
-        public ItemStack makeStack(EntityPlayer owner, int number)
-        {
-            ItemStack ret = null;
-            PokedexEntry entry = (name != null) ? Database.getEntry(name) : Database.getEntry(number);
+            ItemStack ret = ItemStack.EMPTY;
+            if (name == null) return ret;
+            PokedexEntry entry = Database.getEntry(name);
             if (entry != null)
             {
                 World worldObj = owner.getEntityWorld();
@@ -375,8 +371,7 @@ public class PokecubePacketHandler
                     pokemob.getEntity().isDead = true;
                     return item;
                 }
-
-                return PokecubeSerializer.getInstance().starter(entry.getPokedexNb(), owner);
+                return PokecubeSerializer.getInstance().starter(entry, owner);
             }
             return ret;
         }
@@ -398,19 +393,19 @@ public class PokecubePacketHandler
         }
     }
 
-    public final static byte                            CHANNEL_ID_ChooseFirstPokemob = 0;
-    public final static byte                            CHANNEL_ID_PokemobMove        = 1;
+    public final static byte                                 CHANNEL_ID_ChooseFirstPokemob = 0;
+    public final static byte                                 CHANNEL_ID_PokemobMove        = 1;
 
-    public final static byte                            CHANNEL_ID_EntityPokemob      = 2;
-    public final static byte                            CHANNEL_ID_HealTable          = 3;
+    public final static byte                                 CHANNEL_ID_EntityPokemob      = 2;
+    public final static byte                                 CHANNEL_ID_HealTable          = 3;
 
-    public final static byte                            CHANNEL_ID_PokemobSpawner     = 4;
+    public final static byte                                 CHANNEL_ID_PokemobSpawner     = 4;
 
-    public final static byte                            CHANNEL_ID_STATS              = 6;
+    public final static byte                                 CHANNEL_ID_STATS              = 6;
 
-    public static boolean                               giveHealer                    = true;
+    public static boolean                                    giveHealer                    = true;
 
-    public static HashMap<String, StarterInfoContainer> specialStarters               = Maps.newHashMap();
+    public static HashMap<Contributor, StarterInfoContainer> specialStarters               = Maps.newHashMap();
 
     public static void init()
     {

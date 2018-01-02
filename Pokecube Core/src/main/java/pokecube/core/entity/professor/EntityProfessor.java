@@ -22,6 +22,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.GuardAI;
+import pokecube.core.contributors.Contributor;
+import pokecube.core.contributors.ContributorManager;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
@@ -153,14 +155,15 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
                     }
                     else
                     {
+                        Contributor contrib = ContributorManager.instance().getContributor(player.getGameProfile());
                         boolean special = false;
-                        if (PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
-                                || PokecubePacketHandler.specialStarters
-                                        .containsKey(player.getName().toLowerCase(java.util.Locale.ENGLISH)))
+                        boolean pick = false;
+                        if (PokecubePacketHandler.specialStarters.containsKey(contrib))
                         {
                             special = true;
+                            pick = PacketChoose.canPick(player.getGameProfile());
                         }
-                        packet = PacketChoose.createOpenPacket(!special, special, PokecubeMod.core.getStarters());
+                        packet = PacketChoose.createOpenPacket(special, pick, PokecubeMod.core.getStarters());
                     }
                     PokecubePacketHandler.sendToClient(packet, player);
                 }

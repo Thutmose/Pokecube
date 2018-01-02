@@ -16,6 +16,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pokecube.core.contributors.Contributor;
+import pokecube.core.contributors.ContributorManager;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
@@ -95,7 +98,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
         {
             if (!PokecubeSerializer.getInstance().hasStarter(playerIn))
             {
-                ArrayList<Integer> starters = new ArrayList<Integer>();
+                ArrayList<PokedexEntry> starters = new ArrayList<PokedexEntry>();
                 TileEntity te = playerIn.getEntityWorld().getTileEntity(pos.down(2));
                 if (te != null && te instanceof IInventory)
                 {
@@ -108,17 +111,18 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                             IPokemob mob = ItemPokemobEgg.getPokemob(worldIn, stack);
                             if (mob != null)
                             {
-                                starters.add(mob.getPokedexNb());
+                                starters.add(mob.getPokedexEntry());
                                 ((Entity) mob).setDead();
                             }
                         }
                     }
                 }
-                Integer[] starts = null;
+                PokedexEntry[] starts = null;
                 boolean special = false;
+                boolean pick = false;
                 if (!starters.isEmpty())
                 {
-                    starts = new Integer[starters.size()];
+                    starts = new PokedexEntry[starters.size()];
                     for (int i = 0; i < starts.length; i++)
                     {
                         starts[i] = starters.get(i);
@@ -127,18 +131,20 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                 }
                 else
                 {
-                    starts = new Integer[PokecubeMod.core.getStarters().length];
+                    starts = new PokedexEntry[PokecubeMod.core.getStarters().length];
                     for (int i = 0; i < starts.length; i++)
                     {
                         starts[i] = PokecubeMod.core.getStarters()[i];
                     }
-                    if (PokecubePacketHandler.specialStarters.containsKey(playerIn.getCachedUniqueIdString())
-                            || PokecubePacketHandler.specialStarters.containsKey(playerIn.getName().toLowerCase(java.util.Locale.ENGLISH)))
+                    Contributor contrib = ContributorManager.instance().getContributor(playerIn.getGameProfile());
+                    if (contrib != null)
                     {
                         special = true;
+                        pick = PacketChoose.canPick(playerIn.getGameProfile());
+                        System.out.println(special + " " + pick);
                     }
                 }
-                PacketChoose packet = PacketChoose.createOpenPacket(!special, special, starts);
+                PacketChoose packet = PacketChoose.createOpenPacket(special, pick, starts);
                 PokecubePacketHandler.sendToClient(packet, playerIn);
             }
         }

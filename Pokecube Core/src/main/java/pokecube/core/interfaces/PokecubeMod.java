@@ -174,8 +174,8 @@ public abstract class PokecubeMod
         return Boolean.valueOf(String.valueOf(deObf)).booleanValue();
     }
 
-    public ByteClassLoader    loader;
-    public ArrayList<Integer> starters = new ArrayList<Integer>();
+    public ByteClassLoader         loader;
+    public ArrayList<PokedexEntry> starters = new ArrayList<PokedexEntry>();
 
     /** Creates a new instance of an entity in the world for the pokemob
      * specified by its pokedex entry.
@@ -203,7 +203,7 @@ public abstract class PokecubeMod
 
     public abstract Configuration getPokecubeConfig(FMLPreInitializationEvent evt);
 
-    public abstract Integer[] getStarters();
+    public abstract PokedexEntry[] getStarters();
 
     public String getTranslatedPokenameFromPokedexNumber(int pokedexNb)
     {

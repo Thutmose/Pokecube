@@ -19,6 +19,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
@@ -909,6 +911,8 @@ public class Config extends ConfigBase
                         }
                     }
                     StarterInfo.infos = args.toArray(new String[0]);
+                    if (Loader.instance().hasReachedState(LoaderState.POSTINITIALIZATION))
+                        StarterInfo.processStarterInfo();
                 }
                 catch (Exception e)
                 {

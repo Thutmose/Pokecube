@@ -361,22 +361,18 @@ public class PokecubeCore extends PokecubeMod
     }
 
     @Override
-    public Integer[] getStarters()
+    public PokedexEntry[] getStarters()
     {
-        for (PokedexEntry entry : Database.baseFormes.values())
+        PokecubeMod.core.starters.clear();
+        for (PokedexEntry entry : Database.getSortedFormes())
         {
-            if (entry.isStarter && !PokecubeMod.core.starters.contains(entry.getPokedexNb()))
+            if (entry.isStarter && !PokecubeMod.core.starters.contains(entry))
             {
-                PokecubeMod.core.starters.add(entry.getPokedexNb());
-                Collections.sort(PokecubeMod.core.starters);
-            }
-            else if (!entry.isStarter)
-            {
-                for (int i = 0; i < PokecubeMod.core.starters.size(); i++)
-                    if (PokecubeMod.core.starters.get(i) == entry.getPokedexNb()) PokecubeMod.core.starters.remove(i);
+                PokecubeMod.core.starters.add(entry);
             }
         }
-        return starters.toArray(new Integer[0]);
+        PokecubeMod.core.starters.sort(Database.COMPARATOR);
+        return starters.toArray(new PokedexEntry[0]);
     }
 
     /** Returns the translated Pokemob name of the pokemob with the specify

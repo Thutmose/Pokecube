@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import pokecube.core.database.PokedexEntry;
 
 public class StarterEvent extends Event
 {
@@ -16,9 +17,9 @@ public class StarterEvent extends Event
     @HasResult
     public static class Pick extends StarterEvent
     {
-        public Pick(EntityPlayer player, Collection<ItemStack> starterPack, int numberPicked)
+        public Pick(EntityPlayer player, Collection<ItemStack> starterPack, PokedexEntry entry)
         {
-            super(player, starterPack, numberPicked);
+            super(player, starterPack, entry);
         }
     }
 
@@ -28,16 +29,16 @@ public class StarterEvent extends Event
     {
         public Pre(EntityPlayer player)
         {
-            super(player, null, 0);
+            super(player, null, null);
         }
     }
 
     public final EntityPlayer player;
     public List<ItemStack>    starterPack = Lists.newArrayList();
 
-    public final int          pick;
+    public final PokedexEntry pick;
 
-    public StarterEvent(EntityPlayer player, Collection<ItemStack> pack, int numberPicked)
+    public StarterEvent(EntityPlayer player, Collection<ItemStack> pack, PokedexEntry numberPicked)
     {
         this.player = player;
         if (pack != null) starterPack.addAll(pack);

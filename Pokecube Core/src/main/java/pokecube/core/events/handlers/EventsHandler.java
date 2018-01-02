@@ -87,6 +87,8 @@ import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.AIEventHandler;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.blocks.nests.TileEntityBasePortal;
+import pokecube.core.contributors.Contributor;
+import pokecube.core.contributors.ContributorManager;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -201,14 +203,15 @@ public class EventsHandler
                 }
                 else
                 {
+                    Contributor contrib = ContributorManager.instance().getContributor(player.getGameProfile());
                     boolean special = false;
-                    if (PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
-                            || PokecubePacketHandler.specialStarters
-                                    .containsKey(player.getName().toLowerCase(java.util.Locale.ENGLISH)))
+                    boolean pick = false;
+                    if (PokecubePacketHandler.specialStarters.containsKey(contrib))
                     {
                         special = true;
+                        pick = PacketChoose.canPick(player.getGameProfile());
                     }
-                    packet = PacketChoose.createOpenPacket(!special, special, PokecubeMod.core.getStarters());
+                    packet = PacketChoose.createOpenPacket(special, pick, PokecubeMod.core.getStarters());
                 }
                 PokecubePacketHandler.sendToClient(packet, event.player);
                 MinecraftForge.EVENT_BUS.unregister(this);

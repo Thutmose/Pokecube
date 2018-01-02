@@ -8,7 +8,6 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 import static pokecube.core.utils.PokeType.getTranslatedName;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -28,7 +27,6 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.Resources;
-import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
@@ -43,35 +41,37 @@ import thut.api.entity.IMobColourable;
 public class GuiChooseFirstPokemob extends GuiScreen
 {
 
-    public final static float POKEDEX_RENDER   = 1.5f;
-    public static boolean     options          = true;
-    public static boolean     fixed            = false;
+    public final static float    POKEDEX_RENDER   = 1.5f;
+    public static boolean        special          = false;
+    public static boolean        pick             = false;
 
-    public static Integer[]   starters;
+    public static PokedexEntry[] starters;
 
-    int                       xSize            = 150;
-    int                       ySize            = 150;
+    int                          xSize            = 150;
+    int                          ySize            = 150;
 
-    private float             yRenderAngle     = 10;
+    private boolean              gotSpecial       = true;
 
-    private float             xRenderAngle     = 0;
+    private float                yRenderAngle     = 10;
 
-    private float             yHeadRenderAngle = 10;
+    private float                xRenderAngle     = 0;
 
-    private float             xHeadRenderAngle = 0;
-    protected EntityPlayer    entityPlayer     = null;
-    protected PokedexEntry    pokedexEntry     = null;
-    int                       index            = 0;
+    private float                yHeadRenderAngle = 10;
 
-    GuiButton                 next;
+    private float                xHeadRenderAngle = 0;
+    protected EntityPlayer       entityPlayer     = null;
+    protected PokedexEntry       pokedexEntry     = null;
+    int                          index            = 0;
 
-    GuiButton                 prev;
-    GuiButton                 choose;
-    GuiButton                 accept;
+    GuiButton                    next;
 
-    GuiButton                 deny;
+    GuiButton                    prev;
+    GuiButton                    choose;
+    GuiButton                    accept;
 
-    public GuiChooseFirstPokemob(Integer[] _starters)
+    GuiButton                    deny;
+
+    public GuiChooseFirstPokemob(PokedexEntry[] _starters)
     {
         super();
         if (_starters == null && starters == null)
@@ -87,17 +87,9 @@ public class GuiChooseFirstPokemob extends GuiScreen
         {
             _starters = starters;
         }
-
-        ArrayList<Integer> starts = new ArrayList<Integer>();
-        for (int i = 0; i < _starters.length; i++)
-        {
-            if (_starters[i] != 0 && !starts.contains(_starters[i]))
-            {
-                starts.add(_starters[i]);
-            }
-        }
-        GuiChooseFirstPokemob.starters = starts.toArray(new Integer[0]);
+        starters = _starters;
         entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
+        System.out.println(special + " " + pick);
     }
 
     @Override
@@ -116,10 +108,19 @@ public class GuiChooseFirstPokemob extends GuiScreen
         }
         if (n == 4)
         {
-            int pokedexNb = 0;
-            sendMessage(pokedexNb);
-            mc.player.closeScreen();
-            options = true;
+            gotSpecial = true;
+
+            next.visible = true;
+            prev.visible = true;
+            choose.visible = true;
+            accept.visible = false;
+            deny.visible = false;
+            special = false;
+            if (!pick)
+            {
+                sendMessage(null);
+                mc.player.closeScreen();
+            }
         }
         if (n == 5)
         {
@@ -128,22 +129,20 @@ public class GuiChooseFirstPokemob extends GuiScreen
             choose.visible = true;
             accept.visible = false;
             deny.visible = false;
-            options = true;
-            fixed = true;
+            special = false;
         }
         if (n == 3)
         {
-            int pokedexNb = pokedexEntry.getPokedexNb();
-            sendMessage(pokedexNb);
+            sendMessage(pokedexEntry);
             mc.player.closeScreen();
         }
     }
 
-    private void sendMessage(int num)
+    private void sendMessage(PokedexEntry entry)
     {
         PacketChoose packet = new PacketChoose(PacketChoose.CHOOSE);
-        packet.data.setBoolean("F", fixed);
-        packet.data.setInteger("N", num);
+        packet.data.setBoolean("S", gotSpecial);
+        if (entry != null) packet.data.setString("N", entry.getTrimmedName());
         PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
@@ -168,18 +167,17 @@ public class GuiChooseFirstPokemob extends GuiScreen
         }
         super.drawScreen(i, j, f);
 
-        if (!options)
+        if (special)
         {
-            drawCenteredString(fontRenderer, I18n.format("gui.pokemob.choose1st.override"), (width / 2), 17,
-                    0xffffff);
+            drawCenteredString(fontRenderer, I18n.format("gui.pokemob.choose1st.override"), (width / 2), 17, 0xffffff);
             return;
         }
         if (starters == null || starters.length == 0)
         {
-            starters = new Integer[] { Pokedex.getInstance().getFirstEntry().getPokedexNb() };
+            starters = new PokedexEntry[] { Pokedex.getInstance().getFirstEntry() };
         }
 
-        pokedexEntry = Database.getEntry(starters[index % starters.length]);
+        pokedexEntry = starters[index % starters.length];
 
         if (pokedexEntry == null) pokedexEntry = Pokedex.getInstance().getFirstEntry();
         if (pokedexEntry == null)
@@ -285,7 +283,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         buttonList.add(this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20,
                 I18n.format("gui.pokemob.deny")));
 
-        if (options)
+        if (!special)
         {
             accept.visible = false;
             deny.visible = false;

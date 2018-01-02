@@ -31,7 +31,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.contributors.Contributor;
 import pokecube.core.contributors.ContributorManager;
-import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerData;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
@@ -427,11 +427,10 @@ public class PokecubeSerializer
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
     }
 
-    public ItemStack starter(int pokedexNb, EntityPlayer owner)
+    public ItemStack starter(PokedexEntry entry, EntityPlayer owner)
     {
         World worldObj = owner.getEntityWorld();
-        IPokemob entity = CapabilityPokemob
-                .getPokemobFor(PokecubeMod.core.createPokemob(Database.getEntry(pokedexNb), worldObj));
+        IPokemob entity = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, worldObj));
 
         if (entity != null)
         {

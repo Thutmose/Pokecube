@@ -69,6 +69,7 @@ public class StructureCommand extends CommandBase
         {
             if (PokecubeTemplates.getTemplate(structure) != null)
                 generator = new TemplateGen(structure, matcher, 1, offset);
+            else throw new CommandException("No Structure of that name found in config/pokecube/structures!");
         }
 
         if (generator != null)
@@ -112,6 +113,5 @@ public class StructureCommand extends CommandBase
                 }
             CommandTools.sendMessage(cSender, "Generated " + structure + " " + generator);
         }
-        else throw new CommandException("No Structure of that name found in config/pokecube/structures!");
     }
 }

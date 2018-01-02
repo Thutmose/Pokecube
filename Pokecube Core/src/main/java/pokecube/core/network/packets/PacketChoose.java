@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -20,12 +23,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.contributors.Contributor;
+import pokecube.core.contributors.ContributorManager;
 import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.handlers.Config;
-import pokecube.core.handlers.PokecubePlayerDataHandler;
-import pokecube.core.handlers.playerdata.PokecubePlayerStats;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
@@ -37,17 +42,17 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
 {
     private static class GuiOpener
     {
-        final EntityPlayer player;
-        final Integer[]    starters;
-        final boolean      starter;
-        final boolean      fixed;
+        final EntityPlayer   player;
+        final PokedexEntry[] starters;
+        final boolean        special;
+        final boolean        pick;
 
-        public GuiOpener(EntityPlayer player, Integer[] starters, boolean starter, boolean fixed)
+        public GuiOpener(EntityPlayer player, PokedexEntry[] starters, boolean special, boolean pick)
         {
             this.player = player;
-            this.starter = starter;
-            this.fixed = fixed;
+            this.special = special;
             this.starters = starters;
+            this.pick = pick;
             if (player.getEntityWorld().isRemote) MinecraftForge.EVENT_BUS.register(this);
         }
 
@@ -55,8 +60,8 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         @SubscribeEvent
         public void tick(ClientTickEvent event)
         {
-            pokecube.core.client.gui.GuiChooseFirstPokemob.options = starter;
-            pokecube.core.client.gui.GuiChooseFirstPokemob.fixed = fixed;
+            pokecube.core.client.gui.GuiChooseFirstPokemob.special = special;
+            pokecube.core.client.gui.GuiChooseFirstPokemob.pick = pick;
             pokecube.core.client.gui.GuiChooseFirstPokemob.starters = starters;
             player.openGui(PokecubeCore.instance, Config.GUICHOOSEFIRSTPOKEMOB_ID, player.getEntityWorld(), 0, 0, 0);
             MinecraftForge.EVENT_BUS.unregister(this);
@@ -73,14 +78,15 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         if (openGui)
         {
             boolean special = packet.data.getBoolean("S");
-            boolean fixed = packet.data.getBoolean("F");
-            int[] toAdd = packet.data.getIntArray("A");
-            ArrayList<Integer> starters = new ArrayList<Integer>();
-            for (int i = 0; i < toAdd.length; i++)
+            boolean pick = packet.data.getBoolean("P");
+            ArrayList<PokedexEntry> starters = new ArrayList<PokedexEntry>();
+            NBTTagList starterList = packet.data.getTagList("L", 8);
+            for (int i = 0; i < starterList.tagCount(); i++)
             {
-                starters.add(toAdd[i]);
+                PokedexEntry entry = Database.getEntry(starterList.getStringTagAt(i));
+                if (entry != null) starters.add(entry);
             }
-            new GuiOpener(player, starters.toArray(new Integer[0]), !special, fixed);
+            new GuiOpener(player, starters.toArray(new PokedexEntry[0]), special, pick);
         }
         else
         {
@@ -90,82 +96,76 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
 
     private static void handleChooseFirstServer(PacketChoose packet, EntityPlayer player)
     {
-        int pokedexNb = packet.data.getInteger("N");
-        // This is if the player chose to get normal starter, instead of special
-        // one.
-        boolean fixed = packet.data.getBoolean("F");
-        String username = player.getName().toLowerCase(java.util.Locale.ENGLISH);
+        /** Ignore this packet if the player already has a starter. */
         if (PokecubeSerializer.getInstance().hasStarter(player)) { return; }
-
-        // Fire pre event to deny starters at all
+        // Fire pre event to deny starters from being processed.
         StarterEvent.Pre pre = new StarterEvent.Pre(player);
         MinecraftForge.EVENT_BUS.post(pre);
         if (pre.isCanceled()) return;
-
+        GameProfile profile = player.getGameProfile();
+        String entryName = packet.data.getString("N");
+        PokedexEntry entry = Database.getEntry(entryName);
+        // Did they also get contributor stuff.
+        boolean gotSpecial = packet.data.getBoolean("S");
+        Contributor contrib = ContributorManager.instance().getContributor(profile);
         List<ItemStack> items = Lists.newArrayList();
         // Copy main list from database.
         for (ItemStack stack : Database.starterPack)
         {
             items.add(stack.copy());
         }
-
-        // If they don't actually get the picked starter, then no achievement.
-        boolean starterGiven = false;
-        if (!(PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
-                || PokecubePacketHandler.specialStarters.containsKey(username)) || fixed)
+        StarterInfoContainer info = PokecubePacketHandler.specialStarters.get(contrib);
+        if (!gotSpecial || info == null)
         {
             // No Custom Starter. just gets this
-            ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
+            ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(entry, player);
             items.add(pokemobItemstack);
-            starterGiven = true;
         }
         else
         {
-            StarterInfoContainer info = PokecubePacketHandler.specialStarters.get(player.getCachedUniqueIdString());
-            if (info == null) info = PokecubePacketHandler.specialStarters.get(username);
-            StarterInfo[] starter = PokecubePacketHandler.specialStarters.get(username).info;
-
+            StarterInfo[] starter = info.info;
+            /** Check custom picks. */
             for (StarterInfo i : starter)
             {
-                if (i == null)
+                ItemStack stack;
+                if (i != null && !(stack = i.makeStack(player)).isEmpty())
                 {
-                    if (!starterGiven)
-                    {
-                        starterGiven = true;
-                        ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
-                        items.add(pokemobItemstack);
-                    }
+                    items.add(stack);
                 }
-                else
-                {
-                    ItemStack start = i.makeStack(player);
-                    if (start == null && !starterGiven)
-                    {
-                        start = i.makeStack(player, pokedexNb);
-                        starterGiven = true;
-                    }
-                    if (start != null) items.add(start);
-                }
-
+            }
+            /** If also picked, add that in too. */
+            if (entry != null)
+            {
+                ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(entry, player);
+                items.add(pokemobItemstack);
             }
         }
         // Fire pick event to add new starters or items
-        StarterEvent.Pick pick = new StarterEvent.Pick(player, items, pokedexNb);
+        StarterEvent.Pick pick = new StarterEvent.Pick(player, items, entry);
         MinecraftForge.EVENT_BUS.post(pick);
+        /** If canceled, assume items were not needed, or canceller handled
+         * giving them. */
         if (pick.isCanceled()) return;
+        /** Update itemlist from the pick event. */
         items.clear();
         items.addAll(pick.starterPack);
-        PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class).setHasFirst(player);
         for (ItemStack e : items)
         {
-            if (e == null || e.getItem() == null) continue;
-            Tools.giveItem(player, e);
-            pokedexNb = PokecubeManager.getPokedexNb(e);
-            if (pokedexNb > 0)
+            if (e.isEmpty()) continue;
+            /** Run this before tools.give, as that invalidates the
+             * itemstack. */
+            if (PokecubeManager.isFilled(e))
             {
-                StatsCollector.addCapture(PokecubeManager.itemToPokemob(e, player.getEntityWorld()));
+                IPokemob pokemob = PokecubeManager.itemToPokemob(e, player.getEntityWorld());
+                /** First pokemob advancement on getting starter. */
+                if (pokemob != null && pokemob.getPokedexEntry() == entry)
+                {
+                    StatsCollector.addCapture(pokemob);
+                }
             }
+            Tools.giveItem(player, e);
         }
+        /** Set starter status to prevent player getting more starters. */
         PokecubeSerializer.getInstance().setHasStarter(player);
         PokecubeSerializer.getInstance().save();
 
@@ -176,18 +176,32 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         PokecubePacketHandler.sendToClient(packet, player);
     }
 
-    public static PacketChoose createOpenPacket(boolean fixed, boolean special, Integer... starters)
+    public static boolean canPick(GameProfile profile)
+    {
+        Contributor contrib = ContributorManager.instance().getContributor(profile);
+        StarterInfoContainer info = PokecubePacketHandler.specialStarters.get(contrib);
+        if (info != null)
+        {
+            for (StarterInfo i : info.info)
+            {
+                if (i == null || i.name == null) return true;
+            }
+        }
+        return false;
+    }
+
+    public static PacketChoose createOpenPacket(boolean special, boolean pick, PokedexEntry... starts)
     {
         PacketChoose packet = new PacketChoose(OPENGUI);
         packet.data.setBoolean("C", true);
         packet.data.setBoolean("S", special);
-        packet.data.setBoolean("F", fixed);
-        int[] starts = new int[starters.length];
-        for (int i = 0; i < starts.length; i++)
+        packet.data.setBoolean("P", pick);
+        NBTTagList starters = new NBTTagList();
+        for (PokedexEntry e : starts)
         {
-            starts[i] = starters[i];
+            starters.appendTag(new NBTTagString(e.getTrimmedName()));
         }
-        packet.data.setIntArray("A", starts);
+        packet.data.setTag("L", starters);
         return packet;
     }
 

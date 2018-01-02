@@ -217,7 +217,7 @@ public class EntityMoveUse extends Entity
     {
         MovePacketInfo info = new MovePacketInfo(getMove(), getUser(), getTarget(), getStart(), getEnd());
         IPokemob userMob = CapabilityPokemob.getPokemobFor(info.attacker);
-        info.currentTick = info.move.getAnimation(userMob).getDuration() - (getAge() - 1);
+        info.currentTick = info.move.getAnimation(userMob).getDuration() - (getAge());
         return info;
     }
 

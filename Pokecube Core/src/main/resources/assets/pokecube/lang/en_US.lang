@@ -150,6 +150,8 @@ pokemob.info.happy5=§aYour Pokémob is very happy
 pokemob.info.happy6=§aYour Pokémob is ecstatic
 
 pokemob.evolve.success=%1$s Evolved into %2$s
+pokemob.megaevolve.command.evolve=You tell %1$s to Mega-evolve!
+pokemob.megaevolve.command.revert=You tell %1$s to revert!
 pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
 pokemob.megaevolve.revert=%1$s Reverted to %2$s
 pokemob.megaevolve.failed=%1$s failed to Mega Evolve.

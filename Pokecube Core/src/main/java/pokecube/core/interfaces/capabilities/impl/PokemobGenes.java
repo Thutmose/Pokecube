@@ -98,7 +98,7 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     public Ability getAbility()
     {
         if (genesAbility == null) initAbilityGene();
-        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0, this);
+//        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0, this);
         AbilityObject obj = genesAbility.getExpressed().getValue();
         if (obj.abilityObject == null && !obj.searched)
         {

@@ -21,6 +21,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.EvolveEvent;
@@ -303,16 +304,23 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             EntityTools.copyEntityTransforms((EntityLivingBase) evolution, thisEntity);
 
             // Sync ability back, or store old ability.
-            if (newEntry.isMega)
+            if (getPokemonAIState(IMoveConstants.MEGAFORME))
             {
                 if (thisMob.getAbility() != null)
                     evolution.getEntityData().setString("Ability", thisMob.getAbility().toString());
+                Ability ability = newEntry.getAbility(0, evoMob);
+                if (PokecubeMod.debug) PokecubeMod.log("Mega Evolving, changing ability to " + ability);
+                if (ability != null) evoMob.setAbility(ability);
             }
-            else if (oldEntry.isMega)
+            else
             {
-                String ability = thisEntity.getEntityData().getString("Ability");
-                evolution.getEntityData().removeTag("Ability");
-                if (!ability.isEmpty()) evoMob.setAbility(AbilityManager.getAbility(ability));
+                if (thisEntity.getEntityData().hasKey("Ability"))
+                {
+                    String ability = thisEntity.getEntityData().getString("Ability");
+                    evolution.getEntityData().removeTag("Ability");
+                    if (!ability.isEmpty()) evoMob.setAbility(AbilityManager.getAbility(ability));
+                    if (PokecubeMod.debug) PokecubeMod.log("Un Mega Evolving, changing ability back to " + ability);
+                }
             }
 
             // Set this mob wild, then kill it.

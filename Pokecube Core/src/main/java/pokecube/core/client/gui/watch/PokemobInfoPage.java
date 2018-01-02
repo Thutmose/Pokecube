@@ -39,6 +39,7 @@ public class PokemobInfoPage extends PageWithSubPages
 {
 
     IPokemob     pokemob;
+    IPokemob     renderMob;
     GuiTextField search;
 
     public PokemobInfoPage(GuiPokeWatch watch)
@@ -69,6 +70,7 @@ public class PokemobInfoPage extends PageWithSubPages
             pokemob = EventsHandlerClient.getRenderMob(entry, watch.player.getEntityWorld());
         }
         this.pokemob = pokemob;
+        this.renderMob = pokemob;
         search.setVisible(!watch.canEdit(pokemob));
         search.setText(pokemob.getPokedexEntry().getName());
         PacketPokedex.sendSpecificSpawnsRequest(pokemob.getPokedexEntry());
@@ -320,6 +322,16 @@ public class PokemobInfoPage extends PageWithSubPages
         // Draw Pokemob
         if (pokemob != null)
         {
+            IPokemob pokemob = this.renderMob;
+            // Copy the stuff to the render mob if this mob is in world
+            if (pokemob.getEntity().addedToChunk)
+            {
+                IPokemob newMob = EventsHandlerClient.getRenderMob(pokemob.getPokedexEntry(),
+                        pokemob.getEntity().getEntityWorld());
+                newMob.readPokemobData(pokemob.writePokemobData());
+                pokemob = this.renderMob = newMob;
+            }
+
             if (!pokemob.getEntity().addedToChunk)
             {
                 EntityLivingBase player = watch.player;
@@ -329,7 +341,8 @@ public class PokemobInfoPage extends PageWithSubPages
             dx = -35;
             dy = -55;
             // Draw the actual pokemob
-            GuiPokedex.renderMob(pokemob.getEntity(), mc, dx, dy, 0.75f,  watch.height, watch.width, 160, 160, 0, 45, -45);
+            GuiPokedex.renderMob(pokemob.getEntity(), mc, dx, dy, 0.75f, watch.height, watch.width, 160, 160, 0, 45,
+                    -45);
             // Draw gender, types and lvl
             int genderColor = 0xBBBBBB;
             String gender = "";

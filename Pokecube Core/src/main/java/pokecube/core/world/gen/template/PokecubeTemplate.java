@@ -1,5 +1,6 @@
 package pokecube.core.world.gen.template;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -54,8 +55,10 @@ public class PokecubeTemplate extends Template
     public void addEntitiesToWorld(World worldIn, BlockPos pos, Mirror mirrorIn, Rotation rotationIn,
             @Nullable StructureBoundingBox aabb)
     {
-        for (Template.EntityInfo template$entityinfo : this.entities)
+        Iterator<EntityInfo> entities = this.entities.iterator();
+        while (entities.hasNext())
         {
+            EntityInfo template$entityinfo = entities.next();
             BlockPos blockpos = transformedBlockPos(template$entityinfo.blockPos, mirrorIn, rotationIn).add(pos);
 
             if (aabb == null || aabb.isVecInside(blockpos))
@@ -123,6 +126,7 @@ public class PokecubeTemplate extends Template
                     entity.setLocationAndAngles(vec3d1.x, vec3d1.y, vec3d1.z, f, entity.rotationPitch);
                     StructureEvent.SpawnEntity event = new StructureEvent.SpawnEntity(entity, name);
                     MinecraftForge.EVENT_BUS.post(event);
+                    entities.remove();
                     if (event.getToSpawn() != null && !event.isCanceled()) worldIn.spawnEntity(event.getToSpawn());
                 }
             }

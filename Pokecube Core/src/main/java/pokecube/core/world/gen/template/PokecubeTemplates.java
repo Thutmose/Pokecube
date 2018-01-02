@@ -102,6 +102,7 @@ public class PokecubeTemplates
             ret = new PokecubeTemplate(t, name);
             templates.put(name, ret);
         }
+        if (ret != null) ret = new PokecubeTemplate(ret, name);
         return ret;
     }
 

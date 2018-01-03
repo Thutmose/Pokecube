@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.Random;
+import java.util.logging.Level;
 
 import javax.vecmath.Vector3f;
 import javax.xml.namespace.QName;
@@ -824,7 +824,7 @@ public class PokedexEntry
     /** This list will contain all pokemon that are somehow related to this one
      * via evolution chains */
     @CopyToGender
-    public List<PokedexEntry>                   related          = new ArrayList<PokedexEntry>();
+    private List<PokedexEntry>                  related          = new ArrayList<PokedexEntry>();
 
     @CopyToGender
     protected int                               sexeRatio        = -1;
@@ -954,12 +954,12 @@ public class PokedexEntry
 
     private void addRelation(PokedexEntry toAdd)
     {
-        if (!related.contains(toAdd) && toAdd != null) related.add(toAdd);
+        if (!getRelated().contains(toAdd) && toAdd != null && toAdd != this) getRelated().add(toAdd);
     }
 
     public boolean areRelated(PokedexEntry toTest)
     {
-        return related.contains(toTest);
+        return toTest == this || getRelated().contains(toTest);
     }
 
     public boolean canEvolve()
@@ -1143,7 +1143,7 @@ public class PokedexEntry
     {
         if (childNb == null)
         {
-            for (PokedexEntry e : related)
+            for (PokedexEntry e : getRelated())
             {
                 for (EvolutionData d : e.evolutions)
                 {
@@ -1558,7 +1558,7 @@ public class PokedexEntry
             temp.evolvesBy = d;
             temp.addRelation(this);
             addRelation(temp);
-            for (PokedexEntry d1 : temp.related)
+            for (PokedexEntry d1 : temp.getRelated())
             {
                 d1.addRelation(this);
                 addRelation(d1);
@@ -1580,17 +1580,17 @@ public class PokedexEntry
             }
         }
 
-        Object[] temp = related.toArray();
+        Object[] temp = getRelated().toArray();
         Double[] nums = new Double[temp.length];
         for (int i = 0; i < nums.length; i++)
         {
             nums[i] = (double) ((PokedexEntry) temp[i]).getPokedexNb();
         }
         new Cruncher().sort(nums, temp);
-        related.clear();
+        getRelated().clear();
         for (Object o : temp)
         {
-            related.add((PokedexEntry) o);
+            getRelated().add((PokedexEntry) o);
         }
     }
 
@@ -1853,5 +1853,10 @@ public class PokedexEntry
             modelSize = new Vector3f(length, height, width);
         }
         return modelSize;
+    }
+
+    public List<PokedexEntry> getRelated()
+    {
+        return related;
     }
 }

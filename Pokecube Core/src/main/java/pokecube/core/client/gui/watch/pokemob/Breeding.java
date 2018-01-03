@@ -78,9 +78,14 @@ public class Breeding extends ListPage
                 thisObj.handleComponentHover(component, x, y);
             }
         };
-        for (PokedexEntry entry : pokemob.getPokedexEntry().related)
+        ITextComponent main = new TextComponentTranslation(pokemob.getPokedexEntry().getUnlocalizedName());
+        main.setStyle(new Style());
+        main.getStyle().setColor(TextFormatting.GREEN);
+        main.getStyle().setClickEvent(new ClickEvent(Action.CHANGE_PAGE, pokemob.getPokedexEntry().getName()));
+        entries.add(new LineEntry(y0, y1, fontRenderer, main, colour).setClickListner(listener));
+        for (PokedexEntry entry : pokemob.getPokedexEntry().getRelated())
         {
-            ITextComponent main = new TextComponentTranslation(entry.getUnlocalizedName());
+            main = new TextComponentTranslation(entry.getUnlocalizedName());
             main.setStyle(new Style());
             main.getStyle().setColor(TextFormatting.GREEN);
             main.getStyle().setClickEvent(new ClickEvent(Action.CHANGE_PAGE, entry.getName()));
@@ -113,7 +118,7 @@ public class Breeding extends ListPage
                     PokedexEntry entry = Database.getEntry(clickevent.getValue());
                     if (entry != null && entry != pokemob.getPokedexEntry())
                     {
-                        parent.initPages(EventsHandlerClient.getRenderMob(entry,   watch.player.getEntityWorld()));
+                        parent.initPages(EventsHandlerClient.getRenderMob(entry, watch.player.getEntityWorld()));
                     }
                     return true;
                 }

@@ -327,6 +327,48 @@ public class ItemPokemobEgg extends Item
         return s;
     }
 
+    /** This function should return a new entity to replace the dropped item.
+     * Returning null here will not kill the EntityItem and will leave it to
+     * function normally. Called when the item it placed in a world.
+     *
+     * @param world
+     *            The world object
+     * @param location
+     *            The EntityItem object, useful for getting the position of the
+     *            entity
+     * @param itemstack
+     *            The current item stack
+     * @return A new Entity object to spawn or null */
+    @Override
+    public Entity createEntity(World world, Entity oldItem, ItemStack itemstack)
+    {
+        if (hasCustomEntity(itemstack))
+        {
+            EntityPokemobEgg egg = new EntityPokemobEgg(world, oldItem.posX, oldItem.posY, oldItem.posZ, itemstack,
+                    null);
+            egg.motionX = oldItem.motionX;
+            egg.motionY = oldItem.motionY;
+            egg.motionZ = oldItem.motionZ;
+            return egg;
+        }
+        return null;
+    }
+
+    /** Determines if this Item has a special entity for when they are in the
+     * world. Is called when a EntityItem is spawned in the world, if true and
+     * Item#createCustomEntity returns non null, the EntityItem will be
+     * destroyed and the new Entity will be added to the world.
+     *
+     * @param stack
+     *            The current item stack
+     * @return True of the item has a custom entity, If true,
+     *         Item#createCustomEntity will be called */
+    @Override
+    public boolean hasCustomEntity(ItemStack stack)
+    {
+        return getEntry(stack) != null;
+    }
+
     // 1.11
     public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
             EnumFacing side, float hitX, float hitY, float hitZ)

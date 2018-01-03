@@ -465,7 +465,7 @@ public class GuiPokedex extends GuiScreen
         ArrayList<String> names = new ArrayList<String>();
         if (pokedexEntry != null)
         {
-            for (PokedexEntry p : pokedexEntry.related)
+            for (PokedexEntry p : pokedexEntry.getRelated())
             {
                 if (p != null) names.add(I18n.format(p.getUnlocalizedName()));
             }

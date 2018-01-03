@@ -72,7 +72,7 @@ public class ModelPokemobEgg extends ModelBase
 
         GL11.glPushMatrix();
         GL11.glScaled(0.25, 0.25, 0.25);
-        GL11.glTranslated(0, 4.4, 0);
+        GL11.glTranslated(0, 4.45, 0);
         PokedexEntry entry = ItemPokemobEgg.getEntry(((EntityPokemobEgg) entity).getHeldItemMainhand());
 
         Color colour = new Color(PokeType.getType("normal").colour);

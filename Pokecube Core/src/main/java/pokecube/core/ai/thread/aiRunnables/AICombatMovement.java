@@ -42,13 +42,13 @@ public class AICombatMovement extends AIBase
 
     private SoundEvent getDodgeSound()
     {
-        if (PokecubeCore.core.getConfig().dodges.length == 0) return PokecubeCore.core.getConfig().dodges[0];
+        if (PokecubeCore.core.getConfig().dodges.length == 1) return PokecubeCore.core.getConfig().dodges[0];
         return PokecubeCore.core.getConfig().dodges[new Random().nextInt(PokecubeCore.core.getConfig().dodges.length)];
     }
 
     private SoundEvent getLeapSound()
     {
-        if (PokecubeCore.core.getConfig().leaps.length == 0) return PokecubeCore.core.getConfig().leaps[0];
+        if (PokecubeCore.core.getConfig().leaps.length == 1) return PokecubeCore.core.getConfig().leaps[0];
         return PokecubeCore.core.getConfig().leaps[new Random().nextInt(PokecubeCore.core.getConfig().leaps.length)];
     }
 
@@ -190,9 +190,14 @@ public class AICombatMovement extends AIBase
                 addTargetInfo(targ.getEntity(), attacker);
             }
         }
+        // Use horizontal distance to allow floating things to leap downwards.
         double d0 = this.attacker.posX - this.target.posX;
         double d2 = this.attacker.posZ - this.target.posZ;
-        // Use horizontal distance to allow floating things to leap downwards.
+
+        double d3 = this.attacker.posY - this.target.posY;
+        /** Don't leap up if too far. */
+        if (d3 < -5) return;
+
         double dist = d0 * d0 + d2 * d2;
         float diff = attacker.width + target.width;
         diff = diff * diff;
@@ -201,7 +206,10 @@ public class AICombatMovement extends AIBase
         Vector3 targetLoc = Vector3.getNewVector().set(target);
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);
         Vector3 dir = targetLoc.subtract(leaperLoc);
-        double d = dir.mag();
+        /** Scale by 0.2 to make it take roughly half a second for leap to reach
+         * target. Note that this doesn't factor in gravity, so leaps up take a
+         * bit longer than that. */
+        double d = dir.mag() * 0.2;
         dir.norm();
         if (d > 5) dir.scalarMultBy(d * 0.2f);
         if (dir.magSq() < 1) dir.norm();

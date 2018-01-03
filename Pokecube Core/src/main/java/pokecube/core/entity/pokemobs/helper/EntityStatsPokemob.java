@@ -72,7 +72,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
             IPokemob sourceMob = CapabilityPokemob.getPokemobFor(source.getTrueSource());
             // Don't apply the damage from the burning when on fire, the status
             // should handle that.
-            if (source.isFireDamage() && (pokemobCap.getStatus() & IMoveConstants.STATUS_BRN) >= 0) { return false; }
+            if (source.isFireDamage() && (pokemobCap.getStatus() & IMoveConstants.STATUS_BRN) > 0) { return false; }
 
             if (source.isExplosion() && sourceMob != null
                     && pokemobCap.isType(PokeType.getType("ghost"))) { return false; }

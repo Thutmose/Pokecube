@@ -44,6 +44,7 @@ public class EntityPokemobEgg extends EntityLiving
         super(world);
         this.setSize(0.35f, 0.35f);
         hatch = 1000 + getEntityWorld().rand.nextInt(PokecubeMod.core.getConfig().eggHatchTime);
+        this.isImmuneToFire = true;
     }
 
     /** @param world
@@ -188,19 +189,33 @@ public class EntityPokemobEgg extends EntityLiving
     }
 
     @Override
+    protected void handleJumpWater()
+    {
+        this.motionY += 0.021D;
+    }
+
+    @Override
+    protected void handleJumpLava()
+    {
+        this.motionY += 0.021D;
+    }
+
+    @Override
     public void onUpdate()
     {
-        motionY -= 0.06;
-        motionX *= 0.6;
-        motionZ *= 0.6;
-        CompatWrapper.moveEntitySelf(this, motionX, motionY, motionZ);
+        motionX *= 0.9;
+        motionZ *= 0.9;
+
+        if (this.isInWater() || this.isInLava()) this.getJumpHelper().setJumping();
+
+        here.set(this);
+        super.onUpdate();
+        if (getEntityWorld().isRemote) return;
         if (!CompatWrapper.isValid(getHeldItemMainhand()))
         {
             this.setDead();
             return;
         }
-        here.set(this);
-        if (getEntityWorld().isRemote) return;
         this.delayBeforeCanPickup--;
         boolean spawned = getHeldItemMainhand().hasTagCompound()
                 && getHeldItemMainhand().getTagCompound().hasKey("nestLocation");

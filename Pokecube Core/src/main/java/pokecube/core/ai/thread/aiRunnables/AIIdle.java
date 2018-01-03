@@ -11,8 +11,8 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.world.IBlockAccess;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
+import pokecube.core.interfaces.IPokemob;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 

@@ -69,28 +69,21 @@ public class PokemobAILookIdle extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
+        if (theWatcher.getRNG().nextFloat() > chance) return false;
         if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0)
             return false;
-        if (theWatcher.getRNG().nextFloat() > chance)
+        idle = false;
+        if (this.theWatcher.getAttackTarget() != null)
         {
-            idle = true;
-            return true;
+            this.closestEntity = this.theWatcher.getAttackTarget();
         }
-        else
-        {
-            idle = false;
-            if (this.theWatcher.getAttackTarget() != null)
-            {
-                this.closestEntity = this.theWatcher.getAttackTarget();
-            }
-            this.closestEntity = this.theWatcher.getEntityWorld().findNearestEntityWithinAABB(EntityLivingBase.class,
-                    this.theWatcher.getEntityBoundingBox().grow(this.maxDistanceForPlayer, 3.0D,
-                            this.maxDistanceForPlayer),
-                    this.theWatcher);
-            if (closestEntity != null && closestEntity.getRidingEntity() == theWatcher) closestEntity = null;
-            else if (closestEntity != null) return true;
-            return false;
-        }
+        this.closestEntity = this.theWatcher.getEntityWorld().findNearestEntityWithinAABB(EntityLivingBase.class,
+                this.theWatcher.getEntityBoundingBox().grow(this.maxDistanceForPlayer, 3.0D, this.maxDistanceForPlayer),
+                this.theWatcher);
+        if (closestEntity != null && closestEntity.getRidingEntity() == theWatcher) closestEntity = null;
+        else if (closestEntity != null) return true;
+        idle = true;
+        return true;
     }
 
     /** Execute a one shot task or start executing a continuous task */
@@ -115,12 +108,12 @@ public class PokemobAILookIdle extends EntityAIBase
         {
             --this.idleTime;
             this.theWatcher.getLookHelper().setLookPosition(this.theWatcher.posX + this.lookX,
-                    this.theWatcher.posY + this.theWatcher.getEyeHeight(), this.theWatcher.posZ + this.lookZ, 10.0F,
+                    this.theWatcher.posY + this.theWatcher.getEyeHeight(), this.theWatcher.posZ + this.lookZ, 3.0F,
                     this.theWatcher.getVerticalFaceSpeed());
             return;
         }
         this.theWatcher.getLookHelper().setLookPosition(this.closestEntity.posX,
-                this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, 10.0F,
+                this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, 3.0F,
                 this.theWatcher.getVerticalFaceSpeed());
         --this.lookTime;
     }

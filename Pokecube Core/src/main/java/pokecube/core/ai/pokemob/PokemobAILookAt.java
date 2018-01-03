@@ -82,7 +82,7 @@ public class PokemobAILookAt extends EntityAIBase
         {
             return false;
         }
-        else if (theWatcher.getRNG().nextFloat() < 0.02F)
+        else if (theWatcher.getRNG().nextFloat() < 0.01)
         {
             idle = true;
             return true;
@@ -136,12 +136,12 @@ public class PokemobAILookAt extends EntityAIBase
         {
             --this.idleTime;
             this.theWatcher.getLookHelper().setLookPosition(this.theWatcher.posX + this.lookX,
-                    this.theWatcher.posY + this.theWatcher.getEyeHeight(), this.theWatcher.posZ + this.lookZ, 10.0F,
+                    this.theWatcher.posY + this.theWatcher.getEyeHeight(), this.theWatcher.posZ + this.lookZ, 5.0F,
                     this.theWatcher.getVerticalFaceSpeed());
             return;
         }
         this.theWatcher.getLookHelper().setLookPosition(this.closestEntity.posX,
-                this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, 10.0F,
+                this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, 5.0F,
                 this.theWatcher.getVerticalFaceSpeed());
         --this.lookTime;
     }

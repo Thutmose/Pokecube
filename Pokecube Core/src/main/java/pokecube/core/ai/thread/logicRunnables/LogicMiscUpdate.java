@@ -58,7 +58,7 @@ public class LogicMiscUpdate extends LogicBase
         {
             ((IShearable) entity).isShearable(null, entity.getEntityWorld(), entity.getPosition());
         }
-
+        
         if (!world.isRemote)
         {
             // Check that AI states are correct

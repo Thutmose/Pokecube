@@ -474,22 +474,25 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // do nothing
     }
 
+    float yO = 0;
+    float yC = 0;
+
     @Override
     public void onUpdate()
     {
         if (!Pokedex.getInstance().isRegistered(pokemobCap.getPokedexEntry())) return;
-
         long time = System.nanoTime();
         here.set(posX, posY, posZ);
         BlockPos pos = new BlockPos(posX, 1, posZ);
         boolean loaded = getEntityWorld().isAreaLoaded(pos, 8);
-        if (loaded && !(pokemobCap.getPokemonAIState(IMoveConstants.STAYING)
-                || pokemobCap.getPokemonAIState(IMoveConstants.GUARDING)
-                || pokemobCap.getPokemonAIState(IMoveConstants.ANGRY) || getAttackTarget() != null))
+        if (loaded && PokecubeMod.core.getConfig().aiDisableDistance > 0
+                && !(pokemobCap.getPokemonAIState(IMoveConstants.STAYING)
+                        || pokemobCap.getPokemonAIState(IMoveConstants.GUARDING)
+                        || pokemobCap.getPokemonAIState(IMoveConstants.ANGRY) || getAttackTarget() != null))
         {
             loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().aiDisableDistance, 512, this);
         }
-        //Only disable server side.
+        // Only disable server side.
         if (!loaded && !getEntityWorld().isRemote)
         {
             despawnEntity();
@@ -506,6 +509,20 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             PokecubeMod.log(String.format(toLog, here, (int) dt,
                     pokemobCap.getPokemonDisplayName().getUnformattedComponentText(),
                     ((int) (averagePokemobTick * 100)) / 100d));
+        }
+    }
+
+    @Override
+    /** Sets the head's yaw rotation of the entity. */
+    public void setRotationYawHead(float rotation)
+    {
+        this.rotationYawHead = rotation;
+        /** This is to fix the jitteriness caused by this method not updating
+         * prevRotationYawHead when it is called from the update packet. */
+        float dYawHead = this.rotationYawHead - this.prevRotationYawHead;
+        if (Math.abs(dYawHead) > 180)
+        {
+            this.prevRotationYawHead = this.rotationYawHead;
         }
     }
 

@@ -21,6 +21,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -48,7 +49,6 @@ import thut.lib.CompatWrapper;
 /** @author Manchou */
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
-
     public EntityAiPokemob(World world)
     {
         super(world);
@@ -210,7 +210,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Look at playerAI
         this.tasks.addTask(8, new PokemobAILookAt(this, EntityPlayer.class, 8.0F, 1f));
         // Look randomly around AI.
-        this.tasks.addTask(9, new PokemobAILookIdle(this, 8, 0.05f));
+        this.tasks.addTask(9, new PokemobAILookIdle(this, 8, 0.01f));
     }
 
     @Override
@@ -500,6 +500,22 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (this.getHeldItemMainhand() != CompatWrapper.nullStack) PokecubeItems.deValidate(getHeldItemMainhand());
         }
         super.onDeathUpdate();
+    }
+
+    @Override
+    /** interpolated look vector */
+    public Vec3d getLook(float partialTicks)
+    {
+        if (partialTicks == 1.0F)
+        {
+            return this.getVectorForRotation(this.rotationPitch, this.rotationYawHead);
+        }
+        else
+        {
+            float f = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * partialTicks;
+            float f1 = this.prevRotationYawHead + (this.rotationYawHead - this.prevRotationYawHead) * partialTicks;
+            return this.getVectorForRotation(f, f1);
+        }
     }
 
     @Override

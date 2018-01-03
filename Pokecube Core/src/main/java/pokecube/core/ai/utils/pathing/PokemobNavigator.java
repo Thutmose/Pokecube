@@ -89,6 +89,7 @@ public class PokemobNavigator extends PathNavigate
     @Override
     public boolean canNavigate()
     {
+        checkValues();
         if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0
                 || (pokemob.getStatus() & IPokemob.STATUS_FRZ) > 0
                 || pokemob.getPokemonAIState(IMoveConstants.CONTROLLED)

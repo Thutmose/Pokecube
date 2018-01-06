@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
@@ -16,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -53,37 +55,37 @@ public class TabulaPackLoader extends AnimationLoader
     public static class TabulaModelSet implements IPartRenamer, IAnimationChanger
     {
         /** The pokemon associated with this model. */
-        final PokedexEntry                entry;
-        public final TabulaModel          model;
-        public final TabulaModelParser    parser;
-        public IPartTexturer              texturer         = null;
-        public AnimationRandomizer        animator         = null;
+        final PokedexEntry                      entry;
+        public final TabulaModel                model;
+        public final TabulaModelParser          parser;
+        public IPartTexturer                    texturer         = null;
+        public AnimationRandomizer              animator         = null;
 
         /** Animations to merge together, animation key is merged into animation
          * value. so key of idle and value of walk will merge the idle animation
          * into the walk animation. */
-        private HashMap<String, String>   mergedAnimations = Maps.newHashMap();
+        private HashMap<String, String>         mergedAnimations = Maps.newHashMap();
 
         /** The root part of the head. */
         /** A set of identifiers of shearable parts. */
-        public Set<String>                shearableIdents  = Sets.newHashSet();
+        public Set<String>                      shearableIdents  = Sets.newHashSet();
         /** A set of identifiers of dyeable parts. */
-        public Set<String>                dyeableIdents    = Sets.newHashSet();
+        public Set<String>                      dyeableIdents    = Sets.newHashSet();
         /** Animations loaded from the XML */
-        public HashMap<String, Animation> loadedAnimations = Maps.newHashMap();
+        public HashMap<String, List<Animation>> loadedAnimations = Maps.newHashMap();
         /** Translation of the model */
-        public Vector3                    shift            = Vector3.getNewVector();
+        public Vector3                          shift            = Vector3.getNewVector();
         /** Global rotation of the model */
-        public Vector5                    rotation;
+        public Vector5                          rotation;
         /** Scale of the model */
-        public Vector3                    scale            = Vector3.getNewVector();
-        private boolean                   foundExtra       = false;
+        public Vector3                          scale            = Vector3.getNewVector();
+        private boolean                         foundExtra       = false;
 
         // These get copied into the headInfo for the model.
-        int                               headAxis         = 1;
-        int                               headDir          = 1;
-        float[]                           headCap          = { -180, 180 };
-        float[]                           headCap1         = { -30, 30 };
+        int                                     headAxis         = 1;
+        int                                     headDir          = 1;
+        float[]                                 headCap          = { -180, 180 };
+        float[]                                 headCap1         = { -30, 30 };
 
         public TabulaModelSet(TabulaModel model, TabulaModelParser parser, ResourceLocation extraData,
                 PokedexEntry entry)
@@ -138,14 +140,9 @@ public class TabulaPackLoader extends AnimationLoader
         private void addAnimation(Animation animation)
         {
             String key = animation.name;
-            if (loadedAnimations.containsKey(key))
-            {
-                AnimationBuilder.merge(animation, loadedAnimations.get(key));
-            }
-            else
-            {
-                loadedAnimations.put(key, animation);
-            }
+            List<Animation> anims = loadedAnimations.get(key);
+            if (anims == null) loadedAnimations.put(key, anims = Lists.newArrayList());
+            anims.add(animation);
         }
 
         @Override
@@ -355,71 +352,12 @@ public class TabulaPackLoader extends AnimationLoader
 
         private void postInitAnimations()
         {
-            HashSet<String> toRemove = Sets.newHashSet();
-            for (Animation anim : model.getAnimations())
-            {
-                for (String s : loadedAnimations.keySet())
-                {
-                    if (s.equals(anim.name))
-                    {
-                        Animation loaded = loadedAnimations.get(s);
-                        AnimationBuilder.merge(loaded, anim);
-                        toRemove.add(s);
-                    }
-                }
-            }
-            for (String s : mergedAnimations.keySet())
-            {
-                String toName = mergedAnimations.get(s);
-                Animation to = null;
-                Animation from = null;
-                for (Animation anim : model.getAnimations())
-                {
-                    if (s.equals(anim.name))
-                    {
-                        from = anim;
-                    }
-                    if (toName.equals(anim.name))
-                    {
-                        to = anim;
-                    }
-                    if (to != null && from != null) break;
-                }
-                if (to == null || from == null) for (Animation anim : loadedAnimations.values())
-                {
-                    if (from == null) if (s.equals(anim.name))
-                    {
-                        from = anim;
-                    }
-                    if (to == null) if (toName.equals(anim.name))
-                    {
-                        to = anim;
-                    }
-                    if (to != null && from != null) break;
-                }
-                if (from != null && to == null)
-                {
-                    to = new Animation();
-                    to.name = toName;
-                    to.identifier = toName;
-                    to.loops = from.loops;
-                    loadedAnimations.put(toName, to);
-                }
-
-                if (to != null && from != null)
-                {
-                    AnimationBuilder.merge(from, to);
-                }
-            }
-            for (String s : toRemove)
-            {
-                loadedAnimations.remove(s);
-            }
+            int var;
+            // TODO cleanup and animations from loaded animations here.
             if (animator != null)
             {
                 Set<Animation> anims = Sets.newHashSet();
                 anims.addAll(model.getAnimations());
-                anims.addAll(loadedAnimations.values());
                 animator.init(anims);
             }
             model.getHeadInfo().yawCapMin = headCap[0];

@@ -294,7 +294,7 @@ public class AnimationLoader
             Set<String> headNames = Sets.newHashSet();
             Set<String> shear = Sets.newHashSet();
             Set<String> dye = Sets.newHashSet();
-            Set<Animation> tblAnims = Sets.newHashSet();
+            List<Animation> tblAnims = Lists.newArrayList();
             HashMap<String, String> mergedAnimations = Maps.newHashMap();
             for (int i = 0; i < modelList.getLength(); i++)
             {
@@ -331,14 +331,16 @@ public class AnimationLoader
                         Node phase = part.getAttributes().getNamedItem("name") == null
                                 ? part.getAttributes().getNamedItem("type") : part.getAttributes().getNamedItem("name");
                         String phaseName = phase.getNodeValue();
-                        boolean preset = false;
                         for (String s : AnimationRegistry.animations.keySet())
                         {
                             if (phaseName.equals(s))
                             {
                                 if (PokecubeMod.debug) PokecubeMod.log("Loading " + s + " for " + model.name);
-                                tblAnims.add(AnimationRegistry.make(s, part.getAttributes(), null));
-                                preset = true;
+                                Animation anim = AnimationRegistry.make(s, part.getAttributes(), null);
+                                if (anim != null)
+                                {
+                                    tblAnims.add(anim);
+                                }
                             }
                         }
                         if (phaseName.equals("global"))
@@ -368,22 +370,12 @@ public class AnimationLoader
                             PokedexEntry entry = Database.getEntry(model.name);
                             setTextureDetails(part, entry);
                         }
-                        else if (!preset)
+                        else
                         {
                             Animation anim = AnimationBuilder.build(part, null);
                             if (anim != null)
                             {
-                                Animation old = null;
-                                for (Animation a : tblAnims)
-                                {
-                                    if (a.name.equals(anim.name))
-                                    {
-                                        old = a;
-                                        break;
-                                    }
-                                }
-                                if (old != null) AnimationBuilder.merge(anim, old);
-                                else tblAnims.add(anim);
+                                tblAnims.add(anim);
                             }
                         }
                     }
@@ -416,45 +408,36 @@ public class AnimationLoader
                 loaded.model.getHeadParts().addAll(headNames);
                 for (Animation anim : tblAnims)
                 {
-                    if (anim != null)
-                    {
-                        if (!anim.sets.isEmpty()) loaded.animations.put(anim.name, anim);
-                    }
-                    else
-                    {
-                        new NullPointerException("Why is there a null animation?").printStackTrace();
-                    }
+                    List<Animation> anims = loaded.animations.get(anim.name);
+                    if (anims == null) loaded.animations.put(anim.name, anims = Lists.newArrayList());
+                    anims.add(anim);
                 }
-                for (String s : mergedAnimations.keySet())
+                for (String from : mergedAnimations.keySet())
                 {
-                    String toName = mergedAnimations.get(s);
-                    Animation to = null;
-                    Animation from = null;
-
-                    for (Animation anim : loaded.animations.values())
+                    if (!loaded.animations.containsKey(from)) continue;
+                    String to = mergedAnimations.get(from);
+                    if (!loaded.animations.containsKey(to)) continue;
+                    List<Animation> fromSet = Lists.newArrayList();
+                    List<Animation> toSet = loaded.animations.get(to);
+                    for (Animation anim : loaded.animations.get(from))
                     {
-                        if (s.equals(anim.name))
+                        Animation newAnim = new Animation();
+                        newAnim.identifier = anim.identifier;
+                        newAnim.name = to;
+                        newAnim.loops = anim.loops;
+                        newAnim.priority = 20;
+                        newAnim.length = -1;
+                        for (String s : anim.sets.keySet())
                         {
-                            from = anim;
+                            newAnim.sets.put(s, Lists.newArrayList(anim.sets.get(s)));
                         }
-                        if (toName.equals(anim.name))
-                        {
-                            to = anim;
-                        }
-                        if (to != null && from != null) break;
+                        fromSet.add(newAnim);
                     }
-                    if (from != null && to == null)
-                    {
-                        to = new Animation();
-                        to.name = toName;
-                        to.identifier = toName;
-                        to.loops = from.loops;
-                        loaded.animations.put(toName, to);
-                    }
-                    if (to != null && from != null)
-                    {
-                        AnimationBuilder.merge(from, to);
-                    }
+                    toSet.addAll(fromSet);
+                }
+                for (List<Animation> anims : loaded.animations.values())
+                {
+                    AnimationBuilder.processAnimations(anims);
                 }
                 if (animator == null)
                 {
@@ -463,7 +446,7 @@ public class AnimationLoader
                 animator.dyeables.addAll(dye);
                 animator.shearables.addAll(shear);
                 Set<Animation> anims = Sets.newHashSet();
-                anims.addAll(loaded.animations.values());
+                // TODO init animations here.
                 animator.init(anims);
 
                 loaded.setTexturer(texturer);

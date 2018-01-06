@@ -99,7 +99,6 @@ import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.loot.datafixers.BadgeFixer;
 import pokecube.core.items.loot.datafixers.FossilFixer;
@@ -708,13 +707,12 @@ public class PokecubeCore extends PokecubeMod
                 }
 
                 CompatWrapper.registerModEntity(clazz, name, getUniqueEntityId(mod), mod, 80, 3, true);
-
+                proxy.registerClass(clazz, entry);
                 if (!pokemobEggs.containsKey(entry.getPokedexNb()))
                 {
                     pokemobEggs.put(new Integer(entry.getPokedexNb()),
                             CompatWrapper.getEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
                 }
-                PokemobGenes.registerClass(clazz, entry);
                 registered.set(entry.getPokedexNb());
                 Pokedex.getInstance().registerPokemon(entry);
             }

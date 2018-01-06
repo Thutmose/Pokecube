@@ -108,6 +108,7 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
+import thut.core.client.render.animation.CapabilityAnimation;
 import thut.core.client.render.particle.IParticle;
 import thut.core.client.render.particle.ParticleFactory;
 import thut.core.client.render.particle.ParticleHandler;
@@ -553,6 +554,13 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(c,
                     renderer.createRenderFor(Minecraft.getMinecraft().getRenderManager()));
         }
+    }
+
+    @Override
+    public void registerClass(Class<? extends EntityLiving> clazz, PokedexEntry entry)
+    {
+        super.registerClass(clazz, entry);
+        CapabilityAnimation.registerAnimateClass(clazz);
     }
 
     @Override

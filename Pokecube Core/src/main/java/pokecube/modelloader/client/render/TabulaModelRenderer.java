@@ -1,6 +1,7 @@
 package pokecube.modelloader.client.render;
 
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -69,7 +70,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     }
 
     @Override
-    public HashMap<String, Animation> getAnimations()
+    public HashMap<String, List<Animation>> getAnimations()
     {
         return set.loadedAnimations;
     }

@@ -2,6 +2,7 @@ package pokecube.modelloader.client.render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.common.collect.Maps;
 
@@ -18,19 +19,19 @@ import thut.core.client.render.wrappers.ModelWrapper;
 
 public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModelRenderer<T>
 {
-    public String                       name;
-    public String                       currentPhase   = "idle";
-    public HashMap<String, PartInfo>    parts          = Maps.newHashMap();
-    HashMap<String, ArrayList<Vector5>> global;
-    public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
-    public Vector3                      offset         = Vector3.getNewVector();;
-    public Vector3                      scale          = Vector3.getNewVector();
+    public String                           name;
+    public String                           currentPhase = "idle";
+    public HashMap<String, PartInfo>        parts        = Maps.newHashMap();
+    HashMap<String, ArrayList<Vector5>>     global;
+    public HashMap<String, List<Animation>> animations   = Maps.newHashMap();
+    public Vector3                          offset       = Vector3.getNewVector();;
+    public Vector3                          scale        = Vector3.getNewVector();
 
-    public Vector5                      rotations      = new Vector5();
+    public Vector5                          rotations    = new Vector5();
 
-    public ModelWrapper                 model;
+    public ModelWrapper                     model;
 
-    ResourceLocation                    texture;
+    ResourceLocation                        texture;
 
     public DefaultIModelRenderer(HashMap<String, ArrayList<Vector5>> global, ModelHolder model)
     {
@@ -152,7 +153,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     }
 
     @Override
-    public HashMap<String, Animation> getAnimations()
+    public HashMap<String, List<Animation>> getAnimations()
     {
         return animations;
     }

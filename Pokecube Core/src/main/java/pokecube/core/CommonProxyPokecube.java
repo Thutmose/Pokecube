@@ -6,6 +6,7 @@ package pokecube.core;
 import java.util.UUID;
 
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.tileentity.TileEntity;
@@ -22,12 +23,14 @@ import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.CommonProxy;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
 import pokecube.core.network.packets.PacketParticle;
 import thut.api.maths.Vector3;
 
@@ -142,6 +145,11 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 
     public void registerKeyBindings()
     {
+    }
+
+    public void registerClass(Class<? extends EntityLiving> clazz, PokedexEntry entry)
+    {
+        PokemobGenes.registerClass(clazz, entry);
     }
 
     @Override

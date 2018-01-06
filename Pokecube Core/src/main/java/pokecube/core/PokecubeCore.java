@@ -374,22 +374,6 @@ public class PokecubeCore extends PokecubeMod
         return starters.toArray(new PokedexEntry[0]);
     }
 
-    /** Returns the translated Pokemob name of the pokemob with the specify
-     * pokedex number.
-     *
-     * @param nb
-     *            the pokedex number
-     * @return the {@link String} name */
-    @Override
-    public String getTranslatedPokenameFromPokedexNumber(int nb)
-    {
-        PokedexEntry entry = Pokedex.getInstance().getEntry(nb);
-
-        if (entry != null) { return Pokedex.getInstance().getEntry(nb).getUnlocalizedName(); }
-
-        return "" + nb;
-    }
-
     @EventHandler
     private void initRecipes(FMLInitializationEvent evt)
     {
@@ -496,7 +480,7 @@ public class PokecubeCore extends PokecubeMod
         spawner = new SpawnHandler();
         if (!config.defaultMobs.equals(""))
         {
-            System.out.println("Changing Default Mobs to " + config.defaultMobs);
+            if (debug) PokecubeMod.log("Changing Default Mobs to " + config.defaultMobs);
             defaultMod = config.defaultMobs;
         }
 

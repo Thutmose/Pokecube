@@ -54,7 +54,7 @@ public class PokemobNavigator extends PathNavigate
         {
             entry = transformed.getPokedexEntry();
         }
-        if (entry != lastEntry)
+        if (entry != lastEntry || wrapped == null)
         {
             lastEntry = entry;
             this.canFly = entry.flys() || entry.floats();
@@ -67,11 +67,11 @@ public class PokemobNavigator extends PathNavigate
             {
                 wrapped = new LadderWalkNavigator(entity, world, canFly);
             }
-            wrapped.getNodeProcessor().setCanEnterDoors(true);
-            wrapped.getNodeProcessor().setCanSwim(true);
-            wrapped.getNodeProcessor().initProcessor(world, entity);
-            wrapped.setSpeed(speed);
         }
+        wrapped.getNodeProcessor().setCanEnterDoors(true);
+        wrapped.getNodeProcessor().setCanSwim(true);
+        wrapped.getNodeProcessor().initProcessor(world, entity);
+        wrapped.setSpeed(speed);
     }
 
     private boolean shouldPath(BlockPos pos)

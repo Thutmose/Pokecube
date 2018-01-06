@@ -205,11 +205,6 @@ public abstract class PokecubeMod
 
     public abstract PokedexEntry[] getStarters();
 
-    public String getTranslatedPokenameFromPokedexNumber(int pokedexNb)
-    {
-        return null;
-    }
-
     /** Registers a Pokemob into the Pokedex. Have a look to the file called
      * <code>"HelpEntityJava.png"</code> provided with the SDK.
      *

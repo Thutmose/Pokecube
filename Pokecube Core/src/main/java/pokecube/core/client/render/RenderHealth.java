@@ -170,7 +170,6 @@ public class RenderHealth
         while (!ridingStack.isEmpty())
         {
             entity = ridingStack.pop();
-            String entityID = EntityList.getKey(entity).toString();
             processing:
             {
                 float distance = passedEntity.getDistanceToEntity(viewPoint);
@@ -344,8 +343,11 @@ public class RenderHealth
                 mc.fontRenderer.drawString(gender,
                         (int) (size / (s * s1) * 2) - 2 - mc.fontRenderer.getStringWidth(gender), h - 1, colour);
                 if (PokecubeMod.core.getConfig().enableDebugInfo && mc.gameSettings.showDebugInfo)
+                {
+                    String entityID = EntityList.getKey(entity).toString();
                     mc.fontRenderer.drawString("ID: \"" + entityID + "\"" + "(" + entity.getEntityId() + ")", 0, h + 16,
                             0xFFFFFFFF);
+                }
                 GlStateManager.popMatrix();
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

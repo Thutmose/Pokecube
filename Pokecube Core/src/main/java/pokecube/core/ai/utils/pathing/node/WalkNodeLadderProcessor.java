@@ -37,12 +37,6 @@ public class WalkNodeLadderProcessor extends WalkNodeProcessor
         return i;
     }
 
-    @Override
-    protected PathPoint getSafePoint(int x, int y, int z, int stepTop, double blockTop, EnumFacing facing)
-    {
-        return super.getSafePoint(x, y, z, stepTop, blockTop, facing);
-    }
-
     private PathPoint getPoint(int x, int y, int z, EnumFacing direction)
     {
         if (direction == EnumFacing.UP) return getLadder(x, y, z);

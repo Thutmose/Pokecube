@@ -103,7 +103,7 @@ public class AIIdle extends AIBase
     @Override
     public void run()
     {
-        //TODO some AI for mobs to sit/stand
+        // TODO some AI for mobs to sit/stand
         if (entry.flys())
         {
             doFlyingIdle();
@@ -139,7 +139,7 @@ public class AIIdle extends AIBase
     @Override
     public boolean shouldRun()
     {
-        if(!mob.isRoutineEnabled(AIRoutine.WANDER)) return false;
+        if (!mob.isRoutineEnabled(AIRoutine.WANDER)) return false;
         Path current = null;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
@@ -172,12 +172,13 @@ public class AIIdle extends AIBase
         if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)
                 && !mob.getPokemonAIState(IMoveConstants.STAYING))
             return false;
+        int idleTimer = 50;
         if (mob.getPokemonAIState(IPokemob.SLEEPING) || (mob.getStatus() & IPokemob.STATUS_SLP) > 0) return false;
         else if (mob.getPokemonAIState(IMoveConstants.CONTROLLED) || current != null)
         {
             return false;
         }
-        else if (entity.ticksExisted % (50 + new Random(mob.getRNGValue()).nextInt(50)) == 0)
+        else if (entity.ticksExisted % (idleTimer + new Random(mob.getRNGValue()).nextInt(idleTimer)) == 0)
         {
             boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED)
                     && !mob.getPokemonAIState(IMoveConstants.STAYING);

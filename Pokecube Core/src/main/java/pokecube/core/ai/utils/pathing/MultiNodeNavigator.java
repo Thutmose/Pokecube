@@ -1,12 +1,18 @@
 package pokecube.core.ai.utils.pathing;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.logging.Level;
+
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.ai.utils.pathing.node.MultiNodeWrapper;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class MultiNodeNavigator extends PathNavigate
@@ -15,11 +21,29 @@ public class MultiNodeNavigator extends PathNavigate
     public final NodeProcessor b;
     private final boolean      canFly;
 
+    private static void setFinal(Field field, Object objTo, Object objFrom) throws Exception
+    {
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(objTo, field.get(objFrom));
+    }
+
     public MultiNodeNavigator(EntityLiving entityIn, World worldIn, NodeProcessor a, NodeProcessor b, boolean canFly)
     {
         super(entityIn, worldIn);
         this.a = a;
         this.b = b;
+        try
+        {
+            Field points = ReflectionHelper.findField(NodeProcessor.class, "pointMap", "field_176167_b", "c");
+            setFinal(points, b, a);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error copying point maps for pathing", e);
+        }
         this.canFly = canFly;
     }
 

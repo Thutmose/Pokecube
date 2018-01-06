@@ -22,9 +22,7 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** This AI is what the pokemon does when attacked. It will sometimes result in
  * nearby pokemon of the same species trying to protect the pokemon, resulting
- * in horde like behavior.
- * 
- * @author Patrick */
+ * in horde like behavior. */
 public class PokemobAIHurt extends EntityAIBase
 {
 
@@ -60,23 +58,18 @@ public class PokemobAIHurt extends EntityAIBase
 
     /** Checks to see if this entity can find a short path to the given
      * target. */
-    private boolean canEasilyReach(EntityLivingBase p_75295_1_)
+    private boolean canEasilyReach(EntityLivingBase target)
     {
-        this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
-        Path path = this.taskOwner.getNavigator().getPathToEntityLiving(p_75295_1_);
+        if (this.taskOwner.getDistanceSqToEntity(target) > 16) return false;
 
-        if (path == null)
-        {
-            return false;
-        }
+        this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
+        Path path = this.taskOwner.getNavigator().getPathToEntityLiving(target);
+        if (path == null) { return false; }
         PathPoint pathpoint = path.getFinalPathPoint();
 
-        if (pathpoint == null)
-        {
-            return false;
-        }
-        int i = pathpoint.x - MathHelper.floor(p_75295_1_.posX);
-        int j = pathpoint.z - MathHelper.floor(p_75295_1_.posZ);
+        if (pathpoint == null) { return false; }
+        int i = pathpoint.x - MathHelper.floor(target.posX);
+        int j = pathpoint.z - MathHelper.floor(target.posZ);
         return i * i + j * j <= 2.25D;
     }
 
@@ -98,10 +91,7 @@ public class PokemobAIHurt extends EntityAIBase
         {
             double d0 = this.getTargetDistance();
 
-            if (this.taskOwner.getDistanceSqToEntity(entitylivingbase) > d0 * d0)
-            {
-                return false;
-            }
+            if (this.taskOwner.getDistanceSqToEntity(entitylivingbase) > d0 * d0) { return false; }
             if (this.shouldCheckSight)
             {
                 if (this.taskOwner.getEntitySenses().canSee(entitylivingbase))
@@ -124,21 +114,21 @@ public class PokemobAIHurt extends EntityAIBase
 
     /** A method used to see if an entity is a suitable target through a number
      * of checks. */
-    protected boolean isSuitableTarget(EntityLivingBase p_75296_1_, boolean p_75296_2_)
+    protected boolean isSuitableTarget(EntityLivingBase target, boolean targetsPlayers)
     {
-        if (p_75296_1_ == null)
+        if (target == null || target.isDead || !target.addedToChunk)
         {
             return false;
         }
-        else if (p_75296_1_ == this.taskOwner)
+        else if (target == this.taskOwner)
         {
             return false;
         }
-        else if (!p_75296_1_.isEntityAlive())
+        else if (!target.isEntityAlive())
         {
             return false;
         }
-        else if (!this.taskOwner.canAttackClass(p_75296_1_.getClass()))
+        else if (!this.taskOwner.canAttackClass(target.getClass()))
         {
             return false;
         }
@@ -146,20 +136,20 @@ public class PokemobAIHurt extends EntityAIBase
         {
             if (this.taskOwner instanceof IEntityOwnable && pokemob.getOwnerId() != null)
             {
-                if (p_75296_1_ instanceof IEntityOwnable
-                        && pokemob.getOwnerId().equals(((IEntityOwnable) p_75296_1_).getOwnerId())) { return false; }
+                if (target instanceof IEntityOwnable
+                        && pokemob.getOwnerId().equals(((IEntityOwnable) target).getOwnerId())) { return false; }
 
-                if (p_75296_1_ == pokemob.getOwner()) { return false; }
+                if (target == pokemob.getOwner()) { return false; }
             }
-            else if (p_75296_1_ instanceof EntityPlayer && !p_75296_2_
-                    && ((EntityPlayer) p_75296_1_).capabilities.disableDamage) { return false; }
+            else if (target instanceof EntityPlayer && !targetsPlayers
+                    && ((EntityPlayer) target).capabilities.disableDamage) { return false; }
 
-            if (!this.taskOwner.isWithinHomeDistanceFromPosition(new BlockPos(MathHelper.floor(p_75296_1_.posX),
-                    MathHelper.floor(p_75296_1_.posY), MathHelper.floor(p_75296_1_.posZ))))
+            if (!this.taskOwner.isWithinHomeDistanceFromPosition(new BlockPos(MathHelper.floor(target.posX),
+                    MathHelper.floor(target.posY), MathHelper.floor(target.posZ))))
             {
                 return false;
             }
-            else if (this.shouldCheckSight && !this.taskOwner.getEntitySenses().canSee(p_75296_1_))
+            else if (this.shouldCheckSight && !this.taskOwner.getEntitySenses().canSee(target))
             {
                 return false;
             }
@@ -174,7 +164,7 @@ public class PokemobAIHurt extends EntityAIBase
 
                     if (this.targetSearchStatus == 0)
                     {
-                        this.targetSearchStatus = this.canEasilyReach(p_75296_1_) ? 1 : 2;
+                        this.targetSearchStatus = this.canEasilyReach(target) ? 1 : 2;
                     }
 
                     if (this.targetSearchStatus == 2) { return false; }
@@ -208,7 +198,7 @@ public class PokemobAIHurt extends EntityAIBase
         this.targetSearchStatus = 0;
         this.targetSearchDelay = 0;
         this.lastSeenTime = 0;
-        // this.taskOwner.setAttackTarget(this.taskOwner.getAttackTarget());
+
         this.revengeTimer = this.taskOwner.getRevengeTimer();
 
         if (this.entityCallsForHelp && Math.random() > 0.95)
@@ -217,8 +207,8 @@ public class PokemobAIHurt extends EntityAIBase
             List<? extends EntityCreature> list = this.taskOwner.getEntityWorld().getEntitiesWithinAABB(
                     this.taskOwner.getClass(),
                     new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ,
-                            this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)
-                                    .grow(d0, 10.0D, d0));
+                            this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D).grow(d0,
+                                    10.0D, d0));
             Iterator<? extends EntityCreature> iterator = list.iterator();
 
             while (iterator.hasNext())

@@ -44,7 +44,9 @@ public class MultiNodeWrapper extends NodeProcessor
     @Override
     public PathPoint getPathPointToCoords(double x, double y, double z)
     {
-        return navi.a.getPathPointToCoords(x, y, z);
+        PathPoint a = navi.a.getPathPointToCoords(x, y, z);
+        if (a == null) a = navi.b.getPathPointToCoords(x, y, z);
+        return a;
     }
 
     @Override
@@ -57,10 +59,12 @@ public class MultiNodeWrapper extends NodeProcessor
         for (int i = 0; i < a; i++)
         {
             pathOptions[i] = pathOptionsA[i];
+            if (pathOptions[i] == null) throw new IllegalArgumentException("Error with finding Path Options!");
         }
         for (int i = a; i < num; i++)
         {
             pathOptions[i] = pathOptionsB[i - a];
+            if (pathOptions[i] == null) throw new IllegalArgumentException("Error with finding Path Options!");
         }
         return num;
     }

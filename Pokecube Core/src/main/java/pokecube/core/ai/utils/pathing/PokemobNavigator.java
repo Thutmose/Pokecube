@@ -69,6 +69,7 @@ public class PokemobNavigator extends PathNavigate
             }
             wrapped.getNodeProcessor().setCanEnterDoors(true);
             wrapped.getNodeProcessor().setCanSwim(true);
+            wrapped.getNodeProcessor().initProcessor(world, entity);
             wrapped.setSpeed(speed);
         }
     }
@@ -89,7 +90,7 @@ public class PokemobNavigator extends PathNavigate
     @Override
     public boolean canNavigate()
     {
-        checkValues();
+        if (wrapped == null) checkValues();
         if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0
                 || (pokemob.getStatus() & IPokemob.STATUS_FRZ) > 0
                 || pokemob.getPokemonAIState(IMoveConstants.CONTROLLED)

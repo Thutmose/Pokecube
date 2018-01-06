@@ -462,31 +462,40 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public void registerKeyBindings()
     {
-        ClientRegistry.registerKeyBinding(nextMob = new KeyBinding("Next Pokemob", Keyboard.KEY_RIGHT, "Pokecube"));
+        ClientRegistry.registerKeyBinding(nextMob = new KeyBinding("key.pokemob.next", Keyboard.KEY_RIGHT, "Pokecube"));
         ClientRegistry
-                .registerKeyBinding(previousMob = new KeyBinding("Previous Pokemob", Keyboard.KEY_LEFT, "Pokecube"));
-        ClientRegistry.registerKeyBinding(nextMove = new KeyBinding("Next Move", Keyboard.KEY_DOWN, "Pokecube"));
-        ClientRegistry.registerKeyBinding(previousMove = new KeyBinding("Previous Move", Keyboard.KEY_UP, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobBack = new KeyBinding("Pokemob Back", Keyboard.KEY_R, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobAttack = new KeyBinding("Pokemob Attack", Keyboard.KEY_G, "Pokecube"));
+                .registerKeyBinding(previousMob = new KeyBinding("key.pokemob.prev", Keyboard.KEY_LEFT, "Pokecube"));
         ClientRegistry
-                .registerKeyBinding(mobStance = new KeyBinding("Pokemob Stance", Keyboard.KEY_BACKSLASH, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobMegavolve = new KeyBinding("Mega Evolve", Keyboard.KEY_M, "Pokecube"));
-        ClientRegistry.registerKeyBinding(noEvolve = new KeyBinding("Stop Evolution", Keyboard.KEY_B, "Pokecube"));
+                .registerKeyBinding(nextMove = new KeyBinding("key.pokemob.move.next", Keyboard.KEY_DOWN, "Pokecube"));
+        ClientRegistry.registerKeyBinding(
+                previousMove = new KeyBinding("key.pokemob.move.prev", Keyboard.KEY_UP, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobBack = new KeyBinding("key.pokemob.recall", Keyboard.KEY_R, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobAttack = new KeyBinding("key.pokemob.attack", Keyboard.KEY_G, "Pokecube"));
+        ClientRegistry.registerKeyBinding(
+                mobStance = new KeyBinding("key.pokemob.stance", Keyboard.KEY_BACKSLASH, "Pokecube"));
+        ClientRegistry.registerKeyBinding(
+                mobMegavolve = new KeyBinding("key.pokemob.megaevolve", Keyboard.KEY_M, "Pokecube"));
+        ClientRegistry.registerKeyBinding(noEvolve = new KeyBinding("key.pokemob.b", Keyboard.KEY_B, "Pokecube"));
 
-        ClientRegistry.registerKeyBinding(mobMove1 = new KeyBinding("Move 1", Keyboard.KEY_NONE, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobMove2 = new KeyBinding("Move 2", Keyboard.KEY_NONE, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobMove3 = new KeyBinding("Move 3", Keyboard.KEY_NONE, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobMove4 = new KeyBinding("Move 4", Keyboard.KEY_NONE, "Pokecube"));
-
-        ClientRegistry.registerKeyBinding(mobUp = new KeyBinding("Pokemob Up", Keyboard.KEY_NONE, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobDown = new KeyBinding("Pokemob Down", Keyboard.KEY_NONE, "Pokecube"));
-
-        ClientRegistry.registerKeyBinding(throttleUp = new KeyBinding("Ride Speed Up", Keyboard.KEY_NONE, "Pokecube"));
         ClientRegistry
-                .registerKeyBinding(throttleDown = new KeyBinding("Ride Speed Down", Keyboard.KEY_NONE, "Pokecube"));
+                .registerKeyBinding(mobMove1 = new KeyBinding("key.pokemob.move.1", Keyboard.KEY_NONE, "Pokecube"));
+        ClientRegistry
+                .registerKeyBinding(mobMove2 = new KeyBinding("key.pokemob.move.2", Keyboard.KEY_NONE, "Pokecube"));
+        ClientRegistry
+                .registerKeyBinding(mobMove3 = new KeyBinding("key.pokemob.move.3", Keyboard.KEY_NONE, "Pokecube"));
+        ClientRegistry
+                .registerKeyBinding(mobMove4 = new KeyBinding("key.pokemob.move.4", Keyboard.KEY_NONE, "Pokecube"));
 
-        ClientRegistry.registerKeyBinding(arrangeGui = new KeyBinding("Arrange Gui", Keyboard.KEY_NONE, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobUp = new KeyBinding("key.pokemob.up", Keyboard.KEY_NONE, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobDown = new KeyBinding("key.pokemob.down", Keyboard.KEY_NONE, "Pokecube"));
+
+        ClientRegistry
+                .registerKeyBinding(throttleUp = new KeyBinding("key.pokemob.speed.up", Keyboard.KEY_NONE, "Pokecube"));
+        ClientRegistry.registerKeyBinding(
+                throttleDown = new KeyBinding("key.pokemob.speed.down", Keyboard.KEY_NONE, "Pokecube"));
+
+        ClientRegistry.registerKeyBinding(
+                arrangeGui = new KeyBinding("key.pokemob.arrangegui", Keyboard.KEY_NONE, "Pokecube"));
     }
 
     @Override

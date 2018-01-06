@@ -1,5 +1,24 @@
 ﻿#Pokécube translation
 
+key.pokemob.next=Next Pokemob
+key.pokemob.prev=Previous Pokemob
+key.pokemob.move.next=Next Move
+key.pokemob.move.prev=Previous Move
+key.pokemob.recall=Recall Pokemob
+key.pokemob.attack=Pokemob Attack
+key.pokemob.stance=Pokemob Stance
+key.pokemob.megaevolve=Mega Evolve
+key.pokemob.b=Stop Evolution
+key.pokemob.move.1=Move 1
+key.pokemob.move.2=Move 2
+key.pokemob.move.3=Move 3
+key.pokemob.move.4=Move 4
+key.pokemob.up=Pokemob Up
+key.pokemob.down=Pokemob Down
+key.pokemob.speed.up=Ride Speed Up
+key.pokemob.speed.down=Ride Speed Down
+key.pokemob.arrangegui=Arrange Gui
+
 type.normal=normal
 type.fighting=fighting
 type.flying=flying

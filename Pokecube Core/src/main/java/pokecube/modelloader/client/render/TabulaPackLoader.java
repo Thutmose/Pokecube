@@ -352,7 +352,35 @@ public class TabulaPackLoader extends AnimationLoader
 
         private void postInitAnimations()
         {
-            int var;
+
+            for (String from : mergedAnimations.keySet())
+            {
+                if (!loadedAnimations.containsKey(from)) continue;
+                String to = mergedAnimations.get(from);
+                if (!loadedAnimations.containsKey(to)) continue;
+                List<Animation> fromSet = Lists.newArrayList();
+                List<Animation> toSet = loadedAnimations.get(to);
+                for (Animation anim : loadedAnimations.get(from))
+                {
+                    Animation newAnim = new Animation();
+                    newAnim.identifier = anim.identifier;
+                    newAnim.name = to;
+                    newAnim.loops = anim.loops;
+                    newAnim.priority = 20;
+                    newAnim.length = -1;
+                    for (String s : anim.sets.keySet())
+                    {
+                        newAnim.sets.put(s, Lists.newArrayList(anim.sets.get(s)));
+                    }
+                    fromSet.add(newAnim);
+                }
+                toSet.addAll(fromSet);
+            }
+            for (List<Animation> anims : loadedAnimations.values())
+            {
+                AnimationBuilder.processAnimations(anims);
+            }
+
             // TODO cleanup and animations from loaded animations here.
             if (animator != null)
             {

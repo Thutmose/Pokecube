@@ -21,17 +21,17 @@ public class MultiNodeWrapper extends NodeProcessor
     @Override
     public void initProcessor(IBlockAccess sourceIn, EntityLiving mob)
     {
+        super.initProcessor(sourceIn, mob);
         navi.a.initProcessor(sourceIn, mob);
         navi.b.initProcessor(sourceIn, mob);
-        super.initProcessor(sourceIn, mob);
     }
 
     @Override
     public void postProcess()
     {
+        super.postProcess();
         navi.a.postProcess();
         navi.b.postProcess();
-        super.postProcess();
     }
 
     @Override

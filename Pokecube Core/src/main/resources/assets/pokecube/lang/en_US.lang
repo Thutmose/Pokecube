@@ -93,6 +93,7 @@ pokemob.gui.store=STORE
 pokemob.gui.berry=BERRY
 pokemob.gui.empty=EMPTY
 pokemob.gui.face=SIDE
+pokemob.gui.updatestorage=Storage Settings updated.
 
 item.pokewatch.name=PokéWatch
 

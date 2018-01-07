@@ -20,6 +20,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
 import pokecube.core.client.Resources;
 import pokecube.core.client.gui.GuiPokemob;
@@ -155,23 +156,32 @@ public class GuiPokemobStorage extends GuiContainer
             super.mouseClicked(x, y, mouseButton);
             BlockPos newLink = null;
             InventoryPlayer inv = (InventoryPlayer) playerInventory;
+            boolean effect = false;
             if (CompatWrapper.isValid(inv.getItemStack()) && inv.getItemStack().hasTagCompound())
             {
                 NBTTagCompound link = inv.getItemStack().getTagCompound().getCompoundTag("link");
                 if (!link.hasNoTags())
                 {
                     Vector4 pos = new Vector4(link);
-                    newLink = new BlockPos((int) (pos.x - 0.5), (int) (pos.y - 1), (int) (pos.z - 0.5));
+                    newLink = new BlockPos((int) (pos.x - 0.5), (int) (pos.y), (int) (pos.z - 0.5));
                 }
             }
             for (GuiTextField text : textBoxes)
             {
+                boolean before = text.isFocused();
                 text.mouseClicked(x, y, mouseButton);
+                boolean after = text.isFocused();
                 if (newLink != null && text.isFocused() && (text == berry || text == storage || text == empty))
                 {
                     text.setText(newLink.getX() + " " + newLink.getY() + " " + newLink.getZ());
+                    effect = true;
+                }
+                if (before && !after)
+                {
+                    effect = true;
                 }
             }
+            if (effect) sendUpdate();
         }
         catch (Exception e)
         {
@@ -199,7 +209,7 @@ public class GuiPokemobStorage extends GuiContainer
         PacketUpdateAI.sendUpdatePacket(pokemob, ai.getIdentifier(), null);
 
         // Send status message thingy
-        System.out.println("Update Sent ");
+        this.mc.player.sendStatusMessage(new TextComponentTranslation("pokemob.gui.updatestorage"), true);
     }
 
     private BlockPos posFromText(String text)
@@ -293,6 +303,7 @@ public class GuiPokemobStorage extends GuiContainer
         super.drawScreen(i, j, f);
         for (GuiTextField text : textBoxes)
             text.drawTextBox();
+        this.renderHoveredToolTip(i, j);
     }
 
     @Override

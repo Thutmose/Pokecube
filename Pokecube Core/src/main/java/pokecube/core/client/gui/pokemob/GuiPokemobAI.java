@@ -151,6 +151,7 @@ public class GuiPokemobAI extends GuiContainer
     {
         super.drawScreen(i, j, f);
         this.list.drawScreen(i, j, f);
+        this.renderHoveredToolTip(i, j);
     }
 
     @Override
@@ -196,10 +197,9 @@ public class GuiPokemobAI extends GuiContainer
                 wrapped.drawButton(mc, mouseX, mouseY, partialTicks);
                 AIRoutine routine = AIRoutine.values()[slotIndex];
                 boolean state = pokemob.isRoutineEnabled(routine);
-                Gui.drawRect(wrapped.x + 41, wrapped.y + 1, wrapped.x + 80,
-                        wrapped.y + 10, state ? 0xFF00FF00 : 0xFFFF0000);
-                Gui.drawRect(wrapped.x, wrapped.y + 10, wrapped.x + 40, wrapped.y + 11,
-                        0xFF000000);
+                Gui.drawRect(wrapped.x + 41, wrapped.y + 1, wrapped.x + 80, wrapped.y + 10,
+                        state ? 0xFF00FF00 : 0xFFFF0000);
+                Gui.drawRect(wrapped.x, wrapped.y + 10, wrapped.x + 40, wrapped.y + 11, 0xFF000000);
             }
         }
 
@@ -227,7 +227,7 @@ public class GuiPokemobAI extends GuiContainer
         @Override
         public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_)
         {
-            
+
         }
 
     }

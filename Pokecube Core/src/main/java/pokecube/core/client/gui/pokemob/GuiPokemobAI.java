@@ -24,10 +24,10 @@ import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.pokemobs.PacketAIRoutine;
+import pokecube.core.network.pokemobs.PacketPokemobGui;
 
 public class GuiPokemobAI extends GuiContainer
 {
-    final GuiPokemob parentScreen;
     final IInventory playerInventory;
     final IInventory pokeInventory;
     final IPokemob   pokemob;
@@ -36,14 +36,13 @@ public class GuiPokemobAI extends GuiContainer
     private float    yRenderAngle = 10;
     private float    xRenderAngle = 0;
 
-    public GuiPokemobAI(IInventory playerInv, IPokemob pokemob, GuiPokemob parentScreen)
+    public GuiPokemobAI(IInventory playerInv, IPokemob pokemob)
     {
         super(new ContainerPokemob(playerInv, pokemob.getPokemobInventory(), pokemob, false));
         this.pokemob = pokemob;
         this.playerInventory = playerInv;
         this.pokeInventory = pokemob.getPokemobInventory();
         this.entity = pokemob.getEntity();
-        this.parentScreen = parentScreen;
     }
 
     final List<GuiTextField> textInputs = Lists.newArrayList();
@@ -134,11 +133,11 @@ public class GuiPokemobAI extends GuiContainer
     {
         if (guibutton.id == 0)
         {
-            Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+            PacketPokemobGui.sendPagePacket(PacketPokemobGui.MAIN, entity.getEntityId());
         }
         else if (guibutton.id == 1)
         {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiPokemobStorage(playerInventory, pokemob, parentScreen));
+            PacketPokemobGui.sendPagePacket(PacketPokemobGui.STORAGE, entity.getEntityId());
         }
         else
         {

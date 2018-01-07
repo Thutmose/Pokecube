@@ -11,6 +11,7 @@ import static pokecube.core.handlers.Config.GUIPOKECENTER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEDEX_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBAI_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBSPAWNER_ID;
+import static pokecube.core.handlers.Config.GUIPOKEMOBSTORE_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOB_ID;
 import static pokecube.core.handlers.Config.GUIPOKEWATCH_ID;
 import static pokecube.core.handlers.Config.GUITMTABLE_ID;
@@ -133,18 +134,20 @@ public class Mod_Pokecube_Helper
     public void postInit()
     {
         // Gui
-        GUICHOOSEFIRSTPOKEMOB_ID = 11;
-        GUIDISPLAYPOKECUBEINFO_ID = 12;
-        GUIPOKECENTER_ID = 13;
-        GUIPOKEDEX_ID = 14;
-        GUIPOKEMOBSPAWNER_ID = 15;
-        GUITRADINGTABLE_ID = 16;
-        GUIPC_ID = 17;
-        GUIDISPLAYTELEPORTINFO_ID = 18;
-        GUIPOKEMOB_ID = 19;
-        GUITMTABLE_ID = 20;
-        GUIPOKEMOBAI_ID = 21;
-        GUIPOKEWATCH_ID = 22;
+        int num = 11;
+        GUICHOOSEFIRSTPOKEMOB_ID = num++;
+        GUIDISPLAYPOKECUBEINFO_ID = num++;
+        GUIPOKECENTER_ID = num++;
+        GUIPOKEDEX_ID = num++;
+        GUIPOKEMOBSPAWNER_ID = num++;
+        GUITRADINGTABLE_ID = num++;
+        GUIPC_ID = num++;
+        GUIDISPLAYTELEPORTINFO_ID = num++;
+        GUIPOKEMOB_ID = num++;
+        GUITMTABLE_ID = num++;
+        GUIPOKEMOBAI_ID = num++;
+        GUIPOKEWATCH_ID = num++;
+        GUIPOKEMOBSTORE_ID = num++;
 
         Config config = PokecubeCore.core.getConfig();
 

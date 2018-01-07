@@ -425,16 +425,19 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
         {
             berryLoc = new BlockPos(berry.getInteger("x"), berry.getInteger("y"), berry.getInteger("z"));
         }
+        else berryLoc = null;
         if (!storage.hasNoTags())
         {
             storageLoc = new BlockPos(storage.getInteger("x"), storage.getInteger("y"), storage.getInteger("z"));
             storageFace = EnumFacing.values()[storage.getByte("f")];
         }
+        else storageLoc = null;
         if (!empty.hasNoTags())
         {
             emptyInventory = new BlockPos(empty.getInteger("x"), empty.getInteger("y"), empty.getInteger("z"));
             emptyFace = EnumFacing.values()[empty.getByte("f")];
         }
+        else emptyInventory = null;
     }
 
     @Override

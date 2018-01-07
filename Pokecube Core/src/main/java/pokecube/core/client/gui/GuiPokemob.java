@@ -30,8 +30,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
-import pokecube.core.client.gui.pokemob.GuiPokemobAI;
-import pokecube.core.client.gui.pokemob.GuiPokemobStorage;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
@@ -44,6 +42,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
 import pokecube.core.interfaces.pokemob.commandhandlers.StanceHandler;
 import pokecube.core.network.pokemobs.PacketCommand;
+import pokecube.core.network.pokemobs.PacketPokemobGui;
 import thut.api.entity.IHungrymob;
 
 public class GuiPokemob extends GuiContainer
@@ -411,11 +410,11 @@ public class GuiPokemob extends GuiContainer
         }
         else if (guibutton.id == 3)
         {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiPokemobAI(playerInventory, pokemob, this));
+            PacketPokemobGui.sendPagePacket(PacketPokemobGui.AI, entity.getEntityId());
         }
         else if (guibutton.id == 4)
         {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiPokemobStorage(playerInventory, pokemob, this));
+            PacketPokemobGui.sendPagePacket(PacketPokemobGui.STORAGE, entity.getEntityId());
         }
     }
 

@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -26,6 +25,7 @@ import pokecube.core.client.Resources;
 import pokecube.core.client.gui.GuiPokemob;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.network.pokemobs.PacketUpdateAI;
 import thut.api.entity.ai.IAIRunnable;
 import thut.api.maths.Vector4;
@@ -33,7 +33,6 @@ import thut.lib.CompatWrapper;
 
 public class GuiPokemobStorage extends GuiContainer
 {
-    final GuiPokemob   parentScreen;
     final IInventory   playerInventory;
     final IInventory   pokeInventory;
     final IPokemob     pokemob;
@@ -48,14 +47,13 @@ public class GuiPokemobStorage extends GuiContainer
     private float      xRenderAngle = 0;
     List<GuiTextField> textBoxes    = Lists.newArrayList();
 
-    public GuiPokemobStorage(IInventory playerInv, IPokemob pokemob, GuiPokemob parentScreen)
+    public GuiPokemobStorage(IInventory playerInv, IPokemob pokemob)
     {
         super(new ContainerPokemob(playerInv, pokemob.getPokemobInventory(), pokemob, false));
         this.pokemob = pokemob;
         this.playerInventory = playerInv;
         this.pokeInventory = pokemob.getPokemobInventory();
         this.entity = pokemob.getEntity();
-        this.parentScreen = parentScreen;
     }
 
     @Override
@@ -285,11 +283,11 @@ public class GuiPokemobStorage extends GuiContainer
     {
         if (guibutton.id == 0)
         {
-            Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+            PacketPokemobGui.sendPagePacket(PacketPokemobGui.MAIN, entity.getEntityId());
         }
         else if (guibutton.id == 1)
         {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiPokemobAI(playerInventory, pokemob, parentScreen));
+            PacketPokemobGui.sendPagePacket(PacketPokemobGui.AI, entity.getEntityId());
         }
         else
         {

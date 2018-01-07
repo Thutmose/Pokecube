@@ -89,6 +89,18 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
                     .getPokemobFor(PokecubeMod.core.getEntityProvider().getEntity(world, x, true));
             return new ContainerPokemob(player.inventory, e.getPokemobInventory(), e);
         }
+        if (id == Config.GUIPOKEMOBAI_ID)
+        {
+            IPokemob e = CapabilityPokemob
+                    .getPokemobFor(PokecubeMod.core.getEntityProvider().getEntity(world, x, true));
+            return new ContainerPokemob(player.inventory, e.getPokemobInventory(), e, false);
+        }
+        if (id == Config.GUIPOKEMOBSTORE_ID)
+        {
+            IPokemob e = CapabilityPokemob
+                    .getPokemobFor(PokecubeMod.core.getEntityProvider().getEntity(world, x, true));
+            return new ContainerPokemob(player.inventory, e.getPokemobInventory(), e, false);
+        }
         BlockPos pos = new BlockPos(x, y, z);
         if (id == Config.GUITMTABLE_ID)
         {

@@ -9,6 +9,8 @@ import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.INpc;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -98,32 +100,52 @@ public class PersistantStatusEffect extends BaseEffect
             if (targetM == null) targetM = entity.getRevengeTarget();
             if (targetM == null) targetM = entity.getLastAttackedEntity();
             if (targetM == null) targetM = entity;
-            DamageSource source = DamageSource.causeMobDamage(targetM);
+            float scale = 1;
+            IPokemob user = CapabilityPokemob.getPokemobFor(targetM);
+            DamageSource source = user != null && user.getPokemonOwner() != null
+                    ? DamageSource.causeIndirectDamage(targetM, user.getPokemonOwner())
+                    : targetM != null ? DamageSource.causeMobDamage(targetM) : new DamageSource("generic");
+
             if (pokemob != null)
             {
                 source.setDamageIsAbsolute();
                 source.setDamageBypassesArmor();
             }
+            else
+            {
+                if (entity instanceof EntityPlayer)
+                {
+                    scale = (float) (user != null && user.isPlayerOwned()
+                            ? PokecubeMod.core.getConfig().ownedPlayerDamageRatio
+                            : PokecubeMod.core.getConfig().wildPlayerDamageRatio);
+                }
+                else
+                {
+                    scale = (float) (entity instanceof INpc ? PokecubeMod.core.getConfig().pokemobToNPCDamageRatio
+                            : PokecubeMod.core.getConfig().pokemobToOtherMobDamageRatio);
+                }
+            }
+
             switch (status)
             {
             case BADPOISON:
                 if (pokemob != null)
                 {
                     entity.attackEntityFrom(source,
-                            (pokemob.getMoveStats().TOXIC_COUNTER + 1) * entity.getMaxHealth() / 16f);
+                            scale * (pokemob.getMoveStats().TOXIC_COUNTER + 1) * entity.getMaxHealth() / 16f);
                     spawnPoisonParticle(entity);
                     spawnPoisonParticle(entity);
                     pokemob.getMoveStats().TOXIC_COUNTER++;
                 }
                 else
                 {
-                    entity.attackEntityFrom(source, entity.getMaxHealth() / 8f);
+                    entity.attackEntityFrom(source, scale * entity.getMaxHealth() / 8f);
                     spawnPoisonParticle(entity);
                 }
                 break;
             case BURN:
-                entity.setFire(duration);
-                entity.attackEntityFrom(source, entity.getMaxHealth() / 16f);
+                if (scale > 0) entity.setFire(duration);
+                entity.attackEntityFrom(source, scale * entity.getMaxHealth() / 16f);
                 break;
             case FREEZE:
                 if (Math.random() > 0.9)
@@ -138,7 +160,7 @@ public class PersistantStatusEffect extends BaseEffect
             case PARALYSIS:
                 break;
             case POISON:
-                entity.attackEntityFrom(source, entity.getMaxHealth() / 8f);
+                entity.attackEntityFrom(source, scale * entity.getMaxHealth() / 8f);
                 spawnPoisonParticle(entity);
                 break;
             case SLEEP:

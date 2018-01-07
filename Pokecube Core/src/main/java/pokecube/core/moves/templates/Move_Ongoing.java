@@ -3,7 +3,11 @@ package pokecube.core.moves.templates;
 import java.util.Random;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.INpc;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
@@ -30,6 +34,45 @@ public class Move_Ongoing extends Move_Basic
             source.setDamageBypassesArmor();
         }
         return source;
+    }
+
+    protected float damageTarget(EntityLivingBase mob, DamageSource source, float damage)
+    {
+        EntityLivingBase target = mob.getAttackingEntity();
+        if (target == null) target = mob.getRevengeTarget();
+        if (target == null) target = mob.getLastAttackedEntity();
+        if (target == null) target = mob;
+        IPokemob user = CapabilityPokemob.getPokemobFor(target);
+        float scale = 1;
+        if (source == null)
+        {
+            source = user != null && user.getPokemonOwner() != null
+                    ? DamageSource.causeIndirectDamage(target, user.getPokemonOwner())
+                    : target != null ? DamageSource.causeMobDamage(target) : new DamageSource("generic");
+        }
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        if (pokemob != null)
+        {
+            source.setDamageIsAbsolute();
+            source.setDamageBypassesArmor();
+        }
+        else
+        {
+            if (mob instanceof EntityPlayer)
+            {
+                scale = (float) (user != null && user.isPlayerOwned()
+                        ? PokecubeMod.core.getConfig().ownedPlayerDamageRatio
+                        : PokecubeMod.core.getConfig().wildPlayerDamageRatio);
+            }
+            else
+            {
+                scale = (float) (mob instanceof INpc ? PokecubeMod.core.getConfig().pokemobToNPCDamageRatio
+                        : PokecubeMod.core.getConfig().pokemobToOtherMobDamageRatio);
+            }
+        }
+        damage *= scale;
+        mob.attackEntityFrom(source, damage);
+        return damage;
     }
 
     public void doOngoingEffect(IOngoingAffected mob, IOngoingEffect effect)

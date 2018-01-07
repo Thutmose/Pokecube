@@ -6,6 +6,8 @@ import com.google.common.collect.Maps;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.INpc;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -96,13 +98,33 @@ public class NonPersistantStatusEffect extends BaseEffect
                 if (targetM == null) targetM = entity.getRevengeTarget();
                 if (targetM == null) targetM = entity.getLastAttackedEntity();
                 if (targetM == null) targetM = entity;
-                DamageSource curse = DamageSource.causeMobDamage(targetM);
+                float scale = 1;
+                IPokemob user = CapabilityPokemob.getPokemobFor(targetM);
+                DamageSource source = user != null && user.getPokemonOwner() != null
+                        ? DamageSource.causeIndirectDamage(targetM, user.getPokemonOwner())
+                        : targetM != null ? DamageSource.causeMobDamage(targetM) : new DamageSource("generic");
+
                 if (pokemob != null)
                 {
-                    curse.setDamageIsAbsolute();
-                    curse.setDamageBypassesArmor();
+                    source.setDamageIsAbsolute();
+                    source.setDamageBypassesArmor();
                 }
-                entity.attackEntityFrom(curse, entity.getMaxHealth() * 0.25f);
+                else
+                {
+                    if (entity instanceof EntityPlayer)
+                    {
+                        scale = (float) (user != null && user.isPlayerOwned()
+                                ? PokecubeMod.core.getConfig().ownedPlayerDamageRatio
+                                : PokecubeMod.core.getConfig().wildPlayerDamageRatio);
+                    }
+                    else
+                    {
+                        scale = (float) (entity instanceof INpc ? PokecubeMod.core.getConfig().pokemobToNPCDamageRatio
+                                : PokecubeMod.core.getConfig().pokemobToOtherMobDamageRatio);
+                    }
+                }
+                if (scale <= 0) effect.setDuration(0);
+                entity.attackEntityFrom(source, scale * entity.getMaxHealth() * 0.25f);
                 break;
             case FLINCH:
                 break;

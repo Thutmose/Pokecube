@@ -2,7 +2,7 @@
   "display": {
     "icon": {
       "item": "pokecube_adventures:badge",
-      "nbt": "{\"type\":\"badgeghost\"}"
+      "data": 8
     },
     "title": {
       "translate": "achievement.achievement.pokeadv.get.badgeghost"
@@ -18,7 +18,7 @@
         "items": [
           {
             "item": "pokecube_adventures:badge",
-            "nbt": "{\"type\":\"badgeghost\"}"
+            "data": 8
           }
         ]
       }

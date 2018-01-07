@@ -421,6 +421,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             motionX = motionY = motionZ = 0;
             time = 10;
             setReleasing(true);
+            this.setItem(entity1.getPokecube());
             evt = new SendOut.Post(entity1.getPokedexEntry(), v, getEntityWorld(), entity1);
             MinecraftForge.EVENT_BUS.post(evt);
         }

@@ -2,7 +2,7 @@
   "display": {
     "icon": {
       "item": "pokecube_adventures:badge",
-      "nbt": "{\"type\":\"badgedark\"}"
+      "data": 17
     },
     "title": {
       "translate": "achievement.achievement.pokeadv.get.badgedark"
@@ -18,7 +18,7 @@
         "items": [
           {
             "item": "pokecube_adventures:badge",
-            "nbt": "{\"type\":\"badgedark\"}"
+            "data": 17
           }
         ]
       }

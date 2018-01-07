@@ -25,22 +25,30 @@ import thut.lib.CompatWrapper;
 
 public class SpawnBiomeMatcher
 {
-    public static final QName ATYPES          = new QName("anyType");
+    public static final QName             ATYPES          = new QName("anyType");
 
-    public static final QName BIOMES          = new QName("biomes");
-    public static final QName TYPES           = new QName("types");
-    public static final QName BIOMESBLACKLIST = new QName("biomesBlacklist");
-    public static final QName TYPESBLACKLIST  = new QName("typesBlacklist");
-    public static final QName NIGHT           = new QName("night");
-    public static final QName DAY             = new QName("day");
-    public static final QName DUSK            = new QName("dusk");
-    public static final QName DAWN            = new QName("dawn");
-    public static final QName AIR             = new QName("air");
-    public static final QName WATER           = new QName("water");
-    public static final QName MINLIGHT        = new QName("minLight");
-    public static final QName MAXLIGHT        = new QName("maxLight");
+    public static final QName             BIOMES          = new QName("biomes");
+    public static final QName             TYPES           = new QName("types");
+    public static final QName             BIOMESBLACKLIST = new QName("biomesBlacklist");
+    public static final QName             TYPESBLACKLIST  = new QName("typesBlacklist");
+    public static final QName             NIGHT           = new QName("night");
+    public static final QName             DAY             = new QName("day");
+    public static final QName             DUSK            = new QName("dusk");
+    public static final QName             DAWN            = new QName("dawn");
+    public static final QName             AIR             = new QName("air");
+    public static final QName             WATER           = new QName("water");
+    public static final QName             MINLIGHT        = new QName("minLight");
+    public static final QName             MAXLIGHT        = new QName("maxLight");
 
-    public static final QName SPAWNCOMMAND    = new QName("command");
+    public static final QName             SPAWNCOMMAND    = new QName("command");
+
+    public static final SpawnBiomeMatcher ALLMATCHER;
+    static
+    {
+        SpawnRule rule = new SpawnRule();
+        rule.values.put(SpawnBiomeMatcher.TYPES, "all");
+        ALLMATCHER = new SpawnBiomeMatcher(rule);
+    }
 
     public static class SpawnCheck
     {
@@ -112,6 +120,7 @@ public class SpawnBiomeMatcher
             String[] args = typeString.split(",");
             for (String s : args)
             {
+                s = s.trim();
                 SpawnRule newRule = new SpawnRule();
                 newRule.values.putAll(rules.values);
                 newRule.values.remove(ATYPES);
@@ -130,10 +139,11 @@ public class SpawnBiomeMatcher
             String[] args = typeString.split(",");
             for (String s : args)
             {
+                s = s.trim();
                 BiomeType subBiome = null;
                 for (BiomeType b : BiomeType.values())
                 {
-                    if (b.name.replaceAll(" ", "").equalsIgnoreCase(s))
+                    if (Database.trim(b.name).equals(Database.trim(s)))
                     {
                         subBiome = b;
                         break;
@@ -224,13 +234,14 @@ public class SpawnBiomeMatcher
             String[] args = biomeString.split(",");
             for (String s : args)
             {
+                s = s.trim();
                 Biome biome = null;
                 for (ResourceLocation key : Biome.REGISTRY.getKeys())
                 {
                     Biome b = Biome.REGISTRY.getObject(key);
                     if (b != null)
                     {
-                        if (BiomeDatabase.getBiomeName(b).replaceAll(" ", "").equalsIgnoreCase(s))
+                        if (Database.trim(BiomeDatabase.getBiomeName(b)).equals(Database.trim(s)))
                         {
                             biome = b;
                             break;
@@ -249,6 +260,7 @@ public class SpawnBiomeMatcher
             String[] args = typeString.split(",");
             for (String s : args)
             {
+                s = s.trim();
                 BiomeDictionary.Type type;
                 type = CompatWrapper.getBiomeType(s);
                 if (type != null)
@@ -271,13 +283,14 @@ public class SpawnBiomeMatcher
             String[] args = biomeBlacklistString.split(",");
             for (String s : args)
             {
+                s = s.trim();
                 Biome biome = null;
                 for (ResourceLocation key : Biome.REGISTRY.getKeys())
                 {
                     Biome b = Biome.REGISTRY.getObject(key);
                     if (b != null)
                     {
-                        if (BiomeDatabase.getBiomeName(b).replaceAll(" ", "").equalsIgnoreCase(s))
+                        if (Database.trim(BiomeDatabase.getBiomeName(b)).equals(Database.trim(s)))
                         {
                             biome = b;
                             break;
@@ -295,7 +308,7 @@ public class SpawnBiomeMatcher
             String[] args = typeBlacklistString.split(",");
             for (String s : args)
             {
-
+                s = s.trim();
                 BiomeDictionary.Type type = CompatWrapper.getBiomeType(s);
                 if (type != null)
                 {
@@ -311,7 +324,7 @@ public class SpawnBiomeMatcher
                 BiomeType subBiome = null;
                 for (BiomeType b : BiomeType.values())
                 {
-                    if (b.name.replaceAll(" ", "").equalsIgnoreCase(s))
+                    if (Database.trim(b.name).equals(Database.trim(s)))
                     {
                         subBiome = b;
                         break;

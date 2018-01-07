@@ -11,7 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.IWorldGenerator;
-import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.database.worldgen.WorldgenHandler;
 import pokecube.core.world.gen.WorldGenMultiTemplate;
@@ -61,9 +60,8 @@ public class StructureCommand extends CommandBase
         }
         WorldServer world = (WorldServer) cSender.getEntityWorld();
         IWorldGenerator generator = WorldGenTemplates.namedTemplates.get(structure);
-        SpawnRule rule = new SpawnRule();
-        rule.values.put(SpawnBiomeMatcher.TYPES, "all");
-        SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);
+        SpawnBiomeMatcher matcher = SpawnBiomeMatcher.ALLMATCHER;
+        matcher.reset();
 
         if (generator == null)
         {

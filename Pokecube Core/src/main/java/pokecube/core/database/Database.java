@@ -130,7 +130,7 @@ public class Database
     */
     public static enum EnumDatabase
     {
-        POKEMON, MOVES
+        POKEMON, MOVES, BERRIES
     }
 
     public static boolean                                   FORCECOPY        = true;
@@ -215,7 +215,7 @@ public class Database
      * Index 1 = moves<br>
     */
     public static List<ArrayList<String>> configDatabases = Lists.newArrayList(new ArrayList<String>(),
-            new ArrayList<String>());
+            new ArrayList<String>(), new ArrayList<String>());
 
     public static void addDatabase(String file, EnumDatabase database)
     {
@@ -452,6 +452,7 @@ public class Database
         }
         for (String s : configDatabases.get(EnumDatabase.POKEMON.ordinal()))
         {
+            if (s.isEmpty()) continue;
             try
             {
                 PokedexEntryLoader.initDatabase(new File(CONFIGLOC + "pokemobs" + File.separator + s));

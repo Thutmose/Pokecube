@@ -49,6 +49,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
 
     private void doCropTick()
     {
+        if (PokecubeMod.core.getConfig().cropGrowthTicks < 1) return;
         if (new Random().nextInt(PokecubeMod.core.getConfig().cropGrowthTicks) == 0
                 && world.getLightFromNeighbors(pos.up()) >= 9)
         {
@@ -58,6 +59,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
 
     private void doLeafTick()
     {
+        if (PokecubeMod.core.getConfig().leafBerryTicks < 1) return;
         if (new Random().nextInt(PokecubeMod.core.getConfig().leafBerryTicks) == 0
                 && world.getLightFromNeighbors(pos.down()) >= 9)
         {
@@ -116,8 +118,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
             TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(up);
             tile.setBerryId(berryId);
         }
-        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockCrops.AGE, Integer.valueOf(stage)),
-                2);
+        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockCrops.AGE, Integer.valueOf(stage)), 2);
     }
 
     @Override

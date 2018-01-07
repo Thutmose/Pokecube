@@ -1,7 +1,14 @@
 package pokecube.core.blocks.berries;
 
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileReader;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -12,19 +19,19 @@ import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
+import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.TileEntityBerries.TreeGrower;
+import pokecube.core.database.Database;
+import pokecube.core.database.Database.EnumDatabase;
+import pokecube.core.database.PokedexEntryLoader;
+import pokecube.core.database.PokedexEntryLoader.SpawnRule;
+import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
-import thut.api.terrain.BiomeType;
-import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
 import thut.lib.CompatWrapper;
 
 public class BerryGenManager
@@ -280,154 +287,79 @@ public class BerryGenManager
         }
     }
 
-    public static HashMap<Integer, List<ItemStack>> berryLocations = Maps.newHashMap();
-
-    private static void addToList(int biomeId, String berryType)
-    {
-        List<ItemStack> stacks = berryLocations.get(biomeId);
-        if (stacks == null)
-        {
-            stacks = Lists.newArrayList();
-            berryLocations.put(biomeId, stacks);
-        }
-        ItemStack berry = BerryManager.getBerryItem(berryType);
-        stacks.add(berry);
-    }
-
-    private static boolean checkNormal(int biomeid, Biome b, String biome)
-    {
-        int type = -1;
-
-        for (BiomeType b1 : BiomeType.values())
-        {
-            if (b1.name.replaceAll(" ", "").equalsIgnoreCase(biome)) type = b1.getType();
-        }
-        if (type == -1)
-        {
-            for (ResourceLocation key : Biome.REGISTRY.getKeys())
-            {
-                Biome b1 = Biome.REGISTRY.getObject(key);
-                {
-                    if (b1 != null) if (BiomeDatabase.getBiomeName(b1).replaceAll(" ", "").equalsIgnoreCase(biome))
-                        type = Biome.getIdForBiome(b1);
-                }
-            }
-        }
-        if (type == -1 && b != null)
-        {
-            BiomeDictionary.Type t = CompatWrapper.getBiomeType(biome);
-            if (t != null) return CompatWrapper.isOfType(b, t);
-        }
-        else
-        {
-            int tb = biomeid;
-            int vb = b != null ? Biome.getIdForBiome(b) : -1;
-            if (tb == type || vb == type) return true;
-        }
-        return false;
-    }
-
-    private static boolean checkPerType(Biome b, String biome)
-    {
-        String[] args = biome.split(",");
-        List<BiomeDictionary.Type> neededTypes = Lists.newArrayList();
-        List<BiomeDictionary.Type> bannedTypes = Lists.newArrayList();
-        for (String s : args)
-        {
-            if (!(s.startsWith("B") || s.startsWith("W"))) s = "W" + s;
-            String name = s.substring(1);
-            if (s.startsWith("B"))
-            {
-                BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
-                if (t != null) bannedTypes.add(t);
-            }
-            else if (s.startsWith("W"))
-            {
-                BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
-                if (t != null) neededTypes.add(t);
-            }
-        }
-        boolean correctType = true;
-        boolean bannedType = false;
-        for (BiomeDictionary.Type t : neededTypes)
-        {
-            correctType = correctType && CompatWrapper.isOfType(b, t);
-        }
-        for (BiomeDictionary.Type t : bannedTypes)
-        {
-            bannedType = bannedType || CompatWrapper.isOfType(b, t);
-        }
-        return correctType && !bannedType;
-    }
+    public static Map<SpawnBiomeMatcher, List<ItemStack>> berryLocations = Maps.newHashMap();
+    private static List<SpawnBiomeMatcher>                matchers       = Lists.newArrayList();
 
     public static ItemStack getRandomBerryForBiome(World world, BlockPos location)
     {
-        TerrainSegment t = TerrainManager.getInstance().getTerrain(world, location);
-        int i = t.getBiome(Vector3.getNewVector().set(location));
-        if (berryLocations.isEmpty()) parseConfig();
-        List<ItemStack> options = berryLocations.get(i);
-        if (options == null || options.isEmpty()) options = berryLocations.get(BiomeType.ALL.getType());
-        if (options != null && !options.isEmpty())
+        // if (berryLocations.isEmpty())
+        parseConfig();
+        SpawnBiomeMatcher toMatch = null;
+        SpawnCheck checker = new SpawnCheck(Vector3.getNewVector().set(location), world);
+        /** Shuffle list, then re-sort it. This allows the values of the same
+         * priority to be randomized, but then still respect priority order for
+         * specific ones. */
+        Collections.shuffle(matchers);
+        matchers.sort(COMPARE);
+        System.out.println(matchers);
+        for (SpawnBiomeMatcher matcher : matchers)
         {
-            ItemStack ret = options.get(world.rand.nextInt(options.size())).copy();
-            int size = 1 + world.rand.nextInt(CompatWrapper.getStackSize(ret) + 10);
-            CompatWrapper.setStackSize(ret, size);
-            return ret;
+            if (matcher.matches(checker))
+            {
+                toMatch = matcher;
+                break;
+            }
         }
-        return null;
+        if (toMatch == null) return ItemStack.EMPTY;
+        List<ItemStack> options = berryLocations.get(toMatch);
+        if (options == null || options.isEmpty()) return ItemStack.EMPTY;
+        ItemStack ret = options.get(world.rand.nextInt(options.size())).copy();
+        int size = 1 + world.rand.nextInt(CompatWrapper.getStackSize(ret) + 10);
+        CompatWrapper.setStackSize(ret, size);
+        return ret;
     }
 
     public static void parseConfig()
     {
-        for (ResourceLocation key : Biome.REGISTRY.getKeys())
+        berryLocations.clear();
+        matchers.clear();
+        if (list == null) loadConfig();
+        if (list != null)
         {
-            Biome b = Biome.REGISTRY.getObject(key);
-            if (b != null)
+            for (BerrySpawn rule : list.locations)
             {
-                for (String s : PokecubeMod.core.getConfig().berryLocations)
+                for (SpawnRule spawn : rule.spawn)
                 {
-                    String[] args = s.split(":");
-                    String berryName = args[0];
-                    String[] locations = args[1].split("\'");
-                    for (String s1 : locations)
+                    SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(spawn);
+                    List<ItemStack> berries = Lists.newArrayList();
+                    for (String s : rule.berry.split(","))
                     {
-                        boolean valid = false;
-                        if (s1.startsWith("S"))
+                        ItemStack berry = BerryManager.getBerryItem(s.trim());
+                        if (!berry.isEmpty())
                         {
-                            valid = checkNormal(-1, b, s1.substring(1));
+                            berries.add(berry);
                         }
-                        else if (s1.startsWith("T"))
-                        {
-                            valid = checkPerType(b, s1.substring(1));
-                        }
-                        if (valid)
-                        {
-                            addToList(Biome.getIdForBiome(b), berryName);
-                        }
+                    }
+                    if (!berries.isEmpty())
+                    {
+                        matchers.add(matcher);
+                        berryLocations.put(matcher, berries);
                     }
                 }
             }
         }
-        for (BiomeType type : BiomeType.values())
+        if (berryLocations.isEmpty() && PokecubeMod.core.getConfig().autoAddNullBerries)
         {
-            for (String s : PokecubeMod.core.getConfig().berryLocations)
-            {
-                String[] args = s.split(":");
-                String berryName = args[0];
-                String[] locations = args[1].split("\'");
-                for (String s1 : locations)
-                {
-                    boolean valid = false;
-                    if (s1.startsWith("S"))
-                    {
-                        valid = checkNormal(type.getType(), null, s1.substring(1));
-                    }
-                    if (valid)
-                    {
-                        addToList(type.getType(), berryName);
-                    }
-                }
-            }
+            SpawnBiomeMatcher matcher = SpawnBiomeMatcher.ALLMATCHER;
+            matcher.reset();
+            List<ItemStack> berries = Lists.newArrayList();
+            berries.add(new ItemStack(PokecubeItems.berries));
+            matchers.add(matcher);
+            berryLocations.put(matcher, berries);
+        }
+        if (!matchers.isEmpty())
+        {
+            matchers.sort(COMPARE);
         }
     }
 
@@ -436,6 +368,64 @@ public class BerryGenManager
         world.setBlockState(pos, BerryManager.berryLeaf.getDefaultState());
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
         tile.setBerryId(berryId);
+    }
+
+    private static void loadConfig()
+    {
+        list = new BerryGenList();
+        for (String s : Database.configDatabases.get(EnumDatabase.BERRIES.ordinal()))
+        {
+            if (s.isEmpty()) continue;
+            File file = new File(Database.CONFIGLOC + "berries" + File.separator + s);
+            if (!file.exists()) continue;
+            try
+            {
+                BerryGenList loaded;
+                FileReader reader = new FileReader(file);
+                loaded = PokedexEntryLoader.gson.fromJson(reader, BerryGenList.class);
+                reader.close();
+                list.locations.addAll(loaded.locations);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.WARNING, "Error loading Berries Spawn Database " + s, e);
+            }
+        }
+    }
+
+    private static BerryGenList                        list;
+    private static final QName                         prior   = new QName("priority");
+    private static final Comparator<SpawnBiomeMatcher> COMPARE = new Comparator<SpawnBiomeMatcher>()
+                                                               {
+                                                                   @Override
+                                                                   public int compare(SpawnBiomeMatcher o1,
+                                                                           SpawnBiomeMatcher o2)
+                                                                   {
+                                                                       Integer p1 = 50;
+                                                                       Integer p2 = 50;
+                                                                       if (o1.spawnRule.values.containsKey(prior))
+                                                                       {
+                                                                           p1 = Integer.parseInt(
+                                                                                   o1.spawnRule.values.get(prior));
+                                                                       }
+                                                                       if (o2.spawnRule.values.containsKey(prior))
+                                                                       {
+                                                                           p2 = Integer.parseInt(
+                                                                                   o2.spawnRule.values.get(prior));
+                                                                       }
+                                                                       return p1.compareTo(p2);
+                                                                   }
+                                                               };
+
+    private static class BerryGenList
+    {
+        List<BerrySpawn> locations = Lists.newArrayList();
+    }
+
+    private static class BerrySpawn
+    {
+        public List<SpawnRule> spawn;
+        public String          berry;
     }
 
 }

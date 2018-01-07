@@ -56,7 +56,7 @@ public class AIHungry extends AIBase
         public boolean run(World world)
         {
             ItemStack stack = BerryGenManager.getRandomBerryForBiome(world, pokemob.getEntity().getPosition());
-            if (stack != null)
+            if (!stack.isEmpty())
             {
                 ItemStackTools.addItemStackToInventory(stack, pokemob.getPokemobInventory(), 2);
                 pokemob.eat(new EntityItem(world, 0, 0, 0, stack));

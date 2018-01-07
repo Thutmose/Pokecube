@@ -92,7 +92,7 @@ public class PersistantStatusEffect extends BaseEffect
                 pokemob.getMoveStats().TOXIC_COUNTER = 0;
             }
 
-            boolean toRemove = pokemob != null ? false : Math.random() > 0.75;
+            boolean toRemove = pokemob != null ? false : Math.random() > 0.8;
             if (effect.getDuration() == 0) toRemove = true;
             int duration = PokecubeMod.core.getConfig().attackCooldown + 10;
 
@@ -125,6 +125,7 @@ public class PersistantStatusEffect extends BaseEffect
                             : PokecubeMod.core.getConfig().pokemobToOtherMobDamageRatio);
                 }
             }
+            if (scale <= 0) toRemove = true;
 
             switch (status)
             {

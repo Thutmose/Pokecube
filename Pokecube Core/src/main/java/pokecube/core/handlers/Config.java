@@ -332,7 +332,7 @@ public class Config extends ConfigBase
             "minecraft:furnace", "minecraft:lit_furnace", "minecraft:piston", "minecraft:sticky_piston",
             "minecraft:dispenser", "minecraft:dropper", "minecraft:hopper", "minecraft:anvil" };
     @Configure(category = world)
-    public boolean                       useConfigForBerryLocations   = false;
+    public boolean                       autoAddNullBerries           = false;
     @Configure(category = world)
     public int                           cropGrowthTicks              = 2500;
     @Configure(category = world)
@@ -345,14 +345,6 @@ public class Config extends ConfigBase
     public boolean                       villagePokecenters           = true;
     @Configure(category = world)
     public boolean                       villagePokemarts             = true;
-
-    @Configure(category = world)
-    public String[]                      berryLocations               = { // @formatter:off
-            "cheri:TWplains,Bsavanna'Svillage", "chesto:TWforest,Bconiferous", "pecha:TWforest,Bconiferous",
-            "rawst:TWmountain,Whills'TWnether'Scave", "aspear:TWforest,Bconiferous", "leppa:TWplains,Bsavanna",
-            "oran:TWforest,Whills,Bconiferous'Sall", "persim:TWswamp", "lum:TWjungle,Bhills", "sitrus:TWjungle,Whills",
-            "nanab:TWjungle,Bhills'TWbeach,Bcold'TWocean,Bcold", "pinap:TWjungle", "cornn:TWswamp", "enigma:TWend",
-            "jaboca:TWmountain,Whills", "rowap:TWforest,Wconiferous", }; // @formatter:on
 
     @Configure(category = world)
     public String                        baseSizeFunction             = "8 + c/10 + h/10 + k/20";
@@ -520,9 +512,11 @@ public class Config extends ConfigBase
     boolean                              forceRecipes                 = true;
     @Configure(category = database, needsMcRestart = true)
     boolean                              forceRewards                 = true;
+    @Configure(category = database, needsMcRestart = true)
+    public boolean                       forceBerries                 = true;
 
     @Configure(category = database, needsMcRestart = true)
-    String[]                             configDatabases              = { "pokemobs.json", "moves.json" };
+    String[]                             configDatabases              = { "", "", "" };
 
     @Configure(category = database, needsMcRestart = true)
     String[]                             recipeDatabases              = { "recipes" };
@@ -614,7 +608,6 @@ public class Config extends ConfigBase
     {
         if (PokecubeCore.core.getConfig() == this) initDefaultStarts();
         WorldProviderSecretBase.init(baseSizeFunction);
-        if (!useConfigForBerryLocations) berryLocations = defaults.berryLocations;
         for (String s : structureSubiomes)
         {
             String[] args = s.split(":");
@@ -755,9 +748,10 @@ public class Config extends ConfigBase
         Database.FORCECOPYRECIPES = forceRecipes;
         Database.FORCECOPYREWARDS = forceRewards;
 
-        if (configDatabases.length != 2)
+        if (configDatabases.length != EnumDatabase.values().length)
         {
-            configDatabases = new String[] { "pokemobs.json", "moves.json" };
+            configDatabases = new String[] { "", "", "" };
+            save();
         }
 
         for (int i = 0; i < EnumDatabase.values().length; i++)
@@ -765,6 +759,7 @@ public class Config extends ConfigBase
             String[] args = configDatabases[i].split(",");
             for (String s : args)
             {
+                if (s.isEmpty()) continue;
                 if (s.indexOf(".") == -1) s = s.trim() + ".json";
                 Database.addDatabase(s.trim(), EnumDatabase.values()[i]);
             }

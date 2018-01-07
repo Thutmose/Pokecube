@@ -124,7 +124,7 @@ public class WorldgenHandler
             FileInputStream stream = new FileInputStream(file);
             InputStreamReader reader = new InputStreamReader(stream);
             dims = PokedexEntryLoader.gson.fromJson(reader, CustomDims.class);
-            PokecubeMod.log("Loaded Dims: " + dims.dims);
+            if (PokecubeMod.debug) PokecubeMod.log("Loaded Dims: " + dims.dims);
         }
         catch (Exception e)
         {
@@ -184,13 +184,13 @@ public class WorldgenHandler
                 WorldGenTemplates.templates.add(template);
                 WorldGenTemplates.namedTemplates.put(struct.name, new TemplateGen(struct.name,
                         new SpawnBiomeMatcher(struct.spawn), struct.chance, struct.offset));
-                PokecubeMod.log("Loaded Structure: " + struct.name + " " + struct.spawn + " " + struct.chance + " "
-                        + struct.offset);
+                if (PokecubeMod.debug) PokecubeMod.log("Loaded Structure: " + struct.name + " " + struct.spawn + " "
+                        + struct.chance + " " + struct.offset);
             }
             catch (Exception e)
             {
-                System.out.println(struct.name + " " + struct.spawn + " " + struct.chance + " " + struct.offset);
-                e.printStackTrace();
+                PokecubeMod.log(Level.WARNING,
+                        (struct.name + " " + struct.spawn + " " + struct.chance + " " + struct.offset), e);
             }
         }
         for (MultiStructure struct : defaults.multiStructures)
@@ -223,14 +223,15 @@ public class WorldgenHandler
                             (struct2.name + " " + struct2.spawn + " " + struct2.chance + " " + struct2.offset), e);
                 }
             }
-            PokecubeMod.log(struct.name + " " + gen.subTemplates + " " + struct.structures);
+            if (PokecubeMod.debug) PokecubeMod.log(struct.name + " " + gen.subTemplates + " " + struct.structures);
             if (!gen.subTemplates.isEmpty())
             {
                 WorldGenTemplates.templates.add(gen);
                 gen = new WorldGenMultiTemplate(new SpawnBiomeMatcher(struct.spawn));
                 gen.chance = struct.chance;
                 gen.syncGround = struct.syncGround;
-                PokecubeMod.log("Loaded Multi Structure: " + struct.name + " " + struct.spawn + " " + struct.chance);
+                if (PokecubeMod.debug) PokecubeMod
+                        .log("Loaded Multi Structure: " + struct.name + " " + struct.spawn + " " + struct.chance);
                 for (Structure struct2 : struct.structures)
                 {
                     try

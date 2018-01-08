@@ -94,13 +94,13 @@ public abstract class PokemobHungry extends PokemobMoves
     @Override
     public boolean floats()
     {
-        return getPokedexEntry().floats();
+        return getPokedexEntry().floats() && !isGrounded();
     }
 
     @Override
     public boolean flys()
     {
-        return getPokedexEntry().flys();
+        return getPokedexEntry().flys() && !isGrounded();
     }
 
     @Override
@@ -110,7 +110,7 @@ public abstract class PokemobHungry extends PokemobMoves
         if (state == null) state = Blocks.AIR.getDefaultState();
         Block block = state.getBlock();
         boolean water = getPokedexEntry().swims();
-        boolean air = getPokedexEntry().flys() || getPokedexEntry().floats();
+        boolean air = flys() || floats();
         if (getPokedexEntry().hatedMaterial != null)
         {
             String material = getPokedexEntry().hatedMaterial[0];

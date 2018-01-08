@@ -14,6 +14,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Matrix3;
@@ -234,4 +235,9 @@ public abstract class PokemobAI extends PokemobEvolves
         enabledStates.put(routine, enabled);
     }
 
+    @Override
+    public boolean isGrounded()
+    {
+        return getPokemonAIState(IMoveConstants.GROUNDED) || !isRoutineEnabled(AIRoutine.AIRBORNE);
+    }
 }

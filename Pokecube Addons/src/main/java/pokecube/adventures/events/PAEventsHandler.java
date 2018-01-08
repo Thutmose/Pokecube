@@ -45,6 +45,7 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.Defa
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
+import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.database.Database;
 import pokecube.core.events.PCEvent;
@@ -244,6 +245,16 @@ public class PAEventsHandler
     public void processInteract(PlayerInteractEvent evt, Entity target)
     {
         IHasMessages messages = CapabilityNPCMessages.getMessages(target);
+        IHasPokemobs pokemobs = CapabilityHasPokemobs.getHasPokemobs(target);
+        if (pokemobs != null && evt.getItemStack().getItem() instanceof ItemTrainer)
+        {
+            evt.setCanceled(true);
+            if (evt.getEntityPlayer() instanceof EntityPlayerMP)
+            {
+                PacketTrainer.sendEditOpenPacket(target, (EntityPlayerMP) evt.getEntityPlayer());
+            }
+            return;
+        }
         if (messages != null)
         {
             messages.sendMessage(MessageState.INTERACT, evt.getEntityPlayer(), target.getDisplayName(),
@@ -316,7 +327,7 @@ public class PAEventsHandler
         if (!(event.getEntity() instanceof EntityLivingBase)) return;
         EntityLivingBase npc = (EntityLivingBase) event.getEntity();
         IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(npc);
-        if (mobs == null) return;
+        if (mobs == null || !npc.hasCapability(IAIMob.THUTMOBAI, null)) return;
         IAIMob mob = npc.getCapability(IAIMob.THUTMOBAI, null);
         mob.getAI().addAITask(new AIBattle(npc, !(npc instanceof EntityTrainer)).setPriority(0));
         mob.getAI().addAITask(new AIFindTarget(npc, EntityZombie.class).setPriority(20));

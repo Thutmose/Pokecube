@@ -132,9 +132,9 @@ public class GuiEditTrainer extends GuiScreen
         pages.add(new EditTrainerPage(this));
         for (int i = 0; i < 6; i++)
             pages.add(new EditPokemobPage(this, i));
-        pages.add(new EditRewardsPage(this));
-        pages.add(new EditMessagesPage(this));
-        pages.add(new EditAIPage(this));
+        if (rewards != null) pages.add(new EditRewardsPage(this));
+        if (messages != null) pages.add(new EditMessagesPage(this));
+        if (aiStates != null) pages.add(new EditAIPage(this));
         for (Page page : pages)
             page.initGui();
         pages.get(getIndex()).onPageOpened();

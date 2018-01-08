@@ -30,14 +30,12 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
-import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
-import pokecube.adventures.items.ItemTrainer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
@@ -304,11 +302,6 @@ public class EntityTrainer extends EntityTrainerBase
 
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
-        if (stack.getItem() instanceof ItemTrainer && player.capabilities.isCreativeMode)
-        {
-            player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, getEntityWorld(), getEntityId(), 0, 0);
-            return true;
-        }
         if (player.capabilities.isCreativeMode && player.isSneaking())
         {
             if (pokemobsCap.getType() != null && !getEntityWorld().isRemote

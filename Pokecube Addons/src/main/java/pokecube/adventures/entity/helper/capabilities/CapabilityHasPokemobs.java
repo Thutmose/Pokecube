@@ -17,10 +17,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import pokecube.adventures.advancements.Triggers;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.MessageState;
-import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
@@ -258,88 +258,15 @@ public class CapabilityHasPokemobs
         @Override
         public NBTBase writeNBT(Capability<IHasPokemobs> capability, IHasPokemobs instance, EnumFacing side)
         {
-            NBTTagCompound nbt = new NBTTagCompound();
-            NBTTagList nbttaglist = new NBTTagList();
-            for (int index = 0; index < 6; index++)
-            {
-                ItemStack i = instance.getPokemob(index);
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                if (CompatWrapper.isValid(i))
-                {
-                    i.writeToNBT(nbttagcompound);
-                }
-                nbttaglist.appendTag(nbttagcompound);
-            }
-            nbt.setTag("pokemobs", nbttaglist);
-            nbt.setInteger("nextSlot", instance.getNextSlot());
-            if (instance.getOutID() != null) nbt.setString("outPokemob", instance.getOutID().toString());
-            if (instance.getType() != null) nbt.setString("type", instance.getType().name);
-            nbt.setLong("nextBattle", instance.getCooldown());
-            nbt.setByte("gender", instance.getGender());
-            nbt.setBoolean("megaevolves", instance.canMegaEvolve());
-            if (instance instanceof DefaultPokemobs)
-            {
-                DefaultPokemobs mobs = (DefaultPokemobs) instance;
-                if (mobs.battleCooldown < 0) mobs.battleCooldown = Config.instance.trainerCooldown;
-                nbt.setInteger("battleCD", mobs.battleCooldown);
-                nbttaglist = new NBTTagList();
-                for (DefeatEntry entry : mobs.defeaters)
-                {
-                    NBTTagCompound nbttagcompound = new NBTTagCompound();
-                    entry.writeToNBT(nbttagcompound);
-                    nbttaglist.appendTag(nbttagcompound);
-                }
-                nbt.setTag("DefeatList", nbttaglist);
-                nbt.setBoolean("notifyDefeat", mobs.notifyDefeat);
-                nbt.setLong("resetTime", mobs.resetTime);
-                if (mobs.sight != -1) nbt.setInteger("sight", mobs.sight);
-                nbt.setInteger("friendly", mobs.friendlyCooldown);
-            }
-            return nbt;
+            if (instance instanceof INBTSerializable<?>) return ((INBTSerializable<?>) instance).serializeNBT();
+            return null;
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public void readNBT(Capability<IHasPokemobs> capability, IHasPokemobs instance, EnumFacing side, NBTBase base)
         {
-            if (!(base instanceof NBTTagCompound)) return;
-            NBTTagCompound nbt = (NBTTagCompound) base;
-            if (nbt.hasKey("pokemobs", 9))
-            {
-                instance.clear();
-                NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
-                if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
-                {
-                    instance.setPokemob(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
-                }
-            }
-            instance.setType(TypeTrainer.getTrainer(nbt.getString("type")));
-            instance.setCooldown(nbt.getLong("nextBattle"));
-            if (nbt.hasKey("outPokemob"))
-            {
-                instance.setOutID(UUID.fromString(nbt.getString("outPokemob")));
-            }
-            instance.setNextSlot(nbt.getInteger("nextSlot"));
-            instance.setCanMegaEvolve(nbt.getBoolean("megaevolves"));
-            if (nbt.hasKey("gender")) instance.setGender(nbt.getByte("gender"));
-            if (instance.getNextSlot() >= 6) instance.setNextSlot(0);
-            if (instance instanceof DefaultPokemobs)
-            {
-                DefaultPokemobs mobs = (DefaultPokemobs) instance;
-                mobs.sight = nbt.hasKey("sight") ? nbt.getInteger("sight") : -1;
-                if (nbt.hasKey("battleCD")) mobs.battleCooldown = nbt.getInteger("battleCD");
-                if (mobs.battleCooldown < 0) mobs.battleCooldown = Config.instance.trainerCooldown;
-
-                mobs.defeaters.clear();
-                if (nbt.hasKey("resetTime")) mobs.resetTime = nbt.getLong("resetTime");
-                if (nbt.hasKey("DefeatList", 9))
-                {
-                    NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
-                    for (int i = 0; i < nbttaglist.tagCount(); i++)
-                        mobs.defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
-                }
-                mobs.notifyDefeat = nbt.getBoolean("notifyDefeat");
-                mobs.friendlyCooldown = nbt.getInteger("friendly");
-            }
+            if (instance instanceof INBTSerializable) ((INBTSerializable) instance).deserializeNBT(base);
         }
 
     }
@@ -735,13 +662,78 @@ public class CapabilityHasPokemobs
         @Override
         public NBTTagCompound serializeNBT()
         {
-            return (NBTTagCompound) storage.writeNBT(HASPOKEMOBS_CAP, this, null);
+            NBTTagCompound nbt = new NBTTagCompound();
+            NBTTagList nbttaglist = new NBTTagList();
+            for (int index = 0; index < 6; index++)
+            {
+                ItemStack i = this.getPokemob(index);
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                if (CompatWrapper.isValid(i))
+                {
+                    i.writeToNBT(nbttagcompound);
+                }
+                nbttaglist.appendTag(nbttagcompound);
+            }
+            nbt.setTag("pokemobs", nbttaglist);
+            nbt.setInteger("nextSlot", this.getNextSlot());
+            if (this.getOutID() != null) nbt.setString("outPokemob", this.getOutID().toString());
+            if (this.getType() != null) nbt.setString("type", this.getType().name);
+            nbt.setLong("nextBattle", this.getCooldown());
+            nbt.setByte("gender", this.getGender());
+
+            if (this.battleCooldown < 0) this.battleCooldown = Config.instance.trainerCooldown;
+            nbt.setInteger("battleCD", this.battleCooldown);
+            nbttaglist = new NBTTagList();
+            for (DefeatEntry entry : this.defeaters)
+            {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                entry.writeToNBT(nbttagcompound);
+                nbttaglist.appendTag(nbttagcompound);
+            }
+            nbt.setTag("DefeatList", nbttaglist);
+            nbt.setBoolean("notifyDefeat", this.notifyDefeat);
+            nbt.setLong("resetTime", this.resetTime);
+            if (this.sight != -1) nbt.setInteger("sight", this.sight);
+            nbt.setInteger("friendly", this.friendlyCooldown);
+            return nbt;
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt)
         {
-            storage.readNBT(HASPOKEMOBS_CAP, this, null, nbt);
+            if (nbt.hasKey("pokemobs", 9))
+            {
+                this.clear();
+                NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
+                if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
+                {
+                    this.setPokemob(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
+                }
+            }
+            this.setType(TypeTrainer.getTrainer(nbt.getString("type")));
+            this.setCooldown(nbt.getLong("nextBattle"));
+            if (nbt.hasKey("outPokemob"))
+            {
+                this.setOutID(UUID.fromString(nbt.getString("outPokemob")));
+            }
+            this.setNextSlot(nbt.getInteger("nextSlot"));
+            this.setCanMegaEvolve(nbt.getBoolean("megaevolves"));
+            if (nbt.hasKey("gender")) this.setGender(nbt.getByte("gender"));
+            if (this.getNextSlot() >= 6) this.setNextSlot(0);
+            this.sight = nbt.hasKey("sight") ? nbt.getInteger("sight") : -1;
+            if (nbt.hasKey("battleCD")) this.battleCooldown = nbt.getInteger("battleCD");
+            if (this.battleCooldown < 0) this.battleCooldown = Config.instance.trainerCooldown;
+
+            this.defeaters.clear();
+            if (nbt.hasKey("resetTime")) this.resetTime = nbt.getLong("resetTime");
+            if (nbt.hasKey("DefeatList", 9))
+            {
+                NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
+                for (int i = 0; i < nbttaglist.tagCount(); i++)
+                    this.defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
+            }
+            this.notifyDefeat = nbt.getBoolean("notifyDefeat");
+            this.friendlyCooldown = nbt.getInteger("friendly");
         }
 
         @Override

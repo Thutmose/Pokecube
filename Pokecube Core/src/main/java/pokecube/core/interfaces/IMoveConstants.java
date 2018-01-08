@@ -147,8 +147,9 @@ public interface IMoveConstants extends IMoveNames
     /** Is the pokemob currently trying to mate */
     @NonPersistantAI
     static final int MATING               = 1 << 18;
-    /** FREE AI STATE */
-    // static final int FREEAISTATE = 1 << 19;
+    /** Prevented from flying or floating. */
+    @NonPersistantAI
+    static final int GROUNDED             = 1 << 19;
     // /** is the pokemob currently pathing somewhere */
     @NonPersistantAI
     static final int PATHING              = 1 << 20;
@@ -187,7 +188,8 @@ public interface IMoveConstants extends IMoveNames
         WANDER,         //Does the pokemob wander around randomly
         MATE,           //Does the pokemob breed.
         FOLLOW,         //Does the pokemob follow its owner.
-        AGRESSIVE;      //Does the pokemob find targets to attack.
+        AGRESSIVE,      //Does the pokemob find targets to attack.
+        AIRBORNE;       //Does the pokemob fly around, or can it only walk.
         //@formatter:on
 
         private final boolean default_;

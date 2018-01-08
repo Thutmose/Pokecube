@@ -14,6 +14,7 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,12 +27,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
+import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.Database;
@@ -83,12 +84,6 @@ public class ItemTrainer extends CompatItem
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target,
             EnumHand hand)
     {
-        if (stack.getItemDamage() == 0)
-        {
-            if (CapabilityHasPokemobs.getHasPokemobs(target) != null) playerIn.openGui(PokecubeAdv.instance,
-                    PokecubeAdv.GUITRAINER_ID, playerIn.getEntityWorld(), target.getEntityId(), 0, 0);
-            return true;
-        }
         if (stack.getItemDamage() != 2) return false;
         if (!(target instanceof EntityVillager)) return false;
         EntityVillager v = (EntityVillager) target;
@@ -112,18 +107,16 @@ public class ItemTrainer extends CompatItem
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
-        if (world.isRemote)
+        if (world.isRemote) { return new ActionResult<>(EnumActionResult.PASS, itemstack); }
+        Entity target = Tools.getPointedEntity(player, 5);
+        if (target == null)
         {
-
-            Entity target = Tools.getPointedEntity(player, 5);
-            if (CapabilityHasPokemobs.getHasPokemobs(target) != null)
-            {
-                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, player.getEntityWorld(),
-                        target.getEntityId(), 0, 0);
-                return new ActionResult<>(EnumActionResult.PASS, itemstack);
-            }
-
-            return new ActionResult<>(EnumActionResult.PASS, itemstack);
+            target = player;
+        }
+        if (CapabilityHasPokemobs.getHasPokemobs(target) != null)
+        {
+            PacketTrainer.sendEditOpenPacket(target, (EntityPlayerMP) player);
+            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
         }
 
         Vector3 location = Vector3.getNewVector().set(player).add(Vector3.getNewVector().set(player.getLookVec()));

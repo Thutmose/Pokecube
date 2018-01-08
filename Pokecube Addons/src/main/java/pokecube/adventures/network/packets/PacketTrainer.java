@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,6 +17,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
@@ -29,17 +33,41 @@ import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.events.handlers.EventsHandler;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.TimePeriod;
 import thut.api.network.PacketHandler;
 
 public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, IMessage>
 {
-    public static final byte MESSAGEUPDATETRAINER = 0;
-    public static final byte MESSAGENOTIFYDEFEAT  = 1;
-    public static final byte MESSAGEKILLTRAINER   = 2;
+    public static final String EDITSELF             = "pokecube_adventures.traineredit.self";
+    public static final String EDITOTHER            = "pokecube_adventures.traineredit.other";
+    public static final String EDITMOB              = "pokecube_adventures.traineredit.mob";
 
-    byte                     message;
-    public NBTTagCompound    data                 = new NBTTagCompound();
+    public static final byte   MESSAGEUPDATETRAINER = 0;
+    public static final byte   MESSAGENOTIFYDEFEAT  = 1;
+    public static final byte   MESSAGEKILLTRAINER   = 2;
+
+    public static void register()
+    {
+        PermissionAPI.registerNode(EDITSELF, DefaultPermissionLevel.OP, "Allowed to edit self with trainer editor");
+        PermissionAPI.registerNode(EDITOTHER, DefaultPermissionLevel.OP,
+                "Allowed to edit other player with trainer editor");
+        PermissionAPI.registerNode(EDITMOB, DefaultPermissionLevel.OP, "Allowed to edit trainer with trainer editor");
+    }
+
+    byte                  message;
+    public NBTTagCompound data = new NBTTagCompound();
+
+    public static void sendEditOpenPacket(Entity target, EntityPlayerMP editor)
+    {
+        String node = target == editor ? EDITSELF : target instanceof EntityPlayer ? EDITOTHER : EDITMOB;
+        boolean canEdit = !editor.getServer().isDedicatedServer() || PermissionAPI.hasPermission(editor, node);
+        if (!canEdit) return;
+        PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
+        packet.data.setBoolean("O", true);
+        packet.data.setInteger("I", target.getEntityId());
+        PokecubeMod.packetPipeline.sendTo(packet, editor);
+    }
 
     public PacketTrainer()
     {
@@ -106,10 +134,17 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
             IHasPokemobs cap = CapabilityHasPokemobs.getHasPokemobs(mob);
             if (cap != null)
             {
+                if (message.data.getBoolean("O"))
+                {
+                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, player.getEntityWorld(),
+                            mob.getEntityId(), 0, 0);
+                    return;
+                }
                 IHasMessages messages = CapabilityNPCMessages.getMessages(mob);
                 IHasRewards rewards = CapabilityHasRewards.getHasRewards(mob);
                 IHasNPCAIStates ai = CapabilityNPCAIStates.getNPCAIStates(mob);
                 IGuardAICapability guard = mob.getCapability(EventsHandler.GUARDAI_CAP, null);
+                boolean hasAI = ai != null;
                 ITextComponent mess = null;
                 if (message.data.hasKey("S") && ai != null)
                 {
@@ -161,22 +196,24 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                         trainer.playerName = message.data.getString("P");
                     }
                 }
-                boolean stationaryBefore = ai.getAIState(IHasNPCAIStates.STATIONARY);
+                boolean stationaryBefore = hasAI ? ai.getAIState(IHasNPCAIStates.STATIONARY) : false;
                 if (tag != null && !tag.hasNoTags())
                 {
                     byte type = message.data.getByte("V");
                     if (type == 0)
                         CapabilityHasPokemobs.storage.readNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, cap, null, tag);
-                    else if (type == 1)
+                    else if (type == 1 && rewards != null)
                         CapabilityHasRewards.storage.readNBT(CapabilityHasRewards.REWARDS_CAP, rewards, null, tag);
-                    else if (type == 2)
+                    else if (type == 2 && messages != null)
                         CapabilityNPCMessages.storage.readNBT(CapabilityNPCMessages.MESSAGES_CAP, messages, null, tag);
-                    else if (type == 3)
+                    else if (type == 3 && ai != null)
                         CapabilityNPCAIStates.storage.readNBT(CapabilityNPCAIStates.AISTATES_CAP, ai, null, tag);
-                    else if (type == 4) EventsHandler.storage.readNBT(EventsHandler.GUARDAI_CAP, guard, null, tag);
+                    else if (type == 4 && guard != null)
+                        EventsHandler.storage.readNBT(EventsHandler.GUARDAI_CAP, guard, null, tag);
                 }
                 if (mess != null) player.sendStatusMessage(mess, true);
-                if (ai.getAIState(IHasNPCAIStates.STATIONARY) != stationaryBefore)
+                boolean stationaryNow = hasAI ? ai.getAIState(IHasNPCAIStates.STATIONARY) : false;
+                if (stationaryNow != stationaryBefore)
                 {
                     if (guard != null)
                     {

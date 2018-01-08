@@ -86,7 +86,7 @@ public class LogicFloatFlySwim extends LogicBase
         IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
         if (transformed != null) pokemob = transformed;
         PokedexEntry entry = pokemob.getPokedexEntry();
-        boolean canFloat = entry.floats();
+        boolean canFloat = pokemob.floats();
         if (canFloat && !pokemob.getPokemonAIState(IMoveConstants.INWATER))
         {
             float floatHeight = (float) entry.preferedHeight;
@@ -106,7 +106,7 @@ public class LogicFloatFlySwim extends LogicBase
             }
             here.set(pokemob.getEntity());
         }
-        if ((entry.floats() || entry.flys()) && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+        if ((pokemob.floats() || pokemob.flys()) && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
             float floatHeight = (float) entry.preferedHeight;
             Path path = entity.getNavigator().getPath();
@@ -122,7 +122,7 @@ public class LogicFloatFlySwim extends LogicBase
                 }
             }
         }
-        canFloat = entry.flys() || entry.floats();
+        canFloat = pokemob.flys() || pokemob.floats();
         if (canFloat && here.offset(EnumFacing.DOWN).getBlockState(entity.getEntityWorld()).getMaterial().isLiquid())
         {
             if (entity.motionY < -0.1) entity.motionY = 0;

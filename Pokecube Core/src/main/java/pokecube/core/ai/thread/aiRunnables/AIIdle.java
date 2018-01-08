@@ -45,21 +45,22 @@ public class AIIdle extends AIBase
     {
         v.set(x, y, z);
         Vector3 temp = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
-        if (temp == null) return;
+        if (temp == null || !mob.isRoutineEnabled(AIRoutine.AIRBORNE)) return;
         y = temp.y + entry.preferedHeight;
     }
 
     private void doFlyingIdle()
     {
-        boolean sitting = mob.getPokemonAIState(IMoveConstants.SITTING);
+        boolean grounded = !mob.isRoutineEnabled(AIRoutine.AIRBORNE);
         boolean tamed = mob.getPokemonAIState(IMoveConstants.TAMED) && !mob.getPokemonAIState(IMoveConstants.STAYING);
         boolean up = Math.random() < 0.9;
-        if (sitting && up && !tamed)
+        if (grounded && up && !tamed)
         {
-            mob.setPokemonAIState(IMoveConstants.SITTING, false);
+            mob.setRoutineState(AIRoutine.AIRBORNE, true);
         }
-        else if (Math.random() > 0.75)
+        else
         {
+            mob.setRoutineState(AIRoutine.AIRBORNE, false);
             v.set(x, y, z);
             v.set(Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y));
             if (v != null) y = v.y;
@@ -103,12 +104,11 @@ public class AIIdle extends AIBase
     @Override
     public void run()
     {
-        // TODO some AI for mobs to sit/stand
-        if (entry.flys())
+        if (mob.getPokedexEntry().flys())
         {
             doFlyingIdle();
         }
-        else if (entry.floats())
+        else if (mob.getPokedexEntry().floats())
         {
             doFloatingIdle();
         }
@@ -168,7 +168,6 @@ public class AIIdle extends AIBase
         }
         if (entity.getAttackTarget() != null || !entity.getNavigator().noPath()) return false;
 
-        mob.getPokedexEntry().flys();
         if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)
                 && !mob.getPokemonAIState(IMoveConstants.STAYING))
             return false;

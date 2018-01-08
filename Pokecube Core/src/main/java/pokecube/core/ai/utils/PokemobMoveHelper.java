@@ -29,12 +29,14 @@ public class PokemobMoveHelper extends EntityMoveHelper
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
         IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+        IPokemob theMob = pokemob;
         if (transformed != null)
         {
             entry = transformed.getPokedexEntry();
+            theMob = transformed;
         }
         boolean water = entry.swims() && entity.isInWater();
-        boolean air = entry.flys() || entry.floats();
+        boolean air = theMob.flys() || theMob.floats();
 
         if (this.action != EntityMoveHelper.Action.MOVE_TO)
         {

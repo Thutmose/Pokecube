@@ -263,7 +263,103 @@ public class EditPokemobPage extends Page
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
+        boolean[] active = new boolean[textList.size()];
+        for (int i = 0; i < active.length; i++)
+        {
+            active[i] = textList.get(i).isFocused();
+        }
         super.mouseClicked(mouseX, mouseY, mouseButton);
+        GuiTextField field;
+        if (pokemob == null)
+        {
+            field = textList.get(ENTRY);
+            if (field.isFocused())
+            {
+                setEntry(field.getText());
+            }
+            return;
+        }
+        for (int i = 0; i < active.length; i++)
+        {
+            if (active[i] && !textList.get(i).isFocused())
+            {
+                field = textList.get(i);
+                String value = field.getText();
+                switch (i)
+                {
+                case ENTRY:
+                    setEntry(value);
+                    break;
+                case LEVEL:
+                    setLevel(value);
+                    break;
+                case NATURE:
+                    setNature(value);
+                    break;
+                case SIZE:
+                    setSize(value);
+                    break;
+                case ABILITY:
+                    setAbility(value);
+                    break;
+
+                // Set moves
+                case MOVE0:
+                    setMove(0, value);
+                    break;
+                case MOVE1:
+                    setMove(1, value);
+                    break;
+                case MOVE2:
+                    setMove(2, value);
+                    break;
+                case MOVE3:
+                    setMove(3, value);
+                    break;
+
+                // Set EVs
+                case EV0:
+                    setEV(0, value);
+                    break;
+                case EV1:
+                    setEV(1, value);
+                    break;
+                case EV2:
+                    setEV(2, value);
+                    break;
+                case EV3:
+                    setEV(3, value);
+                    break;
+                case EV4:
+                    setEV(4, value);
+                    break;
+                case EV5:
+                    setEV(5, value);
+                    break;
+
+                // Set IVs
+                case IV0:
+                    setIV(0, value);
+                    break;
+                case IV1:
+                    setIV(1, value);
+                    break;
+                case IV2:
+                    setIV(2, value);
+                    break;
+                case IV3:
+                    setIV(3, value);
+                    break;
+                case IV4:
+                    setIV(4, value);
+                    break;
+                case IV5:
+                    setIV(5, value);
+                    break;
+                }
+                break;
+            }
+        }
     }
 
     @Override
@@ -408,7 +504,6 @@ public class EditPokemobPage extends Page
             case IV5:
                 setIV(5, value);
                 break;
-
             }
         }
     }
@@ -574,9 +669,12 @@ public class EditPokemobPage extends Page
         PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
         NBTBase tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer,
                 null);
-        packet.data.setTag("T", tag);
-        packet.data.setInteger("I", parent.entity.getEntityId());
-        PokecubeMod.packetPipeline.sendToServer(packet);
+        if (tag != null)
+        {
+            packet.data.setTag("T", tag);
+            packet.data.setInteger("I", parent.entity.getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+        }
         this.onPageOpened();
     }
 

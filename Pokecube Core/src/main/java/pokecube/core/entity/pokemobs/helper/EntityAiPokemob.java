@@ -71,8 +71,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void fall(float distance, float damageMultiplier)
     {
-        PokedexEntry entry = pokemobCap.getPokedexEntry();
-        boolean canFloat = entry.floats() || entry.flys() || pokemobCap.canUseFly();
+        boolean canFloat = pokemobCap.floats() || pokemobCap.flys() || pokemobCap.canUseFly();
         if (distance > 4 + height) distance = 0;
         if (distance < 5) damageMultiplier = 0;
         if (!canFloat) super.fall(distance, damageMultiplier);
@@ -201,7 +200,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         float moveSpeed = 0.5f;
         float speedFactor = (float) (1 + Math.sqrt(entry.getStatVIT()) / (100F));
         moveSpeed *= speedFactor;
-        if (entry.flys()) moveSpeed /= 1.25f;
 
         this.getNavigator().setSpeed(moveSpeed);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
@@ -302,7 +300,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             entry = transformed.getPokedexEntry();
         }
         int aiState = pokemobCap.getTotalAIState();
-        boolean isAbleToFly = entry.floats() || entry.flys();
+        boolean isAbleToFly = pokemobCap.floats() || pokemobCap.flys();
         boolean isWaterMob = entry.swims();
         if (isAbleToFly && !(getAIState(IPokemob.SLEEPING, aiState) || getAIState(IPokemob.SITTING, aiState)))
             this.setNoGravity(true);
@@ -540,7 +538,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void onUpdate()
     {
-        if (pokemobCap.getPokedexEntry().floats() || pokemobCap.getPokedexEntry().flys()) fallDistance = 0;
+        if (pokemobCap.floats() || pokemobCap.flys()) fallDistance = 0;
         dimension = getEntityWorld().provider.getDimension();
         // Ensure that these use the pokecube ones instead of vanilla
         this.navigator = getNavigator();

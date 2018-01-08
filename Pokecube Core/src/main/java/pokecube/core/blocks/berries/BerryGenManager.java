@@ -301,7 +301,6 @@ public class BerryGenManager
          * specific ones. */
         Collections.shuffle(matchers);
         matchers.sort(COMPARE);
-        System.out.println(matchers);
         for (SpawnBiomeMatcher matcher : matchers)
         {
             if (matcher.matches(checker))

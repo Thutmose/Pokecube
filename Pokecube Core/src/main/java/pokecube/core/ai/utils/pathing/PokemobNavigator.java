@@ -24,13 +24,14 @@ import thut.api.maths.Vector3;
  * which are close enough to the end, like when a mob is just idling around. */
 public class PokemobNavigator extends PathNavigate
 {
-    private Vector3        v  = Vector3.getNewVector();
-    private Vector3        v1 = Vector3.getNewVector();
+    private Vector3        v                 = Vector3.getNewVector();
+    private Vector3        v1                = Vector3.getNewVector();
     private boolean        canDive;
     private boolean        canFly;
     private final IPokemob pokemob;
     private PokedexEntry   lastEntry;
     private PathNavigate   wrapped;
+    private boolean        lastGroundedState = false;
 
     public PokemobNavigator(IPokemob pokemob, World world)
     {
@@ -54,10 +55,12 @@ public class PokemobNavigator extends PathNavigate
         {
             entry = transformed.getPokedexEntry();
         }
-        if (entry != lastEntry || wrapped == null)
+        if (entry != lastEntry || lastGroundedState != pokemob.isGrounded() || wrapped == null)
         {
+            lastGroundedState = pokemob.isGrounded();
             lastEntry = entry;
-            this.canFly = entry.flys() || entry.floats();
+            this.canFly = pokemob.flys() || pokemob.floats();
+            this.canFly = this.canFly && !lastGroundedState;
             this.canDive = entry.swims();
             if (this.canDive && this.canFly) wrapped = new MultiNodeNavigator(entity, world, new FlyingNodeProcessor(),
                     makeSwimingNavigator().getNodeProcessor(), canFly);

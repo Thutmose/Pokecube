@@ -140,8 +140,7 @@ public class AICombatMovement extends AIBase
         }
         perp.scalarMultBy(pokemob.getPokedexEntry().width * pokemob.getSize());
         if (perp.magSq() > 0.3) perp.norm().scalarMultBy(0.3);
-        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !attacker.onGround)
-            perp.scalarMultBy(0.2);
+        if (!(pokemob.flys() || pokemob.floats()) && !attacker.onGround) perp.scalarMultBy(0.2);
         perp.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getDodgeSound(),
                 SoundCategory.HOSTILE, 1, 1));
@@ -155,8 +154,7 @@ public class AICombatMovement extends AIBase
     boolean shouldDodge()
     {
         boolean dodge = false;
-        if (!attacker.onGround && !(pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys()))
-            return dodge;
+        if (!attacker.onGround && !(pokemob.floats() || pokemob.flys())) return dodge;
         IPokemob target = CapabilityPokemob.getPokemobFor(attacker.getAttackTarget());
         if (target != null)
         {

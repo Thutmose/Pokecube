@@ -86,7 +86,8 @@ public class EditTrainerPage extends Page
         int y = parent.height / 2;
         int dx = 63;
         int dy = -5;
-        parent.getButtons().add(new Button(AIPAGE, x + dx, y + dy, 60, 20, I18n.format("traineredit.button.ai")));
+        if (parent.aiStates != null)
+            parent.getButtons().add(new Button(AIPAGE, x + dx, y + dy, 60, 20, I18n.format("traineredit.button.ai")));
         String next = ">";
         String prev = "<";
         // Cycle Trainer Type buttons
@@ -112,9 +113,9 @@ public class EditTrainerPage extends Page
             if (CompatWrapper.isValid(stack)) name = stack.getDisplayName();
             parent.getButtons().add(new Button(i, x - 120, y - 50 + 20 * index, 80, 20, name));
         }
-        parent.getButtons()
+        if (parent.messages != null) parent.getButtons()
                 .add(new Button(MESSAGEPAGE, x + dx, y + dy + 20, 60, 20, I18n.format("traineredit.button.messages")));
-        parent.getButtons()
+        if (parent.rewards != null) parent.getButtons()
                 .add(new Button(REWARDSPAGE, x + dx, y + dy + 40, 60, 20, I18n.format("traineredit.button.rewards")));
 
     }

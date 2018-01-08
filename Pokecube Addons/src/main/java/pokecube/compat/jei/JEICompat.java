@@ -123,12 +123,12 @@ public class JEICompat implements IModPlugin
                         {
                             PokemobInteractRecipe recipe = new PokemobInteractRecipe(e, action,
                                     CompatWrapper.nullStack);
-                            pokemobInteractRecipes.add(recipe);
+                            if (!pokemobInteractRecipes.contains(recipe)) pokemobInteractRecipes.add(recipe);
                         }
                         for (ItemStack stack : action.stacks)
                         {
                             PokemobInteractRecipe recipe = new PokemobInteractRecipe(e, action, stack);
-                            pokemobInteractRecipes.add(recipe);
+                            if (!pokemobInteractRecipes.contains(recipe)) pokemobInteractRecipes.add(recipe);
                         }
                     }
                 }

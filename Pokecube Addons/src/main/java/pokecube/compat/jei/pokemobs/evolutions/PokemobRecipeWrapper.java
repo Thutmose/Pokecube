@@ -66,6 +66,14 @@ public class PokemobRecipeWrapper implements IRecipeWrapper
         {
             tooltips.add(I18n.format("gui.jei.pokemob.evo.day"));
         }
+        if (recipe.data.duskOnly)
+        {
+            tooltips.add(I18n.format("gui.jei.pokemob.evo.dusk"));
+        }
+        if (recipe.data.dawnOnly)
+        {
+            tooltips.add(I18n.format("gui.jei.pokemob.evo.dawn"));
+        }
         if (recipe.data.matcher != null)
         {
             recipe.data.matcher.reset();

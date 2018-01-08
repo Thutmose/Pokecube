@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.InteractionLogic.Interaction;
+import pokecube.core.utils.Tools;
 import thut.lib.IDefaultRecipe;
 
 public class PokemobInteractRecipe implements IDefaultRecipe
@@ -63,5 +64,16 @@ public class PokemobInteractRecipe implements IDefaultRecipe
     public Class<IRecipe> getRegistryType()
     {
         return IRecipe.class;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof PokemobInteractRecipe)
+        {
+            PokemobInteractRecipe other = (PokemobInteractRecipe) obj;
+            return other.entry == entry && Tools.isSameStack(key, other.key);
+        }
+        return false;
     }
 }

@@ -370,7 +370,7 @@ public class PokedexEntryLoader
         public List<XMLMegaRule> megaRules      = Lists.newArrayList();
 
         @XmlElement(name = "MOVEMENTTYPE")
-        public String            movementType   = "normal";
+        public String            movementType;
         @XmlElement(name = "Interact")
         public List<Interact>    interactions   = Lists.newArrayList();
         @XmlElement(name = "SHADOWREPLACEMENTS")

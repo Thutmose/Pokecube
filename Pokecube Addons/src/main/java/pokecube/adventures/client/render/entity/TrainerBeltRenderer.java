@@ -104,7 +104,6 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         s = p / max;
         for (int i = 0; i < max; i++)
         {
-            if (i >= pokemobCap.getMaxPokemobCount()) continue;
             ItemStack stack = pokemobCap.getPokemob(i);
             if (CompatWrapper.isValid(stack) && !Tools.isSameStack(stack, entitylivingbaseIn.getHeldItemMainhand()))
             {

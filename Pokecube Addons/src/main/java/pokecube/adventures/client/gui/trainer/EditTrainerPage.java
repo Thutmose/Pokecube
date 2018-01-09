@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -20,14 +21,14 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import pokecube.adventures.client.gui.trainer.GuiEditTrainer.Page;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
+import pokecube.core.client.gui.helper.ScrollGui;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.lib.CompatWrapper;
 
-public class EditTrainerPage extends Page
+public class EditTrainerPage extends ListPage
 {
     static class Button extends GuiButton
     {
@@ -37,29 +38,108 @@ public class EditTrainerPage extends Page
         }
     }
 
-    private static final int AIPAGE       = 1;
+    static class PokemobEntry implements IGuiListEntry
+    {
+        final EditPokemobPage page;
+        final GuiButton       button;
+        final int             guiHeight;
+        final int             yOffset;
+        final int             xOffset;
+
+        public PokemobEntry(EditPokemobPage page, int height, int xOffset, int yOffset)
+        {
+            this.page = page;
+            ItemStack stack = page.parent.trainer.getPokemob(page.pokemobIndex);
+            String name = I18n.format("traineredit.button.newpokemob");
+            if (CompatWrapper.isValid(stack)) name = stack.getDisplayName();
+            button = new Button(0, 0, 0, 80, 20, name);
+            this.guiHeight = height;
+            this.yOffset = yOffset;
+            this.xOffset = xOffset;
+        }
+
+        @Override
+        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_)
+        {
+        }
+
+        @Override
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY,
+                boolean isSelected, float partialTicks)
+        {
+            boolean fits = true;
+            button.x = x - 2;
+            button.y = y - 4;
+            fits = fits && button.y + button.height <= yOffset + guiHeight;
+            if (fits)
+            {
+                button.drawButton(page.mc, mouseX, mouseY, partialTicks);
+            }
+        }
+
+        @Override
+        public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY)
+        {
+            boolean fits = true;
+            fits = button.y >= yOffset;
+            fits = fits && mouseX - button.x >= 0;
+            fits = fits && mouseX - button.x <= button.width;
+            fits = fits && button.y + button.height <= yOffset + guiHeight;
+            if (button.isMouseOver())
+            {
+                button.playPressSound(this.page.mc.getSoundHandler());
+                this.page.parent.setIndex(this.page.pageIndex);
+            }
+            return fits;
+        }
+
+        @Override
+        public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY)
+        {
+        }
+
+    }
+
     private static final int TOGGLEPREFIX = 2;
     private static final int PREVTYPE     = 3;
     private static final int NEXTYPE      = 4;
     private static final int TOGGLEGENDER = 5;
     private static final int KILL         = 6;
 
-    private static final int POKE0        = 7;
-    private static final int POKE1        = 8;
-    private static final int POKE2        = 9;
-    private static final int POKE3        = 10;
-    private static final int POKE4        = 11;
-    private static final int POKE5        = 12;
-
-    private static final int MESSAGEPAGE  = 13;
-    private static final int REWARDSPAGE  = 14;
-
     boolean                  stationary   = false;
     boolean                  resetTeam    = false;
+
+    private int              AIINDEX      = -1;
+    private int              MESSAGEINDEX = -1;
+    private int              REWARDSINDEX = -1;
 
     public EditTrainerPage(GuiEditTrainer watch)
     {
         super(watch);
+    }
+
+    @Override
+    void initList()
+    {
+        // TODO Auto-generated method stub
+
+        // Pokemob page buttons
+        int num = parent.trainer.countPokemon();
+        List<IGuiListEntry> entries = Lists.newArrayList();
+        int x = parent.width / 2;
+        int y = parent.height / 2;
+        int height = 160;
+        int xOffset = x - 120;
+        int yOffset = y - 50;
+        /** If trainer has max pokemobs, don't try to add more to the list. */
+        num = Math.min(num, parent.trainer.getMaxPokemobCount() - 1);
+        // Less than or equal to to result in the "add new" page.
+        for (int i = 0; i <= num; i++)
+        {
+            PokemobEntry entry = new PokemobEntry(parent.pokemobPages.get(i), height, xOffset, yOffset);
+            entries.add(entry);
+        }
+        list = new ScrollGui(mc, 100, height, 20, xOffset, yOffset, entries);
     }
 
     @Override
@@ -86,8 +166,8 @@ public class EditTrainerPage extends Page
         int y = parent.height / 2;
         int dx = 63;
         int dy = -5;
-        if (parent.aiStates != null)
-            parent.getButtons().add(new Button(AIPAGE, x + dx, y + dy, 60, 20, I18n.format("traineredit.button.ai")));
+        if (parent.aiPage != null) parent.getButtons().add(new Button(AIINDEX = parent.aiPage.index, x + dx, y + dy, 60,
+                20, I18n.format("traineredit.button.ai")));
         String next = ">";
         String prev = "<";
         // Cycle Trainer Type buttons
@@ -102,21 +182,11 @@ public class EditTrainerPage extends Page
         // Kill button
         parent.getButtons().add(new Button(KILL, x + dx, y + dy + 60, 60, 20, I18n.format("traineredit.button.kill")));
 
-        // Pokemob page buttons
-        int num = parent.trainer.countPokemon();
-        num = Math.min(5, num);
-        for (int i = POKE0; i <= POKE0 + num; i++)
-        {
-            int index = (i - POKE0);
-            ItemStack stack = parent.trainer.getPokemob(index);
-            String name = I18n.format("traineredit.button.newpokemob");
-            if (CompatWrapper.isValid(stack)) name = stack.getDisplayName();
-            parent.getButtons().add(new Button(i, x - 120, y - 50 + 20 * index, 80, 20, name));
-        }
-        if (parent.messages != null) parent.getButtons()
-                .add(new Button(MESSAGEPAGE, x + dx, y + dy + 20, 60, 20, I18n.format("traineredit.button.messages")));
-        if (parent.rewards != null) parent.getButtons()
-                .add(new Button(REWARDSPAGE, x + dx, y + dy + 40, 60, 20, I18n.format("traineredit.button.rewards")));
+        // Messages and rewards buttons.
+        if (parent.messagePage != null) parent.getButtons().add(new Button(MESSAGEINDEX = parent.messagePage.index,
+                x + dx, y + dy + 20, 60, 20, I18n.format("traineredit.button.messages")));
+        if (parent.rewardsPage != null) parent.getButtons().add(new Button(REWARDSINDEX = parent.rewardsPage.index,
+                x + dx, y + dy + 40, 60, 20, I18n.format("traineredit.button.rewards")));
 
     }
 
@@ -200,17 +270,24 @@ public class EditTrainerPage extends Page
     {
         PacketTrainer packet;
         int dir = 0;
+        if (button.id == AIINDEX)
+        {
+            parent.setIndex(AIINDEX);
+            return;
+        }
+        if (button.id == MESSAGEINDEX)
+        {
+            parent.setIndex(MESSAGEINDEX);
+            return;
+        }
+        if (button.id == REWARDSINDEX)
+        {
+            parent.setIndex(REWARDSINDEX);
+            return;
+        }
+
         switch (button.id)
         {
-        case AIPAGE:
-            parent.setIndex(9);
-            break;
-        case MESSAGEPAGE:
-            parent.setIndex(8);
-            break;
-        case REWARDSPAGE:
-            parent.setIndex(7);
-            break;
         case TOGGLEGENDER:
             byte sexe = parent.trainer.getGender();
             byte valid = parent.trainer.getType().genders;
@@ -247,24 +324,6 @@ public class EditTrainerPage extends Page
             packet.data.setInteger("I", parent.entity.getEntityId());
             PokecubeMod.packetPipeline.sendToServer(packet);
             parent.mc.player.closeScreen();
-            break;
-        case POKE0:
-            parent.setIndex(1);
-            break;
-        case POKE1:
-            parent.setIndex(2);
-            break;
-        case POKE2:
-            parent.setIndex(3);
-            break;
-        case POKE3:
-            parent.setIndex(4);
-            break;
-        case POKE4:
-            parent.setIndex(5);
-            break;
-        case POKE5:
-            parent.setIndex(6);
             break;
         }
         // Change type
@@ -320,16 +379,6 @@ public class EditTrainerPage extends Page
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-    {
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state)
-    {
-    }
-
-    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         int x = (parent.width) / 2;
@@ -356,5 +405,4 @@ public class EditTrainerPage extends Page
         super.drawScreen(mouseX, mouseY, partialTicks);
         drawTitle(mouseX, mouseY, partialTicks);
     }
-
 }

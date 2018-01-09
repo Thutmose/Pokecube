@@ -86,7 +86,7 @@ public abstract class EntityTrainerBase extends EntityHasTrades
         }
         if (nbt.hasKey("pokemobs", 9))
         {
-            pokemobsCap.clear();
+            if (pokemobsCap.clearOnLoad()) pokemobsCap.clear();
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
             if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
             {

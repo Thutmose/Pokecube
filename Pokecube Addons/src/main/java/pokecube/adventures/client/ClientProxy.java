@@ -6,10 +6,18 @@ import static pokecube.adventures.handlers.BlockHandler.siphon;
 import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 
+import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +33,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.CommonProxy;
 import pokecube.adventures.PokecubeAdv;
@@ -43,6 +52,7 @@ import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.blocks.RenderCloner;
 import pokecube.adventures.client.render.entity.RenderTarget;
 import pokecube.adventures.client.render.entity.RenderTrainer;
+import pokecube.adventures.client.render.entity.TrainerBeltRenderer;
 import pokecube.adventures.client.render.item.BadgeTextureHandler;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
@@ -142,6 +152,35 @@ public class ClientProxy extends CommonProxy
         registerItemTexture(Item.getItemFromBlock(siphon), 0,
                 new ModelResourceLocation("pokecube_adventures:pokesiphon", "inventory"));
         BadgeTextureHandler.registerItemModels();
+    }
+
+    @Override
+    public void postinit()
+    {
+        Set<Render<? extends Entity>> added = Sets.newHashSet();
+        for (Render<? extends Entity> render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values())
+        {
+            if (render instanceof RenderLivingBase<?>)
+            {
+                RenderLivingBase<?> renderb = (RenderLivingBase<?>) render;
+                List<LayerRenderer<?>> layerRenderers = ReflectionHelper.getPrivateValue(RenderLivingBase.class,
+                        renderb, "layerRenderers", "field_177097_h", "i");
+                layerRenderers.add(new TrainerBeltRenderer(renderb));
+                added.add(render);
+            }
+        }
+        for (Render<? extends Entity> render : Minecraft.getMinecraft().getRenderManager().entityRenderMap.values())
+        {
+            /** Dont add twice to player renderer if it is in skinmap. */
+            if (added.contains(render)) continue;
+            if (render instanceof RenderLivingBase<?>)
+            {
+                RenderLivingBase<?> renderb = (RenderLivingBase<?>) render;
+                List<LayerRenderer<?>> layerRenderers = ReflectionHelper.getPrivateValue(RenderLivingBase.class,
+                        renderb, "layerRenderers", "field_177097_h", "i");
+                layerRenderers.add(new TrainerBeltRenderer(renderb));
+            }
+        }
     }
 
     @Override

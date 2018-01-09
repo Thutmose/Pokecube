@@ -44,7 +44,6 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
         male = new ModelPlayer(0, false);
         female = new ModelPlayer(0, true);
         this.addLayer(new BagRenderer(this));
-        this.addLayer(new TrainerBeltRenderer(this));
         LayerRenderer<?> badHeadRenderer = null;
         for (Object o : layerRenderers)
         {

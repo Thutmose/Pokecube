@@ -97,7 +97,7 @@ public class EntityTrainer extends EntityTrainerBase
         ItemStack buy = buy1.copy();
         IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, getEntityWorld());
         int stat1 = getBaseStats(mon1);
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < pokemobsCap.getMaxPokemobCount(); i++)
         {
             ItemStack stack = pokemobsCap.getPokemob(i);
             if (PokecubeManager.isFilled(stack))
@@ -309,7 +309,7 @@ public class EntityTrainer extends EntityTrainerBase
             {
                 String message = this.getName() + " " + aiStates.getAIState(IHasNPCAIStates.STATIONARY) + " "
                         + pokemobsCap.countPokemon() + " ";
-                for (int ind = 0; ind < 6; ind++)
+                for (int ind = 0; ind < pokemobsCap.getMaxPokemobCount(); ind++)
                 {
                     ItemStack i = pokemobsCap.getPokemob(ind);
                     if (CompatWrapper.isValid(i)) message += i.getDisplayName() + " ";

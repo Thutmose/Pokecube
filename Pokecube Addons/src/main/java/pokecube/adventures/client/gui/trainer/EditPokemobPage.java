@@ -67,13 +67,15 @@ public class EditPokemobPage extends Page
     public static final int ABILITY = 19;
     public static final int SIZE    = 20;
 
-    final int               index;
+    final int               pokemobIndex;
+    final int               pageIndex;
     private IPokemob        pokemob;
 
-    public EditPokemobPage(GuiEditTrainer parent, int index)
+    public EditPokemobPage(GuiEditTrainer parent, int pokemobIndex, int pageIndex)
     {
         super(parent);
-        this.index = index;
+        this.pokemobIndex = pokemobIndex;
+        this.pageIndex = pageIndex;
     }
 
     @Override
@@ -148,7 +150,7 @@ public class EditPokemobPage extends Page
     @Override
     protected void onPageOpened()
     {
-        ItemStack stack = parent.trainer.getPokemob(index);
+        ItemStack stack = parent.trainer.getPokemob(pokemobIndex);
         int num = PokecubeManager.getPokedexNb(stack);
         int level = 1;
         byte sexe = -1;
@@ -375,6 +377,7 @@ public class EditPokemobPage extends Page
         switch (button.id)
         {
         case 0:
+            parent.mainPage.initList();
             parent.setIndex(0);
             break;
         case 1:
@@ -660,11 +663,11 @@ public class EditPokemobPage extends Page
         {
             pokemob.setPokemonOwner((EntityLivingBase) parent.entity);
             ItemStack stack = PokecubeManager.pokemobToItem(pokemob);
-            parent.trainer.setPokemob(index, stack);
+            parent.trainer.setPokemob(pokemobIndex, stack);
         }
         else
         {
-            parent.trainer.setPokemob(index, CompatWrapper.nullStack);
+            parent.trainer.setPokemob(pokemobIndex, CompatWrapper.nullStack);
         }
         PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
         NBTBase tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer,

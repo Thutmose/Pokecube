@@ -246,7 +246,7 @@ public class PAEventsHandler
     {
         IHasMessages messages = CapabilityNPCMessages.getMessages(target);
         IHasPokemobs pokemobs = CapabilityHasPokemobs.getHasPokemobs(target);
-        if (pokemobs != null && evt.getItemStack().getItem() instanceof ItemTrainer)
+        if (!target.isSneaking() && pokemobs != null && evt.getItemStack().getItem() instanceof ItemTrainer)
         {
             evt.setCanceled(true);
             if (evt.getEntityPlayer() instanceof EntityPlayerMP)

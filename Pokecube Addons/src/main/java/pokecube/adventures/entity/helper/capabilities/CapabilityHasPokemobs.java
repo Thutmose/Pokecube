@@ -75,7 +75,7 @@ public class CapabilityHasPokemobs
             long uuidMostTest = -1;
             boolean found = false;
             int foundID = -1;
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < getMaxPokemobCount(); i++)
             {
                 if (CompatWrapper.isValid(getPokemob(i)))
                 {
@@ -101,7 +101,7 @@ public class CapabilityHasPokemobs
                     }
                 }
             }
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < getMaxPokemobCount(); i++)
             {
                 if (!found && !CompatWrapper.isValid(getPokemob(i)))
                 {
@@ -120,13 +120,13 @@ public class CapabilityHasPokemobs
                     PokecubeManager.heal(getPokemob(i));
                 }
             }
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < getMaxPokemobCount(); i++)
             {
                 ItemStack stack = getPokemob(i);
                 if (!CompatWrapper.isValid(stack))
                 {
                     found = true;
-                    for (int j = i; j < 5; j++)
+                    for (int j = i; j < getMaxPokemobCount() - 1; j++)
                     {
                         setPokemob(j, getPokemob(j + 1));
                         setPokemob(j + 1, CompatWrapper.nullStack);
@@ -146,9 +146,14 @@ public class CapabilityHasPokemobs
 
         void setNextSlot(int value);
 
+        default boolean clearOnLoad()
+        {
+            return true;
+        }
+
         default void clear()
         {
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < getMaxPokemobCount(); i++)
                 setPokemob(i, CompatWrapper.nullStack);
         }
 
@@ -156,12 +161,12 @@ public class CapabilityHasPokemobs
         default ItemStack getNextPokemob()
         {
             if (getNextSlot() < 0) return CompatWrapper.nullStack;
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < getMaxPokemobCount(); i++)
             {
                 ItemStack stack = getPokemob(i);
                 if (!CompatWrapper.isValid(stack))
                 {
-                    for (int j = i; j < 5; j++)
+                    for (int j = i; j < getMaxPokemobCount() - 1; j++)
                     {
                         setPokemob(j, getPokemob(j + 1));
                         setPokemob(j + 1, CompatWrapper.nullStack);
@@ -177,7 +182,7 @@ public class CapabilityHasPokemobs
         default int countPokemon()
         {
             int ret = 0;
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < getMaxPokemobCount(); i++)
             {
                 if (PokecubeManager.getPokedexNb(getPokemob(i)) != 0) ret++;
             }
@@ -250,6 +255,11 @@ public class CapabilityHasPokemobs
         boolean canMegaEvolve();
 
         void setCanMegaEvolve(boolean flag);
+
+        default int getMaxPokemobCount()
+        {
+            return 6;
+        }
     }
 
     public static class Storage implements Capability.IStorage<IHasPokemobs>
@@ -571,7 +581,7 @@ public class CapabilityHasPokemobs
                 if (target instanceof EntityLivingBase)
                     messages.doAction(MessageState.SENDOUT, (EntityLivingBase) target);
                 nextSlot++;
-                if (nextSlot >= 6 || getNextPokemob() == null) nextSlot = -1;
+                if (nextSlot >= getMaxPokemobCount() || getNextPokemob() == null) nextSlot = -1;
                 return;
             }
             nextSlot = -1;
@@ -664,7 +674,7 @@ public class CapabilityHasPokemobs
         {
             NBTTagCompound nbt = new NBTTagCompound();
             NBTTagList nbttaglist = new NBTTagList();
-            for (int index = 0; index < 6; index++)
+            for (int index = 0; index < getMaxPokemobCount(); index++)
             {
                 ItemStack i = this.getPokemob(index);
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
@@ -703,12 +713,13 @@ public class CapabilityHasPokemobs
         {
             if (nbt.hasKey("pokemobs", 9))
             {
-                this.clear();
+                if (clearOnLoad()) this.clear();
                 NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
-                if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
-                {
+                if (nbttaglist.tagCount() != 0)
+                    for (int i = 0; i < Math.min(nbttaglist.tagCount(), getMaxPokemobCount()); ++i)
+                    {
                     this.setPokemob(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
-                }
+                    }
             }
             this.setType(TypeTrainer.getTrainer(nbt.getString("type")));
             this.setCooldown(nbt.getLong("nextBattle"));

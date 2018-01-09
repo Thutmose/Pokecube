@@ -100,15 +100,21 @@ public class GuiEditTrainer extends GuiScreen
         }
     }
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(PokecubeAdv.ID, "textures/gui/traineredit.png");
+    public static final ResourceLocation TEXTURE      = new ResourceLocation(PokecubeAdv.ID,
+            "textures/gui/traineredit.png");
 
-    final List<Page>                     pages   = Lists.newArrayList();
+    final List<Page>                     pages        = Lists.newArrayList();
+    protected EditTrainerPage            mainPage;
+    protected EditAIPage                 aiPage;
+    protected EditRewardsPage            rewardsPage;
+    protected EditMessagesPage           messagePage;
+    protected List<EditPokemobPage>      pokemobPages = Lists.newArrayList();
     public final Entity                  entity;
     public final IHasPokemobs            trainer;
     public final IHasRewards             rewards;
     public final IHasMessages            messages;
     public final IHasNPCAIStates         aiStates;
-    private int                          index   = 0;
+    private int                          index        = 0;
 
     public GuiEditTrainer(Entity target)
     {
@@ -129,12 +135,18 @@ public class GuiEditTrainer extends GuiScreen
     {
         super.initGui();
         pages.clear();
-        pages.add(new EditTrainerPage(this));
-        for (int i = 0; i < 6; i++)
-            pages.add(new EditPokemobPage(this, i));
-        if (rewards != null) pages.add(new EditRewardsPage(this));
-        if (messages != null) pages.add(new EditMessagesPage(this));
-        if (aiStates != null) pages.add(new EditAIPage(this));
+        pokemobPages.clear();
+        pages.add(mainPage = new EditTrainerPage(this));
+        int num = 1;
+        for (int i = 0; i < trainer.getMaxPokemobCount(); i++)
+        {
+            EditPokemobPage page = new EditPokemobPage(this, i, num++);
+            pages.add(page);
+            pokemobPages.add(page);
+        }
+        if (rewards != null) pages.add(rewardsPage = new EditRewardsPage(this, num++));
+        if (messages != null) pages.add(messagePage = new EditMessagesPage(this, num++));
+        if (aiStates != null) pages.add(aiPage = new EditAIPage(this, num++));
         for (Page page : pages)
             page.initGui();
         pages.get(getIndex()).onPageOpened();

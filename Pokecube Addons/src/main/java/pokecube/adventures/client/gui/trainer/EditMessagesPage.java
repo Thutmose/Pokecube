@@ -123,9 +123,12 @@ public class EditMessagesPage extends ListPage
         }
     }
 
-    public EditMessagesPage(GuiEditTrainer watch)
+    protected final int index;
+
+    public EditMessagesPage(GuiEditTrainer watch, int index)
     {
         super(watch);
+        this.index = index;
     }
 
     @Override

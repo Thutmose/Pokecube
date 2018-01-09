@@ -25,8 +25,9 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
 {
     X3dModel                          model;
     X3dModel                          model2;
-    ResourceLocation                  belt_1 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt1.png");
-    ResourceLocation                  belt_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
+    ResourceLocation                  belt_1  = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt1.png");
+    ResourceLocation                  belt_2  = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
+    boolean                           enabled = true;
 
     private final RenderLivingBase<?> livingEntityRenderer;
     private IHasPokemobs              pokemobCap;
@@ -42,7 +43,13 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
     public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount,
             float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
+        if (!enabled) return;
         this.pokemobCap = CapabilityHasPokemobs.getHasPokemobs(entitylivingbaseIn);
+        if (this.pokemobCap == null)
+        {
+            enabled = false;
+            return;
+        }
         if (pokemobCap.countPokemon() <= 0) return;
 
         int brightness = entitylivingbaseIn.getBrightnessForRender();
@@ -89,46 +96,33 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         GlStateManager.rotate(90, 0, 1, 0);
         GlStateManager.rotate(90, 0, 0, 1);
         float rx = 0, ry = -90, rz = 0;
+        float max = pokemobCap.getMaxPokemobCount();
         dx = dy = dz = 0;
-        dz = -0.25f;
-        dx = 0.25f;
-        for (int i = 0; i < 6; i++)
+        float x = 0.55f;
+        float y = 0.275f;
+        float p = 2 * x + 2 * y;
+        s = p / max;
+        for (int i = 0; i < max; i++)
         {
+            if (i >= pokemobCap.getMaxPokemobCount()) continue;
             ItemStack stack = pokemobCap.getPokemob(i);
             if (CompatWrapper.isValid(stack) && !Tools.isSameStack(stack, entitylivingbaseIn.getHeldItemMainhand()))
             {
+                float j = i >= max / 2 ? i - (max / 2) : i;
+                float l = (j + 1f) * s;
+                dz = -(l <= x ? l : x);
+                dx = -(l <= x ? 0 : (l - x));
+                ry = -(l <= x ? 90 : i >= max / 2 ? 180 : 0);
+                if (l == x)
+                {
+                    ry += i >= max / 2 ? -45 : 45;
+                }
+                if (i >= max / 2)
+                {
+                    dz = -dz;
+                }
                 GlStateManager.pushMatrix();
-                if (i < 3)
-                {
-                    if (i == 2)
-                    {
-                        dz = -0.5f;
-                        ry = 0;
-                        dx = 0;
-                    }
-                    else
-                    {
-                        dz = -0.25f * (i + 1);
-                        dx = 0.25f;
-                        ry = -90;
-                    }
-                }
-                else
-                {
-                    if (i == 5)
-                    {
-                        dz = 0.5f;
-                        ry = 180;
-                        dx = 0;
-                    }
-                    else
-                    {
-                        dz = 0.25f * (i - 2);
-                        dx = 0.25f;
-                        ry = -90;
-                    }
-                }
-                GlStateManager.translate(dx, dy, dz);
+                GlStateManager.translate(dx + 0.25, dy, dz);
                 GlStateManager.rotate(rx, 1, 0, 0);
                 GlStateManager.rotate(ry, 0, 1, 0);
                 GlStateManager.rotate(rz, 0, 0, 1);

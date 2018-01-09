@@ -53,6 +53,7 @@ import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient.MessageHandlerClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer.MessageHandlerServer;
+import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeCore;
 import pokecube.core.events.PostPostInit;
@@ -141,6 +142,8 @@ public class PokecubeAdv
     @EventHandler
     public void postInit(FMLPostInitializationEvent e)
     {
+        PacketTrainer.register();
+        proxy.postinit();
     }
 
     @SubscribeEvent

@@ -98,32 +98,20 @@ public class CommonProxy implements IGuiHandler
         return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
     }
 
-    public void initClient()
-    {
-    }
+    public void initClient() {}
 
     public boolean isOnClientSide()
     {
         return false;
     }
     
-    public void initItemModels()
-    {
-        
-    }
+    public void initItemModels() {}
     
-    public void initBlockModels()
-    {
-        
-    }
+    public void initBlockModels() {}
 
-    public void preinit()
-    {
+    public void preinit() {}
 
-    }
+    public void postinit() {}
 
-    public void registerEntities()
-    {
-
-    }
+    public void registerEntities()  {}
 }

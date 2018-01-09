@@ -113,7 +113,7 @@ public class ItemTrainer extends CompatItem
         {
             target = player;
         }
-        if (CapabilityHasPokemobs.getHasPokemobs(target) != null)
+        if (!target.isSneaking() && CapabilityHasPokemobs.getHasPokemobs(target) != null)
         {
             PacketTrainer.sendEditOpenPacket(target, (EntityPlayerMP) player);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);

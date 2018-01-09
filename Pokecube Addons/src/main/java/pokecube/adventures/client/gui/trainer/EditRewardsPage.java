@@ -202,10 +202,12 @@ public class EditRewardsPage extends ListPage
     }
 
     private List<RewardEntry> rewards = Lists.newArrayList();
+    protected final int index;
 
-    public EditRewardsPage(GuiEditTrainer watch)
+    public EditRewardsPage(GuiEditTrainer watch, int index)
     {
         super(watch);
+        this.index = index;
     }
 
     @Override

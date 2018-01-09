@@ -32,9 +32,12 @@ public class EditAIPage extends Page
         }
     }
 
-    public EditAIPage(GuiEditTrainer watch)
+    protected final int index;
+
+    public EditAIPage(GuiEditTrainer watch, int index)
     {
         super(watch);
+        this.index = index;
     }
 
     @Override

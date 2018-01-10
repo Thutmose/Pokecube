@@ -148,7 +148,7 @@ public class WearablesCompat
                 int brightness = wearer.getBrightnessForRender();
                 int[] col = new int[] { 255, 255, 255, 255, brightness };
                 GL11.glPushMatrix();
-                float dx = 0, dy = .55f, dz = -0.f;
+                float dx = 0, dy = .6f, dz = -0.f;
                 GL11.glTranslatef(dx, dy, dz);
                 float s = 1.1f;
                 if (!CompatWrapper.isValid(wearer.getItemStackFromSlot(EntityEquipmentSlot.LEGS)))
@@ -287,7 +287,8 @@ public class WearablesCompat
     {
         String getVariant(ItemStack stack)
         {
-            if (CompatWrapper.isValid(stack) && stack.hasTagCompound()) return stack.getTagCompound().getString("type");
+            if (stack.getItemDamage() < ItemMegawearable.getWearableCount())
+                return ItemMegawearable.getWearable(stack.getItemDamage());
             return "";
         }
 

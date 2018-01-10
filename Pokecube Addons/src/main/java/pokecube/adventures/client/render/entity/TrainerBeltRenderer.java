@@ -5,6 +5,7 @@ import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -13,6 +14,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.core.PokecubeCore;
@@ -25,9 +27,11 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
 {
     X3dModel                          model;
     X3dModel                          model2;
-    ResourceLocation                  belt_1  = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt1.png");
-    ResourceLocation                  belt_2  = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
-    boolean                           enabled = true;
+    ResourceLocation                  belt_1    = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt1.png");
+    ResourceLocation                  belt_2    = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
+    boolean                           enabled   = true;
+    public boolean                    wearables = false;
+    float[]                           offsetArr;
 
     private final RenderLivingBase<?> livingEntityRenderer;
     private IHasPokemobs              pokemobCap;
@@ -37,6 +41,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         this.livingEntityRenderer = livingEntityRendererIn;
         model = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
         model2 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
+        wearables = Loader.isModLoaded("thut_wearables");
     }
 
     @Override
@@ -51,6 +56,23 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
             return;
         }
         if (pokemobCap.countPokemon() <= 0) return;
+
+        if ((this.livingEntityRenderer.getMainModel() instanceof ModelBiped))
+        {
+            ((ModelBiped) this.livingEntityRenderer.getMainModel()).bipedBody.postRender(0.0625F);
+            if (entitylivingbaseIn.isSneaking())
+            {
+                GlStateManager.translate(0.0F, 0.13125F, -0.105F);
+                if (wearables) if ((offsetArr = thut.wearables.ThutWearables.renderOffsetsSneak.get(8)) != null)
+                {
+                    GlStateManager.translate(offsetArr[0], offsetArr[1], offsetArr[2]);
+                }
+            }
+        }
+        if (wearables) if ((offsetArr = thut.wearables.ThutWearables.renderOffsets.get(8)) != null)
+        {
+            GlStateManager.translate(offsetArr[0], offsetArr[1], offsetArr[2]);
+        }
 
         int brightness = entitylivingbaseIn.getBrightnessForRender();
         // First pass of render

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -131,6 +132,7 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
 import thut.core.common.commands.CommandConfig;
+import thut.core.common.config.Configure;
 import thut.core.common.handlers.PlayerDataHandler;
 import thut.lib.CompatWrapper;
 
@@ -264,6 +266,25 @@ public class PokecubeCore extends PokecubeMod
         file = new File(folder);
         config_client = new Config(new Configuration(new File(folder + ".dummy")).getConfigFile());
         config = new Config(new Configuration(file).getConfigFile());
+
+        /** Sync values to the dummy config over from the main one. */
+        for (Field f : Config.class.getDeclaredFields())
+        {
+            Configure conf = f.getAnnotation(Configure.class);
+            if (conf != null)
+            {
+                try
+                {
+                    f.setAccessible(true);
+                    f.set(config_client, f.get(config));
+                }
+                catch (IllegalArgumentException | IllegalAccessException e)
+                {
+                    PokecubeMod.log(Level.WARNING, "Error syncing " + f.getName(), e);
+                }
+            }
+        }
+
         currentConfig = config;
         helper = new Mod_Pokecube_Helper();
         CombatTypeLoader.loadTypes();

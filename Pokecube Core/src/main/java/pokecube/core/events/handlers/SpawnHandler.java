@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 
 import org.nfunk.jep.JEP;
 
@@ -16,6 +17,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -56,8 +58,22 @@ import thut.api.terrain.TerrainSegment;
 /** @author Manchou Heavily modified by Thutmose */
 public final class SpawnHandler
 {
+    private static class LevelFunction
+    {
+        final String  function;
+        final boolean radial;
+        final boolean central;
+
+        public LevelFunction(String[] args)
+        {
+            function = args[1];
+            radial = Boolean.parseBoolean(args[2]);
+            central = Boolean.parseBoolean(args[3]);
+        }
+    }
+
     private static final Map<ChunkCoordinate, Integer> forbiddenSpawningCoords = new HashMap<ChunkCoordinate, Integer>();
-    public static HashMap<Integer, String>             functions               = new HashMap<Integer, String>();
+    private static Int2ObjectArrayMap<LevelFunction>   functions               = new Int2ObjectArrayMap<>();
     public static HashMap<Integer, Integer[]>          subBiomeLevels          = new HashMap<Integer, Integer[]>();
     public static boolean                              doSpawns                = true;
     public static boolean                              onlySubbiomes           = false;
@@ -90,23 +106,15 @@ public final class SpawnHandler
                                                                                    }
                                                                                };
 
-    static
-    {
-        functions.put(-1, "(50)*(sin(x*8*10^-3)^8 + sin(y*8*10^-3)^8)");
-        functions.put(0, "(50)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)");
-        functions.put(1, "10+r/130;r");
-        functions.put(2, "(50)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)");
-    }
-
-    private static Vector3                    vec1        = Vector3.getNewVector();
-    private static Vector3                    vec2        = Vector3.getNewVector();
-    private static Vector3                    temp        = Vector3.getNewVector();
-    public static double                      MAX_DENSITY = 1;
-    public static int                         MAXNUM      = 10;
-    public static boolean                     lvlCap      = false;
-    public static boolean                     expFunction = false;
-    public static int                         capLevel    = 50;
-    public static final HashMap<Integer, JEP> parsers     = new HashMap<Integer, JEP>();
+    private static Vector3                             vec1                    = Vector3.getNewVector();
+    private static Vector3                             vec2                    = Vector3.getNewVector();
+    private static Vector3                             temp                    = Vector3.getNewVector();
+    public static double                               MAX_DENSITY             = 1;
+    public static int                                  MAXNUM                  = 10;
+    public static boolean                              lvlCap                  = false;
+    public static boolean                              expFunction             = false;
+    public static int                                  capLevel                = 50;
+    public static final HashMap<Integer, JEP>          parsers                 = new HashMap<Integer, JEP>();
 
     public static boolean addForbiddenSpawningCoord(BlockPos pos, int dimensionId, int distance)
     {
@@ -301,11 +309,10 @@ public final class SpawnHandler
     private static int parse(World world, Vector3 location)
     {
         Vector3 spawn = temp.set(world.getSpawnPoint());
-        if (!PokecubeMod.core.getConfig().spawnCentered) spawn.clear();
         JEP toUse;
         int type = world.provider.getDimension();
         boolean isNew = false;
-        String function = "";
+        LevelFunction function;
         if (functions.containsKey(type))
         {
             function = functions.get(type);
@@ -314,6 +321,14 @@ public final class SpawnHandler
         {
             function = functions.get(0);
         }
+        if (function == null)
+        {
+            PokecubeMod.log(Level.WARNING, "No Spawn functions found");
+            return 0;
+        }
+
+        if (function.central) spawn.clear();
+
         if (parsers.containsKey(type))
         {
             toUse = parsers.get(type);
@@ -330,15 +345,18 @@ public final class SpawnHandler
             parsers.put(type, toUse);
             isNew = true;
         }
-        boolean r = function.split(";").length == 2;
+        boolean r = function.radial;
         if (!r)
         {
-            parseExpression(toUse, function, location.x - spawn.x, location.z - spawn.z, r, isNew);
+            parseExpression(toUse, function.function, location.x - spawn.x, location.z - spawn.z, r, isNew);
         }
         else
         {
-            double d = location.distToSq(spawn);
-            parseExpression(toUse, function.split(";")[0], d, location.y, r, isNew);
+            /** Set y coordinates equal to ensure only radial function in
+             * horizontal plane. */
+            spawn.y = location.y;
+            double d = location.distTo(spawn);
+            parseExpression(toUse, function.function, d, location.y, r, isNew);
         }
         return (int) Math.abs(toUse.getValue());
     }
@@ -450,9 +468,9 @@ public final class SpawnHandler
     public static void loadFunctionFromString(String args)
     {
         String[] strings = args.split(":");
-        if (strings.length == 0) return;
+        if (strings.length != 4) return;
         int id = Integer.parseInt(strings[0]);
-        functions.put(id, strings[1]);
+        functions.put(id, new LevelFunction(strings));
     }
 
     public static void loadFunctionsFromStrings(String[] args)

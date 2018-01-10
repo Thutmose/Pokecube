@@ -79,6 +79,8 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
         {
             SyncConfig c = f.getAnnotation(SyncConfig.class);
             Configure conf = f.getAnnotation(Configure.class);
+            /** client stuff doesn't need to by synced, clients will use the
+             * dummy config while on servers. */
             if (conf != null && conf.category().equals(Config.client)) continue;
             if (c != null)
             {

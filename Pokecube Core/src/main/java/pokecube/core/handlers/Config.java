@@ -46,6 +46,8 @@ import thut.core.common.config.Configure;
 
 public class Config extends ConfigBase
 {
+    public static final int              VERSION                      = 1;
+
     public static final String           spawning                     = "spawning";
     public static final String           database                     = "database";
     public static final String           world                        = "generation";
@@ -405,17 +407,15 @@ public class Config extends ConfigBase
     public boolean                       shouldCap                    = true;
     @Configure(category = spawning)
     @SyncConfig
+    @Versioned
     String[]                             spawnLevelFunctions          = { //@formatter:off
-            "-1:abs((25)*(sin(x*8*10^-3)^3 + sin(y*8*10^-3)^3))",
-            "0:abs((25)*(sin(x*10^-3)^3 + sin(y*10^-3)^3))",
-            "1:1+r/1300;r"
+            "-1:abs((25)*(sin(x*8*10^-3)^3 + sin(y*8*10^-3)^3)):false:false",
+            "0:abs((25)*(sin(x*10^-3)^3 + sin(y*10^-3)^3)):false:false",
+            "1:1+r/200:true:true"
             };//@formatter:on
     @Configure(category = spawning)
     @SyncConfig
     public boolean                       expFunction                  = false;
-    @Configure(category = spawning)
-    @SyncConfig
-    public boolean                       spawnCentered                = true;
     @Configure(category = spawning)
     @SyncConfig
     public int                           levelVariance                = 5;
@@ -501,6 +501,11 @@ public class Config extends ConfigBase
     public int                           telePearlsCostSameDim        = 0;
     @Configure(category = advanced)
     public int                           telePearlsCostOtherDim       = 16;
+    @Configure(category = advanced)
+    /** This is the version to match in configs, this is set after loading the
+     * configs to VERSION, and uses -1 as a "default" to ensure this has
+     * changed. */
+    public int                           version                      = -1;
 
     @Configure(category = genetics)
     public String                        epigeneticEVFunction         = GeneticsManager.epigeneticFunction;
@@ -608,6 +613,30 @@ public class Config extends ConfigBase
     public void applySettings()
     {
         if (PokecubeCore.core.getConfig() == this) initDefaultStarts();
+
+        boolean toSave = false;
+        if (version != VERSION)
+        {
+            toSave = true;
+            version = VERSION;
+            for (Field f : Config.class.getDeclaredFields())
+            {
+                Versioned conf = f.getAnnotation(Versioned.class);
+                if (conf != null)
+                {
+                    try
+                    {
+                        f.setAccessible(true);
+                        f.set(this, f.get(defaults));
+                    }
+                    catch (IllegalArgumentException | IllegalAccessException e)
+                    {
+                        PokecubeMod.log(Level.WARNING, "Error updating " + f.getName(), e);
+                    }
+                }
+            }
+        }
+
         WorldProviderSecretBase.init(baseSizeFunction);
         for (String s : structureSubiomes)
         {
@@ -674,7 +703,7 @@ public class Config extends ConfigBase
                     }
                 }
             }
-            super.save();
+            toSave = true;
         }
         // TODO more internal variables
         for (String s : extraVars)
@@ -723,7 +752,7 @@ public class Config extends ConfigBase
                     }
                 }
             }
-            super.save();
+            toSave = true;
         }
 
         for (String s : mutationRates)
@@ -752,7 +781,7 @@ public class Config extends ConfigBase
         if (configDatabases.length != EnumDatabase.values().length)
         {
             configDatabases = new String[] { "", "", "" };
-            save();
+            toSave = true;
         }
 
         for (int i = 0; i < EnumDatabase.values().length; i++)
@@ -832,6 +861,11 @@ public class Config extends ConfigBase
         if (PokecubeDimensionManager.SECRET_BASE_TYPE != null)
         {
             PokecubeDimensionManager.SECRET_BASE_TYPE.setLoadSpawn(basesLoaded);
+        }
+
+        if (toSave)
+        {
+            this.save();
         }
     }
 
@@ -966,10 +1000,7 @@ public class Config extends ConfigBase
         {
             dimensionWhitelist[i] = dims.get(i);
         }
-        if (hasChanged())
-        {
-            super.save();
-        }
+        super.save();
     }
 
     public void seenMessage()

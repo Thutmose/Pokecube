@@ -52,6 +52,7 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     @SideOnly(Side.CLIENT)
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        reallyInitRGBA();
         if (customColour) return;
         if (particle == null)
         {

@@ -396,6 +396,23 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         float f5 = 0.0F;
         float f6 = 0.0F;
 
+        if (!entity.isRiding())
+        {
+            f5 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
+            f6 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTick);
+
+            if (entity.isChild())
+            {
+                f6 *= 3.0F;
+            }
+
+            if (f5 > 1.0F)
+            {
+                f5 = 1.0F;
+            }
+            f2 = f1 - f; // Forge: Fix MC-1207
+        }
+
         this.mainModel.setLivingAnimations(entity, f6, f5, partialTick);
         this.mainModel.setRotationAngles(f6, f5, f8, f2, f7, f4, entity);
 

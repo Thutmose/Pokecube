@@ -2,6 +2,7 @@ package pokecube.modelloader.client.render;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,6 +12,7 @@ import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
 import thut.api.maths.Vector3;
@@ -43,7 +45,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
         else return;
         if (set == null)
         {
-            System.err.println(entry);
+            PokecubeMod.log(Level.WARNING, "Error with model for " + entry);
             set = TabulaPackLoader.modelMap.get(entry.getBaseForme());
         }
         super.doRender(entity, x, y, z, entityYaw, partialTicks);

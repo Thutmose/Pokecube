@@ -339,7 +339,8 @@ public class GuiPokemob extends GuiContainer
             GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(zRenderAngle, 0.0F, 0.0F, 1.0F);
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, 1.5F, false);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0,
+                    Minecraft.getMinecraft().getRenderPartialTicks(), false);
             GL11.glPopMatrix();
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();

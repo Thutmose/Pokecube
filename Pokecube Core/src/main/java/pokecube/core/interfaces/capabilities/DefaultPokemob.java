@@ -41,6 +41,10 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
 {
     public DefaultPokemob()
     {
+        for (AIRoutine routine : AIRoutine.values())
+        {
+            setRoutineState(routine, routine.getDefault());
+        }
     }
 
     @Override

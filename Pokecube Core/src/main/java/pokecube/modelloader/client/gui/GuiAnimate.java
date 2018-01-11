@@ -340,8 +340,9 @@ public class GuiAnimate extends GuiScreen
         entity.onGround = ground;
 
         entity.ticksExisted = mc.player.ticksExisted;
-        entity.limbSwing += 0.5;
-        entity.limbSwingAmount = 0.5f;
+        entity.prevLimbSwingAmount = entity.limbSwingAmount % 1f;
+        entity.limbSwingAmount = entity.prevLimbSwingAmount + 0.01f;
+        entity.limbSwing += 0.1f;
 
         String arg = info.getText();
         try

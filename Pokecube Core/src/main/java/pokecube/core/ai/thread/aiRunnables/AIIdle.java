@@ -58,7 +58,7 @@ public class AIIdle extends AIBase
         {
             mob.setRoutineState(AIRoutine.AIRBORNE, true);
         }
-        else
+        else if (!tamed)
         {
             mob.setRoutineState(AIRoutine.AIRBORNE, false);
             v.set(x, y, z);

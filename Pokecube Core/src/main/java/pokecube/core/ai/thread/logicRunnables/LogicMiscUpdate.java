@@ -29,18 +29,18 @@ import thut.lib.CompatWrapper;
  * is out of combat. */
 public class LogicMiscUpdate extends LogicBase
 {
-    public static int    EXITCUBEDURATION  = 40;
-    private int          lastHadTargetTime = 0;
-    private int[]        flavourAmounts    = new int[5];
-    private PokedexEntry entry;
-    private String       particle          = null;
-    private int          particleIntensity = 80;
-    private int          particleCounter   = 0;
-    private boolean      reset             = false;
-    private boolean      initHome          = false;
-    private boolean      checkedEvol       = false;
-    private int          pathTimer         = 0;
-    Vector3              v                 = Vector3.getNewVector();
+    public static final int[] FLAVCOLOURS       = new int[] { 0xFFFF4932, 0xFF4475ED, 0xFFF95B86, 0xFF2EBC63,
+            0xFFEBCE36 };
+    public static int         EXITCUBEDURATION  = 40;
+    private int               lastHadTargetTime = 0;
+    private int[]             flavourAmounts    = new int[5];
+    private PokedexEntry      entry;
+    private String            particle          = null;
+    private boolean           reset             = false;
+    private boolean           initHome          = false;
+    private boolean           checkedEvol       = false;
+    private int               pathTimer         = 0;
+    Vector3                   v                 = Vector3.getNewVector();
 
     public LogicMiscUpdate(IPokemob entity)
     {
@@ -58,7 +58,7 @@ public class LogicMiscUpdate extends LogicBase
         {
             ((IShearable) entity).isShearable(null, entity.getEntityWorld(), entity.getPosition());
         }
-        
+
         if (!world.isRemote)
         {
             // Check that AI states are correct
@@ -124,10 +124,10 @@ public class LogicMiscUpdate extends LogicBase
         boolean randomV = false;
         Vector3 particleVelo = Vector3.getNewVector();
         boolean pokedex = false;
+        int particleIntensity = 100;
         if (pokemob.isShadow())
         {
             particle = "portal";
-            particleIntensity = 100;
         }
         particles:
         if (particle == null && entry.particleData != null)
@@ -203,32 +203,7 @@ public class LogicMiscUpdate extends LogicBase
             }
         }
         int[] args = {};
-        if (flavourAmounts[SWEET] > 0)
-        {
-            particle = "powder";
-            args = new int[] { 0xF85888 };
-        }
-        if (flavourAmounts[BITTER] > 0)
-        {
-            particle = "powder";
-            args = new int[] { 0x78C850 };
-        }
-        if (flavourAmounts[SPICY] > 0)
-        {
-            particle = "powder";
-            args = new int[] { 0xFF0000 };
-        }
-        if (flavourAmounts[DRY] > 0)
-        {
-            particle = "powder";
-            args = new int[] { 0x6890F0 };
-        }
-        if (flavourAmounts[SOUR] > 0)
-        {
-            particle = "powder";
-            args = new int[] { 0x78C850 };
-        }
-        if (particle != null && particleCounter++ <= particleIntensity)
+        if (particle != null && rand.nextInt(100) < particleIntensity)
         {
             if (!pokedex)
             {
@@ -245,9 +220,32 @@ public class LogicMiscUpdate extends LogicBase
                 particleVelo.scalarMultBy(0.25);
             }
             PokecubeMod.core.spawnParticle(entity.getEntityWorld(), particle, particleLoc, particleVelo, args);
-
         }
-        particleCounter = 0;
+        for (int i = 0; i < flavourAmounts.length; i++)
+        {
+            int var = flavourAmounts[i];
+            particleIntensity = var;
+            if (var > 0 && rand.nextInt(100) < particleIntensity)
+            {
+                if (!pokedex)
+                {
+                    float scale = entity.width * 2;
+                    Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5, rand.nextDouble(),
+                            rand.nextDouble() - 0.5);
+                    offset.scalarMultBy(scale);
+                    particleLoc.addTo(offset);
+                }
+                if (randomV)
+                {
+                    particleVelo.set(rand.nextDouble() - 0.5, rand.nextDouble() + entity.height / 2,
+                            rand.nextDouble() - 0.5);
+                    particleVelo.scalarMultBy(0.25);
+                }
+                args = new int[] { FLAVCOLOURS[i] };
+                particle = "powder";
+                PokecubeMod.core.spawnParticle(entity.getEntityWorld(), particle, particleLoc, particleVelo, args);
+            }
+        }
         particle = null;
     }
 
@@ -263,9 +261,15 @@ public class LogicMiscUpdate extends LogicBase
 
     private void checkEvolution()
     {
-
+        boolean evolving = pokemob.getPokemonAIState(EVOLVING);
         if (Tools.isSameStack(pokemob.getHeldItem(), PokecubeItems.getStack("everstone")))
         {
+            if (evolving)
+            {
+                pokemob.setPokemonAIState(EVOLVING, false);
+                pokemob.setEvolutionTicks(-1);
+                evolving = false;
+            }
             pokemob.setTraded(false);
         }
         int num = pokemob.getEvolutionTicks();
@@ -279,7 +283,6 @@ public class LogicMiscUpdate extends LogicBase
             checkedEvol = true;
             return;
         }
-        boolean evolving = pokemob.getPokemonAIState(EVOLVING);
         if (evolving)
         {
             if (num <= 0)
@@ -325,6 +328,11 @@ public class LogicMiscUpdate extends LogicBase
                 pokemob.getModifiers().outOfCombatReset();
                 pokemob.getMoveStats().reset();
             }
+        }
+        else
+        {
+            /** Angry pokemobs shouldn't decide to walk around. */
+            pokemob.setRoutineState(AIRoutine.AIRBORNE, true);
         }
 
         if (getAIState(IMoveConstants.TAMED, state) && (pokemob.getPokemonOwnerID() == null))

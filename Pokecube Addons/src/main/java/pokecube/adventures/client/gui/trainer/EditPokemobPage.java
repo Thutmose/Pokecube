@@ -689,7 +689,9 @@ public class EditPokemobPage extends Page
             int x = (parent.width - 256) / 2 + 80;
             int y = (parent.height - 160) / 2 + 40;
             float theta = 175;
+            pokemob.getEntity().prevRenderYawOffset = theta;
             pokemob.getEntity().renderYawOffset = theta;
+            pokemob.getEntity().prevRotationYawHead = theta;
             pokemob.getEntity().rotationYawHead = theta;
             GuiPokemob.renderMob(pokemob, x, y, 0, 0, 0, theta, 0, 1);
         }

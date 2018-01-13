@@ -229,7 +229,7 @@ public class PokedexEntry
             if (!rightTime)
             {
                 // TODO better way to choose current time.
-                double time = mob.getEntity().getEntityWorld().getWorldTime() / 24000d;
+                double time = (mob.getEntity().getEntityWorld().getWorldTime() % 24000) / 24000d;
                 rightTime = dayOnly ? day.contains(time)
                         : nightOnly ? night.contains(time) : duskOnly ? dusk.contains(time) : dawn.contains(time);
             }

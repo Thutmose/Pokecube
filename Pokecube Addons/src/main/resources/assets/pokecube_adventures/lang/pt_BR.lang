@@ -1,5 +1,17 @@
 ﻿#Pokecube Adventures translation
 
+pokemob.description.type=%1$s é um %2$s Pokemob. 
+pokemob.description.evolve.level=%1$s evolui para %2$s no Nível %3$s. 
+pokemob.description.evolve.item=%1$s evolui para %2$s quando dada uma %3$s. 
+pokemob.description.evolve.item.male=%1$s evolui para %2$s quando dada macho e um %3$s. 
+pokemob.description.evolve.item.female=%1$s evolui para %2$s quando dada uma fêmea e %3$s. 
+pokemob.description.evolve.traded=%1$s evolui para %2$s depois de ser Trocado. 
+pokemob.description.evolve.traded.item=%1$s evolui para %2$s depois de ser trocado, mantendo um %3$s. 
+pokemob.description.evolve.happy=%1$s evolui para %2$s quando Subiu de Nível,quando feliz. 
+pokemon.description.evolve.move=%1$s evolui para %2$s quando Subiu de Nível e sabe %3$s. 
+
+pokemob.description.evolve.from=%1$s evolui para %2$s.
+
 item.pokemobTarget.name=Objeto
 item.warplinker.name=Vinculador de Textura
 item.tm0.name=Máquina Técnica Vazia

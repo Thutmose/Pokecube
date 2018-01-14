@@ -25,7 +25,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.IAIRunnable;
 import thut.api.maths.Vector3;
@@ -226,7 +225,7 @@ public abstract class AIBase implements IAIRunnable
         @Override
         public boolean run(World world)
         {
-            IPokemob pokemob = PokecubeSerializer.getInstance().getPokemob(pokemobUid);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityByID(pokemobUid));
             if (pokemob == null) return false;
             pokemob.setPokemonAIState(state, value);
             return true;
@@ -530,7 +529,7 @@ public abstract class AIBase implements IAIRunnable
 
     protected void setPokemobAIState(IPokemob pokemob, int state, boolean value)
     {
-        addStateInfo(pokemob.getPokemonUID(), state, value);
+        addStateInfo(pokemob.getEntity().getEntityId(), state, value);
     }
 
     @Override

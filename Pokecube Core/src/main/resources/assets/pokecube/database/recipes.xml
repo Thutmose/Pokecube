@@ -76,38 +76,24 @@
         <Input id="minecraft:redstone" key="R"/>
     </Recipe>
     <Recipe map=" D ,DED, D ">//Mega Stone
-        <Output n="1" id="pokecube:megastone">
-            <tag>{pokemon:"megastone"}</tag>
-        </Output>
+        <Output n="1" id="pokecube:megastone"/>
         <Input id="minecraft:diamond" key="D"/>
         <Input id="minecraft:ender_eye" key="E"/>
     </Recipe>
     <Recipe map=" S ,I I, I ">//Mega Ring
-        <Output n="1" id="pokecube:megaring">
-            <tag>{type:"megaring"}</tag>
-        </Output>
-        <Input id="pokecube:megastone" key="S">
-            <tag>{pokemon:"megastone"}</tag>
-        </Input>
+        <Output n="1" id="pokecube:megaring"/>
+        <Input id="pokecube:megastone" key="S"/>
         <Input id="minecraft:iron_ingot" key="I"/>
     </Recipe>
     <Recipe map=" S ,L L, I ">//Mega Belt
-        <Output n="1" id="pokecube:megaring">
-            <tag>{type:"megabelt"}</tag>
-        </Output>
-        <Input id="pokecube:megastone" key="S">
-            <tag>{pokemon:"megastone"}</tag>
-        </Input>
+        <Output n="1" id="pokecube:megaring" d="1"/>
+        <Input id="pokecube:megastone" key="S"/>
         <Input id="minecraft:iron_ingot" key="I"/>
         <Input id="minecraft:leather" key="L"/>
     </Recipe>
     <Recipe shapeless="true">//Mega Hat
-        <Output n="1" id="pokecube:megaring">
-            <tag>{type:"megahat"}</tag>
-        </Output>
-        <Input id="pokecube:megastone" key="S">
-            <tag>{pokemon:"megastone"}</tag>
-        </Input>
+        <Output n="1" id="pokecube:megaring" d="2"/>
+        <Input id="pokecube:megastone" key="S"/>
         <Input id="minecraft:leather_helmet"/>
     </Recipe>
     <Recipe shapeless="true">//Emeralds -> Shards

@@ -18,6 +18,8 @@ import java.util.logging.Level;
 import javax.vecmath.Vector3f;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -30,6 +32,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
@@ -1858,5 +1862,81 @@ public class PokedexEntry
     public List<PokedexEntry> getRelated()
     {
         return related;
+    }
+
+    private ITextComponent description;
+
+    @SideOnly(Side.CLIENT)
+    public ITextComponent getDescription()
+    {
+        if (description == null)
+        {
+            PokedexEntry entry = this;
+            String typeString = WordUtils.capitalize(PokeType.getTranslatedName(entry.getType1()));
+            if (entry.getType2() != PokeType.unknown)
+                typeString += "/" + WordUtils.capitalize(PokeType.getTranslatedName(entry.getType2()));
+            String typeDesc = I18n.format("pokemob.description.type", entry.getTranslatedName(), typeString);
+            String evoString = null;
+            if (entry.canEvolve())
+            {
+                for (EvolutionData d : entry.evolutions)
+                {
+                    if (d.evolution == null) continue;
+                    PokedexEntry nex = d.evolution;
+                    String subEvo = "";
+                    if (d.level > 0)
+                    {
+                        subEvo = I18n.format("pokemob.description.evolve.level", entry.getTranslatedName(),
+                                nex.getTranslatedName(), d.level);
+                    }
+                    else if (!d.item.isEmpty() && d.gender == 0)
+                    {
+                        subEvo = I18n.format("pokemob.description.evolve.item", entry.getTranslatedName(),
+                                nex.getTranslatedName(), d.item.getDisplayName());
+                    }
+                    else if (!d.item.isEmpty() && d.gender == 1)
+                    {
+                        subEvo = I18n.format("pokemob.description.evolve.item.male", entry.getTranslatedName(),
+                                nex.getTranslatedName(), d.item.getDisplayName());
+                    }
+                    else if (!d.item.isEmpty() && d.gender == 2)
+                    {
+                        subEvo = I18n.format("pokemob.description.evolve.item.female", entry.getTranslatedName(),
+                                nex.getTranslatedName(), d.item.getDisplayName());
+                    }
+                    else if (d.traded && !d.item.isEmpty())
+                    {
+                        subEvo = I18n.format("pokemob.description.evolve.traded.item", entry.getTranslatedName(),
+                                nex.getTranslatedName(), d.item.getDisplayName());
+                    }
+                    else if (d.happy)
+                    {
+                        subEvo = I18n.format("pokemob.description.evolve.happy", entry.getTranslatedName(),
+                                nex.getTranslatedName());
+                    }
+                    else if (d.traded)
+                    {
+                        subEvo = I18n.format("pokemob.description.evolve.traded", entry.getTranslatedName(),
+                                nex.getTranslatedName());
+                    }
+                    else if (d.move != null && !d.move.isEmpty())
+                    {
+                        subEvo = I18n.format("pokemob.description.evolve.move", entry.getTranslatedName(),
+                                nex.getTranslatedName(), MovesUtils.getMoveName(d.move).getUnformattedText());
+                    }
+                    if (evoString == null) evoString = subEvo;
+                    else evoString = evoString + subEvo;
+                }
+            }
+            String descString = typeDesc;
+            if (evoString != null) descString = descString + "\n" + evoString;
+            if (entry.evolvesFrom != null)
+            {
+                descString = descString + "\n" + I18n.format("pokemob.description.evolve.from",
+                        entry.getTranslatedName(), entry.evolvesFrom.getTranslatedName());
+            }
+            description = new TextComponentString(descString);
+        }
+        return description;
     }
 }

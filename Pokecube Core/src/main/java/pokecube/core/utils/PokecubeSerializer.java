@@ -190,15 +190,12 @@ public class PokecubeSerializer
 
     private String                                     serverId;
 
-    private HashMap<Integer, IPokemob>                 pokemobsMap;
-
     private PokecubeSerializer(MinecraftServer server)
     {
         /** This data is saved to surface world's folder. */
         myWorld = PokecubeCore.proxy.getWorld();
         serverId = PokecubeCore.proxy.getFolderName();
         if (myWorld != null) saveHandler = myWorld.getSaveHandler();
-        pokemobsMap = new HashMap<Integer, IPokemob>();
         lastId = 0;
         meteors = new ArrayList<Vector3>();
         chunks = new HashMap<>();
@@ -258,14 +255,6 @@ public class PokecubeSerializer
         save();
     }
 
-    public void addPokemob(IPokemob mob)
-    {
-
-        if (pokemobsMap.containsKey(mob.getPokemonUID())) { return; }
-
-        pokemobsMap.put(mob.getPokemonUID(), mob);
-    }
-
     public boolean canMeteorLand(Vector3 location)
     {
         for (Vector3 v : meteors)
@@ -286,11 +275,6 @@ public class PokecubeSerializer
     public int getNextID()
     {
         return lastId++;
-    }
-
-    public IPokemob getPokemob(int uid)
-    {
-        return pokemobsMap.get(uid);
     }
 
     public boolean hasStarter(EntityPlayer player)
@@ -373,11 +357,6 @@ public class PokecubeSerializer
         }
     }
 
-    public void removePokemob(IPokemob mob)
-    {
-        pokemobsMap.remove(mob.getPokemonUID());
-    }
-
     public void save()
     {
         saveData();
@@ -454,7 +433,6 @@ public class PokecubeSerializer
     {
         nbttagcompound.setInteger(LASTUID, lastId);
         NBTTagList tagListMeteors = new NBTTagList();
-        // int num = 0;
         for (Vector3 v : meteors)
         {
             if (v != null && !v.isEmpty())

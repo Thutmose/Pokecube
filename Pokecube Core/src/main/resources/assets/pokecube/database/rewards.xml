@@ -33,9 +33,7 @@
         <Condition key="inspect-mastercube" mess="pokedex.inspect.mastercube" num="20" percent="true"/>
     </Reward>
     <Reward>// Shiny Charm
-        <Item n="1" id="pokecube:megastone">
-            <tag>{pokemon:"shiny_charm"}</tag>
-        </Item>
+        <Item n="1" id="pokecube:megastone" d="1"/>
         <Condition key="inspect-shinycharm" mess="pokedex.inspect.shinycharm" num="100" percent="true"/>
     </Reward>
 </Rewards>

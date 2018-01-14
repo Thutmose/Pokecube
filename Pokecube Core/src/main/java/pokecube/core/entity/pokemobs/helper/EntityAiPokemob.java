@@ -37,11 +37,11 @@ import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.ai.ILogicRunnable;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -601,7 +601,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         if (addedToChunk)
         {
-            PokecubeSerializer.getInstance().removePokemob(pokemobCap);
+            if (PokecubeMod.debug && pokemobCap.isPlayerOwned())
+            {
+                PokecubeMod.log("Setting Dead: " + this);
+            }
             if (pokemobCap.getHome() != null && pokemobCap.getHome().getY() > 0
                     && getEntityWorld().isAreaLoaded(pokemobCap.getHome(), 2))
             {

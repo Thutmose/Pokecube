@@ -330,7 +330,10 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             }
             getEntity().capturedDrops.clear();
             getEntity().captureDrops = false;
-            getEntity().setDead();
+
+            // Directly delete the mob
+            this.setPokemonOwner((UUID) null);
+            getEntity().getEntityWorld().removeEntityDangerously(getEntity());
         }
     }
 

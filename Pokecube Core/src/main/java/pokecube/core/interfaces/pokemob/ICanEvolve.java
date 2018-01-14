@@ -406,7 +406,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 evt = new EvolveEvent.Post(evo);
                 MinecraftForge.EVENT_BUS.post(evt);
                 // Kill old entity.
-                getEntity().setDead();
+                if (evo != this) getEntity().setDead();
                 return evo;
             }
             return null;
@@ -476,7 +476,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     evo.setAbility(evo.getPokedexEntry().getAbility(thisMob.getAbilityIndex(), evo));
 
                     // Kill old entity.
-                    thisEntity.setDead();
+                    if (evo != this) thisEntity.setDead();
                 }
                 return evo;
             }

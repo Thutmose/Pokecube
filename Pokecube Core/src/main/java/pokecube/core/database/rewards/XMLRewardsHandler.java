@@ -21,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.translation.LanguageMap;
@@ -211,9 +210,9 @@ public class XMLRewardsHandler
                 {
                     stack.setTagCompound(JsonToNBT.getTagFromJson(name));
                 }
-                catch (NBTException e)
+                catch (Exception e)
                 {
-                    e.printStackTrace();
+                    PokecubeMod.log(Level.WARNING, "Error with book for " + tagKey + " " + name, e);
                 }
                 return stack;
             }

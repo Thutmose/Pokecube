@@ -721,7 +721,7 @@ public class Database
             if (e.mobType == null)
             {
                 e.mobType = PokecubeMod.Type.NORMAL;
-                PokecubeMod.log(e + " Has no Mob Type");
+                if (PokecubeMod.debug) PokecubeMod.log(e + " Has no Mob Type");
             }
             if (e.type2 == null) e.type2 = PokeType.unknown;
             if (e.interactionLogic.actions.isEmpty())
@@ -1022,7 +1022,7 @@ public class Database
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
         }
     }
 
@@ -1054,8 +1054,7 @@ public class Database
                 }
                 catch (Exception e)
                 {
-                    System.err.println(name + " " + n);
-                    e.printStackTrace();
+                    PokecubeMod.log(Level.SEVERE, "Error with " + name + " " + n, e);
                 }
             }
             try
@@ -1072,7 +1071,7 @@ public class Database
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
             }
         }
     }
@@ -1105,8 +1104,7 @@ public class Database
                 }
                 catch (Exception e)
                 {
-                    System.err.println(name + " " + n);
-                    e.printStackTrace();
+                    PokecubeMod.log(Level.SEVERE, "Error with " + name + " " + n, e);
                 }
             }
             try
@@ -1123,7 +1121,7 @@ public class Database
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
             }
         }
     }

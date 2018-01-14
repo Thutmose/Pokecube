@@ -445,7 +445,6 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
                     {
                         System.out.println(this.getEntity().getClass());
                         Thread.dumpStack();
-                        entity.setDead();
                         info.entry = Database.missingno;
                         throw new RuntimeException("Error with Species!");
                     }

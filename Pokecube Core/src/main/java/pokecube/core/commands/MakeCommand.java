@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
@@ -15,6 +16,10 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -122,6 +127,7 @@ public class MakeCommand extends CommandBase
                             return;
                         }
                         IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+                        pokemob.specificSpawnInit();
                         Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
                         String ownerName = setToArgs(args, pokemob, index, offset);
                         if (ownerName != null && !ownerName.isEmpty())
@@ -137,7 +143,6 @@ public class MakeCommand extends CommandBase
                         }
                         temp.set(sender.getPosition()).addTo(offset);
                         temp.moveEntity(mob);
-                        pokemob.specificSpawnInit();
                         GeneticsManager.initMob(mob);
                         mob.getEntityWorld().spawnEntity(mob);
                         text = TextFormatting.GREEN + "Spawned " + pokemob.getPokemonDisplayName().getFormattedText();
@@ -223,8 +228,31 @@ public class MakeCommand extends CommandBase
      * @param mob
      * @param command
      * @return owner name for pokemob if needed. */
+    @SuppressWarnings("deprecation")
     public static String setToArgs(String[] args, IPokemob mob, int index, Vector3 offset, boolean initLevel)
     {
+        List<String> cleaned = Lists.newArrayList();
+        for (int i = index; i < args.length; i++)
+        {
+            String var = args[i];
+            if (var.startsWith("\'"))
+            {
+                for (int j = i + 1; i < args.length; j++)
+                {
+                    var = var + " " + args[j];
+                    if (args[j].endsWith("\'"))
+                    {
+                        var = var.replaceFirst("\'", "");
+                        var = var.substring(0, var.length() - 1);
+                        i = j;
+                        break;
+                    }
+                }
+            }
+            cleaned.add(var);
+        }
+        args = cleaned.toArray(new String[0]);
+
         int red, green, blue;
         red = green = blue = 255;
         int exp = 10;
@@ -240,11 +268,67 @@ public class MakeCommand extends CommandBase
             {
                 String[] vals = args[j].split(":");
                 String arg = vals[0];
+                if (arg.startsWith("\'"))
+                {
+                    arg = arg.substring(1, arg.length());
+                }
                 String val = "";
-                if (vals.length > 1) val = vals[1];
+                if (vals.length > 1)
+                {
+                    val = vals[1];
+                    for (int i = 2; i < vals.length; i++)
+                    {
+                        val = val + ":" + vals[i];
+                    }
+                }
+                if (val.endsWith("\'"))
+                {
+                    val = val.substring(0, arg.length() - 1);
+                }
                 if (arg.equalsIgnoreCase("s"))
                 {
                     mob.setShiny(true);
+                }
+                else if (arg.equalsIgnoreCase("item"))
+                {
+                    String[] args1 = val.split(" ");
+                    ItemStack itemstack = ItemStack.EMPTY;
+                    try
+                    {
+                        Item item = getItemByText(null, args1[0]);
+                        int i = args1.length >= 2 ? parseInt(args1[1], 1, item.getItemStackLimit()) : 1;
+                        int j1 = args1.length >= 3 ? parseInt(args1[2]) : 0;
+                        itemstack = new ItemStack(item, i, j1);
+
+                        if (args1.length >= 4)
+                        {
+                            String s = buildString(args1, 3);
+
+                            try
+                            {
+                                itemstack.setTagCompound(JsonToNBT.getTagFromJson(s));
+                            }
+                            catch (NBTException nbtexception)
+                            {
+                                throw new CommandException("commands.give.tagError",
+                                        new Object[] { nbtexception.getMessage() });
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        PokecubeMod.log(Level.WARNING, "Error with item for " + val, e);
+                    }
+                    /** Use this instead of isEmpty() to allow specifically
+                     * setting an air itemstack for clearing held items. */
+                    if (itemstack == ItemStack.EMPTY)
+                    {
+                        PokecubeMod.log(Level.WARNING, "No Item found for " + val);
+                    }
+                    else
+                    {
+                        mob.setHeldItem(itemstack);
+                    }
                 }
                 else if (arg.equalsIgnoreCase("l"))
                 {

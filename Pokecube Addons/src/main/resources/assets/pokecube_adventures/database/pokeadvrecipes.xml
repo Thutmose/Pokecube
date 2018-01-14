@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <Recipes>
-    <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Genesect" chance="0.1" priority="-1" remain="0">//Mew DNA
-        <Input id="pokecube:fossil">
-            <tag>{pokemon:"kabuto"}</tag>
-        </Input>
+    <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Genesect" chance="0.1" priority="-1" remain="0">//Genesect Genes from dome
+        <Input id="pokecube:fossil" d="1"/>
     </Recipe>
     <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Mew" chance="0.1" priority="-1" remain="0">//Mew DNA
         <Input id="pokecube_adventures:mewhair"/>
@@ -30,9 +28,7 @@
         <Input id="minecraft:redstone_block"/>
         <Input id="minecraft:iron_block"/>
         <Input id="minecraft:diamond_block"/>
-        <Input id="pokecube:fossil">
-            <tag>{pokemon:"kabuto"}</tag>
-        </Input>
+        <Input id="pokecube:fossil" d="1"/>
         <Input id="minecraft:potion">
             <tag>{Potion:"minecraft:strong_regeneration"}</tag>
         </Input>

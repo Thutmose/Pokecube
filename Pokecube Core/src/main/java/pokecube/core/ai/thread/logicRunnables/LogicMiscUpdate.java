@@ -19,7 +19,6 @@ import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -297,8 +296,6 @@ public class LogicMiscUpdate extends LogicBase
                 pokemob.setEvolutionTicks(-1);
             }
         }
-        if (PokecubeSerializer.getInstance().getPokemob(pokemob.getPokemonUID()) == null)
-            PokecubeSerializer.getInstance().addPokemob(pokemob);
     }
 
     private void checkAIStates()

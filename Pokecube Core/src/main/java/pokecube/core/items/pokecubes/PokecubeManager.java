@@ -292,7 +292,6 @@ public class PokecubeManager
                     pokemob.getEntity().setHealth(pokemob.getStat(Stats.HP, false));
                     ItemStack healed = pokemobToItem(pokemob);
                     stack.setTagCompound(healed.getTagCompound());
-                    pokemob.getEntity().setDead();
                 }
             }
             catch (Throwable e)

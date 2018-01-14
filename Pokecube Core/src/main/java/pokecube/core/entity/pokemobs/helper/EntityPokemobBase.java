@@ -39,7 +39,6 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Matrix3;
@@ -551,7 +550,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void writeSpawnData(ByteBuf data)
     {
-        PokecubeSerializer.getInstance().addPokemob(pokemobCap);
         super.writeSpawnData(data);
     }
 

@@ -1,27 +1,34 @@
 package pokecube.core.events.handlers;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.vecmath.Vector3f;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -29,6 +36,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -129,8 +137,9 @@ public class EventsHandlerClient
         }
     }
 
-    public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
-    static boolean                                notifier   = false;
+    public static HashMap<PokedexEntry, IPokemob>        renderMobs = new HashMap<PokedexEntry, IPokemob>();
+    private static Map<PokedexEntry, ResourceLocation[]> icons      = Maps.newHashMap();
+    static boolean                                       notifier   = false;
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {
@@ -437,14 +446,7 @@ public class EventsHandlerClient
                         j = slot.yPos + 10;
                         GL11.glPushMatrix();
                         GL11.glTranslatef(i + x, j + y, 0F);
-                        EntityLiving entity = pokemob.getEntity();
-                        entity.rotationYaw = -40;
-                        entity.rotationPitch = 0;
-                        entity.rotationYawHead = 0;
-                        pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
-                        entity.onGround = true;
-                        GL11.glScaled(0.5, 0.5, 0.5);
-                        renderMob(pokemob, event.getRenderPartialTicks(), false);
+                        renderIcon(pokemob, -8, -12, 16, 16);
                         GL11.glPopMatrix();
                     }
                 }
@@ -494,14 +496,7 @@ public class EventsHandlerClient
                     int y = (h - ySize);
                     GL11.glPushMatrix();
                     GL11.glTranslatef(i + x + 20 * l, j + y, 0F);
-                    EntityLiving entity = pokemob.getEntity();
-                    entity.rotationYaw = -40;
-                    entity.rotationPitch = 0;
-                    entity.rotationYawHead = 0;
-                    pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
-                    entity.onGround = true;
-                    GL11.glScaled(0.5, 0.5, 0.5);
-                    renderMob(pokemob, event.getPartialTicks(), false);
+                    renderIcon(pokemob, -8, -12, 16, 16);
                     GL11.glPopMatrix();
                 }
             }
@@ -531,6 +526,83 @@ public class EventsHandlerClient
         {
             GuiDisplayPokecubeInfo.instance().setMove(index);
         }
+    }
+
+    public static void renderIcon(PokedexEntry entry, int left, int top, int width, int height, boolean shiny)
+    {
+        ResourceLocation[] texs = icons.get(entry);
+        ResourceLocation tex = null;
+        if (texs != null) tex = texs[shiny ? 1 : 0];
+        if (tex == null)
+        {
+            texs = new ResourceLocation[2];
+            icons.put(entry, texs);
+            String texture = entry.getModId() + ":" + entry.getTexture((byte) 0).replace("/entity/", "/entity_icon/");
+            String textureS = entry.hasShiny ? texture.replace(".png", "s.png") : texture;
+            tex = new ResourceLocation(texture);
+            texs[0] = tex;
+            try
+            {
+                Minecraft.getMinecraft().getResourceManager().getResource(tex).getInputStream().close();
+                try
+                {
+                    ResourceLocation tex2 = new ResourceLocation(textureS);
+                    Minecraft.getMinecraft().getResourceManager().getResource(tex2).getInputStream().close();
+                    texs[1] = tex2;
+                }
+                catch (IOException e)
+                {
+                    texs[1] = tex;
+                }
+            }
+            catch (IOException e)
+            {
+                PokecubeMod.log(Level.WARNING, "no Icon for " + entry, e);
+            }
+        }
+        int colour = 0xFFFFFFFF;
+
+        int right = left + width;
+        int bottom = top + height;
+
+        if (left < right)
+        {
+            int i1 = left;
+            left = right;
+            right = i1;
+        }
+
+        if (top < bottom)
+        {
+            int j1 = top;
+            top = bottom;
+            bottom = j1;
+        }
+        Minecraft.getMinecraft().getTextureManager().bindTexture(tex);
+        float f3 = (float) (colour >> 24 & 255) / 255.0F;
+        float f = (float) (colour >> 16 & 255) / 255.0F;
+        float f1 = (float) (colour >> 8 & 255) / 255.0F;
+        float f2 = (float) (colour & 255) / 255.0F;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(f, f1, f2, f3);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos((double) left, (double) bottom, 0.0D).tex(0, 0).endVertex();
+        bufferbuilder.pos((double) right, (double) bottom, 0.0D).tex(1, 0).endVertex();
+        bufferbuilder.pos((double) right, (double) top, 0.0D).tex(1, 1).endVertex();
+        bufferbuilder.pos((double) left, (double) top, 0.0D).tex(0, 1).endVertex();
+        tessellator.draw();
+        GlStateManager.disableBlend();
+    }
+
+    public static void renderIcon(IPokemob realMob, int left, int top, int width, int height)
+    {
+        PokedexEntry entry = realMob.getPokedexEntry();
+        renderIcon(entry, left, top, width, height, realMob.isShiny());
     }
 
 }

@@ -1,30 +1,21 @@
 package pokecube.compat.jei.ingredients;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.vecmath.Vector3f;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.comands.Config;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
@@ -33,17 +24,11 @@ import pokecube.core.interfaces.IPokemob;
 
 public class PokedexEntryIngredientRenderer implements IIngredientRenderer<PokedexEntry>
 {
-    // Pokemobs that don't have an icon.
-    Set<PokedexEntry>                   manualRender = Sets.newHashSet();
-    // Has icons, so don't check.
-    Map<PokedexEntry, ResourceLocation> iconRender   = Maps.newHashMap();
-
     @Override
     public void render(Minecraft minecraft, int x, int y, PokedexEntry entry)
     {
         if (entry == null) return;
-
-        if (Config.instance.jeiModels || manualRender.contains(entry))
+        if (Config.instance.jeiModels)
         {
             IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
             if (pokemob == null)
@@ -82,65 +67,8 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
         }
         else
         {
-
-            ResourceLocation tex = iconRender.get(entry);
-            if (tex == null)
-            {
-                String texture = entry.getModId() + ":"
-                        + entry.getTexture((byte) 0).replace("/entity/", "/entity_icon/");
-                tex = new ResourceLocation(texture);
-                try
-                {
-                    Minecraft.getMinecraft().getResourceManager().getResource(tex).getInputStream().close();
-                }
-                catch (IOException e)
-                {
-                    manualRender.add(entry);
-                    return;
-                }
-                iconRender.put(entry, tex);
-            }
-            int colour = 0xFFFFFFFF;
-
-            int left = x;
-            int right = left + 16;
-            int top = y;
-            int bottom = y + 16;
-
-            if (left < right)
-            {
-                int i = left;
-                left = right;
-                right = i;
-            }
-
-            if (top < bottom)
-            {
-                int j = top;
-                top = bottom;
-                bottom = j;
-            }
-            minecraft.getTextureManager().bindTexture(tex);
-            float f3 = (float) (colour >> 24 & 255) / 255.0F;
-            float f = (float) (colour >> 16 & 255) / 255.0F;
-            float f1 = (float) (colour >> 8 & 255) / 255.0F;
-            float f2 = (float) (colour & 255) / 255.0F;
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                    GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
-                    GlStateManager.DestFactor.ZERO);
-            GlStateManager.color(f, f1, f2, f3);
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-            bufferbuilder.pos((double) left, (double) bottom, 0.0D).tex(0, 0).endVertex();
-            bufferbuilder.pos((double) right, (double) bottom, 0.0D).tex(1, 0).endVertex();
-            bufferbuilder.pos((double) right, (double) top, 0.0D).tex(1, 1).endVertex();
-            bufferbuilder.pos((double) left, (double) top, 0.0D).tex(0, 1).endVertex();
-            tessellator.draw();
-            GlStateManager.disableBlend();
+            EventsHandlerClient.renderIcon(entry, x, y, 16, 16, false);
         }
-
     }
 
     @Override

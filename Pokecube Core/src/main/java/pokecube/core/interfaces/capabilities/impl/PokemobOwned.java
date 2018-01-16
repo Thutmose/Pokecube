@@ -249,6 +249,9 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                 base.returnToPokecube();
                 return;
             }
+
+            if (PokecubeMod.debug) PokecubeMod.log("Recalling " + this.getEntity());
+
             /** If this has fainted, status should be reset. */
             if (getEntity().getHealth() <= 0)
             {
@@ -333,7 +336,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
 
             // Directly delete the mob
             this.setPokemonOwner((UUID) null);
-            getEntity().getEntityWorld().removeEntityDangerously(getEntity());
+            this.getEntity().setDead();
         }
     }
 

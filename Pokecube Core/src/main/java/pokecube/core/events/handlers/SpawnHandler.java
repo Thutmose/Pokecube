@@ -545,8 +545,10 @@ public final class SpawnHandler
         int ret = 0;
         if (!v.doChunksExist(world, 32)) return ret;
         int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
+        boolean player = Tools.isAnyPlayerInRange(radius, 10, world, v);
+        if (!player) return ret;
         int num = 0;
-        int height = v.getMaxY(world);
+        int height = world.getActualHeight();
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
                 box.grow(radius, Math.max(height, radius), radius));
@@ -554,8 +556,7 @@ public final class SpawnHandler
         {
             if (CapabilityPokemob.getPokemobFor(o) != null) num++;
         }
-        boolean player = Tools.isAnyPlayerInRange(radius, 10, world, v);
-        if (num > MAX_DENSITY * MAXNUM || !player) return ret;
+        if (num > MAX_DENSITY * MAXNUM) return ret;
         if (v.y < 0 || !checkNoSpawnerInArea(world, v.intX(), v.intY(), v.intZ())) return ret;
         refreshTerrain(v, world);
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, v);

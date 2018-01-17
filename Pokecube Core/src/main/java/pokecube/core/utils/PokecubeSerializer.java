@@ -426,7 +426,7 @@ public class PokecubeSerializer
             entity.getEntity().isDead = true;
             return item;
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     public void writeToNBT(NBTTagCompound nbttagcompound)

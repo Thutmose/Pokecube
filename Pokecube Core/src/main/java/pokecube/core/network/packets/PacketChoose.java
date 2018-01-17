@@ -128,7 +128,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
             for (StarterInfo i : starter)
             {
                 ItemStack stack;
-                if (i != null && !(stack = i.makeStack(player)).isEmpty())
+                if (!(stack = i.makeStack(player)).isEmpty())
                 {
                     items.add(stack);
                 }

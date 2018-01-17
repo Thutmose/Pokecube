@@ -135,7 +135,7 @@ public abstract class PokemobBase implements IPokemob
             dataManager.register(STATUSTIMERDW, Integer.valueOf(0));
             dataManager.register(ATTACKCOOLDOWN, Integer.valueOf(0));
 
-            dataManager.register(SPECIALINFO, Integer.valueOf(0));
+            dataManager.register(SPECIALINFO, Integer.valueOf(-1));
             dataManager.register(TRANSFORMEDTODW, Integer.valueOf(-1));
 
             dataManager.register(ZMOVECD, Integer.valueOf(-1));

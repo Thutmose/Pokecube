@@ -14,6 +14,7 @@ import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumFacing;
@@ -38,8 +39,8 @@ import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityAnimal implements IShearable,
-        IEntityOwnable, IMobColourable, IRangedAttackMob, IEntityAdditionalSpawnData, IJumpingMount
+public abstract class EntityTameablePokemob extends EntityAnimal implements IShearable, IEntityOwnable, IMobColourable,
+        IRangedAttackMob, IEntityAdditionalSpawnData, IJumpingMount
 {
 
     protected boolean              looksWithInterest;
@@ -168,7 +169,8 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IShe
             for (ItemStack stack : list)
             {
                 ItemStack toAdd = stack.copy();
-                if (pokemobCap.getPokedexEntry().dyeable) toAdd.setItemDamage(15 - pokemobCap.getSpecialInfo() & 15);
+                if (pokemobCap.getPokedexEntry().dyeable)
+                    toAdd.setItemDamage(EnumDyeColor.byDyeDamage(pokemobCap.getSpecialInfo() & 15).getMetadata());
                 ret.add(toAdd);
             }
             this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);

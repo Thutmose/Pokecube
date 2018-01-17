@@ -1333,6 +1333,7 @@ public class PokedexEntryLoader
                 {
                     entry.dyeable = Boolean.parseBoolean(value.split("#")[0]);
                     entry.defaultSpecial = Integer.parseInt(value.split("#")[1]);
+                    entry.defaultSpecials = Integer.parseInt(value.split("#")[2]);
                 }
             }
         }

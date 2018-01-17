@@ -232,6 +232,8 @@ public class MakeCommand extends CommandBase
     public static String setToArgs(String[] args, IPokemob mob, int index, Vector3 offset, boolean initLevel)
     {
         List<String> cleaned = Lists.newArrayList();
+        for (int i = 0; i < index; i++)
+            cleaned.add(args[i]);
         for (int i = index; i < args.length; i++)
         {
             String var = args[i];
@@ -261,6 +263,7 @@ public class MakeCommand extends CommandBase
         int mindex = 0;
         boolean asWild = false;
         String ownerName = "";
+        System.out.println(index + " " + Arrays.toString(args));
 
         if (index < args.length)
         {

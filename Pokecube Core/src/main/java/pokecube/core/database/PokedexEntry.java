@@ -687,6 +687,10 @@ public class PokedexEntry
      * recolourable parts */
     @CopyToGender
     public int                                  defaultSpecial   = 0;
+    /** Default value of specialInfo for shiny variants, used to determine
+     * default colour of recolourable parts */
+    @CopyToGender
+    public int                                  defaultSpecials  = 0;
     @CopyToGender
     public Map<ItemStack, Float>                drops            = Maps.newHashMap();
     /** If the IPokemob supports this, then this will be the loot table used for

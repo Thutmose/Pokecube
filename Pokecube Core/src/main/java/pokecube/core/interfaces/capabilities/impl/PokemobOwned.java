@@ -160,7 +160,12 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public int getSpecialInfo()
     {
-        return dataManager.get(params.SPECIALINFO);
+        int info = dataManager.get(params.SPECIALINFO);
+        if (info == -1)
+        {
+            info = isShiny() ? getPokedexEntry().defaultSpecials : getPokedexEntry().defaultSpecial;
+        }
+        return info;
     }
 
     @Override
@@ -437,7 +442,6 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             if (!getEntity().getEntityData().getBoolean("initSpawn"))
             {
                 pokemob.setHeldItem(pokemob.wildHeldItem(getEntity()));
-                setSpecialInfo(pokemob.getPokedexEntry().defaultSpecial);
                 if (pokemob instanceof PokemobOwned) ((PokemobOwned) pokemob).updateHealth();
                 pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
                 return pokemob;

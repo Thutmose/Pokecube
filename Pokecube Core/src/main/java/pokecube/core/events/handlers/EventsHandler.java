@@ -80,6 +80,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.properties.GuardAICapability;
@@ -623,8 +624,13 @@ public class EventsHandler
             // is Dyeable
             if (CompatWrapper.isValid(held) && entry.dyeable)
             {
-                if (held.getItem() == Items.DYE)
+                if (OreDictionary.itemMatches(held, new ItemStack(Items.DYE, 1, OreDictionary.WILDCARD_VALUE), false))
                 {
+                    int[] ids = OreDictionary.getOreIDs(held);
+                    for (int i : ids)
+                    {
+                        System.out.println(OreDictionary.getOreName(i));
+                    }
                     pokemob.setSpecialInfo(held.getItemDamage());
                     CompatWrapper.increment(held, -1);
                     evt.setCanceled(true);

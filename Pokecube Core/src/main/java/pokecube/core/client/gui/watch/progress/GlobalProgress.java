@@ -1,15 +1,23 @@
 package pokecube.core.client.gui.watch.progress;
 
 import java.io.IOException;
+import java.util.List;
+
+import com.google.common.base.Predicate;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.gui.watch.GuiPokeWatch;
 import pokecube.core.client.gui.watch.util.PageButton;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.packets.PacketPokedex;
 
 public class GlobalProgress extends Progress
@@ -39,6 +47,20 @@ public class GlobalProgress extends Progress
         String killLine = I18n.format("pokewatch.progress.global.killed", killed1, killed0);
         String hatchLine = I18n.format("pokewatch.progress.global.hatched", hatched1, hatched0);
 
+        AxisAlignedBB centre = watch.player.getEntityBoundingBox();
+        AxisAlignedBB bb = centre.grow(PokecubeMod.core.getConfig().maxSpawnRadius, 5,
+                PokecubeMod.core.getConfig().maxSpawnRadius);
+        List<Entity> otherMobs = watch.player.getEntityWorld().getEntitiesInAABBexcluding(watch.player, bb,
+                new Predicate<Entity>()
+                {
+                    @Override
+                    public boolean apply(Entity input)
+                    {
+                        return input instanceof EntityAnimal && CapabilityPokemob.getPokemobFor(input) != null;
+                    }
+                });
+        String nearbyLine = I18n.format("pokewatch.progress.global.nearby", otherMobs.size());
+
         int x = watch.width / 2;
         int y = watch.height / 2 - 5;
         this.watch.getButtons().add(button = new PageButton(watch.getButtons().size(), x - 50, y + 57, 100, 12,
@@ -58,6 +80,11 @@ public class GlobalProgress extends Progress
         {
             lines.add(line);
         }
+        lines.add("");
+        for (String line : fontRender.listFormattedStringToWidth(nearbyLine, 120))
+        {
+            lines.add(line);
+        }
     }
 
     @Override
@@ -66,20 +93,6 @@ public class GlobalProgress extends Progress
         if (button.id == this.button.id)
         {
             PacketPokedex.sendInspectPacket(true, FMLClientHandler.instance().getCurrentLanguage());
-        }
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-        int x = (watch.width - 160) / 2 + 80;
-        int y = (watch.height - 160) / 2 + 30;
-        int dy = 0;
-        int colour = 0xFFFFFFFF;
-        for (String s : lines)
-        {
-            this.drawCenteredString(fontRender, s, x, y + dy, colour);
-            dy += fontRender.FONT_HEIGHT;
         }
     }
 

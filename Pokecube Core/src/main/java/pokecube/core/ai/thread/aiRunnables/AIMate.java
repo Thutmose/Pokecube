@@ -12,10 +12,10 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.IHasMobAIStates;
 import pokecube.core.utils.PokeType;
@@ -188,37 +188,36 @@ public class AIMate extends AIBase
         boolean gendered = pokemob.getSexe() == IPokemob.MALE || pokemob.getSexe() == IPokemob.FEMALE;
         for (int i = 0; i < targetMates.size(); i++)
         {
-            IPokemob entityanimal = CapabilityPokemob.getPokemobFor(targetMates.get(i));
+            IPokemob otherPokemob = CapabilityPokemob.getPokemobFor(targetMates.get(i));
             EntityAnimal animal = (EntityAnimal) targetMates.get(i);
-            if (gendered && !transforms && entityanimal.getSexe() != pokemob.getSexe()) continue;
-            if (entityanimal == this || entityanimal.getPokemonAIState(IMoveConstants.TAMED) != pokemob
-                    .getPokemonAIState(IMoveConstants.TAMED) || !entityanimal.getPokedexEntry().breeds)
+            if (gendered && !transforms && otherPokemob.getSexe() == pokemob.getSexe()) continue;
+            if (otherPokemob == this.pokemob || otherPokemob.getPokemonAIState(IMoveConstants.TAMED) != pokemob
+                    .getPokemonAIState(IMoveConstants.TAMED) || !otherPokemob.getPokedexEntry().breeds)
                 continue;
             boolean otherTransforms = false;
-            for (String s : entityanimal.getMoves())
+            for (String s : otherPokemob.getMoves())
             {
                 if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) otherTransforms = true;
             }
 
-            if (transforms && otherTransforms || !(entityanimal.getEntity() instanceof EntityAnimal)) continue;
+            if (transforms && otherTransforms || !(otherPokemob.getEntity() instanceof EntityAnimal)) continue;
 
-            boolean validMate = pokemob.canMate((EntityAnimal) entityanimal.getEntity());
+            boolean validMate = pokemob.canMate((EntityAnimal) otherPokemob.getEntity());
             if (!validMate
-                    || entity.getDistanceSqToEntity(entityanimal.getEntity()) > searchingLoveDist * searchingLoveDist)
+                    || entity.getDistanceSqToEntity(otherPokemob.getEntity()) > searchingLoveDist * searchingLoveDist)
+                continue;
+            if (!Vector3.isVisibleEntityFromEntity(entity, otherPokemob.getEntity())
+                    || otherPokemob.getPokemonAIState(IMoveConstants.ANGRY))
                 continue;
 
-            if (!Vector3.isVisibleEntityFromEntity(entity, entityanimal.getEntity())
-                    || entityanimal.getPokemonAIState(IMoveConstants.ANGRY))
-                continue;
-
-            if (entityanimal != this && animal.getHealth() > animal.getMaxHealth() / 1.5f)
+            if (otherPokemob != this && animal.getHealth() > animal.getMaxHealth() / 1.5f)
             {
-                if (!pokemob.getMalesForBreeding().contains(entityanimal))
+                if (!pokemob.getMalesForBreeding().contains(otherPokemob))
                 {
-                    entityanimal.setLover(entity);
+                    otherPokemob.setLover(entity);
                     if (transforms) pokemob.setLover(animal);
-                    pokemob.getMalesForBreeding().add(entityanimal);
-                    entityanimal.setLoveTimer(200);
+                    pokemob.getMalesForBreeding().add(otherPokemob);
+                    otherPokemob.setLoveTimer(200);
                 }
             }
         }

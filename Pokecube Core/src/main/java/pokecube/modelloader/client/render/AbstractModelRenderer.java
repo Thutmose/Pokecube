@@ -53,7 +53,8 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
         if (!checkedForSleep)
         {
             checkedForSleep = true;
-            hasSleepAnimation = hasAnimation("sleeping") || hasAnimation("sleep") || hasAnimation("asleep");
+            hasSleepAnimation = hasAnimation("sleeping", par1EntityLiving) || hasAnimation("sleep", par1EntityLiving)
+                    || hasAnimation("asleep", par1EntityLiving);
         }
         if (par1EntityLiving.getHealth() <= 0)
         {

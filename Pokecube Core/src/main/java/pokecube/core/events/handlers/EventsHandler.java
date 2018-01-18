@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.vecmath.Vector3f;
@@ -33,6 +34,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -624,15 +626,26 @@ public class EventsHandler
             // is Dyeable
             if (CompatWrapper.isValid(held) && entry.dyeable)
             {
-                if (OreDictionary.itemMatches(held, new ItemStack(Items.DYE, 1, OreDictionary.WILDCARD_VALUE), false))
+                int[] ids = OreDictionary.getOreIDs(held);
+                EnumDyeColor dye = null;
+                ids:
+                for (int i : ids)
                 {
-                    int[] ids = OreDictionary.getOreIDs(held);
-                    for (int i : ids)
+                    String dict = OreDictionary.getOreName(i);
+                    for (EnumDyeColor colour : EnumDyeColor.values())
                     {
-                        System.out.println(OreDictionary.getOreName(i));
+                        if (dict.toLowerCase(Locale.ENGLISH)
+                                .equals("dye" + colour.getUnlocalizedName().toLowerCase(Locale.ENGLISH)))
+                        {
+                            dye = colour;
+                            break ids;
+                        }
                     }
-                    pokemob.setSpecialInfo(held.getItemDamage());
-                    CompatWrapper.increment(held, -1);
+                }
+                if (dye != null && (entry.validDyes.isEmpty() || entry.validDyes.contains(dye)))
+                {
+                    pokemob.setSpecialInfo(dye.getDyeDamage());
+                    if (!player.capabilities.isCreativeMode) CompatWrapper.increment(held, -1);
                     evt.setCanceled(true);
                     return;
                 }

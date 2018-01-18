@@ -37,6 +37,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -1331,9 +1332,66 @@ public class PokedexEntryLoader
                 if (keyString.equals("stationary")) entry.isStationary = Boolean.parseBoolean(value);
                 if (keyString.equals("dye"))
                 {
-                    entry.dyeable = Boolean.parseBoolean(value.split("#")[0]);
-                    entry.defaultSpecial = Integer.parseInt(value.split("#")[1]);
-                    entry.defaultSpecials = Integer.parseInt(value.split("#")[2]);
+                    String[] args = value.split("#");
+                    entry.dyeable = Boolean.parseBoolean(args[0]);
+                    if (args.length > 1)
+                    {
+                        String defaultSpecial = args[1];
+                        try
+                        {
+                            entry.defaultSpecial = Integer.parseInt(defaultSpecial);
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            for (EnumDyeColor dye : EnumDyeColor.values())
+                            {
+                                if (dye.name().equals(defaultSpecial) || dye.getName().equals(defaultSpecial)
+                                        || dye.getUnlocalizedName().equals(defaultSpecial))
+                                {
+                                    entry.defaultSpecial = dye.getDyeDamage();
+                                    break;
+                                }
+                            }
+                        }
+                        if (args.length > 2)
+                        {
+                            defaultSpecial = args[2];
+                            try
+                            {
+                                entry.defaultSpecial = Integer.parseInt(defaultSpecial);
+                            }
+                            catch (NumberFormatException e)
+                            {
+                                for (EnumDyeColor dye : EnumDyeColor.values())
+                                {
+                                    if (dye.name().equals(defaultSpecial) || dye.getName().equals(defaultSpecial)
+                                            || dye.getUnlocalizedName().equals(defaultSpecial))
+                                    {
+                                        entry.defaultSpecials = dye.getDyeDamage();
+                                        break;
+                                    }
+                                }
+                            }
+                            if (args.length > 3)
+                            {
+                                defaultSpecial = args[3];
+                                args = defaultSpecial.split(",");
+                                for (String s : args)
+                                {
+                                    for (EnumDyeColor dye : EnumDyeColor.values())
+                                    {
+                                        if (dye.name().equals(s) || dye.getName().equals(s)
+                                                || dye.getUnlocalizedName().equals(s))
+                                        {
+                                            entry.validDyes.add(dye);
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
                 }
             }
         }

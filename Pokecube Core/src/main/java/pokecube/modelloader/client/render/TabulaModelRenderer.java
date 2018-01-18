@@ -52,23 +52,11 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     }
 
     @Override
-    public boolean hasAnimation(String phase)
+    public boolean hasAnimation(String phase, Entity entity)
     {
         ModelJson modelj = null;
         if (set != null) modelj = set.parser.modelMap.get(set.model);
         return set.loadedAnimations.containsKey(phase) || (modelj != null && modelj.animationMap.containsKey(phase));
-    }
-
-    @Override
-    public void setAnimation(String phase)
-    {
-        model.phase = phase;
-    }
-
-    @Override
-    public String getAnimation()
-    {
-        return model.phase;
     }
 
     @Override

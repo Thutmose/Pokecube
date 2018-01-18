@@ -225,13 +225,17 @@ public class GuiPokemob extends GuiContainer
                 renderMob.getEntity().onGround = true;
 
                 int x = this.x + width / 2 - 2;
-                int y = this.y + height / 2 + 11;
-                double scale = 1.5f;
+                int y = this.y + height / 2 + 7;
+                double scale = 0.9f;
                 GL11.glPushMatrix();
-                GL11.glTranslatef(x, y, 0F);
+                GL11.glTranslatef(x, y, 10F);
                 GL11.glRotated(90, 0, 1, 0);
                 GL11.glScaled(scale, scale, scale);
+                GlStateManager.enableDepth();
                 renderMob.getEntity().ticksExisted = mc.player.ticksExisted;
+                renderMob.getEntity().renderYawOffset = 0;
+                renderMob.getEntity().prevRenderYawOffset = 0;
+                renderMob.getEntity().rotationYawHead = 0;
                 renderMob.getEntity().rotationYawHead = 0;
                 renderMob.getEntity().prevRotationYawHead = 0;
                 renderMob.getEntity().rotationYaw = 0;
@@ -243,7 +247,7 @@ public class GuiPokemob extends GuiContainer
                         || (o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
                 {
                     RenderAdvancedPokemobModel<?> render = (RenderAdvancedPokemobModel<?>) o;
-                    if (id == StanceHandler.BUTTONTOGGLESIT)
+                    if (id == StanceHandler.BUTTONTOGGLESTAY)
                     {
                         if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
                         {

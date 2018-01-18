@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -218,8 +219,8 @@ public class ModPokecubeML implements IMobProvider
             ModPokecubeML.sort(vars);
             for (String s : vars)
             {
-                String var = proxy.notFound.get(s);
-                if (var != null && !var.trim().contains("null")) PokecubeMod.log("No " + s + " found in " + var);
+                String var = "No " + s + " found in " + proxy.notFound.get(s);
+                if (var != null && !var.toLowerCase(Locale.ENGLISH).trim().contains("null")) PokecubeMod.log(var);
             }
             proxy.notFound.clear();
         }
@@ -256,7 +257,7 @@ public class ModPokecubeML implements IMobProvider
             });
             for (String s : vars)
             {
-                PokecubeMod.log("No " + s + " found in " + proxy.notFound.get(s));
+                PokecubeMod.log(s + " Located and Registered.");
             }
         }
     }

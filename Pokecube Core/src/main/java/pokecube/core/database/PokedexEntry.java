@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.vecmath.Vector3f;
@@ -22,11 +23,13 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -619,10 +622,12 @@ public class PokedexEntry
         }
     }
 
-    public static TimePeriod dawn  = new TimePeriod(0.85, 0.05);
-    public static TimePeriod day   = new TimePeriod(0.0, 0.5);
-    public static TimePeriod dusk  = new TimePeriod(0.45, 0.65);
-    public static TimePeriod night = new TimePeriod(0.6, 0.9);
+    public static TimePeriod          dawn  = new TimePeriod(0.85, 0.05);
+    public static TimePeriod          day   = new TimePeriod(0.0, 0.5);
+    public static TimePeriod          dusk  = new TimePeriod(0.45, 0.65);
+    public static TimePeriod          night = new TimePeriod(0.6, 0.9);
+
+    private static final PokedexEntry BLANK = new PokedexEntry(true);
 
     private static void addFromEvolution(PokedexEntry a, PokedexEntry b)
     {
@@ -701,6 +706,9 @@ public class PokedexEntry
      * if the mob can be dyed */
     @CopyToGender
     public boolean                              dyeable          = false;
+    /** A Set of valid dye colours, if empty, any dye is valid. */
+    @CopyToGender
+    public Set<EnumDyeColor>                    validDyes        = Sets.newHashSet();
     @CopyToGender
     SoundEvent                                  event;
     @CopyToGender
@@ -883,6 +891,14 @@ public class PokedexEntry
 
     /** Cached trimmed name. */
     private String                              trimmedName;
+
+    /** This constructor is used for making blank entry for copy comparisons.
+     * 
+     * @param blank */
+    private PokedexEntry(boolean blank)
+    {
+        // Nothing
+    }
 
     public PokedexEntry(int nb, String name)
     {
@@ -1080,7 +1096,7 @@ public class PokedexEntry
                 try
                 {
                     f.setAccessible(true);
-                    f.set(forme, f.get(this));
+                    if (isSame(f, forme, BLANK)) f.set(forme, f.get(this));
                 }
                 catch (Exception e)
                 {
@@ -1088,6 +1104,17 @@ public class PokedexEntry
                 }
             }
         }
+    }
+
+    private boolean isSame(Field field, Object one, Object two) throws Exception
+    {
+        if (one == two) return true;
+        field.setAccessible(true);
+        Object a = field.get(one);
+        Object b = field.get(two);
+        if (a == b) return true;
+        if (a != null) return a.equals(b);
+        return false;
     }
 
     public boolean floats()

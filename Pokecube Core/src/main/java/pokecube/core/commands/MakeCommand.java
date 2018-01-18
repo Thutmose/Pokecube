@@ -263,7 +263,7 @@ public class MakeCommand extends CommandBase
         int mindex = 0;
         boolean asWild = false;
         String ownerName = "";
-        System.out.println(index + " " + Arrays.toString(args));
+        if (PokecubeMod.debug) PokecubeMod.log("Making by Arguments: " + index + " " + Arrays.toString(args));
 
         if (index < args.length)
         {

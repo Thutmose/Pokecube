@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.vecmath.Vector3f;
-
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -26,8 +24,10 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.network.packets.PacketPokedex;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.ClientProxy;
 import pokecube.modelloader.client.render.TextureHelper;
@@ -203,6 +203,7 @@ public class GuiAnimate extends GuiScreen
         {
             IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
             if (pokemob == null) return;
+            PacketPokedex.updateWatchEntry(entry);
             if (button.id == 13)
             {
                 if (pokemob.getSexe() == IPokemob.MALE)
@@ -295,10 +296,7 @@ public class GuiAnimate extends GuiScreen
         float zLevel = 800;
         GL11.glPushMatrix();
         GlStateManager.translate(xOffset + shift[0], yOffset + shift[1], zLevel);
-        float mobScale = 1;
-        Vector3f dims = pokemob.getPokedexEntry().getModelSize();
-        double size = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
-        double scale = 8 * this.scale / Math.sqrt(size);
+        double scale = 5;
 
         GL11.glScaled(scale, scale, scale);
 
@@ -330,6 +328,7 @@ public class GuiAnimate extends GuiScreen
 
         EntityLiving entity = pokemob.getEntity();
         entity.renderYawOffset = 0F;
+        entity.prevRenderYawOffset = 0F;
         entity.rotationYaw = 0;
         entity.prevRotationPitch = xHeadRenderAngle;
         entity.rotationPitch = xHeadRenderAngle;
@@ -418,6 +417,7 @@ public class GuiAnimate extends GuiScreen
      * cleared beforehand. */
     public void initGui()
     {
+        super.initGui();
         int yOffset = height / 2;
         int xOffset = width / 2;
         pokedexNb = Pokedex.getInstance().getFirstEntry().getPokedexNb();
@@ -425,7 +425,10 @@ public class GuiAnimate extends GuiScreen
         anim.setText("idle");
         state = new GuiTextField(0, fontRenderer, width - 101, yOffset + 43 - yOffset / 2, 100, 10);
         forme = new GuiTextField(0, fontRenderer, width - 101, yOffset + 73 - yOffset / 2, 100, 10);
-        if (mob.isEmpty()) mob = Pokedex.getInstance().getFirstEntry().getName();
+        mob = PokecubePlayerDataHandler.getCustomDataTag(mc.player).getString("WEntry");
+        PokedexEntry entry = Database.getEntry(mob);
+        if (entry == null) mob = Pokedex.getInstance().getFirstEntry().getName();
+        else mob = entry.getName();
         forme.setText(mob);
         info = new GuiTextField(0, fontRenderer, width - 21, yOffset + 28 - yOffset / 2, 20, 10);
         yOffset += 0;

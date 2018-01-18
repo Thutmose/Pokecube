@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,6 +25,7 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -443,7 +446,66 @@ public class AnimationLoader
                 {
                     animator = new PokemobAnimationChanger();
                 }
-                animator.dyeables.addAll(dye);
+                for (String s : dye)
+                {
+                    String[] args = s.split("#");
+                    animator.dyeables.add(args[0]);
+                    if (args.length > 1)
+                    {
+                        try
+                        {
+
+                            String[] funcs = args[1].split(",");
+                            final Map<Integer, Integer> colMap = Maps.newHashMap();
+                            for (String var : funcs)
+                            {
+                                String[] map = var.split("-");
+                                EnumDyeColor first = null;
+                                for (EnumDyeColor temp : EnumDyeColor.values())
+                                {
+                                    if (temp.name().equals(map[0]) || temp.getName().equals(map[0])
+                                            || temp.getUnlocalizedName().equals(map[0]))
+                                    {
+                                        first = temp;
+                                        break;
+                                    }
+                                }
+                                EnumDyeColor second = null;
+                                for (EnumDyeColor temp : EnumDyeColor.values())
+                                {
+                                    if (temp.name().equals(map[1]) || temp.getName().equals(map[1])
+                                            || temp.getUnlocalizedName().equals(map[1]))
+                                    {
+                                        second = temp;
+                                        break;
+                                    }
+                                }
+                                if (first == null || second == null)
+                                {
+                                    PokecubeMod.log("Error with colour map of " + var + " for " + model.name);
+                                    continue;
+                                }
+                                colMap.put(first.getDyeDamage(), second.getDyeDamage());
+                            }
+
+                            Function<Integer, Integer> colourFunc = new Function<Integer, Integer>()
+                            {
+                                @Override
+                                public Integer apply(Integer t)
+                                {
+                                    if (colMap.containsKey(t)) return colMap.get(t);
+                                    return t;
+                                }
+                            };
+                            animator.colourOffsets.put(args[0], colourFunc);
+                        }
+                        catch (Exception e)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 animator.shearables.addAll(shear);
                 Set<Animation> anims = Sets.newHashSet();
                 // TODO init animations here.

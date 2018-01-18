@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -111,13 +112,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
         return ret;
     }
 
-    @Override
-    public boolean hasAnimation(String phase)
-    {
-        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase)
-                || model.imodel.getBuiltInAnimations().contains(phase);
-    }
-
     private void initModelParts()
     {
         if (model == null) return;
@@ -133,9 +127,10 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     }
 
     @Override
-    public void setAnimation(String phase)
+    public boolean hasAnimation(String phase, Entity entity)
     {
-        currentPhase = phase;
+        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase)
+                || model.imodel.getBuiltInAnimations().contains(phase);
     }
 
     public void updateModel(HashMap<String, ArrayList<Vector5>> global, ModelHolder model)
@@ -144,12 +139,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
         this.texture = model.texture;
         initModelParts();
         this.global = global;
-    }
-
-    @Override
-    public String getAnimation()
-    {
-        return currentPhase;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package pokecube.modelloader.client.render;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
@@ -18,9 +21,17 @@ import thut.core.client.render.tabula.components.Animation;
 
 public class PokemobAnimationChanger implements IAnimationChanger
 {
-    final IAnimationChanger  parent;
-    public final Set<String> shearables = Sets.newHashSet();
-    public final Set<String> dyeables   = Sets.newHashSet();
+    final IAnimationChanger                              parent;
+    /** These parts can be sheared off. */
+    public final Set<String>                             shearables    = Sets.newHashSet();
+    /** These parts are dyed based on the specialInfo of the pokemob; */
+    public final Set<String>                             dyeables      = Sets.newHashSet();
+    /** These parts get a specific colour offset from the default colour of the
+     * specialInfo. */
+    public final Map<String, Function<Integer, Integer>> colourOffsets = Maps.newHashMap();
+    /** This is a cache of which parts have been checked for being a
+     * wildcard. */
+    private final Set<String>                            checkWildCard = Sets.newHashSet();
 
     public PokemobAnimationChanger()
     {
@@ -32,14 +43,46 @@ public class PokemobAnimationChanger implements IAnimationChanger
         this.parent = null;
     }
 
+    private void checkWildCard(String partIdentifier)
+    {
+        if (!checkWildCard.contains(partIdentifier))
+        {
+            checkWildCard.add(partIdentifier);
+            for (String s : dyeables)
+            {
+                if (s.startsWith("*") && partIdentifier.matches(s.substring(1)))
+                {
+                    dyeables.add(partIdentifier);
+                    if (colourOffsets.containsKey(s))
+                    {
+                        colourOffsets.put(partIdentifier, colourOffsets.get(s));
+                    }
+                    break;
+                }
+            }
+            for (String s : shearables)
+            {
+                if (s.startsWith("*") && partIdentifier.matches(s.substring(1)))
+                {
+                    dyeables.add(partIdentifier);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     public int getColourForPart(String partIdentifier, Entity entity, int default_)
     {
+        checkWildCard(partIdentifier);
         if (dyeables.contains(partIdentifier))
         {
             int rgba = 0xFF000000;
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
-            rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getColorValue();
+            Function<Integer, Integer> offset = colourOffsets.get(partIdentifier);
+            int colour = pokemob.getSpecialInfo() & 15;
+            if (offset != null) colour = offset.apply(colour);
+            rgba += EnumDyeColor.byDyeDamage(colour).getColorValue();
             return rgba;
         }
         if (parent != null) return parent.getColourForPart(partIdentifier, entity, default_);
@@ -54,6 +97,7 @@ public class PokemobAnimationChanger implements IAnimationChanger
         {
             mask = parent.isPartHidden(part, entity, default_);
         }
+        checkWildCard(part);
         if (shearables.contains(part)) { return !((IShearable) entity).isShearable(new ItemStack(Items.SHEARS),
                 entity.getEntityWorld(), entity.getPosition()); }
         return default_ || mask;

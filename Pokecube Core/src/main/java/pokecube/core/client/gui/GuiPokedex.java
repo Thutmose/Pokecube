@@ -195,32 +195,28 @@ public class GuiPokedex extends GuiScreen
             pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 1);
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
             initList();
-            // TODO send the same thing watch does to update selected
-            // pokemob.
+            PacketPokedex.updateWatchEntry(pokedexEntry);
         }
         else if (button == 2)
         {
             pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 1);
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
             initList();
-            // TODO send the same thing watch does to update selected
-            // pokemob.
+            PacketPokedex.updateWatchEntry(pokedexEntry);
         }
         else if (button == 3)
         {
             pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 10);
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
             initList();
-            // TODO send the same thing watch does to update selected
-            // pokemob.
+            PacketPokedex.updateWatchEntry(pokedexEntry);
         }
         else if (button == 4)
         {
             pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 10);
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
             initList();
-            // TODO send the same thing watch does to update selected
-            // pokemob.
+            PacketPokedex.updateWatchEntry(pokedexEntry);
         }
         if (button >= 1 && button <= 5 || button == 5)
         {
@@ -312,7 +308,6 @@ public class GuiPokedex extends GuiScreen
 
     private void initList()
     {
-        // TODO
         List<IGuiListEntry> entries = Lists.newArrayList();
         int offsetX = (width - 160) / 2 + 92;
         int offsetY = (height - 160) / 2 + 15;
@@ -381,8 +376,7 @@ public class GuiPokedex extends GuiScreen
                 {
                     pokedexEntry = entry;
                     initList();
-                    // TODO send the same thing watch does to update selected
-                    // pokemob.
+                    PacketPokedex.updateWatchEntry(pokedexEntry);
                 }
                 else
                 {
@@ -472,8 +466,8 @@ public class GuiPokedex extends GuiScreen
 
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 60, k + 100, 50F);
-            float zoom = (float) (25F / Math.sqrt(size)) * scale;
-            GL11.glScalef(-zoom, zoom, zoom);
+            float zoom = (float) (25F / size) * scale;
+            GL11.glScalef(zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             float f5 = ((k + 75) - 50) - ySize;
             GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
@@ -488,7 +482,6 @@ public class GuiPokedex extends GuiScreen
             entity.rotationYawHead = yHeadRenderAngle;
             entity.prevRotationYawHead = entity.rotationYawHead;
             entity.prevRotationPitch = entity.rotationPitch;
-            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
 
             entity.limbSwing = 0;
             entity.limbSwingAmount = 0;

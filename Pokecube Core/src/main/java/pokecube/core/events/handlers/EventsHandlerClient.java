@@ -192,13 +192,12 @@ public class EventsHandlerClient
         Vector3f dims = pokemob.getPokedexEntry().getModelSize();
         size = Math.max(dims.z * mobScale, Math.max(dims.y * mobScale, dims.x * mobScale));
         GL11.glPushMatrix();
-        float zoom = (float) (12f / Math.sqrt(size));
+        float zoom = (float) (12f / size);
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         long time = Minecraft.getSystemTime();
         if (rotates) GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
         RenderHelper.enableStandardItemLighting();
-        GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, 1.5F, false);
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();

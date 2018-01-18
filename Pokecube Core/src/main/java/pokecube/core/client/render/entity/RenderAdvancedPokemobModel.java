@@ -111,8 +111,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         {
             phase = getPhase(entity, mob, partialTick);
         }
-        if (!model.hasAnimation(phase)) phase = "idle";
-        model.setAnimation(phase);
+        if (!model.hasAnimation(phase, entity)) phase = "idle";
+        model.setAnimation(phase, entity);
         model.doRender(toRender, x, y, z, yaw, partialTick);
         model.renderStatus(toRender, x, y, z, yaw, partialTick);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(entity, this, partialTick, x, y, z));
@@ -136,42 +136,42 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         boolean asleep = pokemob.getStatus() == IMoveConstants.STATUS_SLP
                 || pokemob.getPokemonAIState(IMoveConstants.SLEEPING);
 
-        if (asleep && model.hasAnimation("sleeping"))
+        if (asleep && model.hasAnimation("sleeping", entity))
         {
             phase = "sleeping";
             return phase;
         }
-        if (asleep && model.hasAnimation("asleep"))
+        if (asleep && model.hasAnimation("asleep", entity))
         {
             phase = "asleep";
             return phase;
         }
-        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && model.hasAnimation("sitting"))
+        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && model.hasAnimation("sitting", entity))
         {
             phase = "sitting";
             return phase;
         }
-        if (!entity.onGround && model.hasAnimation("flight"))
+        if (!entity.onGround && model.hasAnimation("flight", entity))
         {
             phase = "flight";
             return phase;
         }
-        if (!entity.onGround && model.hasAnimation("flying"))
+        if (!entity.onGround && model.hasAnimation("flying", entity))
         {
             phase = "flying";
             return phase;
         }
-        if (entity.isInWater() && model.hasAnimation("swimming"))
+        if (entity.isInWater() && model.hasAnimation("swimming", entity))
         {
             phase = "swimming";
             return phase;
         }
-        if (entity.onGround && walkspeed > 0.1 && model.hasAnimation("walking"))
+        if (entity.onGround && walkspeed > 0.1 && model.hasAnimation("walking", entity))
         {
             phase = "walking";
             return phase;
         }
-        if (entity.onGround && walkspeed > 0.1 && model.hasAnimation("walk"))
+        if (entity.onGround && walkspeed > 0.1 && model.hasAnimation("walk", entity))
         {
             phase = "walk";
             return phase;

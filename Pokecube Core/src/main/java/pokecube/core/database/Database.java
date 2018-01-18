@@ -185,8 +185,11 @@ public class Database
     {
         missingno.type1 = PokeType.unknown;
         missingno.type2 = PokeType.unknown;
+        missingno.base = true;
         missingno.evs = new byte[6];
         missingno.stats = new int[6];
+        missingno.height = 1;
+        missingno.width = missingno.length = 0.41f;
         missingno.stats[0] = 33;
         missingno.stats[1] = 136;
         missingno.stats[2] = 0;
@@ -195,6 +198,7 @@ public class Database
         missingno.stats[5] = 29;
         missingno.addMoves(Lists.newArrayList(), Maps.newHashMap());
         missingno.addMove("skyattack");
+        addEntry(missingno);
     }
     static int lastCount = -1;
 
@@ -255,7 +259,13 @@ public class Database
 
     public static List<PokedexEntry> getFormes(int number)
     {
-        return formLists.get(number);
+        List<PokedexEntry> formes = formLists.get(number);
+        if (formes == null)
+        {
+            formes = Lists.newArrayList();
+            formLists.put(number, formes);
+        }
+        return formes;
     }
 
     public static String convertMoveName(String moveNameFromBulbapedia)
@@ -473,10 +483,6 @@ public class Database
         catch (Exception e)
         {
             PokecubeMod.log(Level.SEVERE, "Error with databases ", e);
-            allFormes.add(missingno);
-            // TODO autoregister missingno here?
-            // throw new RuntimeException("Database loading failed, this is very
-            // bad.");
         }
         PokedexEntryLoader.writeCompoundDatabase();
         initFormLists();

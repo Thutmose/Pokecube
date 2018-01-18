@@ -9,9 +9,14 @@ import java.util.function.UnaryOperator;
 
 import org.lwjgl.input.Keyboard;
 
+import com.google.common.base.Predicate;
+
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.util.math.AxisAlignedBB;
 import pokecube.core.client.gui.watch.GuiPokeWatch;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -20,6 +25,9 @@ import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.packets.PacketPokedex;
 
 public class PerMobProgress extends Progress
@@ -63,6 +71,24 @@ public class PerMobProgress extends Progress
         String killLine = I18n.format("pokewatch.progress.mob.killed", killed0, entry);
         String hatchLine = I18n.format("pokewatch.progress.mob.hatched", hatched0, entry);
 
+        AxisAlignedBB centre = watch.player.getEntityBoundingBox();
+        AxisAlignedBB bb = centre.grow(PokecubeMod.core.getConfig().maxSpawnRadius, 5,
+                PokecubeMod.core.getConfig().maxSpawnRadius);
+        List<Entity> otherMobs = watch.player.getEntityWorld().getEntitiesInAABBexcluding(watch.player, bb,
+                new Predicate<Entity>()
+                {
+                    @Override
+                    public boolean apply(Entity input)
+                    {
+                        IPokemob pokemob;
+                        if (!(input instanceof EntityAnimal
+                                && (pokemob = CapabilityPokemob.getPokemobFor(input)) != null))
+                            return false;
+                        return pokemob.getPokedexEntry() == entry;
+                    }
+                });
+        String nearbyLine = I18n.format("pokewatch.progress.global.nearby", otherMobs.size());
+
         for (String line : fontRender.listFormattedStringToWidth(captureLine, 120))
         {
             lines.add(line);
@@ -77,20 +103,17 @@ public class PerMobProgress extends Progress
         {
             lines.add(line);
         }
+        lines.add("");
+        for (String line : fontRender.listFormattedStringToWidth(nearbyLine, 120))
+        {
+            lines.add(line);
+        }
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        int x = (watch.width - 160) / 2 + 80;
-        int y = (watch.height - 160) / 2 + 30;
-        int dy = 0;
-        int colour = 0xFFFFFFFF;
-        for (String s : lines)
-        {
-            this.drawCenteredString(fontRender, s, x, y + dy, colour);
-            dy += fontRender.FONT_HEIGHT;
-        }
+        super.drawScreen(mouseX, mouseY, partialTicks);
         text.drawTextBox();
     }
 

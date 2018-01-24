@@ -77,9 +77,9 @@ public class UsableItemEffects
         public boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
             if (user != pokemob.getEntity() && user != pokemob.getOwner()) return false;
-            if (!stack.hasTagCompound()) return false;
+            if (stack.getItemDamage() >= ItemVitamin.vitamins.size()) return false;
             boolean used = false;
-            VitaminEffect effect = effects.get(stack.getTagCompound().getString("vitamin"));
+            VitaminEffect effect = effects.get(ItemVitamin.vitamins.get(stack.getItemDamage()));
             if (effect != null) used = effect.onUse(pokemob, stack, user);
             if (used) stack.splitStack(1);
             return used;

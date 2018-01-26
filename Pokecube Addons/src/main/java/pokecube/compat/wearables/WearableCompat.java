@@ -111,8 +111,8 @@ public class WearableCompat
             }
             Color colour = new Color(ret.getColorValue() + 0xFF000000);
             col[0] = colour.getRed();
-            col[2] = colour.getGreen();
-            col[1] = colour.getBlue();
+            col[1] = colour.getGreen();
+            col[2] = colour.getBlue();
             for (IExtendedModelPart part : bag.getParts().values())
             {
                 part.setRGBAB(col);

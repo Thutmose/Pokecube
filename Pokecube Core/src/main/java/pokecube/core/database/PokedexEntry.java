@@ -46,6 +46,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntryLoader.Action;
 import pokecube.core.database.PokedexEntryLoader.Drop;
@@ -96,6 +97,7 @@ public class PokedexEntry
         // the item it must be holding, if null, any item is fine, or no items
         // is fine
         public ItemStack          item         = CompatWrapper.nullStack;
+        public String             preset       = null;
         // does it need to grow a level for the item to work
         public boolean            itemLevel    = false;
         public int                level        = -1;
@@ -137,7 +139,11 @@ public class PokedexEntry
             if (data.location != null) this.matcher = new SpawnBiomeMatcher(data.location);
             if (data.animation != null) this.FX = data.animation;
             if (data.item != null) this.item = Tools.getStack(data.item.values);
-            if (data.item_preset != null) this.item = PokecubeItems.getStack(data.item_preset);
+            if (data.item_preset != null)
+            {
+                this.preset = data.item_preset;
+                this.item = PokecubeItems.getStack(preset);
+            }
             if (data.time != null)
             {
                 if (data.time.equalsIgnoreCase("day")) dayOnly = true;
@@ -199,12 +205,26 @@ public class PokedexEntry
                 }
                 if (!rain) return false;
             }
-            boolean correctItem = !CompatWrapper.isValid(item);
-            if (CompatWrapper.isValid(item))
+            boolean correctItem = preset != null && !CompatWrapper.isValid(item);
+            if (!correctItem)
             {
+                correctItem = false;
                 if (CompatWrapper.isValid(mobs))
                 {
-                    correctItem = Tools.isSameStack(mobs, item);
+                    if (preset != null)
+                    {
+                        int id = OreDictionary.getOreID(preset);
+                        int[] ores = OreDictionary.getOreIDs(mobs);
+                        for (int i = 0; i < ores.length; i++)
+                        {
+                            if (id == ores[i])
+                            {
+                                correctItem = true;
+                                break;
+                            }
+                        }
+                    }
+                    else correctItem = Tools.isSameStack(mobs, item, true);
                 }
             }
             if (Tools.isSameStack(mob.getHeldItem(), PokecubeItems.getStack("everstone"))) { return false; }

@@ -58,6 +58,8 @@ import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.DispenseBehaviourInteract;
 import pokecube.core.events.SpawnEvent;
+import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.events.handlers.SpawnHandler.Variance;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
@@ -205,8 +207,8 @@ public class PokedexEntry
                 }
                 if (!rain) return false;
             }
-            boolean correctItem = preset != null && !CompatWrapper.isValid(item);
-            if (!correctItem)
+            boolean correctItem = true;
+            if (preset != null || CompatWrapper.isValid(item))
             {
                 correctItem = false;
                 if (CompatWrapper.isValid(mobs))
@@ -531,11 +533,11 @@ public class PokedexEntry
 
         public static class SpawnEntry
         {
-            int   max      = 4;
-            int   min      = 2;
-            float rate     = 0.0f;
-            int   level    = -1;
-            int   variance = -1;
+            int      max      = 4;
+            int      min      = 2;
+            float    rate     = 0.0f;
+            int      level    = -1;
+            Variance variance = null;
         }
 
         public Map<SpawnBiomeMatcher, SpawnEntry> matchers = Maps.newHashMap();
@@ -587,11 +589,11 @@ public class PokedexEntry
             return entry == null ? -1 : entry.level;
         }
 
-        public int getVariance(SpawnBiomeMatcher matcher)
+        public Variance getVariance(SpawnBiomeMatcher matcher)
         {
             SpawnEntry entry = matchers.get(matcher);
-            int variance = entry == null ? -1 : entry.variance;
-            return variance == -1 ? PokecubeMod.core.getConfig().levelVariance : variance;
+            Variance variance = entry == null ? SpawnHandler.DEFAULT_VARIANCE : entry.variance;
+            return variance;
         }
 
         public float getWeight(SpawnBiomeMatcher matcher)

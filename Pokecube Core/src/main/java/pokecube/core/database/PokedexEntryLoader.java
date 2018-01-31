@@ -52,6 +52,7 @@ import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
 import pokecube.core.database.PokedexEntryLoader.StatsNode.Stats;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.events.handlers.SpawnHandler.FunctionVariance;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
@@ -1204,7 +1205,7 @@ public class PokedexEntryLoader
         }
         if ((val = rule.values.get(new QName("variance"))) != null)
         {
-            spawnEntry.variance = Integer.parseInt(val);
+            spawnEntry.variance = new FunctionVariance(val);
         }
         SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);
         spawnData.matchers.put(matcher, spawnEntry);

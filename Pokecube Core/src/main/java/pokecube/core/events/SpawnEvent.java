@@ -5,6 +5,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.events.handlers.SpawnHandler.Variance;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
 
@@ -151,9 +152,9 @@ public class SpawnEvent extends Event
      * change the level that it spawns at. */
     public static class Level extends SpawnEvent
     {
-        private int       level;
-        private final int variance;
-        private final int original;
+        private int            level;
+        private final Variance variance;
+        private final int      original;
 
         public int getLevel()
         {
@@ -170,12 +171,12 @@ public class SpawnEvent extends Event
             this.level = level;
         }
 
-        public int getExpectedVariance()
+        public Variance getExpectedVariance()
         {
             return variance;
         }
 
-        public Level(PokedexEntry entry_, Vector3 location_, World world, int level, int variance)
+        public Level(PokedexEntry entry_, Vector3 location_, World world, int level, Variance variance)
         {
             super(entry_, location_, world);
             this.level = level;

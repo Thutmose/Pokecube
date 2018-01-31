@@ -34,6 +34,7 @@ import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.events.handlers.SpawnHandler.FunctionVariance;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
@@ -418,7 +419,7 @@ public class Config extends ConfigBase
     public boolean                       expFunction                  = false;
     @Configure(category = spawning)
     @SyncConfig
-    public int                           levelVariance                = 5;
+    public String                        spawnLevelVariance           = "x + 5*rand()";
     @Configure(category = spawning)
     public int[]                         dimensionBlacklist           = {};
     @Configure(category = spawning)
@@ -655,6 +656,7 @@ public class Config extends ConfigBase
         SpawnHandler.expFunction = expFunction;
         SpawnHandler.loadFunctionsFromStrings(spawnLevelFunctions);
         SpawnHandler.refreshSubbiomes = refreshSubbiomes;
+        SpawnHandler.DEFAULT_VARIANCE = new FunctionVariance(spawnLevelVariance);
 
         PokecubeSerializer.MeteorDistance = meteorDistance * meteorDistance;
         PokecubeMod.debug = debug;

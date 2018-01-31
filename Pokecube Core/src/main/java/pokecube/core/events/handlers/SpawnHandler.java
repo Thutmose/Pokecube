@@ -58,13 +58,13 @@ import thut.api.terrain.TerrainSegment;
 /** @author Manchou Heavily modified by Thutmose */
 public final class SpawnHandler
 {
-    private static class LevelFunction
+    public static class Function
     {
         final String  function;
         final boolean radial;
         final boolean central;
 
-        public LevelFunction(String[] args)
+        public Function(String[] args)
         {
             function = args[1];
             radial = Boolean.parseBoolean(args[2]);
@@ -72,9 +72,65 @@ public final class SpawnHandler
         }
     }
 
+    public static class Variance
+    {
+        public Variance()
+        {
+        }
+
+        public int apply(int level)
+        {
+            return level;
+        }
+    }
+
+    public static class FunctionVariance extends Variance
+    {
+        final JEP parser;
+
+        public FunctionVariance(String function)
+        {
+            parser = new JEP();
+            parser.initFunTab(); // clear the contents of the function table
+            parser.addStandardFunctions();
+            parser.initSymTab(); // clear the contents of the symbol table
+            parser.addStandardConstants();
+            parser.addComplex(); // among other things adds i to the symbol
+                                 // table
+            parser.addVariable("x", 0);
+            parser.parseExpression(function);
+        }
+
+        @Override
+        public int apply(int level)
+        {
+            parser.setVarValue("x", level);
+            return (int) parser.getValue();
+        }
+    }
+
+    public static class LevelRange extends Variance
+    {
+        int[] nums;
+
+        public LevelRange(int[] vars)
+        {
+            this.nums = vars.clone();
+            if (nums[0] <= 0 || nums[1] <= 0) nums[1] = nums[0] = 1;
+            if (nums[0] == nums[1]) nums[1]++;
+        }
+
+        @Override
+        public int apply(int level)
+        {
+            return nums[0] + new Random().nextInt(nums[0] - nums[1]);
+        }
+    }
+
+    public static Variance                             DEFAULT_VARIANCE        = new Variance();
     private static final Map<ChunkCoordinate, Integer> forbiddenSpawningCoords = new HashMap<ChunkCoordinate, Integer>();
-    private static Int2ObjectArrayMap<LevelFunction>   functions               = new Int2ObjectArrayMap<>();
-    public static HashMap<Integer, Integer[]>          subBiomeLevels          = new HashMap<Integer, Integer[]>();
+    private static Int2ObjectArrayMap<Function>        functions               = new Int2ObjectArrayMap<>();
+    public static HashMap<Integer, Variance>           subBiomeLevels          = new HashMap<Integer, Variance>();
     public static boolean                              doSpawns                = true;
     public static boolean                              onlySubbiomes           = false;
     public static boolean                              refreshSubbiomes        = false;
@@ -196,7 +252,7 @@ public final class SpawnHandler
     }
 
     public static EntityLiving creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
-            double posZ, Vector3 spawnPoint, int overrideLevel, int variance)
+            double posZ, Vector3 spawnPoint, int overrideLevel, Variance variance)
     {
         if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY,
                 (float) posZ)) { return null; }
@@ -312,7 +368,7 @@ public final class SpawnHandler
         JEP toUse;
         int type = world.provider.getDimension();
         boolean isNew = false;
-        LevelFunction function;
+        Function function;
         if (functions.containsKey(type))
         {
             function = functions.get(type);
@@ -361,37 +417,37 @@ public final class SpawnHandler
         return (int) Math.abs(toUse.getValue());
     }
 
-    public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon, int variance, int baseLevel)
+    public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon, Variance variance,
+            int baseLevel)
     {
         int spawnLevel = baseLevel;
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         int b = t.getBiome(location);
-        if (variance == -1)
+        if (variance == null)
         {
             if (subBiomeLevels.containsKey(b))
             {
-                Integer[] range = subBiomeLevels.get(b);
-                variance = range[1] - range[0];
+                variance = subBiomeLevels.get(b);
             }
             else
             {
-                variance = PokecubeMod.core.getConfig().levelVariance;
+                variance = DEFAULT_VARIANCE;
             }
         }
         if (spawnLevel == -1)
         {
             if (subBiomeLevels.containsKey(b))
             {
-                Integer[] range = subBiomeLevels.get(b);
-                spawnLevel = range[0];
+                variance = subBiomeLevels.get(b);
+                spawnLevel = variance.apply(baseLevel);
             }
             else
             {
                 spawnLevel = parse(world, location);
             }
         }
-        if (variance < 1) variance = 1;
-        spawnLevel = spawnLevel + world.rand.nextInt(variance);
+        variance = variance == null ? DEFAULT_VARIANCE : variance;
+        spawnLevel = variance.apply(spawnLevel);
         SpawnEvent.Level event = new SpawnEvent.Level(pokemon, location, world, spawnLevel, variance);
         MinecraftForge.EVENT_BUS.post(event);
         return event.getLevel();
@@ -399,10 +455,10 @@ public final class SpawnHandler
 
     public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon)
     {
-        return getSpawnLevel(world, location, pokemon, -1, -1);
+        return getSpawnLevel(world, location, pokemon, DEFAULT_VARIANCE, -1);
     }
 
-    public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon, int variance, int baseLevel)
+    public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon, Variance variance, int baseLevel)
     {
         int maxXp = 10;
         if (!expFunction) { return Tools.levelToXp(pokemon.getEvolutionMode(),
@@ -414,18 +470,15 @@ public final class SpawnHandler
         int b = t.getBiome(location);
         if (subBiomeLevels.containsKey(b))
         {
-            Integer[] range = subBiomeLevels.get(b);
-            int dl = range[1] - range[0];
-            if (dl > 0) dl = new Random().nextInt(dl) + 1;
-            int level = range[0] + dl;
+            int level = subBiomeLevels.get(b).apply(baseLevel);
             maxXp = Math.max(10, Tools.levelToXp(pokemon.getEvolutionMode(), level));
             return maxXp;
         }
         maxXp = parse(world, location);
         maxXp = Math.max(maxXp, 10);
         int level = Tools.xpToLevel(pokemon.getEvolutionMode(), maxXp);
-        variance = variance == -1 ? PokecubeMod.core.getConfig().levelVariance : variance;
-        level = level + new Random().nextInt(Math.max(1, variance));
+        variance = variance == null ? DEFAULT_VARIANCE : variance;
+        level = variance.apply(level);
         level = Math.max(1, level);
         return Tools.levelToXp(pokemon.getEvolutionMode(), level);
     }
@@ -439,18 +492,15 @@ public final class SpawnHandler
         int b = t.getBiome(location);
         if (subBiomeLevels.containsKey(b))
         {
-            Integer[] range = subBiomeLevels.get(b);
-            int dl = range[1] - range[0];
-            if (dl > 0) dl = new Random().nextInt(dl) + 1;
-            int level = range[0] + dl;
+            int level = subBiomeLevels.get(b).apply(-1);
             maxXp = Math.max(10, Tools.levelToXp(pokemon.getEvolutionMode(), level));
             return maxXp;
         }
         maxXp = parse(world, location);
         maxXp = Math.max(maxXp, 10);
         int level = Tools.xpToLevel(pokemon.getEvolutionMode(), maxXp);
-        int variance = PokecubeMod.core.getConfig().levelVariance;
-        level = level + new Random().nextInt(Math.max(1, variance));
+        Variance variance = DEFAULT_VARIANCE;
+        level = variance.apply(level);
         level = Math.max(1, level);
         return Tools.levelToXp(pokemon.getEvolutionMode(), level);
     }
@@ -470,7 +520,7 @@ public final class SpawnHandler
         String[] strings = args.split(":");
         if (strings.length != 4) return;
         int id = Integer.parseInt(strings[0]);
-        functions.put(id, new LevelFunction(strings));
+        functions.put(id, new Function(strings));
     }
 
     public static void loadFunctionsFromStrings(String[] args)

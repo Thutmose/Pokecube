@@ -205,6 +205,7 @@ public abstract class PokemobStats extends PokemobGenes
         if (evolve) while (ret.canEvolve(held))
         {
             IPokemob temp = ret.evolve(false, true, held);
+            System.out.println(temp);
             if (temp == null) break;
             ret = temp;
             ret.getMoveStats().exp = exp;

@@ -38,6 +38,8 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.events.handlers.SpawnHandler.Variance;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -179,7 +181,7 @@ public class TypeTrainer
             trainer.setPokemob(i, CompatWrapper.nullStack);
 
         if (level == 0) level = 5;
-        int variance = PokecubeMod.core.getConfig().levelVariance;
+        Variance variance = SpawnHandler.DEFAULT_VARIANCE;
         int number = 1 + new Random().nextInt(6);
         number = Math.min(number, trainer.getMaxPokemobCount());
 
@@ -195,8 +197,7 @@ public class TypeTrainer
             {
                 if (s != null)
                 {
-                    variance = new Random().nextInt(Math.max(1, variance));
-                    item = makeStack(s, owner, world, level + variance);
+                    item = makeStack(s, owner, world, variance.apply(level));
                 }
                 if (CompatWrapper.isValid(item)) break;
             }

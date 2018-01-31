@@ -451,7 +451,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             maxXP = SpawnHandler.getSpawnXp(getEntity().getEntityWorld(), spawnPoint, pokemob.getPokedexEntry());
             SpawnEvent.Level event = new SpawnEvent.Level(pokemob.getPokedexEntry(), spawnPoint,
                     getEntity().getEntityWorld(), Tools.xpToLevel(pokemob.getPokedexEntry().getEvolutionMode(), -1),
-                    PokecubeMod.core.getConfig().levelVariance);
+                    SpawnHandler.DEFAULT_VARIANCE);
             MinecraftForge.EVENT_BUS.post(event);
             int level = event.getLevel();
             maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);

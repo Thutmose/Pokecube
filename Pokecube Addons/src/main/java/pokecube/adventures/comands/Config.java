@@ -33,6 +33,8 @@ import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.database.worldgen.WorldgenHandler;
 import pokecube.core.database.worldgen.WorldgenHandler.Structure;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.events.handlers.SpawnHandler.LevelRange;
+import pokecube.core.events.handlers.SpawnHandler.Variance;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.terrain.BiomeType;
 import thut.core.common.config.ConfigBase;
@@ -167,9 +169,10 @@ public class Config extends ConfigBase
     @Configure(category = database)
     public String[]                     extraTradeDatabases   = {};
     @Configure(category = client)
-    public boolean                     journeymapRepels      = true;
+    public boolean                      journeymapRepels      = true;
     @Configure(category = client)
-    public boolean                     jeiModels             = false;
+    public boolean                      jeiModels             = false;
+
     public Config()
     {
         super(null);
@@ -242,16 +245,16 @@ public class Config extends ConfigBase
             String[] args = s.split(":");
             String biome = args[0];
             String[] levels = args[1].split("-");
+            int[] var = new int[] { Integer.parseInt(levels[0]), Integer.parseInt(levels[1]) };
+            Variance variance = new LevelRange(var);
             try
             {
-                SpawnHandler.subBiomeLevels.put(Integer.parseInt(biome),
-                        new Integer[] { Integer.parseInt(levels[0]), Integer.parseInt(levels[1]) });
+                SpawnHandler.subBiomeLevels.put(Integer.parseInt(biome), variance);
             }
             catch (NumberFormatException e)
             {
                 BiomeType b = BiomeType.getBiome(biome, true);
-                SpawnHandler.subBiomeLevels.put(b.getType(),
-                        new Integer[] { Integer.parseInt(levels[0]), Integer.parseInt(levels[1]) });
+                SpawnHandler.subBiomeLevels.put(b.getType(), variance);
             }
         }
     }

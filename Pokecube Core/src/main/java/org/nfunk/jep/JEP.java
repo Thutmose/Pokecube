@@ -268,7 +268,8 @@ public class JEP {
 		funTab.put("mod", new Modulus());
 		funTab.put("sum", new Sum());
 
-		funTab.put("rand", new org.nfunk.jep.function.Random());
+        funTab.put("rand", new org.nfunk.jep.function.Random());
+        funTab.put("guassian", new org.nfunk.jep.function.Random());
 		
 		// rjm additions
 		funTab.put("if", new If());

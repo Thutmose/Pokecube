@@ -58,5 +58,6 @@ public abstract class ListPage extends Page
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         list.drawScreen(mouseX, mouseY, partialTicks);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

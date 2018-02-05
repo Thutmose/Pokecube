@@ -419,7 +419,7 @@ public class Config extends ConfigBase
     public boolean                       expFunction                  = false;
     @Configure(category = spawning)
     @SyncConfig
-    public String                        spawnLevelVariance           = "x + 5*rand()";
+    public String                        spawnLevelVariance           = "x + ceil(5*rand())";
     @Configure(category = spawning)
     public int[]                         dimensionBlacklist           = {};
     @Configure(category = spawning)

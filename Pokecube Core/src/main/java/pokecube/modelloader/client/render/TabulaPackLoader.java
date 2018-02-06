@@ -482,9 +482,9 @@ public class TabulaPackLoader extends AnimationLoader
                 TabulaModel tbl = parser.parse(json);
                 TabulaModelSet set = new TabulaModelSet(tbl, parser, extraData, entry);
                 modelMap.put(entry, set);
-                if (!modelMaps.containsKey(entry.getName())
-                        || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
-                    AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
+                if (!modelMaps.containsKey(entry.getTrimmedName())
+                        || modelMaps.get(entry.getTrimmedName()) instanceof TabulaModelRenderer)
+                    AnimationLoader.modelMaps.put(entry.getTrimmedName(), new TabulaModelRenderer<>(set));
                 scanner.close();
                 res.close();
             }
@@ -503,9 +503,9 @@ public class TabulaPackLoader extends AnimationLoader
                 {
                     set = new TabulaModelSet(set, extraData, entry);
                     modelMap.put(entry, set);
-                    if (!modelMaps.containsKey(entry.getName())
-                            || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
-                        AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
+                    if (!modelMaps.containsKey(entry.getTrimmedName())
+                            || modelMaps.get(entry.getTrimmedName()) instanceof TabulaModelRenderer)
+                        AnimationLoader.modelMaps.put(entry.getTrimmedName(), new TabulaModelRenderer<>(set));
                 }
             }
         }

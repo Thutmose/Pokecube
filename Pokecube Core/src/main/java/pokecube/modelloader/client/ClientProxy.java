@@ -361,7 +361,8 @@ public class ClientProxy extends CommonProxy
                 for (final String s : modModels.get(modid))
                 {
                     PokedexEntry entry = Database.getEntry(s);
-                    if (AnimationLoader.models.containsKey(s))
+                    if (entry == null) continue;
+                    if (AnimationLoader.models.containsKey(s) || TabulaPackLoader.modelMap.containsKey(entry))
                     {
                         PokecubeCore.proxy.registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
                         {
@@ -370,25 +371,6 @@ public class ClientProxy extends CommonProxy
                             public Render<? super EntityLiving> createRenderFor(RenderManager manager)
                             {
                                 RenderAdvancedPokemobModel<?> renderer = new RenderAdvancedPokemobModel(s, manager, 1);
-                                if (entry != null && (ModPokecubeML.preload
-                                        || Config.instance.toPreload.contains(entry.getName())))
-                                {
-                                    renderer.preload();
-                                }
-                                return (Render<? super EntityLiving>) renderer;
-                            }
-                        }, mod);
-                    }
-                    if (TabulaPackLoader.modelMap.containsKey(entry))
-                    {
-                        PokecubeCore.proxy.registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
-                        {
-                            @SuppressWarnings({ "rawtypes", "unchecked" })
-                            @Override
-                            public Render<? super EntityLiving> createRenderFor(RenderManager manager)
-                            {
-                                RenderAdvancedPokemobModel<?> renderer = new RenderAdvancedPokemobModel(s, manager, 1);
-                                PokedexEntry entry = Database.getEntry(s);
                                 if (entry != null && (ModPokecubeML.preload
                                         || Config.instance.toPreload.contains(entry.getName())))
                                 {

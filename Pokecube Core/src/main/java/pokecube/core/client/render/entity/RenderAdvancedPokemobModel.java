@@ -15,6 +15,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.AnimationLoader;
+import pokecube.modelloader.client.render.ModelWrapper;
 import pokecube.modelloader.common.IEntityAnimator;
 import thut.core.client.render.model.IModelRenderer;
 
@@ -28,6 +29,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     public IModelRenderer<T> model;
     final String             modelName;
     public boolean           overrideAnim = false;
+    private ModelWrapper     wrapper;
 
     public String            anim         = "";
 
@@ -40,7 +42,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
 
     public RenderAdvancedPokemobModel(String name, RenderManager manager, float par2)
     {
-        super(manager, null, par2);
+        super(manager, new ModelWrapper(name), par2);
+        wrapper = (ModelWrapper) mainModel;
         modelName = name;
     }
 
@@ -56,7 +59,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         }
         if (model != null && model instanceof RenderLivingBase)
         {
-            this.mainModel = ((RenderLivingBase<?>) model).getMainModel();
+            wrapper.setWrapped(((RenderLivingBase<?>) model).getMainModel());
         }
     }
 
@@ -81,7 +84,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         }
         if (model != null && model instanceof RenderLivingBase)
         {
-            this.mainModel = ((RenderLivingBase<?>) model).getMainModel();
+            wrapper.setWrapped(((RenderLivingBase<?>) model).getMainModel());
         }
         if (model == null) return;
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, partialTick, x, y, z))) return;

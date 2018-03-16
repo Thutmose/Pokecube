@@ -194,12 +194,12 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
             if (mobModelBase == null)
             {
                 IModelRenderer<?> model = (IModelRenderer<?>) RenderAdvancedPokemobModel
-                        .getRenderer(mob.getPokedexEntry().getName(), (EntityLiving) entity);
+                        .getRenderer(mob.getPokedexEntry().getTrimmedName(), (EntityLiving) entity);
                 if (model == null && mob.getPokedexEntry().getBaseForme() != null)
                 {
                     model = (IModelRenderer<?>) RenderAdvancedPokemobModel
-                            .getRenderer(mob.getPokedexEntry().getBaseForme().getName(), (EntityLiving) entity);
-                    AnimationLoader.modelMaps.put(mob.getPokedexEntry().getName(), model);
+                            .getRenderer(mob.getPokedexEntry().getBaseForme().getTrimmedName(), (EntityLiving) entity);
+                    AnimationLoader.modelMaps.put(mob.getPokedexEntry().getTrimmedName(), model);
                 }
                 if (model != null && model instanceof RenderLivingBase)
                 {

@@ -35,8 +35,9 @@ public class ColourGene extends GeneIntArray
     @Override
     public Gene mutate()
     {
-        // TODO mutations for colour.
-        return this;
+        ColourGene mutate = new ColourGene();
+        mutate.setRandomColour();
+        return mutate;
     }
 
     @Override
@@ -44,7 +45,6 @@ public class ColourGene extends GeneIntArray
     {
         return GeneticsManager.mutationRates.get(getKey());
     }
-
 
     @Override
     public ResourceLocation getKey()

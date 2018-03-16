@@ -521,6 +521,8 @@ public class Config extends ConfigBase
     boolean                              forceRewards                 = true;
     @Configure(category = database, needsMcRestart = true)
     public boolean                       forceBerries                 = true;
+    @Configure(category = database, needsMcRestart = true)
+    public boolean                       useCache                     = true;
 
     @Configure(category = database, needsMcRestart = true)
     String[]                             configDatabases              = { "", "", "" };

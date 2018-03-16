@@ -362,7 +362,8 @@ public class ClientProxy extends CommonProxy
                 {
                     PokedexEntry entry = Database.getEntry(s);
                     if (entry == null) continue;
-                    if (AnimationLoader.models.containsKey(s) || TabulaPackLoader.modelMap.containsKey(entry))
+                    if (AnimationLoader.models.containsKey(entry.getTrimmedName())
+                            || TabulaPackLoader.modelMap.containsKey(entry))
                     {
                         PokecubeCore.proxy.registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
                         {
@@ -370,9 +371,11 @@ public class ClientProxy extends CommonProxy
                             @Override
                             public Render<? super EntityLiving> createRenderFor(RenderManager manager)
                             {
-                                RenderAdvancedPokemobModel<?> renderer = new RenderAdvancedPokemobModel(s, manager, 1);
-                                if (entry != null && (ModPokecubeML.preload
-                                        || Config.instance.toPreload.contains(entry.getName())))
+                                RenderAdvancedPokemobModel<?> renderer = new RenderAdvancedPokemobModel(
+                                        entry.getTrimmedName(), manager, 1);
+                                if (entry != null
+                                        && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())
+                                                || Config.instance.toPreload.contains(entry.getTrimmedName())))
                                 {
                                     renderer.preload();
                                 }

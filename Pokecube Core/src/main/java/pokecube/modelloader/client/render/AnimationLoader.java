@@ -75,8 +75,8 @@ public class AnimationLoader
 
     public static void remove(PokedexEntry entry)
     {
-        models.remove(entry.getName());
-        modelMaps.remove(entry.getName());
+        models.remove(entry.getTrimmedName());
+        modelMaps.remove(entry.getTrimmedName());
     }
 
     public static int getIntValue(Node node, String key, int default_)
@@ -229,7 +229,7 @@ public class AnimationLoader
             {
                 if (entry != null)
                 {
-                    models.put(name, new ModelHolder(model, texture, animation, entry.getName()));
+                    models.put(name, new ModelHolder(model, texture, animation, entry.getTrimmedName()));
                     if (loaded) getModel(name);
                 }
                 else
@@ -241,14 +241,14 @@ public class AnimationLoader
             {
                 if (entry != null && entry.getBaseForme() != null)
                 {
-                    ModelHolder existing = models.get(entry.getBaseForme().getName());
+                    ModelHolder existing = models.get(entry.getBaseForme().getTrimmedName());
                     if (existing == null)
                     {
                         toReload.add(s);
                     }
                     else
                     {
-                        models.put(name, new ModelHolder(existing.model, texture, animation, entry.getName()));
+                        models.put(name, new ModelHolder(existing.model, texture, animation, entry.getTrimmedName()));
                         if (loaded) getModel(name);
                     }
                 }

@@ -28,6 +28,7 @@ public abstract class ListPage extends Page
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         list.mouseClicked(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override

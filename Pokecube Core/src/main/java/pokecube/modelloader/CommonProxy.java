@@ -121,6 +121,7 @@ public class CommonProxy implements IGuiHandler
 
         public boolean valid()
         {
+            if (!PokecubeMod.core.getConfig().useCache) return false;
             if (locs.isEmpty()) return false;
             for (CachedLoc loc : locs)
                 if (!loc.stillValid()) return false;

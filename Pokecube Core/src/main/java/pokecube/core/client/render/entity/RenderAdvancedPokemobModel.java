@@ -51,11 +51,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     public void preload()
     {
         PokedexEntry entry = Database.getEntry(modelName);
-        model = (IModelRenderer<T>) getRenderer(modelName, null);
+        model = (IModelRenderer<T>) getRenderer(entry.getTrimmedName(), null);
         if (model == null && entry.getBaseForme() != null)
         {
-            model = (IModelRenderer<T>) getRenderer(entry.getBaseForme().getName(), null);
-            AnimationLoader.modelMaps.put(entry.getName(), model);
+            model = (IModelRenderer<T>) getRenderer(entry.getBaseForme().getTrimmedName(), null);
+            AnimationLoader.modelMaps.put(entry.getTrimmedName(), model);
         }
         if (model != null && model instanceof RenderLivingBase)
         {
@@ -76,11 +76,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             toRender = (T) mob.getTransformedTo();
             mob = temp;
         }
-        model = (IModelRenderer<T>) getRenderer(mob.getPokedexEntry().getName(), entity);
+        model = (IModelRenderer<T>) getRenderer(mob.getPokedexEntry().getTrimmedName(), entity);
         if (model == null && mob.getPokedexEntry().getBaseForme() != null)
         {
-            model = (IModelRenderer<T>) getRenderer(mob.getPokedexEntry().getBaseForme().getName(), entity);
-            AnimationLoader.modelMaps.put(mob.getPokedexEntry().getName(), model);
+            model = (IModelRenderer<T>) getRenderer(mob.getPokedexEntry().getBaseForme().getTrimmedName(), entity);
+            AnimationLoader.modelMaps.put(mob.getPokedexEntry().getTrimmedName(), model);
         }
         if (model != null && model instanceof RenderLivingBase)
         {

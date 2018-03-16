@@ -301,7 +301,7 @@ public class ExtraDatabase
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.WARNING, "Error with " + entry + " " + xml, e);
         }
         return entry;
     }

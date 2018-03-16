@@ -56,6 +56,8 @@ public class TrainerEntryLoader
         boolean         belt          = true;
         @XmlElement(name = "HELD")
         Held            held;
+        @XmlElement(name = "REWARD")
+        Held            reward;
 
         @Override
         public String toString()

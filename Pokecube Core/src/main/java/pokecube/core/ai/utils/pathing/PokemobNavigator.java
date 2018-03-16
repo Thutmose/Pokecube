@@ -1,5 +1,7 @@
 package pokecube.core.ai.utils.pathing;
 
+import java.util.logging.Level;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.pathfinding.FlyingNodeProcessor;
 import net.minecraft.pathfinding.Path;
@@ -14,6 +16,7 @@ import pokecube.core.ai.utils.pathing.node.WalkNodeLadderProcessor;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 
@@ -143,7 +146,16 @@ public class PokemobNavigator extends PathNavigate
     {
         if (!this.canNavigate() || entityIn == null) { return null; }
         checkValues();
-        return wrapped.getPathToEntityLiving(entityIn);
+        try
+        {
+            return wrapped.getPathToEntityLiving(entityIn);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.SEVERE, "Error making path for " + this.entity + " to " + entityIn + " " + wrapped,
+                    e);
+            return null;
+        }
     }
 
     @Override
@@ -153,7 +165,15 @@ public class PokemobNavigator extends PathNavigate
         checkValues();
         if (shouldPath(pos))
         {
-            return wrapped.getPathToPos(pos);
+            try
+            {
+                return wrapped.getPathToPos(pos);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.SEVERE, "Error making path for " + this.entity + " to " + pos + " " + wrapped, e);
+                return null;
+            }
         }
         else return getPath();
     }

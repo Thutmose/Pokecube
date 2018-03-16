@@ -12,15 +12,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
+import pokecube.adventures.events.PAEventsHandler;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.client.gui.helper.ScrollGui;
 import pokecube.core.interfaces.PokecubeMod;
@@ -126,31 +122,9 @@ public class EditRewardsPage extends ListPage
                     }
                     return;
                 }
-
-                String[] args = reward.getText().split(" ");
-
                 try
                 {
-                    Item item = CommandBase.getItemByText(parent.mc.player, args[0]);
-                    int i = 1;
-                    int j = args.length >= 3 ? CommandBase.parseInt(args[2].trim()) : 0;
-                    ItemStack itemstack = new ItemStack(item, i, j);
-                    if (args.length >= 4)
-                    {
-                        String s = CommandBase.buildString(args, 3);
-
-                        try
-                        {
-                            itemstack.setTagCompound(JsonToNBT.getTagFromJson(s));
-                        }
-                        catch (NBTException nbtexception)
-                        {
-                            throw new CommandException("commands.give.tagError",
-                                    new Object[] { nbtexception.getMessage() });
-                        }
-                    }
-                    if (args.length >= 2)
-                        itemstack.setCount(CommandBase.parseInt(args[1].trim(), 1, item.getItemStackLimit(itemstack)));
+                    ItemStack itemstack = PAEventsHandler.fromString(reward.getText(), parent.mc.player);
                     if (itemstack.isEmpty())
                     {
                         parent.mc.player.sendStatusMessage(
@@ -202,7 +176,7 @@ public class EditRewardsPage extends ListPage
     }
 
     private List<RewardEntry> rewards = Lists.newArrayList();
-    protected final int index;
+    protected final int       index;
 
     public EditRewardsPage(GuiEditTrainer watch, int index)
     {

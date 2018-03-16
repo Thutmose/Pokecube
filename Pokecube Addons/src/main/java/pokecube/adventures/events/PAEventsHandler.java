@@ -1,17 +1,23 @@
 package pokecube.adventures.events;
 
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -305,7 +311,17 @@ public class PAEventsHandler
             return;
         DefaultPokemobs mobs = new DefaultPokemobs();
         DefaultRewards rewards = new DefaultRewards();
-        rewards.getRewards().add(new ItemStack(Items.EMERALD));
+
+        ItemStack stack = ItemStack.EMPTY;
+        try
+        {
+            stack = fromString(PokecubeAdv.conf.defaultReward, event.getObject());
+        }
+        catch (CommandException e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with default trainer rewards " + PokecubeAdv.conf.defaultReward, e);
+        }
+        if (!stack.isEmpty()) rewards.getRewards().add(stack);
         DefaultAIStates aiStates = new DefaultAIStates();
         DefaultMessager messages = new DefaultMessager();
         mobs.init((EntityLivingBase) event.getObject(), aiStates, messages, rewards);
@@ -350,6 +366,31 @@ public class PAEventsHandler
                 || TypeTrainer.mobTypeMapper.getType((EntityLivingBase) event.getEntity(), false) == null)
             return;
         initDataManager(event.getEntity());
+    }
+
+    public static ItemStack fromString(String arg, ICommandSender sender) throws CommandException
+    {
+        String[] args = arg.split(" ");
+        Item item = CommandBase.getItemByText(sender, args[0]);
+        int i = 1;
+        int j = args.length >= 3 ? CommandBase.parseInt(args[2].trim()) : 0;
+        ItemStack itemstack = new ItemStack(item, i, j);
+        if (args.length >= 4)
+        {
+            String s = CommandBase.buildString(args, 3);
+
+            try
+            {
+                itemstack.setTagCompound(JsonToNBT.getTagFromJson(s));
+            }
+            catch (NBTException nbtexception)
+            {
+                throw new CommandException("commands.give.tagError", new Object[] { nbtexception.getMessage() });
+            }
+        }
+        if (args.length >= 2)
+            itemstack.setCount(CommandBase.parseInt(args[1].trim(), 1, item.getItemStackLimit(itemstack)));
+        return itemstack;
     }
 
     public static DataParamHolder initDataManager(Entity e)

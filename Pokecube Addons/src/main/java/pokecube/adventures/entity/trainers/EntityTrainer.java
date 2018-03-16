@@ -22,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -30,6 +31,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
+import pokecube.adventures.ai.helper.PathNavigateTrainer;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
@@ -481,5 +483,11 @@ public class EntityTrainer extends EntityTrainerBase
     public boolean processInteract(EntityPlayer player, EnumHand hand)
     {
         return processInteract(player, hand, player.getHeldItem(hand));
+    }
+
+    @Override
+    protected PathNavigate createNavigator(World worldIn)
+    {
+        return new PathNavigateTrainer(this, worldIn);
     }
 }

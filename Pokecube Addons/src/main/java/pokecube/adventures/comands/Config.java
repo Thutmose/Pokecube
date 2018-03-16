@@ -148,6 +148,8 @@ public class Config extends ConfigBase
     @Configure(category = trainers)
     public boolean                      npcsAreTrainers       = true;
     @Configure(category = trainers)
+    public String                       defaultReward         = "minecraft:emerald 1 0";
+    @Configure(category = trainers)
     String[]                            customNPCtrainers     = { "noppes.npcs.entity.EntityCustomNpc" };
 
     @Configure(category = misc)

@@ -39,7 +39,6 @@ import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.api.network.PacketHandler;
-import thut.core.common.commands.CommandTools;
 import thut.lib.CompatWrapper;
 
 public interface ICanEvolve extends IHasEntry, IHasOwner
@@ -47,27 +46,21 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
 
     static class EvoTicker
     {
-        final World          world;
-        final Entity         evo;
-        final ITextComponent pre;
-        final long           evoTime;
-        final UUID           id;
-        boolean              set = false;
+        int          tick = 10;
+        final Entity evo;
+        final UUID   id;
 
-        public EvoTicker(World world, long evoTime, Entity evo, ITextComponent pre)
+        public EvoTicker(Entity evolution, UUID id)
         {
-            this.world = world;
-            this.evoTime = evoTime;
-            this.evo = evo;
-            this.pre = pre;
-            this.id = evo.getUniqueID();
+            this.evo = evolution;
+            this.id = id;
             MinecraftForge.EVENT_BUS.register(this);
         }
 
         @SubscribeEvent
         public void tick(WorldTickEvent evt)
         {
-            if (evt.world != world || evt.phase != Phase.END) return;
+            if (evt.world != evo.getEntityWorld() || evt.phase != Phase.END) return;
             boolean exists = false;
             for (Entity e : evt.world.loadedEntityList)
             {
@@ -77,13 +70,10 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     break;
                 }
             }
-            if (evt.world.getTotalWorldTime() > evoTime && !exists)
+            if (!exists && tick-- <= 0)
             {
-                IPokemob pokemob = CapabilityPokemob.getPokemobFor(evo);
-                evt.world.spawnEntity(evo);
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
-                        pre.getFormattedText(), pokemob.getPokedexEntry().getName());
-                pokemob.displayMessageToOwner(mess);
+                evo.setUniqueId(id);
+                PacketHandler.sendEntityUpdate(evo);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
@@ -298,7 +288,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
 
             // Sync entity data, UUID and location.
             evolution.getEntityData().merge(thisEntity.getEntityData());
-            evolution.setUniqueId(thisEntity.getUniqueID());
+            // evolution.setUniqueId(thisEntity.getUniqueID());
             evolution.copyLocationAndAnglesFrom(thisEntity);
 
             // Sync ability back, or store old ability.
@@ -328,8 +318,8 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             // Schedule adding to world.
             if (thisEntity.addedToChunk)
             {
-                thisEntity.getEntityWorld().removeEntityDangerously(thisEntity);
                 evolution.getEntityWorld().spawnEntity(evolution);
+                new EvoTicker(evolution, thisEntity.getUniqueID());
                 PacketHandler.sendEntityUpdate(evolution);
             }
         }

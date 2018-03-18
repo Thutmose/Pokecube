@@ -31,9 +31,9 @@ public class LegendarySpawns
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void interactRightClickBlock(PlayerInteractEvent.RightClickBlock evt)
     {
+        System.out.println("test");
         boolean invalid = !evt.getEntityPlayer().isSneaking() || !CompatWrapper.isValid(evt.getItemStack())
-                || !(evt.getItemStack().getItem() instanceof ItemPokedex) || !evt.getItemStack().hasTagCompound()
-                || evt.getWorld().isRemote;
+                || !(evt.getItemStack().getItem() instanceof ItemPokedex) || evt.getWorld().isRemote;
         if (invalid) return;
         Block block = null;
         EntityPlayer playerIn = evt.getEntityPlayer();

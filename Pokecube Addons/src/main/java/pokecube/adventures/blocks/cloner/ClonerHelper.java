@@ -125,7 +125,8 @@ public class ClonerHelper
 
     public static SelectorValue getSelectorValue(ItemStack selector)
     {
-        if (!CompatWrapper.isValid(selector) || !selector.hasTagCompound()) return RecipeSelector.defaultSelector;
+        SelectorValue def = RecipeSelector.getSelectorValue(selector);
+        if (!CompatWrapper.isValid(selector) || !selector.hasTagCompound()) return def;
         NBTTagCompound selectorTag = selector.getTagCompound().getCompoundTag(SELECTORTAG);
         return SelectorValue.load(selectorTag);
     }

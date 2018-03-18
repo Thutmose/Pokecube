@@ -14,6 +14,9 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.GameData;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.ClonerHelper.DNAPack;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
@@ -251,7 +254,7 @@ public class RecipeHandler
         }
     }
 
-    private static void addClonerRecipes()
+    public static void addClonerRecipes()
     {
         if (Config.instance.autoAddFossils) for (ItemStack stack : PokecubeItems.fossils.keySet())
         {
@@ -274,14 +277,10 @@ public class RecipeHandler
         }
     }
 
-    public static void register()
-    {//TODO Recipes
-//        RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS,
-//                "after:minecraft:shapeless");
-//        RecipeSorter.register("pokecube_adventures:selectors", RecipeSelector.class, Category.SHAPELESS,
-//                "after:minecraft:shapeless");
-//        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:bag"),new RecipeBag());
-//        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:selectors"), new RecipeSelector());
-        addClonerRecipes();
+    public static void register(Object register)
+    {
+        RecipeSelector recipe = new RecipeSelector();
+        recipe.setRegistryName(new ResourceLocation(PokecubeAdv.ID, "selectormerging"));
+        GameData.register_impl(recipe);
     }
 }

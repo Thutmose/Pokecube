@@ -86,7 +86,7 @@ public class RecipeSelector implements IDefaultRecipe
         }
     }
 
-    public static SelectorValue defaultSelector = new SelectorValue(0.5f, 0.5f);
+    public static SelectorValue defaultSelector = new SelectorValue(0.0f, 0.9f);
 
     public static SelectorValue getSelectorValue(ItemStack stack)
     {
@@ -100,6 +100,16 @@ public class RecipeSelector implements IDefaultRecipe
             }
         }
         return value;
+    }
+
+    public static boolean isSelector(ItemStack stack)
+    {
+        if (!ClonerHelper.getGeneSelectors(stack).isEmpty()) return true;
+        if (CompatWrapper.isValid(stack)) for (ItemStack stack1 : selectorValues.keySet())
+        {
+            if (Tools.isSameStack(stack1, stack)) { return true; }
+        }
+        return false;
     }
 
     private static Map<ItemStack, SelectorValue> selectorValues = Maps.newHashMap();

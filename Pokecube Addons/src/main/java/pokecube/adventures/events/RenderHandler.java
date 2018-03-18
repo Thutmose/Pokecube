@@ -2,16 +2,19 @@ package pokecube.adventures.events;
 
 import java.util.Set;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.container.ContainerBase;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.Gene;
@@ -32,15 +35,15 @@ public class RenderHandler
     {
         EntityPlayer player = evt.getEntityPlayer();
         ItemStack stack = evt.getItemStack();
-        if (!CompatWrapper.isValid(stack) || !stack.hasTagCompound()) return;
-        if (stack.getTagCompound().getBoolean("isapokebag"))
+        if (!CompatWrapper.isValid(stack)) return;
+        NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
+        if (tag.getBoolean("isapokebag"))
         {
             evt.getToolTip().add("PokeBag");
         }
-        if (stack.getTagCompound().hasKey("dyeColour"))
+        if (tag.hasKey("dyeColour"))
         {
-            String colour = I18n.format(
-                    EnumDyeColor.byDyeDamage(stack.getTagCompound().getInteger("dyeColour")).getUnlocalizedName());
+            String colour = I18n.format(EnumDyeColor.byDyeDamage(tag.getInteger("dyeColour")).getUnlocalizedName());
             boolean has = false;
             for (String s : evt.getToolTip())
             {
@@ -50,7 +53,8 @@ public class RenderHandler
             if (!has) evt.getToolTip().add(colour);
         }
         if (player == null || player.openContainer == null) return;
-        if (player.openContainer instanceof ContainerBase)
+        if (player.openContainer instanceof ContainerBase
+                || (GuiScreen.isShiftKeyDown() && !ClonerHelper.getGeneSelectors(stack).isEmpty()))
         {
             IMobGenetics genes = ClonerHelper.getGenes(stack);
             if (genes != null)
@@ -75,13 +79,16 @@ public class RenderHandler
 
                     }
                 }
+            }
+            if (tag.hasKey("ivs"))
+            {
+                evt.getToolTip()
+                        .add("" + tag.getLong("ivs") + ":" + tag.getFloat("size") + ":" + tag.getByte("nature"));
+            }
+            if (RecipeSelector.isSelector(stack))
+            {
                 SelectorValue value = ClonerHelper.getSelectorValue(stack);
                 value.addToTooltip(evt.getToolTip());
-            }
-            if (stack.getTagCompound().hasKey("ivs"))
-            {
-                evt.getToolTip().add("" + stack.getTagCompound().getLong("ivs") + ":"
-                        + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));
             }
         }
     }

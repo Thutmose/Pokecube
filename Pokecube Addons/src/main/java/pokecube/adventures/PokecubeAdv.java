@@ -137,6 +137,7 @@ public class PokecubeAdv
         MinecraftForge.EVENT_BUS.register(events);
         new TrainerSpawnHandler();
         ItemHandler.handleLoot();
+        RecipeHandler.register(evt);
     }
 
     @EventHandler
@@ -151,7 +152,7 @@ public class PokecubeAdv
     {
         conf.postInit();
         if (conf.legendaryConditions) new LegendaryConditions();
-        RecipeHandler.register();
+        RecipeHandler.addClonerRecipes();
         DBLoader.load();
     }
 

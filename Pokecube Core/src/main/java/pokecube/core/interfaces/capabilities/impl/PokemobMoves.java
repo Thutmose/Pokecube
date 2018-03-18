@@ -199,7 +199,7 @@ public abstract class PokemobMoves extends PokemobSexed
     public String[] getMoves()
     {
         IPokemob transformed = CapabilityPokemob.getPokemobFor(getTransformedTo());
-        if (transformed != null && getTransformedTo() != getEntity())
+        if (transformed != null && transformed.getTransformedTo() == null)
         {
             IPokemob to = transformed;
             if (to != this) return to.getMoves();

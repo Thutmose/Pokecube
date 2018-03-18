@@ -2,6 +2,9 @@ package pokecube.core.items.megastuff;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
@@ -11,12 +14,29 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import pokecube.core.PokecubeItems;
 import thut.lib.CompatWrapper;
 import thut.lib.IDefaultRecipe;
 
 public class RecipeWearables implements IDefaultRecipe
 {
-    private ItemStack output = CompatWrapper.nullStack;
+    private ItemStack                        output   = CompatWrapper.nullStack;
+
+    public static List<Predicate<ItemStack>> dyeables = Lists.newArrayList();
+
+    static
+    {
+        dyeables.add(new Predicate<ItemStack>()
+        {
+            @Override
+            public boolean test(ItemStack t)
+            {
+                return t.getItem() instanceof ItemMegawearable
+                        // Is pokewatch.
+                        || t.getItem() == PokecubeItems.pokedex && t.getItemDamage() == 8;
+            }
+        });
+    }
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
@@ -38,16 +58,20 @@ public class RecipeWearables implements IDefaultRecipe
         boolean dye = false;
         ItemStack dyeStack = CompatWrapper.nullStack;
         ItemStack ringStack = CompatWrapper.nullStack;
+        inventory:
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {
             ItemStack stack = inv.getStackInSlot(i);
             if (CompatWrapper.isValid(stack))
             {
-                if (stack.getItem() instanceof ItemMegawearable)
+                for (Predicate<ItemStack> c : dyeables)
                 {
-                    ring = true;
-                    ringStack = stack;
-                    continue;
+                    if (c.test(stack))
+                    {
+                        ring = true;
+                        ringStack = stack;
+                        continue inventory;
+                    }
                 }
                 List<ItemStack> dyes = OreDictionary.getOres("dye");
                 boolean isDye = false;

@@ -508,7 +508,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             ResourceLocation id = PokecubeItems.getCubeId(second);
 
             // Pokeseal is id 2, send this to pokeseal recipe to process.
-            if (id!=null && id.getResourcePath().equals("seal"))
+            if (id != null && id.getResourcePath().equals("seal"))
             {
                 stack = RecipePokeseals.process(first, second);
             }
@@ -577,6 +577,18 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         tagCompound.setBoolean("trade", trade);
         tagCompound.setTag("Inventory", itemList);
         return tagCompound;
+    }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack)
+    {
+        // Reset trading table stuff if stacks change.
+        if (player1 != null || player2 != null)
+        {
+            player1 = null;
+            player2 = null;
+        }
+        DefaultInventory.super.setInventorySlotContents(index, stack);
     }
 
     @Override

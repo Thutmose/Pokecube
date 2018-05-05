@@ -156,6 +156,7 @@ public class GuiTMCreator extends GuiContainer
         if (!textFieldSearch.getText().isEmpty()) for (String s : moves)
         {
             Move_Base move = MovesUtils.getMoveFromName(s.trim());
+            if (move == null) continue;
             boolean nameMatch = MovesUtils.getMoveName(s.trim()).getFormattedText()
                     .toLowerCase(java.util.Locale.ENGLISH)
                     .contains(textFieldSearch.getText().toLowerCase(java.util.Locale.ENGLISH));

@@ -1,10 +1,15 @@
 package pokecube.adventures.client.gui.trainer;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.function.Predicate;
 
 import org.lwjgl.input.Keyboard;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -42,30 +47,35 @@ public class EditPokemobPage extends Page
         }
     }
 
-    public static final int ENTRY   = 0;
-    public static final int MOVE0   = 1;
-    public static final int MOVE1   = 2;
-    public static final int MOVE2   = 3;
-    public static final int MOVE3   = 4;
-    public static final int LEVEL   = 5;
+    public static final int ENTRY     = 0;
+    public static final int MOVE0     = 1;
+    public static final int MOVE1     = 2;
+    public static final int MOVE2     = 3;
+    public static final int MOVE3     = 4;
+    public static final int LEVEL     = 5;
 
-    public static final int EV0     = 6;
-    public static final int EV1     = 7;
-    public static final int EV2     = 8;
-    public static final int EV3     = 9;
-    public static final int EV4     = 10;
-    public static final int EV5     = 11;
+    public static final int EV0       = 6;
+    public static final int EV1       = 7;
+    public static final int EV2       = 8;
+    public static final int EV3       = 9;
+    public static final int EV4       = 10;
+    public static final int EV5       = 11;
 
-    public static final int IV0     = 12;
-    public static final int IV1     = 13;
-    public static final int IV2     = 14;
-    public static final int IV3     = 15;
-    public static final int IV4     = 16;
-    public static final int IV5     = 17;
+    public static final int IV0       = 12;
+    public static final int IV1       = 13;
+    public static final int IV2       = 14;
+    public static final int IV3       = 15;
+    public static final int IV4       = 16;
+    public static final int IV5       = 17;
 
-    public static final int NATURE  = 18;
-    public static final int ABILITY = 19;
-    public static final int SIZE    = 20;
+    public static final int NATURE    = 18;
+    public static final int ABILITY   = 19;
+    public static final int SIZE      = 20;
+
+    public static final int RANDMOVES = 21;
+    public static final int MAXIVS    = 22;
+    public static final int RANDIVS   = 23;
+    public static final int MINIVS    = 24;
 
     final int               pokemobIndex;
     final int               pageIndex;
@@ -192,6 +202,10 @@ public class EditPokemobPage extends Page
         parent.getButtons().add(new Button(2, x - 48, y - 60, 20, 20, gender));
         String shiny = isShiny ? "Y" : "N";
         parent.getButtons().add(new Button(3, x - 48, y - 30, 20, 20, shiny));
+        parent.getButtons().add(new Button(RANDMOVES, x - 48, y - 10, 20, 20, "R"));
+        parent.getButtons().add(new Button(MAXIVS, x + 38, y - 60, 20, 20, "^"));
+        parent.getButtons().add(new Button(RANDIVS, x + 38, y - 40, 20, 20, "R"));
+        parent.getButtons().add(new Button(MINIVS, x + 38, y - 20, 20, 20, "v"));
 
         // Init values in text fields
         for (int i = 0; i < 4; i++)
@@ -399,6 +413,33 @@ public class EditPokemobPage extends Page
             if (pokemob == null) break;
             // toggle shiny
             pokemob.setShiny(!pokemob.isShiny());
+            sendUpdate();
+            break;
+        case RANDMOVES:
+            List<String> moves = Lists.newArrayList(pokemob.getPokedexEntry().getMovesForLevel(pokemob.getLevel()));
+            if (!moves.isEmpty())
+            {
+                Collections.shuffle(moves);
+                for (int i = 0; i < Math.min(4, moves.size()); i++)
+                {
+                    setMove(i, moves.get(i));
+                }
+                sendUpdate();
+            }
+            break;
+        case RANDIVS:
+            for (int i = 0; i < 6; i++)
+                setIV(i, new Random().nextInt(32) + "");
+            sendUpdate();
+            break;
+        case MAXIVS:
+            for (int i = 0; i < 6; i++)
+                setIV(i, "31");
+            sendUpdate();
+            break;
+        case MINIVS:
+            for (int i = 0; i < 6; i++)
+                setIV(i, "0");
             sendUpdate();
             break;
         }

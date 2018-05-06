@@ -289,6 +289,7 @@ public class PokecubeManager
                 {
                     pokemob.healStatus();
                     pokemob.healChanges();
+                    pokemob.getEntity().hurtTime = 0;
                     pokemob.getEntity().setHealth(pokemob.getStat(Stats.HP, false));
                     ItemStack healed = pokemobToItem(pokemob);
                     stack.setTagCompound(healed.getTagCompound());

@@ -47,35 +47,37 @@ public class EditPokemobPage extends Page
         }
     }
 
-    public static final int ENTRY     = 0;
-    public static final int MOVE0     = 1;
-    public static final int MOVE1     = 2;
-    public static final int MOVE2     = 3;
-    public static final int MOVE3     = 4;
-    public static final int LEVEL     = 5;
+    public static final int ENTRY       = 0;
+    public static final int MOVE0       = 1;
+    public static final int MOVE1       = 2;
+    public static final int MOVE2       = 3;
+    public static final int MOVE3       = 4;
+    public static final int LEVEL       = 5;
 
-    public static final int EV0       = 6;
-    public static final int EV1       = 7;
-    public static final int EV2       = 8;
-    public static final int EV3       = 9;
-    public static final int EV4       = 10;
-    public static final int EV5       = 11;
+    public static final int EV0         = 6;
+    public static final int EV1         = 7;
+    public static final int EV2         = 8;
+    public static final int EV3         = 9;
+    public static final int EV4         = 10;
+    public static final int EV5         = 11;
 
-    public static final int IV0       = 12;
-    public static final int IV1       = 13;
-    public static final int IV2       = 14;
-    public static final int IV3       = 15;
-    public static final int IV4       = 16;
-    public static final int IV5       = 17;
+    public static final int IV0         = 12;
+    public static final int IV1         = 13;
+    public static final int IV2         = 14;
+    public static final int IV3         = 15;
+    public static final int IV4         = 16;
+    public static final int IV5         = 17;
 
-    public static final int NATURE    = 18;
-    public static final int ABILITY   = 19;
-    public static final int SIZE      = 20;
+    public static final int NATURE      = 18;
+    public static final int ABILITY     = 19;
+    public static final int SIZE        = 20;
 
-    public static final int RANDMOVES = 21;
-    public static final int MAXIVS    = 22;
-    public static final int RANDIVS   = 23;
-    public static final int MINIVS    = 24;
+    public static final int RANDMOVES   = 21;
+    public static final int MAXIVS      = 22;
+    public static final int RANDIVS     = 23;
+    public static final int MINIVS      = 24;
+    public static final int RANDABILITY = 25;
+    public static final int RANDNATURE  = 26;
 
     final int               pokemobIndex;
     final int               pageIndex;
@@ -161,7 +163,6 @@ public class EditPokemobPage extends Page
     protected void onPageOpened()
     {
         ItemStack stack = parent.trainer.getPokemob(pokemobIndex);
-        int num = PokecubeManager.getPokedexNb(stack);
         int level = 1;
         byte sexe = -1;
         float size = 1;
@@ -170,24 +171,17 @@ public class EditPokemobPage extends Page
         String ability = "";
         String name = "none";
         PokedexEntry entry = null;
-        pokemob = null;
-        if (num != 0)
+        pokemob = PokecubeManager.itemToPokemob(stack, parent.entity.getEntityWorld());
+        if (pokemob != null)
         {
-            entry = Database.getEntry(num);
-            if (entry != null) name = entry.getName();
-        }
-        if (entry != null)
-        {
-            pokemob = PokecubeManager.itemToPokemob(stack, parent.entity.getEntityWorld());
-            if (pokemob != null)
-            {
-                level = pokemob.getLevel();
-                nature = pokemob.getNature() + "";
-                if (pokemob.getAbility() != null) ability = pokemob.getAbility().toString();
-                size = pokemob.getSize();
-                sexe = pokemob.getSexe();
-                isShiny = pokemob.isShiny();
-            }
+            entry = pokemob.getPokedexEntry();
+            name = entry.getName();
+            level = pokemob.getLevel();
+            nature = pokemob.getNature() + "";
+            if (pokemob.getAbility() != null) ability = pokemob.getAbility().toString();
+            size = pokemob.getSize();
+            sexe = pokemob.getSexe();
+            isShiny = pokemob.isShiny();
         }
 
         int x = parent.width / 2;
@@ -202,10 +196,12 @@ public class EditPokemobPage extends Page
         parent.getButtons().add(new Button(2, x - 48, y - 60, 20, 20, gender));
         String shiny = isShiny ? "Y" : "N";
         parent.getButtons().add(new Button(3, x - 48, y - 30, 20, 20, shiny));
-        parent.getButtons().add(new Button(RANDMOVES, x - 48, y - 10, 20, 20, "R"));
+        parent.getButtons().add(new Button(RANDMOVES, x - 58, y - 41, 10, 10, "R"));
         parent.getButtons().add(new Button(MAXIVS, x + 38, y - 60, 20, 20, "^"));
         parent.getButtons().add(new Button(RANDIVS, x + 38, y - 40, 20, 20, "R"));
         parent.getButtons().add(new Button(MINIVS, x + 38, y - 20, 20, 20, "v"));
+        parent.getButtons().add(new Button(RANDABILITY, x + 22, y + 39, 10, 10, "R"));
+        parent.getButtons().add(new Button(RANDNATURE, x - 78, y + 39, 10, 10, "R"));
 
         // Init values in text fields
         for (int i = 0; i < 4; i++)
@@ -217,6 +213,7 @@ public class EditPokemobPage extends Page
                 if (move == null) move = "";
             }
             textList.get(i + 1).setText(move);
+            textList.get(i + 1).moveCursorBy(-100);
         }
         for (int i = EV0; i < EV0 + 6; i++)
         {
@@ -416,6 +413,7 @@ public class EditPokemobPage extends Page
             sendUpdate();
             break;
         case RANDMOVES:
+            if (pokemob == null) break;
             List<String> moves = Lists.newArrayList(pokemob.getPokedexEntry().getMovesForLevel(pokemob.getLevel()));
             if (!moves.isEmpty())
             {
@@ -428,18 +426,34 @@ public class EditPokemobPage extends Page
             }
             break;
         case RANDIVS:
+            if (pokemob == null) break;
             for (int i = 0; i < 6; i++)
                 setIV(i, new Random().nextInt(32) + "");
             sendUpdate();
             break;
         case MAXIVS:
+            if (pokemob == null) break;
             for (int i = 0; i < 6; i++)
                 setIV(i, "31");
             sendUpdate();
             break;
         case MINIVS:
+            if (pokemob == null) break;
             for (int i = 0; i < 6; i++)
                 setIV(i, "0");
+            sendUpdate();
+            break;
+        case RANDABILITY:
+            if (pokemob == null) break;
+            int num = new Random().nextInt(3);
+            pokemob.setAbility(null);
+            pokemob.setAbilityIndex(num);
+            sendUpdate();
+            break;
+        case RANDNATURE:
+            if (pokemob == null) break;
+            Nature nature = Nature.values()[new Random().nextInt(Nature.values().length)];
+            pokemob.setNature(nature);
             sendUpdate();
             break;
         }
@@ -682,6 +696,10 @@ public class EditPokemobPage extends Page
     private void setEntry(String value)
     {
         PokedexEntry entry = Database.getEntry(value);
+        if (pokemob != null)
+        {
+            if (pokemob.getPokedexEntry() == entry) return;
+        }
         ITextComponent mess;
         if (entry == null)
         {
@@ -689,8 +707,7 @@ public class EditPokemobPage extends Page
         }
         else
         {
-            if (pokemob != null) pokemob = pokemob.megaEvolve(entry);
-            else pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, parent.mc.world));
+            pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, parent.mc.world));
             mess = new TextComponentTranslation("traineredit.set.entry", I18n.format(entry.getUnlocalizedName()));
             sendUpdate();
         }
@@ -704,6 +721,7 @@ public class EditPokemobPage extends Page
         {
             pokemob.setPokemonOwner((EntityLivingBase) parent.entity);
             ItemStack stack = PokecubeManager.pokemobToItem(pokemob);
+            PokecubeManager.heal(stack);
             parent.trainer.setPokemob(pokemobIndex, stack);
         }
         else
@@ -729,7 +747,8 @@ public class EditPokemobPage extends Page
         {
             int x = (parent.width - 256) / 2 + 80;
             int y = (parent.height - 160) / 2 + 40;
-            float theta = 175;
+            pokemob.getEntity().ticksExisted = mc.player.ticksExisted;
+            float theta = 0;
             pokemob.getEntity().prevRenderYawOffset = theta;
             pokemob.getEntity().renderYawOffset = theta;
             pokemob.getEntity().prevRotationYawHead = theta;

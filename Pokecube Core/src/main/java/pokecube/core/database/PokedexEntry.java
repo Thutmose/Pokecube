@@ -1944,7 +1944,12 @@ public class PokedexEntry
                     }
                     else if (!d.item.isEmpty() && d.gender == 0)
                     {
-                        subEvo = I18n.format("pokemob.description.evolve.item", entry.getTranslatedName(),
+                        if (d.traded)
+                        {
+                            subEvo = I18n.format("pokemob.description.evolve.traded.item", entry.getTranslatedName(),
+                                    nex.getTranslatedName(), d.item.getDisplayName());
+                        }
+                        else subEvo = I18n.format("pokemob.description.evolve.item", entry.getTranslatedName(),
                                 nex.getTranslatedName(), d.item.getDisplayName());
                     }
                     else if (!d.item.isEmpty() && d.gender == 1)

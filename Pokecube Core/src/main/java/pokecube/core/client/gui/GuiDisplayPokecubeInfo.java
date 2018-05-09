@@ -231,6 +231,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (fontRenderer == null) fontRenderer = minecraft.fontRenderer;
         MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderSelectedInfo());
         MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderTargetInfo());
+        MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderTeleports());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
@@ -702,7 +703,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     }
 
     @SideOnly(Side.CLIENT)
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGH, receiveCanceled = true)
     public void onRenderHotbar(RenderGameOverlayEvent.Post event)
     {
         try

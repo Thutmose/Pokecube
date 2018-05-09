@@ -24,6 +24,12 @@ public class GuiEvent extends Event
     }
 
     @Cancelable
+    public static class RenderTeleports extends GuiEvent
+    {
+
+    }
+
+    @Cancelable
     public static class RenderMoveMessages extends GuiEvent
     {
         final ElementType type;

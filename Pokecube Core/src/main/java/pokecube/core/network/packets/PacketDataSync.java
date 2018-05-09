@@ -27,7 +27,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.gui.GuiInfoMessages;
-import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.SyncConfig;
@@ -206,7 +205,6 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             {
                 PokecubeSerializer.getInstance().clearInstance();
                 GuiInfoMessages.clear();
-                GuiTeleport.create();
                 try
                 {
                     if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)

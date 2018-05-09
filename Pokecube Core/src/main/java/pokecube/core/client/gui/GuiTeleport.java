@@ -12,11 +12,11 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
+import pokecube.core.client.GuiEvent;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -28,8 +28,10 @@ import pokecube.core.utils.PokecubeSerializer.TeleDest;
 
 public class GuiTeleport extends Gui
 {
-    protected static int       lightGrey = 0xDDDDDD;
-    private static GuiTeleport instance;
+    protected static int      lightGrey = 0xDDDDDD;
+    /** This is made public incase an addon needs to replace it. Do not
+     * reference this otherwise, always use instance() */
+    public static GuiTeleport instance;
 
     public static void create()
     {
@@ -39,6 +41,7 @@ public class GuiTeleport extends Gui
 
     public static GuiTeleport instance()
     {
+        if (instance == null) create();
         return instance;
     }
 
@@ -59,8 +62,10 @@ public class GuiTeleport extends Gui
         instance = this;
     }
 
-    private void draw(RenderGameOverlayEvent.Post event)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void draw(GuiEvent.RenderTeleports event)
     {
+        if (!state) return;
         GuiDisplayPokecubeInfo.teleDims[0] = 89;
         GuiDisplayPokecubeInfo.teleDims[1] = 25;
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
@@ -116,22 +121,6 @@ public class GuiTeleport extends Gui
         TeleportHandler.setTeleIndex(uuid, index);
         PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
         PokecubePacketHandler.sendToServer(packet);
-    }
-
-    @SubscribeEvent
-    public void onRenderHotbar(RenderGameOverlayEvent.Post event)
-    {
-        try
-        {
-            if (state && (minecraft.currentScreen == null || GuiArranger.toggle)
-                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
-                    && event.getType() == ElementType.HOTBAR)
-                draw(event);
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
     }
 
     public void previousMove()

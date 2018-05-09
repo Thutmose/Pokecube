@@ -73,7 +73,6 @@ import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.client.gui.GuiPokemob;
-import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.gui.blocks.GuiHealTable;
 import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.client.gui.blocks.GuiTMCreator;
@@ -592,9 +591,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         super.registerRenderInformation();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
-
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
-        GuiTeleport.create();
         new GuiInfoMessages();
     }
 

@@ -146,12 +146,6 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                 IGuardAICapability guard = mob.getCapability(EventsHandler.GUARDAI_CAP, null);
                 boolean hasAI = ai != null;
                 ITextComponent mess = null;
-                if (message.data.hasKey("S") && ai != null)
-                {
-                    ai.setAIState(IHasNPCAIStates.STATIONARY, message.data.getBoolean("S"));
-                    mess = new TextComponentTranslation("traineredit.set.stationary." + message.data.getBoolean("S"));
-                    player.sendStatusMessage(mess, true);
-                }
                 if (message.data.hasKey("X"))
                 {
                     cap.setGender(message.data.getByte("X"));
@@ -213,6 +207,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                 }
                 if (mess != null) player.sendStatusMessage(mess, true);
                 boolean stationaryNow = hasAI ? ai.getAIState(IHasNPCAIStates.STATIONARY) : false;
+                System.out.println("" + stationaryNow);
                 if (stationaryNow != stationaryBefore)
                 {
                     if (guard != null)

@@ -201,7 +201,7 @@ public class EntityTrainer extends EntityTrainerBase
     protected void initAI(Vector3 location, boolean stationary)
     {
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
+        this.tasks.addTask(3, new EntityAIMoveTowardsTarget(this, 0.6, 10));
         this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
         this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
         this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));

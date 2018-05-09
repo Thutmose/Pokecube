@@ -45,6 +45,8 @@ traineredit.gui.playerskin=Player Skin
 
 traineredit.set.stationary.true=Trainer Set to not Wander.
 traineredit.set.stationary.false=Trainer Set to Wander.
+traineredit.set.norotates.true=Trainer Set to not look around.
+traineredit.set.norotates.false=Trainer Set to look around.
 traineredit.set.gender.1=Trainer set as "Male".
 traineredit.set.gender.2=Trainer set as "Female".
 traineredit.set.type=Trainer Type set to %s.
@@ -65,6 +67,7 @@ traineredit.set.evs=Updated EVs.
 traineredit.set.reward=Set reward to %s.
 traineredit.set.rewardnew=Added Reward of %s.
 traineredit.set.removereward=Removed Reward of %s.
+traineredit.set.look=Look Angle set to %s.
 
 traineredit.title.pokemob=Edit Pokemob
 traineredit.title.message=Event Messages and Actions
@@ -100,6 +103,8 @@ traineredit.button.ai=AI Settings
 traineredit.button.kill=Delete
 traineredit.button.wander=Wanders
 traineredit.button.stationary=Stands
+traineredit.button.norotates=Fixed
+traineredit.button.rotates=Looks
 
 gui.jei.pokemobs=Pokémob Evolution
 gui.jei.pokemobs.interact=Pokémob Interactions

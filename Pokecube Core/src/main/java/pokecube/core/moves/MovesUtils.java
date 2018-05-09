@@ -809,7 +809,9 @@ public class MovesUtils implements IMoveConstants
                 if (attacker == e.getRidingEntity()) return false;
                 if (attacker == e) return false;
                 if (!PokecubeMod.core.getConfig().pokemobsDamagePlayers && e instanceof EntityPlayer) return false;
-                if (!PokecubeMod.core.getConfig().pokemobsDamageOwner && e == pokemob.getPokemonOwner()) return false;
+                if (pokemob != null && !PokecubeMod.core.getConfig().pokemobsDamageOwner
+                        && e == pokemob.getPokemonOwner())
+                    return false;
                 if (PokecubeMod.core.getEntityProvider().getEntity(attacker.getEntityWorld(), e.getEntityId(),
                         true) == attacker)
                     return false;

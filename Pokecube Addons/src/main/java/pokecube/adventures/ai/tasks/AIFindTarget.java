@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
+import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
 public class AIFindTarget extends AITrainerBase
@@ -26,6 +27,14 @@ public class AIFindTarget extends AITrainerBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
+        if (aiTracker != null && aiTracker.getAIState(IHasNPCAIStates.FIXEDDIRECTION) && trainer.getTarget() == null)
+        {
+            entity.setRotationYawHead(aiTracker.getDirection());
+            entity.prevRotationYawHead = aiTracker.getDirection();
+            entity.rotationYawHead = aiTracker.getDirection();
+            entity.rotationYaw = aiTracker.getDirection();
+            entity.prevRotationYaw = aiTracker.getDirection();
+        }
         if (shouldExecute()) updateTask();
     }
 
@@ -73,23 +82,29 @@ public class AIFindTarget extends AITrainerBase
 
         // Look for targets
         Vector3 here = Vector3.getNewVector().set(entity);
-        int range = trainer.getAgressDistance() + 1;
         EntityLivingBase target = null;
-        List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
-                here.getAABB().grow(range, range, range));
-
         int sight = trainer.getAgressDistance();
-        for (Object o : targets)
+        targetTrack:
         {
-            EntityLivingBase e = (EntityLivingBase) o;
-            // Only visible or valid targets.
-            if (Vector3.isVisibleEntityFromEntity(entity, e) && !matcher.apply(e)
-                    && e.getDistanceToEntity(entity) < sight)
+            here.addTo(0, entity.getEyeHeight(), 0);
+            Vector3 look = Vector3.getNewVector().set(entity.getLook(1));
+            here.addTo(look);
+            look.scalarMultBy(sight);
+            look.addTo(here);
+            List<EntityLivingBase> targets = MovesUtils.targetsHit(entity, look);
+            for (Object o : targets)
             {
-                target = e;
-                break;
+                EntityLivingBase e = (EntityLivingBase) o;
+                double dist = e.getDistanceToEntity(entity);
+                // Only visible or valid targets.
+                if (!matcher.apply(e) && dist < sight)
+                {
+                    target = e;
+                    break targetTrack;
+                }
             }
         }
+
         // If no target, return false.
         if (target == null)
         {

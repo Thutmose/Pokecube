@@ -1,6 +1,7 @@
 package pokecube.adventures.entity.helper.capabilities;
 
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -24,10 +25,18 @@ public class CapabilityNPCAIStates
 
     public static interface IHasNPCAIStates
     {
-        public static final int STATIONARY   = 1 << 0;
-        public static final int INBATTLE     = 1 << 1;
-        public static final int THROWING     = 1 << 2;
-        public static final int PERMFRIENDLY = 1 << 3;
+        public static final int STATIONARY     = 1 << 0;
+        public static final int INBATTLE       = 1 << 1;
+        public static final int THROWING       = 1 << 2;
+        public static final int PERMFRIENDLY   = 1 << 3;
+        public static final int FIXEDDIRECTION = 1 << 4;
+
+        /** @return Direction to face if FIXEDDIRECTION */
+        public float getDirection();
+
+        /** @param direction
+         *            Direction to face if FIXEDDIRECTION */
+        public void setDirection(float direction);
 
         boolean getAIState(int state);
 
@@ -44,7 +53,10 @@ public class CapabilityNPCAIStates
         @Override
         public NBTBase writeNBT(Capability<IHasNPCAIStates> capability, IHasNPCAIStates instance, EnumFacing side)
         {
-            return new NBTTagInt(instance.getTotalState());
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setInteger("AI", instance.getTotalState());
+            tag.setFloat("D", instance.getDirection());
+            return tag;
         }
 
         @Override
@@ -52,13 +64,20 @@ public class CapabilityNPCAIStates
                 NBTBase nbt)
         {
             if (nbt instanceof NBTTagInt) instance.setTotalState(((NBTTagInt) nbt).getInt());
+            else if (nbt instanceof NBTTagCompound)
+            {
+                NBTTagCompound tag = (NBTTagCompound) nbt;
+                instance.setTotalState(tag.getInteger("AI"));
+                instance.setDirection(tag.getFloat("D"));
+            }
         }
 
     }
 
-    public static class DefaultAIStates implements IHasNPCAIStates, ICapabilitySerializable<NBTTagInt>
+    public static class DefaultAIStates implements IHasNPCAIStates, ICapabilitySerializable<NBTBase>
     {
-        int state = 0;
+        int   state = 0;
+        float direction;
 
         @Override
         public boolean getAIState(int state)
@@ -104,15 +123,27 @@ public class CapabilityNPCAIStates
         }
 
         @Override
-        public NBTTagInt serializeNBT()
+        public NBTBase serializeNBT()
         {
-            return (NBTTagInt) storage.writeNBT(AISTATES_CAP, this, null);
+            return storage.writeNBT(AISTATES_CAP, this, null);
         }
 
         @Override
-        public void deserializeNBT(NBTTagInt nbt)
+        public void deserializeNBT(NBTBase nbt)
         {
             storage.readNBT(AISTATES_CAP, this, null, nbt);
+        }
+
+        @Override
+        public float getDirection()
+        {
+            return direction;
+        }
+
+        @Override
+        public void setDirection(float direction)
+        {
+            this.direction = direction;
         }
 
     }

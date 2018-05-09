@@ -53,6 +53,8 @@ public class EditAIPage extends Page
         dx = 20;
         textList.add(new GuiTextField(3, fontRenderer, x + dx, y - 20, 60, 10));
         textList.add(new GuiTextField(4, fontRenderer, x + dx, y, 60, 10));
+
+        textList.add(new GuiTextField(5, fontRenderer, x + dx - 60, y + 30, 30, 10));
     }
 
     @Override
@@ -100,6 +102,10 @@ public class EditAIPage extends Page
                 ? I18n.format("traineredit.button.stationary") : I18n.format("traineredit.button.wander");
         parent.getButtons().add(new Button(1, x - 120, y - 56, 60, 20, wanderbutton));
 
+        String rotateButton = parent.aiStates.getAIState(IHasNPCAIStates.FIXEDDIRECTION)
+                ? I18n.format("traineredit.button.norotates") : I18n.format("traineredit.button.rotates");
+        parent.getButtons().add(new Button(2, x - 120, y + 24, 60, 20, rotateButton));
+
         textList.get(0).setValidator(floatValid);
         textList.get(0).setText(guard.getRoamDistance() + "");
         TimePeriod times = guard.getActiveTime();
@@ -117,12 +123,16 @@ public class EditAIPage extends Page
 
         textList.get(4).setValidator(intValid);
         textList.get(4).setText(((DefaultPokemobs) parent.trainer).battleCooldown + "");
+
+        textList.get(5).setValidator(floatValid);
+        textList.get(5).setText(parent.aiStates.getDirection() + "");
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException
     {
         super.actionPerformed(button);
+        ITextComponent mess;
         switch (button.id)
         {
         case 0:
@@ -132,8 +142,16 @@ public class EditAIPage extends Page
             parent.aiStates.setAIState(IHasNPCAIStates.STATIONARY,
                     !parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY));
             sendAIUpdate();
-            ITextComponent mess = new TextComponentTranslation(
+            mess = new TextComponentTranslation(
                     "traineredit.set.stationary." + parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY));
+            parent.mc.player.sendStatusMessage(mess, true);
+            break;
+        case 2:
+            parent.aiStates.setAIState(IHasNPCAIStates.FIXEDDIRECTION,
+                    !parent.aiStates.getAIState(IHasNPCAIStates.FIXEDDIRECTION));
+            sendAIUpdate();
+            mess = new TextComponentTranslation(
+                    "traineredit.set.norotates." + parent.aiStates.getAIState(IHasNPCAIStates.FIXEDDIRECTION));
             parent.mc.player.sendStatusMessage(mess, true);
             break;
         }
@@ -225,6 +243,14 @@ public class EditAIPage extends Page
                 PokecubeMod.packetPipeline.sendToServer(packet);
                 this.onPageOpened();
                 mess = new TextComponentTranslation("traineredit.set.cooldown_g", argInt);
+                break;
+            case 5:
+                argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
+                parent.aiStates.setDirection(argFloat);
+                this.onPageClosed();
+                sendAIUpdate();
+                this.onPageOpened();
+                mess = new TextComponentTranslation("traineredit.set.look", argFloat);
                 break;
             }
             if (time != null)

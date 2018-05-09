@@ -30,6 +30,11 @@ public class GuiInfoMessages
 
     public static void addMessage(ITextComponent message)
     {
+        if (PokecubeCore.core.getConfig().battleLogInChat)
+        {
+            if (PokecubeCore.getPlayer(null) != null) PokecubeCore.getPlayer(null).sendMessage(message);
+            return;
+        }
         instance.messages.push(message.getFormattedText());
         instance.time = Minecraft.getMinecraft().player.ticksExisted;
         instance.recent.addFirst(message.getFormattedText());

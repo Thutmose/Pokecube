@@ -470,6 +470,8 @@ public class Config extends ConfigBase
     public boolean                       riddenMobsTurnWithLook       = true;
     @Configure(category = client)
     public boolean                       extraberries                 = false;
+    @Configure(category = client)
+    public boolean                       battleLogInChat              = false;
 
     @Configure(category = advanced)
     String[]                             mystLocs                     = {};

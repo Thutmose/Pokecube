@@ -217,6 +217,13 @@ public class EntityTrainer extends EntityTrainerBase
     }
 
     @Override
+    public void applyEntityCollision(Entity entityIn)
+    {
+        if (aiStates.getAIState(IHasNPCAIStates.STATIONARY)) return;
+        super.applyEntityCollision(entityIn);
+    }
+
+    @Override
     public void onLivingUpdate()
     {
         if (GeneralCommands.TRAINERSDIE)

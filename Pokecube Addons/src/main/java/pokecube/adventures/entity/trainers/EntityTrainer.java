@@ -217,6 +217,13 @@ public class EntityTrainer extends EntityTrainerBase
     }
 
     @Override
+    protected void collideWithEntity(Entity entityIn)
+    {
+        if (aiStates.getAIState(IHasNPCAIStates.STATIONARY)) return;
+        super.collideWithEntity(entityIn);
+    }
+
+    @Override
     public void applyEntityCollision(Entity entityIn)
     {
         if (aiStates.getAIState(IHasNPCAIStates.STATIONARY)) return;
@@ -277,11 +284,7 @@ public class EntityTrainer extends EntityTrainerBase
     {
         if (getNavigator().getPath() != null && aiStates.getAIState(IHasNPCAIStates.STATIONARY))
         {
-            if (guardAI.capability.getPos() == null || guardAI.capability.getPos().equals(BlockPos.ORIGIN))
-            {
-                setStationary(false);
-                return;
-            }
+            if (guardAI.capability.getPos() == null || guardAI.capability.getPos().equals(BlockPos.ORIGIN)) { return; }
             guardAI.capability.setActiveTime(TimePeriod.fullDay);
         }
         super.onUpdate();
@@ -397,10 +400,6 @@ public class EntityTrainer extends EntityTrainerBase
     {
         PCEventsHandler.recallAllPokemobs(this);
         super.setDead();
-    }
-
-    public void setStationary(boolean stationary)
-    {
     }
 
     public void setStationary(Vector3 location)

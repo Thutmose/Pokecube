@@ -58,6 +58,7 @@ import pokecube.core.events.onload.InitDatabase;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.utils.PokeType;
 
 public class Database
@@ -198,6 +199,7 @@ public class Database
         missingno.stats[5] = 29;
         missingno.addMoves(Lists.newArrayList(), Maps.newHashMap());
         missingno.addMove("skyattack");
+        missingno.mobType = Type.FLYING;
         addEntry(missingno);
     }
     static int lastCount = -1;

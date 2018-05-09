@@ -197,6 +197,28 @@ public class AnimationLoader
             }
             model = null;
         }
+
+        if (model == null)
+        {
+            try
+            {
+                model = new ResourceLocation(s + ".xml");
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                InputStream stream = res.getInputStream();
+                Document doc = dBuilder.parse(stream);
+                res.close();
+                doc.getDocumentElement().normalize();
+                NodeList modelList = doc.getElementsByTagName("customModel");
+                if (modelList == null || modelList.getLength() == 0) model = null;
+            }
+            catch (Exception e1)
+            {
+                model = null;
+            }
+        }
+
         try
         {
             ResourceLocation animation = null;
@@ -390,6 +412,15 @@ public class AnimationLoader
                     else if (part.getNodeName().equals("customTex"))
                     {
                         texturer = new TextureHelper(part);
+                        if (part.getAttributes().getNamedItem("default") != null)
+                        {
+                            model.texture = new ResourceLocation(model.texture.toString().replace(model.name,
+                                    part.getAttributes().getNamedItem("default").getNodeValue()));
+                        }
+                    }
+                    else if (part.getNodeName().equals("customModel"))
+                    {
+                        model.model = new ResourceLocation(part.getAttributes().getNamedItem("default").getNodeValue());
                     }
                     else if (part.getNodeName().equals("subAnims"))
                     {
@@ -404,6 +435,7 @@ public class AnimationLoader
                 {
                     loaded = new DefaultIModelRenderer(phaseList, model);
                 }
+                loaded.model_holder = model;
                 loaded.updateModel(phaseList, model);
                 loaded.offset.set(offset);
                 loaded.scale.set(scale);

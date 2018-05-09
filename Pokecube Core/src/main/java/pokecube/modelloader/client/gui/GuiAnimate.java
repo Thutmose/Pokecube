@@ -105,6 +105,7 @@ public class GuiAnimate extends GuiScreen
             {
                 ((ClientProxy) ModPokecubeML.proxy).reloadModel(e);
             }
+            if (Database.getFormes(entry).isEmpty()) ((ClientProxy) ModPokecubeML.proxy).reloadModel(entry);
         }
         else if (button.id == 5)
         {

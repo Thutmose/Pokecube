@@ -71,6 +71,7 @@ public class Pokedex
     public PokedexEntry getFirstEntry()
     {
         if (entries.isEmpty()) return Database.missingno;
+        if (entries.get(0) == Database.missingno && entries.size() > 1) return entries.get(1);
         return entries.get(0);
     }
 
@@ -91,8 +92,19 @@ public class Pokedex
             return getFirstEntry();
         }
         while (index + i < 0)
+        {
             i += entries.size();
+        }
         index = (index + i) % entries.size();
+        if (entries.get(index) == Database.missingno)
+        {
+            i = (int) (Math.signum(i));
+            while (index + i < 0)
+            {
+                i += entries.size();
+            }
+            index = ((index + i) % entries.size());
+        }
         return entries.get(index);
     }
 

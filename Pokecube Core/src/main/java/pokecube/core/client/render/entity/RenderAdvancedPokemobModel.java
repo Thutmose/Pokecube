@@ -14,6 +14,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.modelloader.client.render.AbstractModelRenderer;
 import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.client.render.ModelWrapper;
 import pokecube.modelloader.common.IEntityAnimator;
@@ -127,6 +128,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
+        if (model instanceof AbstractModelRenderer)
+        {
+            AbstractModelRenderer<?> render = (AbstractModelRenderer<?>) model;
+            if (render.model_holder != null) { return render.model_holder.texture; }
+        }
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
 

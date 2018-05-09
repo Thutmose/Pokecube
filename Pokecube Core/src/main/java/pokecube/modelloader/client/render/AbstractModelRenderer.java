@@ -17,6 +17,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
+import thut.core.client.render.animation.ModelHolder;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IModel;
 import thut.core.client.render.model.IModelRenderer;
@@ -35,6 +36,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
     private boolean           hasSleepAnimation = false;
 
     // Values used to properly reset the GL state after rendering.
+    public ModelHolder        model_holder;
     boolean                   blend;
     boolean                   light;
     int                       src;
@@ -43,7 +45,6 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
     public AbstractModelRenderer(RenderManager renderManagerIn, ModelBase modelBaseIn, float shadowSizeIn)
     {
         super(renderManagerIn, modelBaseIn, shadowSizeIn);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -117,6 +118,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
+        if (model_holder != null) { return model_holder.texture; }
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
 

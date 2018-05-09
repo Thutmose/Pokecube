@@ -106,6 +106,14 @@ public class EditAIPage extends Page
                 ? I18n.format("traineredit.button.norotates") : I18n.format("traineredit.button.rotates");
         parent.getButtons().add(new Button(2, x - 120, y + 24, 60, 20, rotateButton));
 
+        if (parent.trainer instanceof DefaultPokemobs)
+        {
+
+            String visible = ((DefaultPokemobs) parent.trainer).notifyDefeat ? I18n.format("traineredit.button.notify")
+                    : I18n.format("traineredit.button.nonotify");
+            parent.getButtons().add(new Button(3, x - 120, y + 44, 60, 20, visible));
+        }
+
         textList.get(0).setValidator(floatValid);
         textList.get(0).setText(guard.getRoamDistance() + "");
         TimePeriod times = guard.getActiveTime();
@@ -133,6 +141,8 @@ public class EditAIPage extends Page
     {
         super.actionPerformed(button);
         ITextComponent mess;
+        PacketTrainer packet;
+        NBTBase tag;
         switch (button.id)
         {
         case 0:
@@ -154,13 +164,42 @@ public class EditAIPage extends Page
                     "traineredit.set.norotates." + parent.aiStates.getAIState(IHasNPCAIStates.FIXEDDIRECTION));
             parent.mc.player.sendStatusMessage(mess, true);
             break;
+        case 3:
+            DefaultPokemobs trainer = (DefaultPokemobs) parent.trainer;
+            trainer.notifyDefeat = !trainer.notifyDefeat;
+            this.onPageClosed();
+            packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
+            tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer, null);
+            packet.data.setTag("T", tag);
+            packet.data.setInteger("I", parent.entity.getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            this.onPageOpened();
+            mess = new TextComponentTranslation(
+                    "traineredit.set.notify." + parent.aiStates.getAIState(IHasNPCAIStates.FIXEDDIRECTION));
+            parent.mc.player.sendStatusMessage(mess, true);
+            break;
         }
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
+        boolean[] checks = new boolean[textList.size()];
+        for (int i = 0; i < textList.size(); i++)
+        {
+            if (textList.get(i).isFocused()) checks[i] = true;
+        }
         super.mouseClicked(mouseX, mouseY, mouseButton);
+
+        for (int i = 0; i < textList.size(); i++)
+        {
+            if (checks[i] && !textList.get(i).isFocused())
+            {
+                textList.get(i).setFocused(true);
+                updateField(i);
+                textList.get(i).setFocused(false);
+            }
+        }
     }
 
     @Override
@@ -180,85 +219,89 @@ public class EditAIPage extends Page
     {
         super.keyTyped(typedChar, keyCode);
         if (keyCode != Keyboard.KEY_RETURN) return;
-        GuiTextField field;
         for (int i = 0; i < textList.size(); i++)
         {
-            field = textList.get(i);
-            if (!field.isFocused()) continue;
-            String value = field.getText();
-            float argFloat;
-            int argInt;
-            TimePeriod time = null;
-            float start, end;
-            IGuardAICapability guard = parent.entity.getCapability(EventsHandler.GUARDAI_CAP, null);
-            TimePeriod old = guard.getActiveTime();
-            if (old == null) old = new TimePeriod(0, 0);
-            start = (float) old.startTime;
-            end = (float) old.endTime;
-            PacketTrainer packet;
-            NBTBase tag;
-            ITextComponent mess = null;
-            switch (i)
-            {
-            case 0:
-                argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
-                guard.setRoamDistance(argFloat);
-                mess = new TextComponentTranslation("traineredit.set.guarddist", argFloat);
-                sendGuardUpdate();
-                break;
-            case 1:
-                argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
-                time = new TimePeriod(argFloat, end);
-                guard.setActiveTime(time);
-                sendGuardUpdate();
-                break;
-            case 2:
-                argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
-                time = new TimePeriod(start, argFloat);
-                guard.setActiveTime(time);
-                sendGuardUpdate();
-                break;
-            case 3:
-                argInt = value.isEmpty() ? 0 : Integer.parseInt(value);
-                ((DefaultPokemobs) parent.trainer).resetTime = argInt;
-                this.onPageClosed();
-                packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
-                tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer,
-                        null);
-                packet.data.setTag("T", tag);
-                packet.data.setInteger("I", parent.entity.getEntityId());
-                PokecubeMod.packetPipeline.sendToServer(packet);
-                this.onPageOpened();
-                mess = new TextComponentTranslation("traineredit.set.cooldown_p", argInt);
-                break;
-            case 4:
-                argInt = value.isEmpty() ? 0 : Integer.parseInt(value);
-                ((DefaultPokemobs) parent.trainer).battleCooldown = argInt;
-                this.onPageClosed();
-                packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
-                tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer,
-                        null);
-                packet.data.setTag("T", tag);
-                packet.data.setInteger("I", parent.entity.getEntityId());
-                PokecubeMod.packetPipeline.sendToServer(packet);
-                this.onPageOpened();
-                mess = new TextComponentTranslation("traineredit.set.cooldown_g", argInt);
-                break;
-            case 5:
-                argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
-                parent.aiStates.setDirection(argFloat);
-                this.onPageClosed();
-                sendAIUpdate();
-                this.onPageOpened();
-                mess = new TextComponentTranslation("traineredit.set.look", argFloat);
-                break;
-            }
-            if (time != null)
-            {
-                mess = new TextComponentTranslation("traineredit.set.guardtime", time.startTick, time.endTick);
-            }
-            if (mess != null) parent.mc.player.sendStatusMessage(mess, true);
+            updateField(i);
         }
+    }
+
+    private void updateField(int i)
+    {
+        //TODO differentiate whether the field is the same as it was before.
+        GuiTextField field;
+        field = textList.get(i);
+        if (!field.isFocused()) return;
+        String value = field.getText();
+        float argFloat;
+        int argInt;
+        TimePeriod time = null;
+        float start, end;
+        IGuardAICapability guard = parent.entity.getCapability(EventsHandler.GUARDAI_CAP, null);
+        TimePeriod old = guard.getActiveTime();
+        if (old == null) old = new TimePeriod(0, 0);
+        start = (float) old.startTime;
+        end = (float) old.endTime;
+        PacketTrainer packet;
+        NBTBase tag;
+        ITextComponent mess = null;
+        switch (i)
+        {
+        case 0:
+            argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
+            guard.setRoamDistance(argFloat);
+            mess = new TextComponentTranslation("traineredit.set.guarddist", argFloat);
+            sendGuardUpdate();
+            break;
+        case 1:
+            argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
+            time = new TimePeriod(argFloat, end);
+            guard.setActiveTime(time);
+            sendGuardUpdate();
+            break;
+        case 2:
+            argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
+            time = new TimePeriod(start, argFloat);
+            guard.setActiveTime(time);
+            sendGuardUpdate();
+            break;
+        case 3:
+            argInt = value.isEmpty() ? 0 : Integer.parseInt(value);
+            ((DefaultPokemobs) parent.trainer).resetTime = argInt;
+            this.onPageClosed();
+            packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
+            tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer, null);
+            packet.data.setTag("T", tag);
+            packet.data.setInteger("I", parent.entity.getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            this.onPageOpened();
+            mess = new TextComponentTranslation("traineredit.set.cooldown_p", argInt);
+            break;
+        case 4:
+            argInt = value.isEmpty() ? 0 : Integer.parseInt(value);
+            ((DefaultPokemobs) parent.trainer).battleCooldown = argInt;
+            this.onPageClosed();
+            packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
+            tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer, null);
+            packet.data.setTag("T", tag);
+            packet.data.setInteger("I", parent.entity.getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            this.onPageOpened();
+            mess = new TextComponentTranslation("traineredit.set.cooldown_g", argInt);
+            break;
+        case 5:
+            argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
+            parent.aiStates.setDirection(argFloat);
+            this.onPageClosed();
+            sendAIUpdate();
+            this.onPageOpened();
+            mess = new TextComponentTranslation("traineredit.set.look", argFloat);
+            break;
+        }
+        if (time != null)
+        {
+            mess = new TextComponentTranslation("traineredit.set.guardtime", time.startTick, time.endTick);
+        }
+        if (mess != null) parent.mc.player.sendStatusMessage(mess, true);
     }
 
     private void sendGuardUpdate()

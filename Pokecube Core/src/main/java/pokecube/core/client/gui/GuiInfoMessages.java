@@ -69,6 +69,7 @@ public class GuiInfoMessages
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
     public void draw(RenderMoveMessages event)
     {
+        if (PokecubeCore.core.getConfig().battleLogInChat) { return; }
         Minecraft minecraft = Minecraft.getMinecraft();
         if (event.getType() == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
         if (event.getType() != ElementType.CHAT && (minecraft.currentScreen instanceof GuiChat)) return;

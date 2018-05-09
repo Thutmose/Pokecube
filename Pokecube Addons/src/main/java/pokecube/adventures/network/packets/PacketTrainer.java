@@ -207,7 +207,6 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                 }
                 if (mess != null) player.sendStatusMessage(mess, true);
                 boolean stationaryNow = hasAI ? ai.getAIState(IHasNPCAIStates.STATIONARY) : false;
-                System.out.println("" + stationaryNow);
                 if (stationaryNow != stationaryBefore)
                 {
                     if (guard != null)

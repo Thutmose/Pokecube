@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntitySkull;
@@ -54,6 +55,14 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
         }
         layerRenderers.remove(badHeadRenderer);
         addLayer(new BetterCustomHeadLayer(male.bipedHead));
+    }
+
+    @Override
+    public void doRenderShadowAndFire(Entity entityIn, double x, double y, double z, float yaw, float partialTicks)
+    {
+        long time = entityIn.getEntityWorld().getTotalWorldTime();
+        if (((EntityTrainer) entityIn).visibleTime > time) return;
+        super.doRenderShadowAndFire(entityIn, x, y, z, yaw, partialTicks);
     }
 
     @Override

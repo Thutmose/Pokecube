@@ -1,6 +1,7 @@
 package pokecube.adventures.entity.helper.capabilities;
 
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 
@@ -34,15 +35,34 @@ public class CapabilityHasRewards
         return pokemobHolder;
     }
 
+    public static class Reward
+    {
+        public final ItemStack stack;
+        public final float     chance;
+
+        public Reward(ItemStack stack, float chance)
+        {
+            this.stack = stack;
+            this.chance = chance;
+        }
+
+        public Reward(ItemStack stack)
+        {
+            this(stack, 1);
+        }
+    }
+
     public static interface IHasRewards
     {
-        List<ItemStack> getRewards();
+        List<Reward> getRewards();
 
         default void giveReward(EntityPlayer player, EntityLivingBase rewarder)
         {
-            for (ItemStack i : getRewards())
+            for (Reward reward : getRewards())
             {
+                ItemStack i = reward.stack;
                 if (!CompatWrapper.isValid(i)) continue;
+                if (new Random().nextFloat() > reward.chance) continue;
                 if (!player.inventory.addItemStackToInventory(i.copy()))
                 {
                     EntityItem item = player.entityDropItem(i.copy(), 0.5f);
@@ -72,10 +92,13 @@ public class CapabilityHasRewards
             NBTTagList nbttaglist = new NBTTagList();
             for (int i = 0; i < instance.getRewards().size(); ++i)
             {
-                if (CompatWrapper.isValid(instance.getRewards().get(i)))
+                ItemStack stack = instance.getRewards().get(i).stack;
+
+                if (CompatWrapper.isValid(stack))
                 {
                     NBTTagCompound nbttagcompound = new NBTTagCompound();
-                    instance.getRewards().get(i).writeToNBT(nbttagcompound);
+                    stack.writeToNBT(nbttagcompound);
+                    nbttagcompound.setFloat("chance", instance.getRewards().get(i).chance);
                     nbttaglist.appendTag(nbttagcompound);
                 }
             }
@@ -90,7 +113,10 @@ public class CapabilityHasRewards
             instance.getRewards().clear();
             for (int i = 0; i < nbttaglist.tagCount(); ++i)
             {
-                instance.getRewards().add(CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
+                NBTTagCompound tag = nbttaglist.getCompoundTagAt(i);
+                ItemStack stack = CompatWrapper.fromTag(tag);
+                float chance = tag.hasKey("chance") ? tag.getFloat("chance") : 1;
+                instance.getRewards().add(new Reward(stack, chance));
             }
         }
 
@@ -98,10 +124,10 @@ public class CapabilityHasRewards
 
     public static class DefaultRewards implements IHasRewards, ICapabilitySerializable<NBTTagList>
     {
-        private final List<ItemStack> rewards = Lists.newArrayList();
+        private final List<Reward> rewards = Lists.newArrayList();
 
         @Override
-        public List<ItemStack> getRewards()
+        public List<Reward> getRewards()
         {
             return rewards;
         }

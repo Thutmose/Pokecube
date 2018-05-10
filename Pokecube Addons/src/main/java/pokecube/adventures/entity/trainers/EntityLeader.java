@@ -12,6 +12,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.Reward;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.core.database.Database;
@@ -75,11 +76,12 @@ public class EntityLeader extends EntityTrainer
 
         if (ItemBadge.isBadge(player.getHeldItem(hand)))
         {
-            if (!rewardsCap.getRewards().isEmpty()) rewardsCap.getRewards().set(0, player.getHeldItem(hand).copy());
-            else rewardsCap.getRewards().add(player.getHeldItem(hand).copy());
-            if (!getEntityWorld().isRemote) player.sendMessage(
-                    new TextComponentString("Badge set to " + player.getHeldItem(hand).getDisplayName()));
-            this.setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0));
+            if (!rewardsCap.getRewards().isEmpty())
+                rewardsCap.getRewards().set(0, new Reward(player.getHeldItem(hand).copy()));
+            else rewardsCap.getRewards().add(new Reward(player.getHeldItem(hand).copy()));
+            if (!getEntityWorld().isRemote) player
+                    .sendMessage(new TextComponentString("Badge set to " + player.getHeldItem(hand).getDisplayName()));
+            this.setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0).stack);
         }
         return super.processInteract(player, hand, stack);
     }

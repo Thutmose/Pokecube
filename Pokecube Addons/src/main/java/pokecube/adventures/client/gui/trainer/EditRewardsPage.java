@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.Reward;
 import pokecube.adventures.events.PAEventsHandler;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.client.gui.helper.ScrollGui;
@@ -35,16 +36,36 @@ public class EditRewardsPage extends ListPage
     {
         final int             index;
         final GuiTextField    reward;
+        final GuiTextField    chance;
         final EditRewardsPage parent;
 
-        public RewardEntry(EditRewardsPage parent, ItemStack stack, int index)
+        public RewardEntry(EditRewardsPage parent, Reward reward2, int index)
         {
             this.index = index;
-            this.reward = new GuiTextField(0, parent.fontRenderer, 0, 0, 240, 10);
+            this.reward = new GuiTextField(0, parent.fontRenderer, 0, 0, 200, 10);
             reward.setMaxStringLength(Short.MAX_VALUE);
-            this.parent = parent;
-            if (!stack.isEmpty())
+            com.google.common.base.Predicate<String> floatValid = new com.google.common.base.Predicate<String>()
             {
+                @Override
+                public boolean apply(String input)
+                {
+                    try
+                    {
+                        float var = Float.parseFloat(input);
+                        return var <= 1 && var >= 0;
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        return input.isEmpty();
+                    }
+                }
+            };
+            this.chance = new GuiTextField(1, parent.fontRenderer, 200, 0, 40, 10);
+            this.chance.setValidator(floatValid);
+            this.parent = parent;
+            if (reward2 != null && !reward2.stack.isEmpty())
+            {
+                ItemStack stack = reward2.stack;
                 String value = stack.getItem().getRegistryName() + " " + stack.getCount() + " " + stack.getMetadata();
                 if (stack.hasTagCompound())
                 {
@@ -52,6 +73,8 @@ public class EditRewardsPage extends ListPage
                 }
                 reward.setText(value);
             }
+            if (reward2 != null) this.chance.setText(reward2.chance + "");
+            else this.chance.setText("1.0");
         }
 
         @Override
@@ -69,11 +92,14 @@ public class EditRewardsPage extends ListPage
             boolean fits = true;
             reward.x = x - 2;
             reward.y = y - 4;
+            chance.x = x + 198;
+            chance.y = y - 4;
             fits = reward.y >= offsetY;
             fits = fits && reward.y + reward.height <= offsetY + guiHeight;
             if (fits)
             {
                 reward.drawTextBox();
+                chance.drawTextBox();
             }
         }
 
@@ -88,7 +114,14 @@ public class EditRewardsPage extends ListPage
             fits = fits && mouseX - reward.x <= reward.width;
             fits = fits && reward.y + reward.height <= offsetY + guiHeight;
             reward.setFocused(fits);
-            return fits;
+
+            boolean fits2 = chance.y >= offsetY;
+            fits2 = fits2 && mouseX - chance.x >= 0;
+            fits2 = fits2 && mouseX - chance.x <= chance.width;
+            fits2 = fits2 && chance.y + chance.height <= offsetY + guiHeight;
+            chance.setFocused(fits2);
+
+            return fits || fits2;
         }
 
         @Override
@@ -100,76 +133,91 @@ public class EditRewardsPage extends ListPage
         protected void keyTyped(char typedChar, int keyCode) throws IOException
         {
             reward.textboxKeyTyped(typedChar, keyCode);
-            if (!reward.isFocused()) return;
-            if (keyCode == Keyboard.KEY_RETURN)
+            chance.textboxKeyTyped(typedChar, keyCode);
+            if (reward.isFocused() || chance.isFocused())
             {
-                if (reward.getText().isEmpty())
+                if (keyCode == Keyboard.KEY_RETURN)
                 {
-                    if (index != -1)
+
+                    float prob = 1;
+                    try
                     {
-                        ItemStack removed = parent.parent.rewards.getRewards().remove(index);
-                        parent.mc.player.sendStatusMessage(new TextComponentTranslation("traineredit.set.removereward",
-                                removed.getTextComponent()), true);
-                        parent.onPageClosed();
-                        PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
-                        NBTBase tag = CapabilityHasRewards.storage.writeNBT(CapabilityHasRewards.REWARDS_CAP,
-                                parent.parent.rewards, null);
-                        packet.data.setTag("T", tag);
-                        packet.data.setByte("V", (byte) 1);
-                        packet.data.setInteger("I", parent.parent.entity.getEntityId());
-                        PokecubeMod.packetPipeline.sendToServer(packet);
-                        parent.onPageOpened();
+                        prob = Float.valueOf(chance.getText());
                     }
-                    return;
-                }
-                try
-                {
-                    ItemStack itemstack = PAEventsHandler.fromString(reward.getText(), parent.mc.player);
-                    if (itemstack.isEmpty())
+                    catch (NumberFormatException e1)
+                    {
+                        chance.setText("1.0");
+                    }
+
+                    if (reward.getText().isEmpty())
+                    {
+                        if (index != -1)
+                        {
+                            Reward rreward = parent.parent.rewards.getRewards().remove(index);
+                            ItemStack removed = rreward.stack;
+                            parent.mc.player.sendStatusMessage(new TextComponentTranslation(
+                                    "traineredit.set.removereward", removed.getTextComponent()), true);
+                            parent.onPageClosed();
+                            PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
+                            NBTBase tag = CapabilityHasRewards.storage.writeNBT(CapabilityHasRewards.REWARDS_CAP,
+                                    parent.parent.rewards, null);
+                            packet.data.setTag("T", tag);
+                            packet.data.setByte("V", (byte) 1);
+                            packet.data.setInteger("I", parent.parent.entity.getEntityId());
+                            PokecubeMod.packetPipeline.sendToServer(packet);
+                            parent.onPageOpened();
+                        }
+                        return;
+                    }
+                    try
+                    {
+                        ItemStack itemstack = PAEventsHandler.fromString(reward.getText(), parent.mc.player);
+                        if (itemstack.isEmpty())
+                        {
+                            parent.mc.player.sendStatusMessage(
+                                    new TextComponentTranslation("traineredit.info.invalidreward"), true);
+                        }
+                        else
+                        {
+                            if (index != -1)
+                            {
+                                parent.parent.rewards.getRewards().set(index, new Reward(itemstack, prob));
+                                parent.mc.player.sendStatusMessage(new TextComponentTranslation(
+                                        "traineredit.set.reward", itemstack.getTextComponent()), true);
+                                parent.onPageClosed();
+                                PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
+                                NBTBase tag = CapabilityHasRewards.storage.writeNBT(CapabilityHasRewards.REWARDS_CAP,
+                                        parent.parent.rewards, null);
+                                packet.data.setTag("T", tag);
+                                packet.data.setByte("V", (byte) 1);
+                                packet.data.setInteger("I", parent.parent.entity.getEntityId());
+                                PokecubeMod.packetPipeline.sendToServer(packet);
+                                parent.onPageOpened();
+                            }
+                            else
+                            {
+                                parent.parent.rewards.getRewards().add(new Reward(itemstack, prob));
+                                parent.mc.player.sendStatusMessage(new TextComponentTranslation(
+                                        "traineredit.set.rewardnew", itemstack.getTextComponent()), true);
+                                parent.onPageClosed();
+                                PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
+                                NBTBase tag = CapabilityHasRewards.storage.writeNBT(CapabilityHasRewards.REWARDS_CAP,
+                                        parent.parent.rewards, null);
+                                packet.data.setTag("T", tag);
+                                packet.data.setByte("V", (byte) 1);
+                                packet.data.setInteger("I", parent.parent.entity.getEntityId());
+                                PokecubeMod.packetPipeline.sendToServer(packet);
+                                parent.onPageOpened();
+                            }
+                        }
+                    }
+                    catch (Exception e)
                     {
                         parent.mc.player.sendStatusMessage(
                                 new TextComponentTranslation("traineredit.info.invalidreward"), true);
                     }
-                    else
-                    {
-                        if (index != -1)
-                        {
-                            parent.parent.rewards.getRewards().set(index, itemstack);
-                            parent.mc.player.sendStatusMessage(new TextComponentTranslation("traineredit.set.reward",
-                                    itemstack.getTextComponent()), true);
-                            parent.onPageClosed();
-                            PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
-                            NBTBase tag = CapabilityHasRewards.storage.writeNBT(CapabilityHasRewards.REWARDS_CAP,
-                                    parent.parent.rewards, null);
-                            packet.data.setTag("T", tag);
-                            packet.data.setByte("V", (byte) 1);
-                            packet.data.setInteger("I", parent.parent.entity.getEntityId());
-                            PokecubeMod.packetPipeline.sendToServer(packet);
-                            parent.onPageOpened();
-                        }
-                        else
-                        {
-                            parent.parent.rewards.getRewards().add(itemstack);
-                            parent.mc.player.sendStatusMessage(new TextComponentTranslation("traineredit.set.rewardnew",
-                                    itemstack.getTextComponent()), true);
-                            parent.onPageClosed();
-                            PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
-                            NBTBase tag = CapabilityHasRewards.storage.writeNBT(CapabilityHasRewards.REWARDS_CAP,
-                                    parent.parent.rewards, null);
-                            packet.data.setTag("T", tag);
-                            packet.data.setByte("V", (byte) 1);
-                            packet.data.setInteger("I", parent.parent.entity.getEntityId());
-                            PokecubeMod.packetPipeline.sendToServer(packet);
-                            parent.onPageOpened();
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    parent.mc.player.sendStatusMessage(new TextComponentTranslation("traineredit.info.invalidreward"),
-                            true);
-                }
 
+                }
             }
         }
 
@@ -194,13 +242,13 @@ public class EditRewardsPage extends ListPage
     void initList()
     {
         rewards.clear();
-        List<ItemStack> rewardStacks = parent.rewards.getRewards();
+        List<Reward> rewardStacks = parent.rewards.getRewards();
         int i = 0;
-        for (ItemStack stack : rewardStacks)
+        for (Reward reward : rewardStacks)
         {
-            rewards.add(new RewardEntry(this, stack, i++));
+            rewards.add(new RewardEntry(this, reward, i++));
         }
-        rewards.add(new RewardEntry(this, ItemStack.EMPTY, -1));
+        rewards.add(new RewardEntry(this, null, -1));
         List<IGuiListEntry> entries = Lists.newArrayList(rewards);
         int x = parent.width / 2 - 122;
         int y = parent.height / 2 - 60;
@@ -241,10 +289,12 @@ public class EditRewardsPage extends ListPage
             if (i != slot)
             {
                 rewards.get(i).reward.setFocused(false);
+                rewards.get(i).chance.setFocused(false);
             }
             else
             {
                 rewards.get(i).reward.mouseClicked(mouseX, mouseY, mouseButton);
+                rewards.get(i).chance.mouseClicked(mouseX, mouseY, mouseButton);
             }
         }
     }

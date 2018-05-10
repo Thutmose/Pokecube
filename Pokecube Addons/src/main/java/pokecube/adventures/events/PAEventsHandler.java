@@ -43,6 +43,7 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.DefaultRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.Reward;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
@@ -321,7 +322,7 @@ public class PAEventsHandler
         {
             PokecubeMod.log(Level.WARNING, "Error with default trainer rewards " + PokecubeAdv.conf.defaultReward, e);
         }
-        if (!stack.isEmpty()) rewards.getRewards().add(stack);
+        if (!stack.isEmpty()) rewards.getRewards().add(new Reward(stack));
         DefaultAIStates aiStates = new DefaultAIStates();
         DefaultMessager messages = new DefaultMessager();
         mobs.init((EntityLivingBase) event.getObject(), aiStates, messages, rewards);

@@ -1045,8 +1045,7 @@ public class PokedexEntry
         if (e.stats == null) e.stats = stats.clone();
         if (evs == null)
         {
-            System.out.println(this + " " + this.baseForme);
-            Thread.dumpStack();
+            PokecubeMod.log(Level.WARNING, this + " " + this.baseForme, new IllegalArgumentException());
         }
         if (e.evs == null) e.evs = evs.clone();
         if (e.height == -1) e.height = height;
@@ -1056,6 +1055,7 @@ public class PokedexEntry
         if (e.species == null) e.species = species;
         if (e.mobType == null) e.mobType = mobType;
         if (e.catchRate == -1) e.catchRate = catchRate;
+        if (e.sexeRatio == -1) e.sexeRatio = sexeRatio;
         if (e.mass == -1) e.mass = mass;
         if (e.held.isEmpty()) e.held = held;
         if (e.drops.isEmpty()) e.drops = drops;
@@ -1084,11 +1084,13 @@ public class PokedexEntry
         {
             forme.isMaleForme = true;
             this.male = forme;
+            forme.sexeRatio = 0;
         }
         else
         {
             forme.isFemaleForme = true;
             this.female = forme;
+            forme.sexeRatio = 254;
         }
         forme.isGenderForme = true;
         return forme;

@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.ItemBlockAFA;
 import pokecube.adventures.blocks.cloner.block.ItemBlockCloner;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.adventures.handlers.loot.Loot;
 import pokecube.adventures.handlers.loot.LootHelpers;
 import pokecube.adventures.items.ItemBadge;

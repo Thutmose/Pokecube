@@ -13,6 +13,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Village;
 import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraft.world.gen.structure.template.Template;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.world.gen.template.PokecubeTemplate;
 import pokecube.core.world.gen.template.PokecubeTemplates;
 
@@ -178,6 +179,9 @@ public abstract class TemplateStructureBase extends Village
     public boolean addComponentParts(World worldIn, Random randomIn, StructureBoundingBox boxIn)
     {
         if (template == null) return false;
+        /** This means templates cannot be spawned in worlds which are not valid
+         * for pokemob stuff to occur in. */
+        if (!SpawnHandler.canSpawnInWorld(worldIn)) return false;
         try
         {
             if (this.averageGroundLevel < 0)

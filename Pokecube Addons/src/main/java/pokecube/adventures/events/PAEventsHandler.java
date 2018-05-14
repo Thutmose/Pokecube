@@ -37,7 +37,7 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.helper.AIStuffHolder;
 import pokecube.adventures.ai.tasks.AIBattle;
 import pokecube.adventures.ai.tasks.AIFindTarget;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;

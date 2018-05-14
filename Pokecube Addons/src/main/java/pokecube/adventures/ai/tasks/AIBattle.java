@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.core.database.Database;

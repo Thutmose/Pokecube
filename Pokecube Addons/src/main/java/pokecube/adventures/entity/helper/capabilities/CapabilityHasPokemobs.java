@@ -19,7 +19,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import pokecube.adventures.advancements.Triggers;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;

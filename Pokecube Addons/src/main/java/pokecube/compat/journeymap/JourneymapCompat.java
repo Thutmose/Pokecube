@@ -18,7 +18,7 @@ import journeymap.client.api.model.MapPolygon;
 import journeymap.client.api.model.ShapeProperties;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.utils.ChunkCoordinate;
 

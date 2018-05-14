@@ -89,7 +89,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
         }
         starters = _starters;
         entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
-        System.out.println(special + " " + pick);
     }
 
     @Override

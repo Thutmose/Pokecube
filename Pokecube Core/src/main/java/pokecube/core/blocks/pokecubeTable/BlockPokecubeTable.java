@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import pokecube.core.contributors.Contributor;
 import pokecube.core.contributors.ContributorManager;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
@@ -96,6 +97,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
     {
         if (!worldIn.isRemote)
         {
+            if (!SpawnHandler.canSpawnInWorld(worldIn)) return false;
             if (!PokecubeSerializer.getInstance().hasStarter(playerIn))
             {
                 ArrayList<PokedexEntry> starters = new ArrayList<PokedexEntry>();
@@ -141,7 +143,6 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                     {
                         special = true;
                         pick = PacketChoose.canPick(playerIn.getGameProfile());
-                        System.out.println(special + " " + pick);
                     }
                 }
                 PacketChoose packet = PacketChoose.createOpenPacket(special, pick, starts);

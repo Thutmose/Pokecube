@@ -172,6 +172,17 @@ public final class SpawnHandler
     public static int                                  capLevel                = 50;
     public static final HashMap<Integer, JEP>          parsers                 = new HashMap<Integer, JEP>();
 
+    public static boolean canSpawnInWorld(World world)
+    {
+        if (dimensionBlacklist.contains(world.provider.getDimension())
+                || world.provider instanceof WorldProviderSecretBase)
+            return false;
+        if (PokecubeCore.core.getConfig().whiteListEnabled
+                && !dimensionWhitelist.contains(world.provider.getDimension()))
+            return false;
+        return true;
+    }
+
     public static boolean addForbiddenSpawningCoord(BlockPos pos, int dimensionId, int distance)
     {
         return addForbiddenSpawningCoord(pos.getX(), pos.getY(), pos.getZ(), dimensionId, distance);
@@ -801,10 +812,7 @@ public final class SpawnHandler
 
     public void tick(World world)
     {
-        if (dimensionBlacklist.contains(world.provider.getDimension())) return;
-        if (PokecubeMod.core.getConfig().whiteListEnabled
-                && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
-            return;
+        if (!SpawnHandler.canSpawnInWorld(world)) return;
         if (world.provider instanceof WorldProviderSecretBase) return;
         try
         {

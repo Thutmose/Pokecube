@@ -30,7 +30,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.adventures.entity.helper.EntityHasTrades;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.core.PokecubeItems;
@@ -122,6 +122,7 @@ public class TypeTrainer
          * during the check for whether this mob should have trainers. */
         default TypeTrainer getType(EntityLivingBase mob, boolean forSpawn)
         {
+            if (!SpawnHandler.canSpawnInWorld(mob.getEntityWorld())) return null;
             if (!forSpawn)
             {
                 if (mob instanceof EntityTrainer) return merchant;
@@ -133,7 +134,7 @@ public class TypeTrainer
                 return null;
             }
 
-            if (mob instanceof EntityVillager)
+            if (mob instanceof EntityVillager && Config.instance.npcsAreTrainers)
             {
                 EntityVillager villager = (EntityVillager) mob;
                 VillagerProfession profession = villager.getProfessionForge();

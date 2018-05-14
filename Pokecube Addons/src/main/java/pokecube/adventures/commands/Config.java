@@ -1,4 +1,4 @@
-package pokecube.adventures.comands;
+package pokecube.adventures.commands;
 
 import static pokecube.core.handlers.Config.misc;
 import static pokecube.core.handlers.Config.spawning;

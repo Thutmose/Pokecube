@@ -24,10 +24,7 @@ public class WorldGenNests implements IWorldGenerator
             IChunkProvider chunkProvider)
     {
         if (!PokecubeMod.core.getConfig().nests) return;
-        if (SpawnHandler.dimensionBlacklist.contains(world.provider.getDimension())) return;
-        if (PokecubeMod.core.getConfig().whiteListEnabled
-                && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
-            return;
+        if (!SpawnHandler.canSpawnInWorld(world)) return;
         PokecubeMod.core.getConfig().nestsPerChunk = 1;
         if (random.nextDouble() < 0.9) return;
 

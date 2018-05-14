@@ -1,4 +1,4 @@
-package pokecube.adventures.comands;
+package pokecube.adventures.commands;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

@@ -259,10 +259,7 @@ public class WorldGenTemplates implements IWorldGenerator
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
-        if (SpawnHandler.dimensionBlacklist.contains(world.provider.getDimension())) return;
-        if (PokecubeMod.core.getConfig().whiteListEnabled
-                && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
-            return;
+        if (!SpawnHandler.canSpawnInWorld(world)) return;
         for (IWorldGenerator gen : templates)
             gen.generate(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
     }

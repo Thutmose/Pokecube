@@ -1,4 +1,4 @@
-package pokecube.adventures.comands;
+package pokecube.adventures.commands;
 
 import java.util.List;
 

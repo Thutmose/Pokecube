@@ -3,7 +3,7 @@ package pokecube.adventures.client.gui.config;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 
 public class ModGuiConfig extends GuiConfig
 {

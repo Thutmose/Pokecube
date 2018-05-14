@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.TrainerSpawnEvent;
@@ -34,7 +34,6 @@ import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
 
@@ -140,10 +139,8 @@ public class TrainerSpawnHandler
 
     public void tick(World w)
     {
-        if (w.isRemote || SpawnHandler.dimensionBlacklist.contains(w.provider.getDimension())) { return; }
-        if (PokecubeMod.core.getConfig().whiteListEnabled
-                && !SpawnHandler.dimensionWhitelist.contains(w.provider.getDimension()))
-            return;
+        if (w.isRemote) { return; }
+        if (!SpawnHandler.canSpawnInWorld(w)) return;
         ArrayList<Object> players = new ArrayList<Object>();
         players.addAll(w.playerEntities);
         if (players.size() < 1) return;

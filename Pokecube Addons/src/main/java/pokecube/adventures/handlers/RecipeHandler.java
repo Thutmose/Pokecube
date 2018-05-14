@@ -23,7 +23,7 @@ import pokecube.adventures.blocks.cloner.ClonerHelper.DNAPack;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;

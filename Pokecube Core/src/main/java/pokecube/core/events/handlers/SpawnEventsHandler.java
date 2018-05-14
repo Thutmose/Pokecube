@@ -21,7 +21,6 @@ import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.events.StructureEvent;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import thut.api.maths.Vector3;
 
 public class SpawnEventsHandler
@@ -112,11 +111,6 @@ public class SpawnEventsHandler
     @SubscribeEvent
     public void onSpawnCheck(SpawnEvent.Check event)
     {
-        if ((SpawnHandler.dimensionBlacklist.contains(event.world.provider.getDimension())
-                || event.world.provider instanceof WorldProviderSecretBase))
-            event.setCanceled(true);
-        if (PokecubeMod.core.getConfig().whiteListEnabled
-                && !SpawnHandler.dimensionWhitelist.contains(event.world.provider.getDimension()))
-            event.setCanceled(true);
+        if (!SpawnHandler.canSpawnInWorld(event.world)) event.setCanceled(true);
     }
 }

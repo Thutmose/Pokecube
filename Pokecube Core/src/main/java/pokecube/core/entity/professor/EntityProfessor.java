@@ -25,6 +25,7 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.contributors.Contributor;
 import pokecube.core.contributors.ContributorManager;
 import pokecube.core.events.handlers.EventsHandler;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemLuckyEgg;
@@ -141,6 +142,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
     {
         if (!getEntityWorld().isRemote && hand == EnumHand.MAIN_HAND)
         {
+            if (!SpawnHandler.canSpawnInWorld(player.getEntityWorld())) return false;
             if (type == ProfessorType.PROFESSOR)
             {
                 if (!PokecubeSerializer.getInstance().hasStarter(player))

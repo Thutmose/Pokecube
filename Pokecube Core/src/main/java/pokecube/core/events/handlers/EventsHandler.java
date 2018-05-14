@@ -188,6 +188,7 @@ public class EventsHandler
         public ChooseFirst(EntityPlayer player)
         {
             this.player = player;
+            if (!SpawnHandler.canSpawnInWorld(player.getEntityWorld())) return;
             MinecraftForge.EVENT_BUS.register(this);
         }
 

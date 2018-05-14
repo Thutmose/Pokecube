@@ -95,7 +95,7 @@ public class AIAttack extends AIBase implements IAICombat
 
         if (entityTarget != null && (entityTarget.isDead || !entityTarget.addedToChunk))
         {
-            addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
+            addTargetInfo(attacker, null);
             entityTarget = null;
             pokemobTarget = null;
         }
@@ -208,7 +208,7 @@ public class AIAttack extends AIBase implements IAICombat
         // If it has been too long since last seen the target, give up.
         if (chaseTime > 200)
         {
-            addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
+            addTargetInfo(attacker, null);
             addEntityPath(attacker, null, movementSpeed);
             if (PokecubeCore.debug)
             {

@@ -18,9 +18,9 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.TickHandler;
 import thut.api.entity.ai.AIThreadManager;
@@ -249,6 +249,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         // Don't look for targets if you are sitting.
         boolean ret = entity.getAttackTarget() == null && entity.getAttackTarget() == null
                 && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
+
         // If target is dead, return false.
         if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead)
         {

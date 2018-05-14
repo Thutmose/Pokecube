@@ -109,7 +109,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
             /** Ensure that the target being set is actually a valid target. */
             if (entity == getEntity())
             {
-                getEntity().setAttackTarget(null);
+                if (getEntity().getAttackTarget() == getEntity()) getEntity().setAttackTarget(null);
                 return;
             }
             else if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwner() == getOwner())

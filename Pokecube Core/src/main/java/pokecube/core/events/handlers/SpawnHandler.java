@@ -174,6 +174,7 @@ public final class SpawnHandler
 
     public static boolean canSpawnInWorld(World world)
     {
+        if (world == null) return true;
         if (dimensionBlacklist.contains(world.provider.getDimension())
                 || world.provider instanceof WorldProviderSecretBase)
             return false;

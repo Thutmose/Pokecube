@@ -17,6 +17,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -423,11 +425,25 @@ public class MoveEventsHandler
         IPokemob target = CapabilityPokemob.getPokemobFor(attacked);
 
         IPokemobUseable attackerheld = IPokemobUseable.getUsableFor(attacker.getHeldItem());
-        if (attackerheld != null) attackerheld.onMoveTick(attacker, attacker.getHeldItem(), move);
+        if (attackerheld != null)
+        {
+            ActionResult<ItemStack> result = attackerheld.onMoveTick(attacker, attacker.getHeldItem(), move);
+            if (result.getType() == EnumActionResult.SUCCESS)
+            {
+                attacker.setHeldItem(result.getResult());
+            }
+        }
         if (target != null)
         {
             IPokemobUseable targetheld = IPokemobUseable.getUsableFor(target.getHeldItem());
-            if (targetheld != null) targetheld.onMoveTick(attacker, target.getHeldItem(), move);
+            if (targetheld != null)
+            {
+                ActionResult<ItemStack> result = targetheld.onMoveTick(attacker, target.getHeldItem(), move);
+                if (result.getType() == EnumActionResult.SUCCESS)
+                {
+                    target.setHeldItem(result.getResult());
+                }
+            }
         }
 
         boolean user = evt.isFromUser();
@@ -451,11 +467,25 @@ public class MoveEventsHandler
         IPokemob other = user ? target : attacker;
 
         IPokemobUseable attackerheld = IPokemobUseable.getUsableFor(attacker.getHeldItem());
-        if (attackerheld != null) attackerheld.onMoveTick(attacker, attacker.getHeldItem(), move);
+        if (attackerheld != null)
+        {
+            ActionResult<ItemStack> result = attackerheld.onMoveTick(attacker, attacker.getHeldItem(), move);
+            if (result.getType() == EnumActionResult.SUCCESS)
+            {
+                attacker.setHeldItem(result.getResult());
+            }
+        }
         if (target != null)
         {
             IPokemobUseable targetheld = IPokemobUseable.getUsableFor(target.getHeldItem());
-            if (targetheld != null) targetheld.onMoveTick(attacker, target.getHeldItem(), move);
+            if (targetheld != null)
+            {
+                ActionResult<ItemStack> result = targetheld.onMoveTick(attacker, target.getHeldItem(), move);
+                if (result.getType() == EnumActionResult.SUCCESS)
+                {
+                    target.setHeldItem(result.getResult());
+                }
+            }
         }
 
         if (applied == null) return;

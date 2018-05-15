@@ -5,10 +5,17 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -36,12 +43,13 @@ public class UsableItemEffects
          * @param stack
          * @return something happened */
         @Override
-        public boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
+        public ActionResult<ItemStack> onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
-            if (user != pokemob.getEntity() && user != pokemob.getOwner()) return false;
+            if (user != pokemob.getEntity() && user != pokemob.getOwner())
+                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
             boolean used = ItemTM.applyEffect(pokemob.getEntity(), stack);
             if (used) stack.splitStack(1);
-            return used;
+            return new ActionResult<ItemStack>(used ? EnumActionResult.SUCCESS : EnumActionResult.FAIL, stack);
         }
 
         @Override
@@ -74,15 +82,17 @@ public class UsableItemEffects
          * @param stack
          * @return something happened */
         @Override
-        public boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
+        public ActionResult<ItemStack> onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
-            if (user != pokemob.getEntity() && user != pokemob.getOwner()) return false;
-            if (stack.getItemDamage() >= ItemVitamin.vitamins.size()) return false;
-            boolean used = false;
+            if (user != pokemob.getEntity() && user != pokemob.getOwner()
+                    || stack.getItemDamage() >= ItemVitamin.vitamins.size())
+                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+            ActionResult<ItemStack> result = null;
             VitaminEffect effect = effects.get(ItemVitamin.vitamins.get(stack.getItemDamage()));
-            if (effect != null) used = effect.onUse(pokemob, stack, user);
-            if (used) stack.splitStack(1);
-            return used;
+            if (effect != null) result = effect.onUse(pokemob, stack, user);
+            else return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+            if (result.getType() == EnumActionResult.SUCCESS) stack.splitStack(1);
+            return result;
         }
 
         @Override
@@ -113,13 +123,14 @@ public class UsableItemEffects
          * @param stack
          * @return something happened */
         @Override
-        public boolean onTick(IPokemob pokemob, ItemStack stack)
+        public ActionResult<ItemStack> onTick(IPokemob pokemob, ItemStack stack)
         {
             int berryId = stack.getItemDamage();
-            if (!BerryManager.berryNames.containsKey(berryId)) return false;
+            if (!BerryManager.berryNames.containsKey(berryId))
+                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
             BerryEffect effect = effects.get(berryId);
             if (effect != null) return effect.onTick(pokemob, stack);
-            return false;
+            return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
         }
 
         /** Called when this item is "used". Normally this means via right
@@ -131,26 +142,28 @@ public class UsableItemEffects
          * @param stack
          * @return something happened */
         @Override
-        public boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
+        public ActionResult<ItemStack> onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
             int berryId = stack.getItemDamage();
-            if (!BerryManager.berryNames.containsKey(berryId)) return false;
+            if (!BerryManager.berryNames.containsKey(berryId))
+                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
             BerryEffect effect = effects.get(berryId);
             if (effect != null) return effect.onUse(pokemob, stack, user);
-            return false;
+            return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
         }
 
         /** @param pokemob
          * @param stack
          * @return */
         @Override
-        public boolean onMoveTick(IPokemob pokemob, ItemStack stack, MovePacket moveuse)
+        public ActionResult<ItemStack> onMoveTick(IPokemob pokemob, ItemStack stack, MovePacket moveuse)
         {
             int berryId = stack.getItemDamage();
-            if (!BerryManager.berryNames.containsKey(berryId)) return false;
+            if (!BerryManager.berryNames.containsKey(berryId))
+                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
             BerryEffect effect = effects.get(berryId);
             if (effect != null) return effect.onMoveTick(pokemob, stack, moveuse);
-            return false;
+            return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
         }
 
         @Override
@@ -166,6 +179,55 @@ public class UsableItemEffects
         }
     }
 
+    public static class PotionUse implements IPokemobUseable, ICapabilityProvider
+    {
+        @Override
+        public ActionResult<ItemStack> onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
+        {
+            EntityLiving mob = pokemob.getEntity();
+            boolean applied = false;
+            for (PotionEffect potioneffect : PotionUtils.getEffectsFromStack(stack))
+            {
+                if (potioneffect.getPotion().isInstant())
+                {
+                    potioneffect.getPotion().affectEntity(mob, mob, mob, potioneffect.getAmplifier(), 1.0D);
+                }
+                else
+                {
+                    mob.addPotionEffect(new PotionEffect(potioneffect));
+                }
+                applied = true;
+            }
+            if (applied)
+            {
+                stack.shrink(1);
+                if (stack.isEmpty())
+                {
+                    stack = new ItemStack(Items.GLASS_BOTTLE);
+                }
+                else
+                {
+                    // Add to inventory or drop
+                }
+                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+            }
+            return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+        }
+
+        @Override
+        public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+        {
+            return capability == IPokemobUseable.USABLEITEM_CAP;
+        }
+
+        @Override
+        public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+        {
+            return hasCapability(capability, facing) ? IPokemobUseable.USABLEITEM_CAP.cast(this) : null;
+        }
+
+    }
+
     public static class BerryJuice implements IPokemobUseable, ICapabilityProvider
     {
 
@@ -176,7 +238,7 @@ public class UsableItemEffects
          * @param stack
          * @return something happened */
         @Override
-        public boolean onTick(IPokemob pokemob, ItemStack stack)
+        public ActionResult<ItemStack> onTick(IPokemob pokemob, ItemStack stack)
         {
             return onUse(pokemob, stack, pokemob.getEntity());
         }
@@ -190,22 +252,22 @@ public class UsableItemEffects
          * @param stack
          * @return something happened */
         @Override
-        public boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
+        public ActionResult<ItemStack> onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
             EntityLivingBase mob = pokemob.getEntity();
             float health = mob.getHealth();
-            if ((int) health <= 0) return false;
+            if ((int) health <= 0) return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
             float maxHealth = mob.getMaxHealth();
             if (user == mob)
             {
-                if (health >= maxHealth / 3) return false;
+                if (health >= maxHealth / 3) return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
             }
             if (health + 20 < maxHealth) mob.setHealth(health + 20);
             else mob.setHealth(maxHealth);
             boolean useStack = true;
             if (user instanceof EntityPlayer && ((EntityPlayer) user).capabilities.isCreativeMode) useStack = false;
             if (useStack) stack.splitStack(1);
-            return true;
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
         }
 
         @Override
@@ -240,6 +302,10 @@ public class UsableItemEffects
         if (item instanceof ItemVitamin)
         {
             event.addCapability(USABLE, new VitaminUsable());
+        }
+        if (item instanceof ItemPotion)
+        {
+            event.addCapability(USABLE, new PotionUse());
         }
         if (item == PokecubeItems.berryJuice)
         {

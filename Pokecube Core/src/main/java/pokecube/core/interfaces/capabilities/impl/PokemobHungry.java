@@ -9,6 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.world.IBlockAccess;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.handlers.SpawnHandler;
@@ -33,7 +35,8 @@ public abstract class PokemobHungry extends PokemobMoves
             IPokemobUseable usable = IPokemobUseable.getUsableFor(item);
             if (usable != null)
             {
-                usable.onUse(this, item, getEntity());
+                ActionResult<ItemStack> result = usable.onUse(this, item, getEntity());
+                if (result.getType() == EnumActionResult.SUCCESS) this.setHeldItem(result.getResult());
             }
             if (Tools.isSameStack(item, PokecubeItems.getStack("leppaberry")))
             {

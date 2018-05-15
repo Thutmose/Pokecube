@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.logging.Level;
 
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
@@ -125,7 +128,8 @@ public class LogicMovesUpdates extends LogicBase
         IPokemobUseable usable = IPokemobUseable.getUsableFor(pokemob.getHeldItem());
         if (!entity.isDead && usable != null)
         {
-            usable.onTick(pokemob, pokemob.getHeldItem());
+            ActionResult<ItemStack> result = usable.onTick(pokemob, pokemob.getHeldItem());
+            if (result.getType() == EnumActionResult.SUCCESS) pokemob.setHeldItem(result.getResult());
             if (!CompatWrapper.isValid(pokemob.getHeldItem())) pokemob.setHeldItem(CompatWrapper.nullStack);
         }
     }

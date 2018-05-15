@@ -3,6 +3,8 @@ package pokecube.core.interfaces;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -48,9 +50,9 @@ public interface IPokemobUseable
      * @param pokemob
      * @param stack
      * @return something happened */
-    public default boolean onTick(IPokemob pokemob, ItemStack stack)
+    public default ActionResult<ItemStack> onTick(IPokemob pokemob, ItemStack stack)
     {
-        return false;
+        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
     }
 
     /** Called when this item is "used". Normally this means via right clicking
@@ -61,17 +63,17 @@ public interface IPokemobUseable
      * @param pokemob
      * @param stack
      * @return something happened */
-    public default boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
+    public default ActionResult<ItemStack> onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
     {
-        return false;
+        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
     }
 
     /** @param attacker
      * @param stack
      * @return */
-    public default boolean onMoveTick(IPokemob attacker, ItemStack stack, MovePacket moveuse)
+    public default ActionResult<ItemStack> onMoveTick(IPokemob attacker, ItemStack stack, MovePacket moveuse)
     {
-        return false;
+        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
     }
 
     public static class Default implements IPokemobUseable

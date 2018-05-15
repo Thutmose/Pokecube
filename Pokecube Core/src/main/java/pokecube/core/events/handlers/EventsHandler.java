@@ -41,6 +41,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -582,46 +583,51 @@ public class EventsHandler
             {
                 isOwner = pokemob.getOwner().getEntityId() == player.getEntityId();
             }
-            // Either push pokemob around, or if sneaking, make it try to climb
-            // on shoulder
-            if (isOwner && CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
+            // Owner only interactions phase 1
+            if (isOwner)
             {
-                if (player.isSneaking())
+                // Either push pokemob around, or if sneaking, make it try to
+                // climb
+                // on shoulder
+                if (CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
                 {
-                    pokemob.moveToShoulder(player);
+                    if (player.isSneaking())
+                    {
+                        pokemob.moveToShoulder(player);
+                        return;
+                    }
+                    Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
+                    look.y = 0.2;
+                    look.addVelocities(target);
                     return;
                 }
-                Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
-                look.y = 0.2;
-                look.addVelocities(target);
-                return;
-            }
-            // Debug thing to maximize happiness
-            if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)
-            {
-                if (player.capabilities.isCreativeMode && player.isSneaking())
+                // Debug thing to maximize happiness
+                if (CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)
                 {
-                    pokemob.addHappiness(255);
+                    if (player.capabilities.isCreativeMode && player.isSneaking())
+                    {
+                        pokemob.addHappiness(255);
+                    }
                 }
-            }
-            // Debug thing to increase hunger time
-            if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.GOLDEN_HOE)
-            {
-                if (player.capabilities.isCreativeMode && player.isSneaking())
+                // Debug thing to increase hunger time
+                if (CompatWrapper.isValid(held) && held.getItem() == Items.GOLDEN_HOE)
                 {
-                    pokemob.setHungerTime(pokemob.getHungerTime() + 4000);
+                    if (player.capabilities.isCreativeMode && player.isSneaking())
+                    {
+                        pokemob.setHungerTime(pokemob.getHungerTime() + 4000);
+                    }
                 }
-            }
-            // Use shiny charm to make shiny
-            if (isOwner && Tools.isSameStack(held, PokecubeItems.getStack("shiny_charm")))
-            {
-                if (player.isSneaking())
+                // Use shiny charm to make shiny
+                if (Tools.isSameStack(held, PokecubeItems.getStack("shiny_charm")))
                 {
-                    pokemob.setShiny(!pokemob.isShiny());
-                    if (!player.capabilities.isCreativeMode) held.splitStack(1);
+                    if (player.isSneaking())
+                    {
+                        pokemob.setShiny(!pokemob.isShiny());
+                        if (!player.capabilities.isCreativeMode) held.splitStack(1);
+                    }
+                    evt.setCanceled(true);
+                    return;
                 }
-                evt.setCanceled(true);
-                return;
             }
 
             // is Dyeable
@@ -709,7 +715,7 @@ public class EventsHandler
                 }
             }
 
-            // Owner only interactions.
+            // Owner only interactions phase 2
             if (isOwner)
             {
                 if (CompatWrapper.isValid(held) && !PokecubeCore.isOnClientSide())
@@ -734,9 +740,10 @@ public class EventsHandler
                     IPokemobUseable usable = IPokemobUseable.getUsableFor(held);
                     if (usable != null)
                     {
-                        boolean used = usable.onUse(pokemob, held, player);
-                        if (used)
+                        ActionResult<ItemStack> result = usable.onUse(pokemob, held, player);
+                        if (result.getType() == EnumActionResult.SUCCESS)
                         {
+                            player.setHeldItem(hand, result.getResult());
                             pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
                             evt.setCanceled(true);
                             return;

@@ -88,10 +88,10 @@ public class CapabilityHasPokemobs
                             uuidMostTest = nbt.getLong("UUIDMost");
                             if (uuidLeast == uuidLeastTest && uuidMost == uuidMostTest)
                             {
+                                found = true;
+                                foundID = i;
                                 if (Config.instance.trainerslevel)
                                 {
-                                    found = true;
-                                    foundID = i;
                                     PokecubeManager.heal(mob);
                                     setPokemob(i, mob.copy());
                                 }

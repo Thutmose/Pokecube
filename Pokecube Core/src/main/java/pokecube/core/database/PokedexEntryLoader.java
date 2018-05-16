@@ -1169,6 +1169,11 @@ public class PokedexEntryLoader
                     if (d.evolution == evolEntry)
                     {
                         data = d;
+                        if (evol.clear != null && evol.clear)
+                        {
+                            entry.evolutions.remove(d);
+                            PokecubeMod.log("Replacing evolution for " + entry + " -> " + evolEntry);
+                        }
                         break;
                     }
                 }
@@ -1177,6 +1182,13 @@ public class PokedexEntryLoader
                     data = new EvolutionData(evolEntry);
                     data.data = evol;
                     data.preEvolution = entry;
+                    for (EvolutionData existing : entry.evolutions)
+                    {
+                        if (existing.evolution == evolEntry)
+                        {
+                            break;
+                        }
+                    }
                     entry.addEvolution(data);
                 }
             }

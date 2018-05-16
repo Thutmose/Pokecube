@@ -276,6 +276,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
         public float getStat(IHasStats pokemob, Stats stat, boolean modified)
         {
+            if (modified && stat == Stats.HP) { return pokemob.getEntity().getHealth(); }
             int index = stat.ordinal();
             byte nature = 0;
             if (index < 6) nature = pokemob.getNature().stats[index];

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.vecmath.Vector3f;
 
@@ -930,12 +931,20 @@ public class EventsHandler
     @SubscribeEvent
     public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
     {
+        if (evt.getTarget() == evt.getEntityLiving())
+        {
+            if (PokecubeMod.core.getConfig().debug)
+            {
+                PokecubeMod.log(Level.WARNING, evt.getTarget() + " is targetting self again.",
+                        new IllegalArgumentException());
+            }
+            return;
+        }
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
         if (pokemob != null)
         {
             pokemob.onSetTarget(evt.getTarget());
         }
-
         if (evt.getTarget() != null && evt.getEntityLiving() instanceof EntityLiving)
         {
             List<IPokemob> pokemon = getPokemobs(evt.getTarget(), 32);

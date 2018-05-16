@@ -39,6 +39,7 @@ import thut.api.maths.Vector3;
  * It is the one to queue the attack for the pokemob to perform. */
 public class AIAttack extends AIBase implements IAICombat
 {
+    public static final int   DEAGROTIMER = 50;
     public final EntityLiving attacker;
     public final IPokemob     pokemob;
     EntityLivingBase          entityTarget;
@@ -55,6 +56,7 @@ public class AIAttack extends AIBase implements IAICombat
 
     protected int             chaseTime;
     protected int             delayTime   = -1;
+    protected int             agroTimer   = -1;
     protected boolean         canSee      = false;
 
     boolean                   running     = false;
@@ -90,7 +92,24 @@ public class AIAttack extends AIBase implements IAICombat
 
     public boolean continueExecuting()
     {
-        entityTarget = attacker.getAttackTarget();
+        EntityLivingBase target = attacker.getAttackTarget();
+        if (entityTarget != null && target == null)
+        {
+            target = entityTarget;
+            if (agroTimer == -1)
+            {
+                agroTimer = DEAGROTIMER;
+            }
+            else
+            {
+                agroTimer--;
+                if (agroTimer == -1)
+                {
+                    target = null;
+                }
+            }
+        }
+        entityTarget = target;
         pokemobTarget = CapabilityPokemob.getPokemobFor(entityTarget);
 
         if (entityTarget != null && (entityTarget.isDead || !entityTarget.addedToChunk))

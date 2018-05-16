@@ -169,7 +169,6 @@ public abstract class PokemobStats extends PokemobGenes
     public void setType1(PokeType type1)
     {
         if (type1 == getType1()) return;
-        System.out.println(type1 + " " + getType1()+" "+getDataManager().get(params.TYPE1DW));
         String name = type1 == null || type1 == unknown ? "" : type1.name;
         this.getDataManager().set(params.TYPE1DW, name);
     }

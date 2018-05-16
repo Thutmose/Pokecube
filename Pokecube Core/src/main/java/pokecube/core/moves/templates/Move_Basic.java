@@ -449,9 +449,9 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 }
             }
         }
-        if (attacked != attacker && targetPokemob != null)
+        if (attacked != attackerMob && targetPokemob != null)
         {
-            if (((EntityLiving) attacked).getAttackTarget() != attacker)
+            if (((EntityLiving) attacked).getAttackTarget() != attackerMob)
                 ((EntityLiving) attacked).setAttackTarget(attackerMob);
             targetPokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
         }

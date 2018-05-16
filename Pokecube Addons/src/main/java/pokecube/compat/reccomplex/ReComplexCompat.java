@@ -11,7 +11,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;

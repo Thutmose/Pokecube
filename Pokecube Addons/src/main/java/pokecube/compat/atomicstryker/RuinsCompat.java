@@ -3,7 +3,7 @@ package pokecube.compat.atomicstryker;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import pokecube.adventures.comands.Config;
+import pokecube.adventures.commands.Config;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.lib.CompatClass;

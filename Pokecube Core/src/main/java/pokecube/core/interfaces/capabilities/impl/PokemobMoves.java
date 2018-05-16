@@ -100,18 +100,21 @@ public abstract class PokemobMoves extends PokemobSexed
         this.setAttackCooldown(MovesUtils.getAttackDelay(this, attack, distanced, target instanceof EntityPlayer));
 
         PacketSyncMoveUse.sendUpdate(this);
-        if (target instanceof EntityLiving)
+        if (target != getEntity())
         {
-            EntityLiving t = (EntityLiving) target;
-            if (t.getAttackTarget() == null)
+            if (target instanceof EntityLiving)
             {
-                t.setAttackTarget(getEntity());
+                EntityLiving t = (EntityLiving) target;
+                if (t.getAttackTarget() == null)
+                {
+                    t.setAttackTarget(getEntity());
+                }
             }
-        }
-        if (target instanceof EntityLivingBase)
-        {
-            ((EntityLivingBase) target).setRevengeTarget(getEntity());
-            getEntity().setRevengeTarget((EntityLivingBase) target);
+            if (target instanceof EntityLivingBase)
+            {
+                ((EntityLivingBase) target).setRevengeTarget(getEntity());
+                getEntity().setRevengeTarget((EntityLivingBase) target);
+            }
         }
         int statusChange = getChanges();
         if ((statusChange & CHANGE_FLINCH) != 0)

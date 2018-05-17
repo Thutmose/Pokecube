@@ -1234,6 +1234,10 @@ public class PokedexEntryLoader
         }
         for (SpawnRule rule : xmlStats.spawnRules)
         {
+            if (entry.getName().equalsIgnoreCase("magnemite"))
+            {
+                PokecubeMod.log("Magnemite: " + rule + "");
+            }
             handleAddSpawn(spawnData, rule);
         }
         entry.setSpawnData(spawnData);

@@ -43,6 +43,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntryLoader;
+import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.PokedexEntryLoader.XMLDatabase;
 import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 import pokecube.core.events.onload.InitDatabase;
@@ -128,6 +129,19 @@ public class ModPokecubeML implements IMobProvider
     public void registerDatabase(FMLPreInitializationEvent evt)
     {
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
+
+        // Apply configs after all other addons apply their changes.
+        for (int i = 0; i < EnumDatabase.values().length; i++)
+        {
+            String[] args = PokecubeCore.core.getConfig().configDatabases[i].split(",");
+            for (String s : args)
+            {
+                if (s.isEmpty()) continue;
+                if (s.indexOf(".") == -1) s = s.trim() + ".json";
+                Database.addDatabase(s.trim(), EnumDatabase.values()[i]);
+            }
+        }
+
         populateAddonMods();
         PokecubeTerrainChecker.init();
         Database.init();

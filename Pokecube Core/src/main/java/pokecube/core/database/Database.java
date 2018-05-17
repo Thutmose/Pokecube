@@ -447,8 +447,11 @@ public class Database
         return getEntry(nb) != null && getEntry(nb).getSpawnData() != null;
     }
 
+    /** This loads in the various databases, merges them then makes pokedex
+     * entries as needed */
     public static void init()
     {
+        // Load in the various databases, starting with moves, then pokemobs.
         for (String s : configDatabases.get(EnumDatabase.MOVES.ordinal()))
         {
             try
@@ -474,10 +477,14 @@ public class Database
                 PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + "pokemobs" + File.separator + s, e);
             }
         }
+        // Fire load event to let addons do stuff after databases have been
+        // loaded.
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Load());
 
+        // Load worldgen stuff
         WorldgenHandler.reloadWorldgen();
 
+        // Make the pokedex entries with what was in database.
         try
         {
             PokedexEntryLoader.makeEntries(true);
@@ -486,11 +493,14 @@ public class Database
         {
             PokecubeMod.log(Level.SEVERE, "Error with databases ", e);
         }
+        // Outputs a file for reference.
         PokedexEntryLoader.writeCompoundDatabase();
+        // Init the lists of what all forms are loaded.
         initFormLists();
 
         if (PokecubeMod.debug)
         {
+            // Debug some dummy lists.
             List<PokedexEntry> dummies = Lists.newArrayList();
             for (PokedexEntry entry : allFormes)
             {
@@ -682,6 +692,12 @@ public class Database
         }
     }
 
+    /** Initializes the various values for the forms from the base form.
+     * 
+     * @param formes
+     *            to initialize
+     * @param base
+     *            to copy values from */
     private static void initFormes(List<PokedexEntry> formes, PokedexEntry base)
     {
         base.copyToGenderFormes();
@@ -868,6 +884,9 @@ public class Database
         }
     }
 
+    /** Loads in spawns, drops, held items and starter packs, then does some
+     * final cleanup work, as well as initializing things like children,
+     * evolutions, etc */
     public static void postInit()
     {
         if (PokecubeMod.debug) PokecubeMod.log("Post Init of Database.");
@@ -885,6 +904,7 @@ public class Database
             if (e.base) addEntry(e);
         }
         int dummies = 0;
+        /** find non-registered entries to remove later. */
         for (PokedexEntry p : allFormes)
         {
             bar.step(p.getName());
@@ -919,6 +939,7 @@ public class Database
         }
         ProgressManager.pop(bar);
         bar = ProgressManager.push("Removal", toRemove.size());
+        /** Remove the non-registered entries found earlier */
         for (PokedexEntry p : toRemove)
         {
             bar.step(p.getName());
@@ -937,6 +958,7 @@ public class Database
             spawnables.remove(p);
         }
 
+        /** Cleanup evolutions which are not actually in game. */
         for (PokedexEntry e : allFormes)
         {
             List<EvolutionData> invalidEvos = Lists.newArrayList();
@@ -949,12 +971,16 @@ public class Database
             }
             e.evolutions.removeAll(invalidEvos);
         }
+
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
         if (PokecubeMod.debug) PokecubeMod.log("Removed " + removedNums.size() + " Missing Pokemon and "
                 + (toRemove.size() - dummies) + " missing Formes");
 
         toRemove.clear();
+
+        /** Initialize relations, prey, children. */
+
         bar = ProgressManager.push("Relations", allFormes.size());
         for (PokedexEntry p : allFormes)
         {
@@ -977,6 +1003,7 @@ public class Database
         }
         ProgressManager.pop(bar);
 
+        /** This should probably be removed. */
         bar = ProgressManager.push("Achivements", allFormes.size());
         for (PokedexEntry e : allFormes)
         {

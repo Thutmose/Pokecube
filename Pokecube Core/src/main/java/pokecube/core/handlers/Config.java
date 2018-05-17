@@ -527,7 +527,7 @@ public class Config extends ConfigBase
     public boolean                       useCache                     = true;
 
     @Configure(category = database, needsMcRestart = true)
-    String[]                             configDatabases              = { "", "", "" };
+    public String[]                      configDatabases              = { "", "", "" };
 
     @Configure(category = database, needsMcRestart = true)
     String[]                             recipeDatabases              = { "recipes" };
@@ -788,17 +788,6 @@ public class Config extends ConfigBase
         {
             configDatabases = new String[] { "", "", "" };
             toSave = true;
-        }
-
-        for (int i = 0; i < EnumDatabase.values().length; i++)
-        {
-            String[] args = configDatabases[i].split(",");
-            for (String s : args)
-            {
-                if (s.isEmpty()) continue;
-                if (s.indexOf(".") == -1) s = s.trim() + ".json";
-                Database.addDatabase(s.trim(), EnumDatabase.values()[i]);
-            }
         }
         SpawnHandler.dimensionBlacklist.clear();
         for (int i : dimensionBlacklist)

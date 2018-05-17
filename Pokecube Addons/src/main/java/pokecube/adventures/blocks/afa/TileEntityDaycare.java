@@ -2,6 +2,7 @@ package pokecube.adventures.blocks.afa;
 
 import java.util.List;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -12,12 +13,11 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.commands.Config;
 import pokecube.core.PokecubeItems;
@@ -27,58 +27,16 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.Tools;
 import thut.lib.CompatWrapper;
 
-public class TileEntityDaycare extends TileEntityOwnable implements IInventory
+public class TileEntityDaycare extends TileEntityOwnable implements IInventory, ITickable
 {
-    List<ItemStack> inventory  = CompatWrapper.makeList(3);
-    int             range      = 4;
-    double          multiplier = 1;
+    List<ItemStack>       inventory  = CompatWrapper.makeList(3);
+    int                   range      = 4;
+    private int           tick       = 0;
+    private AxisAlignedBB box;
+    double                multiplier = 1;
 
     public TileEntityDaycare()
     {
-    }
-
-    @Override
-    public void invalidate()
-    {
-        super.invalidate();
-        MinecraftForge.EVENT_BUS.unregister(this);
-    }
-
-    @Override
-    public void validate()
-    {
-        super.validate();
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    @SubscribeEvent
-    public void applyExp(LivingUpdateEvent event)
-    {
-        if (world == null) return;
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            if (world.isRemote)
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-            }
-            return;
-        }
-        int tickrate = Config.instance.daycareTicks;
-        tickrate = Math.max(tickrate, 1);
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getEntity());
-        if (event.getEntity().ticksExisted % tickrate == 0 && pokemob != null)
-        {
-            double dist = event.getEntity().getDistanceSq(getPos());
-            if (dist > range * range || pokemob.getLevel() == 100) return;
-            if (!consumeShards(Config.instance.daycareCost, true))
-            {
-                event.getEntityLiving().playSound(SoundEvents.BLOCK_NOTE_BASS, 0.25f, 1);
-                return;
-            }
-            event.getEntityLiving().playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.25f, 1);
-            int exp = (int) (Config.instance.daycareExp * multiplier / dist);
-            pokemob.setExp(pokemob.getExp() + exp, true);
-        }
     }
 
     private boolean consumeShards(int shards, boolean apply)
@@ -263,6 +221,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
             }
         }
         range = nbt.getInteger("distance");
+        tick = nbt.getInteger("tick");
         multiplier = nbt.getDouble("multiplier");
     }
 
@@ -284,6 +243,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
         }
         nbt.setTag("Inventory", itemList);
         nbt.setInteger("distance", range);
+        nbt.setInteger("tick", tick);
         nbt.setDouble("multiplier", multiplier);
         return nbt;
     }
@@ -396,5 +356,32 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
     public boolean isEmpty()
     {
         return true;
+    }
+
+    @Override
+    public void update()
+    {
+        if (world == null || tick++ < Config.instance.daycareTicks) return;
+        tick = 0;
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) { return; }
+        if (box == null) box = new AxisAlignedBB(getPos()).grow(range + 2);
+        List<EntityLiving> mobs = world.getEntitiesWithinAABB(EntityLiving.class, box);
+        for (EntityLiving entity : mobs)
+        {
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+            if (pokemob != null)
+            {
+                double dist = entity.getDistanceSq(getPos());
+                if (dist > range * range || pokemob.getLevel() == 100) return;
+                if (!consumeShards(Config.instance.daycareCost, true))
+                {
+                    entity.playSound(SoundEvents.BLOCK_NOTE_BASS, 0.25f, 1);
+                    return;
+                }
+                entity.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.25f, 1);
+                int exp = (int) (Config.instance.daycareExp * multiplier / dist);
+                pokemob.setExp(pokemob.getExp() + exp, true);
+            }
+        }
     }
 }

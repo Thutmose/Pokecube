@@ -46,6 +46,7 @@ import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.berries.ItemBlockMeta;
 import pokecube.core.blocks.berries.TileEntityBerries;
+import pokecube.core.blocks.berries.TileEntityTickBerries;
 import pokecube.core.blocks.nests.BlockNest;
 import pokecube.core.blocks.nests.TileEntityBasePortal;
 import pokecube.core.blocks.nests.TileEntityNest;
@@ -105,6 +106,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
     private static void addBerryTiles(Object registry)
     {
         CompatWrapper.registerTileEntity(TileEntityBerries.class, "pokecube:berries");
+        CompatWrapper.registerTileEntity(TileEntityTickBerries.class, "pokecube:berries_ticks");
     }
 
     private static void addBerryItems(Object registry)

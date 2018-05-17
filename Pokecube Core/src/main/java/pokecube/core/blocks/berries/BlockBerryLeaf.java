@@ -47,7 +47,7 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEntityBerries(Type.LEAF);
+        return new TileEntityTickBerries(Type.LEAF);
     }
 
     @Override

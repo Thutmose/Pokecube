@@ -53,7 +53,7 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEntityBerries(Type.CROP);
+        return new TileEntityTickBerries(Type.CROP);
     }
 
     @Override

@@ -150,6 +150,7 @@ public class AIFindTarget extends AIBase implements IAICombat
     @Override
     public void run()
     {
+        // No need to find a target if we have one.
         if (entity.getAttackTarget() != null) return;
         // Check if the pokemob is set to follow, and if so, look for mobs
         // nearby trying to attack the owner of the pokemob, if any such are
@@ -247,31 +248,32 @@ public class AIFindTarget extends AIBase implements IAICombat
         if (world == null || !pokemob.isRoutineEnabled(AIRoutine.AGRESSIVE)) return false;
 
         // Don't look for targets if you are sitting.
-        boolean ret = entity.getAttackTarget() == null && entity.getAttackTarget() == null
-                && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
+        boolean ret = entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
 
-        // If target is dead, return false.
-        if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead)
+        boolean tame = pokemob.getPokemonAIState(IMoveConstants.TAMED);
+
+        // If we have a target, we don't need to look for another.
+        if (entity.getAttackTarget() != null)
         {
-            addTargetInfo(entity, null);
+            // If our target is dead, we can forget it.
+            if (entity.getAttackTarget().isDead) addTargetInfo(entity, null);
+            // If your owner is too far away, shouldn't have a target, should be
+            // going back to the owner.
+            if (tame)
+            {
+                Entity owner = pokemob.getPokemonOwner();
+                boolean stayOrGuard = pokemob.getPokemonAIState(IMoveConstants.GUARDING)
+                        || pokemob.getPokemonAIState(IMoveConstants.STAYING);
+                if (owner != null && !stayOrGuard
+                        && owner.getDistanceToEntity(entity) > PokecubeMod.core.getConfig().chaseDistance)
+                {
+                    addTargetInfo(entity, null);
+                }
+            }
             return false;
         }
-        // If your owner is too far away, don't go looking for targets, you
-        // should be trying to walk to your owner instead.
-        boolean tame = pokemob.getPokemonAIState(IMoveConstants.TAMED);
-        if (tame && entity.getAttackTarget() != null)
-        {
-            Entity owner = pokemob.getPokemonOwner();
-            boolean stayOrGuard = pokemob.getPokemonAIState(IMoveConstants.GUARDING)
-                    || pokemob.getPokemonAIState(IMoveConstants.STAYING);
-            if (owner != null && !stayOrGuard
-                    && owner.getDistanceToEntity(entity) > PokecubeMod.core.getConfig().chaseDistance)
-            {
-                addTargetInfo(entity, null);
-                return false;
-            }
-        }
         boolean wildAgress = !tame && entity.getRNG().nextInt(200) == 0;
+        // Check if the mob should always be agressive.
         if (!tame && !wildAgress && entity.ticksExisted % 20 == 0)
         {
             wildAgress = entity.getEntityData().getBoolean("alwaysAgress");

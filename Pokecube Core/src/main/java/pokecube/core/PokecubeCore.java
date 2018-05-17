@@ -404,7 +404,7 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     private void init(FMLInitializationEvent evt)
     {
-        System.out.println("Pokecube Init " + FMLCommonHandler.instance().getEffectiveSide());
+        if (PokecubeMod.debug) PokecubeMod.log("Pokecube Init " + FMLCommonHandler.instance().getEffectiveSide());
         TerrainSegment.terrainEffectClasses.add(PokemobTerrainEffects.class);
         new PokedexInspector();
         proxy.initClient();
@@ -427,7 +427,7 @@ public class PokecubeCore extends PokecubeMod
         }
         catch (Throwable e1)
         {
-            System.out.println("Error registering Structures with Vanilla Minecraft");
+            if (PokecubeMod.debug) PokecubeMod.log("Error registering Structures with Vanilla Minecraft");
         }
 
         if (config.generateFossils) GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);

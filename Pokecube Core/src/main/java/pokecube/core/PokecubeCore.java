@@ -96,6 +96,7 @@ import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.handlers.playerdata.PokecubePlayerCustomData;
 import pokecube.core.handlers.playerdata.PokecubePlayerData;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -439,6 +440,8 @@ public class PokecubeCore extends PokecubeMod
         helper.postInit();
         removeAllMobs();
         PokecubeItems.init();
+        // Initialize the triggers.
+        Triggers.init();
     }
 
     @EventHandler

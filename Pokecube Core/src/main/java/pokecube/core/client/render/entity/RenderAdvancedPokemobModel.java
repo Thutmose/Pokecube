@@ -128,12 +128,19 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
+        ResourceLocation ret = null;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         if (model instanceof AbstractModelRenderer)
         {
             AbstractModelRenderer<?> render = (AbstractModelRenderer<?>) model;
-            if (render.model_holder != null) { return render.model_holder.texture; }
+            if (render.model_holder != null)
+            {
+                ret = render.model_holder.texture;
+            }
         }
-        return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
+        if (ret == null) ret = RenderPokemobs.getInstance().getEntityTexturePublic(entity);
+        if (pokemob != null) ret = pokemob.modifyTexture(ret);
+        return ret;
     }
 
     private String getPhase(EntityLiving entity, IPokemob pokemob, float partialTick)

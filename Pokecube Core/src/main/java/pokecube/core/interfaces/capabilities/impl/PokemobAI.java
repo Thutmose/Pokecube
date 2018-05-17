@@ -74,6 +74,7 @@ public abstract class PokemobAI extends PokemobEvolves
     {
         String domain = texture == null ? getPokedexEntry().getModId() : texture.getResourceDomain();
         String texName = texture == null ? null : texture.getResourcePath();
+        if (texName != null && texName.endsWith(".png")) texName = texName.substring(0, texName.length() - 4);
         texName = this.getPokedexEntry().getTexture(texName, this.getSexe(), getEntity().ticksExisted);
         texture = new ResourceLocation(domain, texName);
         if (!isShiny()) return texture;

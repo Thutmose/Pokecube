@@ -1527,7 +1527,8 @@ public class PokedexEntry
         String[] textureSuffixs = textureDetails[index];
         long suffixIndex = ((time % textureSuffixs.length * 3) / textureSuffixs.length);
         String suffix = textureSuffixs[(int) suffixIndex];
-        String ret = texturePath + original + suffix + ".png";
+        String ret = original + suffix + ".png";
+        if (!ret.startsWith(texturePath)) ret = texturePath + ret;
         ret = ret.toLowerCase(Locale.ENGLISH);
         return ret;
     }

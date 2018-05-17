@@ -266,8 +266,8 @@ public final class SpawnHandler
     public static EntityLiving creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
             double posZ, Vector3 spawnPoint, int overrideLevel, Variance variance)
     {
-        if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY,
-                (float) posZ)) { return null; }
+        if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY, (float) posZ,
+                null)) { return null; }
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityliving);
         if (pokemob != null)
         {

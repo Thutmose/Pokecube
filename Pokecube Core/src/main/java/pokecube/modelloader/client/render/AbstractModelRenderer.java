@@ -118,8 +118,15 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
-        if (model_holder != null) { return model_holder.texture; }
-        return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
+        ResourceLocation ret = null;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+        if (model_holder != null)
+        {
+            ret = model_holder.texture;
+        }
+        if (ret == null) ret = RenderPokemobs.getInstance().getEntityTexturePublic(entity);
+        if (pokemob != null) ret = pokemob.modifyTexture(ret);
+        return ret;
     }
 
     @Override

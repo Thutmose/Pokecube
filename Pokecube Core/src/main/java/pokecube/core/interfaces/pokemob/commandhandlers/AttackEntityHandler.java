@@ -34,7 +34,10 @@ public class AttackEntityHandler implements IMobCommandHandler
         World world = pokemob.getEntity().getEntityWorld();
         Entity target = PokecubeMod.core.getEntityProvider().getEntity(world, targetId, true);
         if (target == null || !(target instanceof EntityLivingBase))
-            throw new IllegalArgumentException("Target Mob cannot be null!");
+        {
+            if (target == null) throw new IllegalArgumentException("Target Mob cannot be null!");
+            else throw new IllegalArgumentException("Invalid target: " + target);
+        }
         String moveName = "";
         int currentMove = pokemob.getMoveIndex();
         MinecraftForge.EVENT_BUS.post(new CommandAttackEvent(pokemob.getEntity(), target));

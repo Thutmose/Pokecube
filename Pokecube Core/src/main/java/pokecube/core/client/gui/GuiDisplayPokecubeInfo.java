@@ -760,7 +760,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                 return;
             }
         }
-        if (target != null && !sameOwner)
+        if (target != null && !sameOwner && target instanceof EntityLivingBase)
         {
             PacketCommand.sendCommand(pokemob, Command.ATTACKENTITY, new AttackEntityHandler(target.getEntityId()));
         }

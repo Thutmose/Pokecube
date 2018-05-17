@@ -763,8 +763,16 @@ public final class SpawnHandler
         for (int i = 0; i < players.size(); i++)
         {
             if (players.get(i).dimension != world.provider.getDimension()) continue;
+
+            long time = System.nanoTime();
             Vector3 v = getRandomSpawningPointNearEntity(world, players.get(i),
                     PokecubeMod.core.getConfig().maxSpawnRadius, 0);
+            double dt = (System.nanoTime() - time) / 1000d;
+            if (PokecubeMod.debug && dt > 100)
+            {
+                PokecubeMod.log(Level.INFO, "Location Find took " + dt);
+            }
+
             if (v == null) continue;
             AxisAlignedBB box = v.getAABB();
             int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
@@ -773,10 +781,10 @@ public final class SpawnHandler
                     box.grow(radius, Math.max(height, radius), radius));
             if (list.size() < MAXNUM * MAX_DENSITY)
             {
-                long time = System.nanoTime();
+                time = System.nanoTime();
                 int num = doSpawnForLocation(world, v);
-                double dt = (System.nanoTime() - time) / 10e3D;
-                if (PokecubeMod.debug && dt > 1000)
+                dt = (System.nanoTime() - time) / 10e3D;
+                if (PokecubeMod.debug && dt > 100)
                 {
                     PokecubeMod.log(dt + "\u00B5" + "s for player " + players.get(0).getDisplayNameString() + " at " + v
                             + ", spawned " + num);
@@ -811,52 +819,61 @@ public final class SpawnHandler
                 }
     }
 
+    public void doMeteor(World world)
+    {
+        if (!PokecubeMod.core.getConfig().meteors) return;
+        if (!world.provider.isSurfaceWorld()) return;
+        if (world.provider.isNether()) return;
+        List<Object> players = new ArrayList<Object>(world.playerEntities);
+        if (players.size() < 1) return;
+        if (Math.random() > 0.999)
+        {
+            Random rand = new Random();
+            Entity player = (Entity) players.get(rand.nextInt(players.size()));
+            int dx = rand.nextInt(200) - 100;
+            int dz = rand.nextInt(200) - 100;
+            Vector3 v = this.v.set(player).add(dx, 0, dz);
+            v.add(0, 255 - player.posY, 0);
+            if (PokecubeSerializer.getInstance().canMeteorLand(v))
+            {
+                Vector3 direction = v1.set(rand.nextGaussian() / 2, -1, rand.nextGaussian() / 2);
+                Vector3 location = Vector3.getNextSurfacePoint(world, v, direction, 255);
+                if (location != null)
+                {
+                    if (world.getClosestPlayer(location.x, location.y, location.z, 96, false) != null) return;
+                    float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);
+                    ExplosionCustom boom = new ExplosionCustom(world, null, location, energy).setMeteor(true);
+                    if (PokecubeMod.debug)
+                    {
+                        String message = "Meteor at " + v + " with Direction of " + direction + " and energy of "
+                                + energy;
+                        PokecubeMod.log(message);
+                    }
+                    boom.doExplosion();
+                    PokecubeSerializer.getInstance().addMeteorLocation(v);
+
+                }
+            }
+        }
+    }
+
     public void tick(World world)
     {
         if (!SpawnHandler.canSpawnInWorld(world)) return;
-        if (world.provider instanceof WorldProviderSecretBase) return;
         try
         {
-            spawn(world);
-            if (PokecubeMod.core.getConfig().meteors)
+            int rate = 20;
+            if (world.getTotalWorldTime() % rate == 0)
             {
-                if (!world.provider.isSurfaceWorld()) return;
-                if (world.provider.isNether()) return;
-
-                List<Object> players = new ArrayList<Object>(world.playerEntities);
-                if (players.size() < 1) return;
-                if (Math.random() > 0.999)
+                long time = System.nanoTime();
+                spawn(world);
+                double dt = (System.nanoTime() - time) / 1000d;
+                if (PokecubeMod.debug && dt > 100)
                 {
-                    Random rand = new Random();
-                    Entity player = (Entity) players.get(rand.nextInt(players.size()));
-                    int dx = rand.nextInt(200) - 100;
-                    int dz = rand.nextInt(200) - 100;
-
-                    Vector3 v = this.v.set(player).add(dx, 0, dz);
-                    if (world.getClosestPlayer(v.x, v.y, v.z, 96, false) != null) return;
-
-                    v.add(0, 255 - player.posY, 0);
-
-                    if (PokecubeSerializer.getInstance().canMeteorLand(v))
-                    {
-                        Vector3 direction = v1.set(rand.nextGaussian() / 2, -1, rand.nextGaussian() / 2);
-                        Vector3 location = Vector3.getNextSurfacePoint(world, v, direction, 255);
-
-                        if (location != null)
-                        {
-                            float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);
-                            ExplosionCustom boom = new ExplosionCustom(world, null, location, energy).setMeteor(true);
-                            String message = "Meteor at " + v + " with Direction of " + direction + " and energy of "
-                                    + energy;
-                            if (PokecubeMod.debug) PokecubeMod.log(message);
-                            boom.doExplosion();
-                            PokecubeSerializer.getInstance().addMeteorLocation(v);
-
-                        }
-                    }
+                    PokecubeMod.log(Level.INFO, "SpawnTick took " + dt);
                 }
             }
-
+            doMeteor(world);
         }
         catch (Exception e)
         {

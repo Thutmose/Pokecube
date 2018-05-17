@@ -42,6 +42,8 @@ public class AIFindTarget extends AITrainerBase
     {
         // Dead trainers can't fight.
         if (!entity.isEntityAlive()) return false;
+        // Permfriendly trainers shouldn't fight.
+        if (aiTracker != null && aiTracker.getAIState(IHasNPCAIStates.PERMFRIENDLY)) return false;
         // Trainers on cooldown shouldn't fight, neither should friendly ones
         if (trainer.getCooldown() > entity.getEntityWorld().getTotalWorldTime() || !trainer.isAgressive())
         {

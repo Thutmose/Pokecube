@@ -114,6 +114,10 @@ public class EditAIPage extends Page
             parent.getButtons().add(new Button(3, x - 120, y + 44, 60, 20, visible));
         }
 
+        String friendlyButton = parent.aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY)
+                ? I18n.format("traineredit.button.friendly") : I18n.format("traineredit.button.unfriendly");
+        parent.getButtons().add(new Button(4, x - 120, y - 76, 60, 20, friendlyButton));
+
         textList.get(0).setValidator(floatValid);
         textList.get(0).setText(guard.getRoamDistance() + "");
         TimePeriod times = guard.getActiveTime();
@@ -178,6 +182,14 @@ public class EditAIPage extends Page
                     "traineredit.set.notify." + parent.aiStates.getAIState(IHasNPCAIStates.FIXEDDIRECTION));
             parent.mc.player.sendStatusMessage(mess, true);
             break;
+        case 4:
+            parent.aiStates.setAIState(IHasNPCAIStates.PERMFRIENDLY,
+                    !parent.aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY));
+            sendAIUpdate();
+            mess = new TextComponentTranslation(
+                    "traineredit.set.friendly." + parent.aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY));
+            parent.mc.player.sendStatusMessage(mess, true);
+            break;
         }
     }
 
@@ -227,7 +239,7 @@ public class EditAIPage extends Page
 
     private void updateField(int i)
     {
-        //TODO differentiate whether the field is the same as it was before.
+        // TODO differentiate whether the field is the same as it was before.
         GuiTextField field;
         field = textList.get(i);
         if (!field.isFocused()) return;

@@ -49,6 +49,8 @@ traineredit.set.norotates.true=Trainer Set to not look around.
 traineredit.set.norotates.false=Trainer Set to look around.
 traineredit.set.notify.true=Trainer Set to be invisible after defeat.
 traineredit.set.notify.false=Trainer Set to be visible after defeat.
+traineredit.set.friendly.true=Trainer Set to never battle.
+traineredit.set.friendly.false=Trainer Set to battle.
 traineredit.set.gender.1=Trainer set as "Male".
 traineredit.set.gender.2=Trainer set as "Female".
 traineredit.set.type=Trainer Type set to %s.
@@ -109,6 +111,8 @@ traineredit.button.norotates=Fixed
 traineredit.button.rotates=Looks
 traineredit.button.nonotify=Visible
 traineredit.button.notify=Invisible
+traineredit.button.unfriendly=UnFriendly
+traineredit.button.friendly=Friendly
 
 gui.jei.pokemobs=Pokémob Evolution
 gui.jei.pokemobs.interact=Pokémob Interactions

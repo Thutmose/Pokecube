@@ -61,15 +61,19 @@ public class MoveQueue
                 MoveQueue queue = queues.get(evt.world);
                 if (queue == null)
                 {
-                    System.err.println(evt.world);
-                    Thread.dumpStack();
                     PokecubeMod.log(Level.SEVERE,
                             "Critical Error with world for dimension " + evt.world.provider.getDimension()
                                     + " It is somehow ticking when not loaded, this should not happen.",
                             new Exception());
                     return;
                 }
+                long time = System.nanoTime();
                 queue.executeMoves();
+                double dt = (System.nanoTime() - time) / 1000d;
+                if (PokecubeMod.debug && dt > 100)
+                {
+                    PokecubeMod.log(Level.INFO, "move queue took " + dt);
+                }
             }
         }
     }
@@ -82,38 +86,41 @@ public class MoveQueue
         this.world = world;
     }
 
-    public synchronized void executeMoves()
+    public void executeMoves()
     {
-        Collections.sort(moves, new Comparator<EntityMoveUse>()
+        synchronized (moves)
         {
-            @Override
-            public int compare(EntityMoveUse o1, EntityMoveUse o2)
+            Collections.sort(moves, new Comparator<EntityMoveUse>()
             {
-                IPokemob user1 = CapabilityPokemob.getPokemobFor(o1.getUser());
-                IPokemob user2 = CapabilityPokemob.getPokemobFor(o2.getUser());
-                int speed1 = user1 == null ? 0 : user1.getStat(Stats.VIT, true);
-                int speed2 = user2 == null ? 0 : user2.getStat(Stats.VIT, true);
-                // TODO also factor in move priority here.
-                return speed1 - speed2;
-            }
-        });
-        for (EntityMoveUse move : moves)
-        {
-            if (move.getUser() == null || move.getUser().isDead) continue;
-            boolean toUse = true;
-            if (move.getUser() instanceof EntityLivingBase)
+                @Override
+                public int compare(EntityMoveUse o1, EntityMoveUse o2)
+                {
+                    IPokemob user1 = CapabilityPokemob.getPokemobFor(o1.getUser());
+                    IPokemob user2 = CapabilityPokemob.getPokemobFor(o2.getUser());
+                    int speed1 = user1 == null ? 0 : user1.getStat(Stats.VIT, true);
+                    int speed2 = user2 == null ? 0 : user2.getStat(Stats.VIT, true);
+                    // TODO also factor in move priority here.
+                    return speed1 - speed2;
+                }
+            });
+            for (EntityMoveUse move : moves)
             {
-                toUse = ((EntityLivingBase) move.getUser()).getHealth() >= 1;
+                if (move.getUser() == null || move.getUser().isDead) continue;
+                boolean toUse = true;
+                if (move.getUser() instanceof EntityLivingBase)
+                {
+                    toUse = ((EntityLivingBase) move.getUser()).getHealth() >= 1;
+                }
+                if (toUse)
+                {
+                    IPokemob mob = CapabilityPokemob.getPokemobFor(move.getUser());
+                    world.spawnEntity(move);
+                    move.getMove().applyHungerCost(mob);
+                    MovesUtils.displayMoveMessages(mob, move.getTarget(), move.getMove().name);
+                }
             }
-            if (toUse)
-            {
-                IPokemob mob = CapabilityPokemob.getPokemobFor(move.getUser());
-                world.spawnEntity(move);
-                move.getMove().applyHungerCost(mob);
-                MovesUtils.displayMoveMessages(mob, move.getTarget(), move.getMove().name);
-            }
+            moves.clear();
         }
-        moves.clear();
     }
 
 }

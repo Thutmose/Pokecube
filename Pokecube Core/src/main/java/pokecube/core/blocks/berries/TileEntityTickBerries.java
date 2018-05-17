@@ -51,7 +51,11 @@ public class TileEntityTickBerries extends TileEntityBerries implements ITickabl
             }
             else
             {
-                sleepTimer = 300;
+                if (!(world.getBlockState(pos.down()).getBlock() instanceof BlockBerryFruit))
+                {
+                    sleepTimer = 6000;
+                }
+                sleepTimer = 600;
             }
         }
     }
@@ -61,7 +65,11 @@ public class TileEntityTickBerries extends TileEntityBerries implements ITickabl
         BlockPos up = pos.up();
         if (!(world.getBlockState(up).getBlock().isAir(world.getBlockState(up), world, up)))
         {
-            sleepTimer = 300;
+            if (!(world.getBlockState(pos.up()).getBlock() instanceof BlockBerryFruit))
+            {
+                sleepTimer = 6000;
+            }
+            sleepTimer = 600;
             return;
         }
         stage++;

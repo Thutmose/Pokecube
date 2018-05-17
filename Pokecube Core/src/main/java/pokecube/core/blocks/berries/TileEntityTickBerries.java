@@ -78,7 +78,7 @@ public class TileEntityTickBerries extends TileEntityBerries implements ITickabl
             stage = 1;
             Block fruit = BerryManager.berryFruit;
             world.setBlockState(up, fruit.getDefaultState());
-            TileEntityTickBerries tile = (TileEntityTickBerries) world.getTileEntity(up);
+            TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(up);
             tile.setBerryId(getBerryId());
         }
         world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockCrops.AGE, Integer.valueOf(stage)), 2);
@@ -88,7 +88,7 @@ public class TileEntityTickBerries extends TileEntityBerries implements ITickabl
     {
         Block fruit = BerryManager.berryFruit;
         world.setBlockState(pos.down(), fruit.getDefaultState());
-        TileEntityTickBerries tile = (TileEntityTickBerries) world.getTileEntity(pos.down());
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos.down());
         if (tile != null) tile.setBerryId(getBerryId());
     }
 
@@ -101,7 +101,21 @@ public class TileEntityTickBerries extends TileEntityBerries implements ITickabl
     @Override
     public void onLoad()
     {
-        // Nope
+        switch (type)
+        {
+        case CROP:
+            break;
+        case FRUIT:
+            world.setTileEntity(getPos(), new TileEntityBerries(type));
+            break;
+        case LEAF:
+            break;
+        case LOG:
+            world.setTileEntity(getPos(), new TileEntityBerries(type));
+            break;
+        default:
+            break;
+        }
     }
 
     @Override

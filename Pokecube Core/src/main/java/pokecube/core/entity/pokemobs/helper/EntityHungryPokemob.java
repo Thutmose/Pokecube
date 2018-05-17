@@ -28,7 +28,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
 
         Entity attacker = null;
 
-        if (source instanceof EntityDamageSource)
+        if (source instanceof EntityDamageSource && source.getTrueSource() != this.getOwner())
         {
             attacker = source.getTrueSource();
 

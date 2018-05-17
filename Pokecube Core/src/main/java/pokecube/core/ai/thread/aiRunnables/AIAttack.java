@@ -39,7 +39,6 @@ import thut.api.maths.Vector3;
  * It is the one to queue the attack for the pokemob to perform. */
 public class AIAttack extends AIBase implements IAICombat
 {
-    public static final int   DEAGROTIMER = 50;
     public final EntityLiving attacker;
     public final IPokemob     pokemob;
     EntityLivingBase          entityTarget;
@@ -56,7 +55,6 @@ public class AIAttack extends AIBase implements IAICombat
 
     protected int             chaseTime;
     protected int             delayTime   = -1;
-    protected int             agroTimer   = -1;
     protected boolean         canSee      = false;
 
     boolean                   running     = false;
@@ -79,7 +77,8 @@ public class AIAttack extends AIBase implements IAICombat
                 {
                     setPokemobAIState(this.pokemob, IMoveConstants.MATEFIGHT, false);
                     setPokemobAIState(pokemobTarget, IMoveConstants.MATEFIGHT, false);
-                    addTargetInfo(attacker, null);
+                    setPokemobAIState(this.pokemob, IMoveConstants.ANGRY, false);
+                    setPokemobAIState(pokemobTarget, IMoveConstants.ANGRY, false);
                     pokemobTarget.getEntity().setAttackTarget(null);
                 }
             }
@@ -92,32 +91,7 @@ public class AIAttack extends AIBase implements IAICombat
 
     public boolean continueExecuting()
     {
-        EntityLivingBase target = attacker.getAttackTarget();
-        if (entityTarget != null && target == null)
-        {
-            target = entityTarget;
-            if (agroTimer == -1)
-            {
-                agroTimer = DEAGROTIMER;
-            }
-            else
-            {
-                agroTimer--;
-                if (agroTimer == -1)
-                {
-                    target = null;
-                }
-            }
-        }
-        entityTarget = target;
-        pokemobTarget = CapabilityPokemob.getPokemobFor(entityTarget);
-
-        if (entityTarget != null && (entityTarget.isDead || !entityTarget.addedToChunk))
-        {
-            addTargetInfo(attacker, null);
-            entityTarget = null;
-            pokemobTarget = null;
-        }
+        entityTarget = attacker.getAttackTarget();
         return entityTarget != null && !entityTarget.isDead;
     }
 
@@ -227,7 +201,7 @@ public class AIAttack extends AIBase implements IAICombat
         // If it has been too long since last seen the target, give up.
         if (chaseTime > 200)
         {
-            addTargetInfo(attacker, null);
+            setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
             addEntityPath(attacker, null, movementSpeed);
             if (PokecubeCore.debug)
             {

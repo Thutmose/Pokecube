@@ -117,7 +117,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 this.attackedAtYaw = 0.0F;
                 Entity entity = source.getTrueSource();
 
-                if (entity != null)
+                if (entity != null && source.getTrueSource() != this.getOwner())
                 {
                     if (entity instanceof EntityLivingBase)
                     {

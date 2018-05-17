@@ -30,6 +30,7 @@ import thut.api.maths.Vector3;
 /** This IAIRunnable is to find targets for the pokemob to try to kill. */
 public class AIFindTarget extends AIBase implements IAICombat
 {
+    public static int                     DEAGROTIMER      = 50;
     public static Set<Class<?>>           invalidClasses   = Sets.newHashSet();
     public static Set<String>             invalidIDs       = Sets.newHashSet();
 
@@ -77,6 +78,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                                    return false;
                                                                }
                                                            };
+    private int                           agroTimer        = -1;
+    private EntityLivingBase              entityTarget     = null;
 
     public AIFindTarget(IPokemob mob)
     {
@@ -169,7 +172,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                             && ((EntityCreature) entity).getAttackTarget().equals(pokemob.getPokemonOwner())
                             && Vector3.isVisibleEntityFromEntity(entity, entity))
                     {
-                        addTargetInfo(entity, entity);
+                        addTargetInfo(this.entity, entity);
+                        entityTarget = (EntityLivingBase) entity;
                         setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
                         setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
                         return;
@@ -192,7 +196,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                     if (mob != null && pokemob.getPokedexEntry().isFood(mob.getPokedexEntry())
                             && pokemob.getLevel() > mob.getLevel() && Vector3.isVisibleEntityFromEntity(entity, entity))
                     {
-                        addTargetInfo(entity, entity);
+                        addTargetInfo(this.entity, entity);
+                        entityTarget = (EntityLivingBase) entity;
                         setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
                         setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
                         return;
@@ -236,6 +241,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                 addTargetInfo(entity, newtarget);
                 setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
                 setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
+                entityTarget = newtarget;
                 return;
             }
         }
@@ -246,17 +252,60 @@ public class AIFindTarget extends AIBase implements IAICombat
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
         if (world == null || !pokemob.isRoutineEnabled(AIRoutine.AGRESSIVE)) return false;
+        EntityLivingBase target = entity.getAttackTarget();
 
         // Don't look for targets if you are sitting.
-        boolean ret = entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
+        boolean ret = target == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
 
         boolean tame = pokemob.getPokemonAIState(IMoveConstants.TAMED);
 
-        // If we have a target, we don't need to look for another.
-        if (entity.getAttackTarget() != null)
+        if (target == null && entityTarget != null)
         {
+            target = entityTarget;
+            if (agroTimer == -1)
+            {
+                agroTimer = DEAGROTIMER;
+            }
+            else
+            {
+                agroTimer--;
+                if (agroTimer == -1 || !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+                {
+                    target = null;
+                    agroTimer = -1;
+                }
+                else
+                {
+                    addTargetInfo(entity, entityTarget);
+                }
+            }
+        }
+
+        // If we have a target, we don't need to look for another.
+        if (target != null)
+        {
+            entityTarget = target;
             // If our target is dead, we can forget it.
-            if (entity.getAttackTarget().isDead) addTargetInfo(entity, null);
+            if (target.isDead)
+            {
+                addTargetInfo(entity, null);
+                entityTarget = null;
+            }
+
+            // If our target is us, we should forget it.
+            if (target == entity)
+            {
+                addTargetInfo(entity, null);
+                entityTarget = null;
+            }
+
+            // If our target is owner, we should forget it.
+            if (target == pokemob.getPokemonOwner())
+            {
+                addTargetInfo(entity, null);
+                entityTarget = null;
+            }
+
             // If your owner is too far away, shouldn't have a target, should be
             // going back to the owner.
             if (tame)
@@ -268,10 +317,12 @@ public class AIFindTarget extends AIBase implements IAICombat
                         && owner.getDistanceToEntity(entity) > PokecubeMod.core.getConfig().chaseDistance)
                 {
                     addTargetInfo(entity, null);
+                    entityTarget = null;
                 }
             }
             return false;
         }
+
         boolean wildAgress = !tame && entity.getRNG().nextInt(200) == 0;
         // Check if the mob should always be agressive.
         if (!tame && !wildAgress && entity.ticksExisted % 20 == 0)
@@ -289,6 +340,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
                 addTargetInfo(entity, player);
+                entityTarget = player;
                 return false;
             }
         }

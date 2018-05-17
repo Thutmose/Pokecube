@@ -931,6 +931,7 @@ public class EventsHandler
     @SubscribeEvent
     public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
     {
+
         if (evt.getTarget() == evt.getEntityLiving())
         {
             if (PokecubeMod.core.getConfig().debug)
@@ -941,8 +942,17 @@ public class EventsHandler
             return;
         }
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
-        if (pokemob != null)
+        if (pokemob != null && pokemob.getOwner() != null)
         {
+            if (evt.getTarget() == pokemob.getOwner())
+            {
+                if (PokecubeMod.core.getConfig().debug)
+                {
+                    PokecubeMod.log(Level.WARNING, evt.getTarget() + " is targetting owner.",
+                            new IllegalArgumentException());
+                }
+                return;
+            }
             pokemob.onSetTarget(evt.getTarget());
         }
         if (evt.getTarget() != null && evt.getEntityLiving() instanceof EntityLiving)
@@ -954,6 +964,7 @@ public class EventsHandler
             for (IPokemob e : pokemon)
             {
                 double dist = e.getEntity().getDistanceSqToEntity(evt.getEntityLiving());
+                if (e.getEntity() == evt.getEntityLiving()) continue;
                 if (dist < closest
                         && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING))
                         && e.isRoutineEnabled(AIRoutine.AGRESSIVE))
@@ -962,7 +973,7 @@ public class EventsHandler
                     newtarget = e;
                 }
             }
-            if (newtarget != null)
+            if (newtarget != null && newtarget.getEntity() != evt.getEntityLiving())
             {
                 ((EntityLiving) evt.getEntityLiving()).setAttackTarget(newtarget.getEntity());
                 IPokemob mob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());

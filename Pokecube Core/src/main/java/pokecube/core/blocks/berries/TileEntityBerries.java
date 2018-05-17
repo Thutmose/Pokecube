@@ -56,9 +56,9 @@ public class TileEntityBerries extends TileEntity
             world.setTileEntity(getPos(), new TileEntityTickBerries(type));
             break;
         case FRUIT:
-            world.setTileEntity(getPos(), new TileEntityTickBerries(type));
             break;
         case LEAF:
+            world.setTileEntity(getPos(), new TileEntityTickBerries(type));
             break;
         case LOG:
             break;

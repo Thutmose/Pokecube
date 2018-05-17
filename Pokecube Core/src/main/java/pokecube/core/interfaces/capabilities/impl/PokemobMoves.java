@@ -92,7 +92,8 @@ public abstract class PokemobMoves extends PokemobSexed
         Move_Base move = MovesUtils.getMoveFromName(attack);
         if (move == null || move.move == null)
         {
-            PokecubeMod.log(Level.SEVERE, getPokemonDisplayName() + " Has Used Unregistered Move: " + attack,
+            PokecubeMod.log(Level.SEVERE,
+                    getPokemonDisplayName().getFormattedText() + " Has Used Unregistered Move: " + attack + " " + index,
                     new IllegalArgumentException());
             return;
         }

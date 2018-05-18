@@ -477,6 +477,8 @@ public class Database
                 PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + "pokemobs" + File.separator + s, e);
             }
         }
+        if (PokecubeMod.debug) PokecubeMod.log("Loaded all databases");
+
         // Fire load event to let addons do stuff after databases have been
         // loaded.
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Load());

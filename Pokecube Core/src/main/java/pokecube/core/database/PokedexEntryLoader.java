@@ -382,6 +382,12 @@ public class PokedexEntryLoader
 
         @XmlElement(name = "ACTIVETIMES")
         public String            activeTimes;
+
+        @Override
+        public String toString()
+        {
+            return spawnRules + "";
+        }
     }
 
     @XmlRootElement(name = "MegaRule")
@@ -973,7 +979,10 @@ public class PokedexEntryLoader
                 {
                     bar2.step(e.name);
                     XMLPokedexEntry old = database.map.get(e.name);
-                    if (old != null) mergeNonDefaults(missingno, e, old);
+                    if (old != null)
+                    {
+                        mergeNonDefaults(missingno, e, old);
+                    }
                     else
                     {
                         try
@@ -1234,10 +1243,6 @@ public class PokedexEntryLoader
         }
         for (SpawnRule rule : xmlStats.spawnRules)
         {
-            if (entry.getName().equalsIgnoreCase("magnemite"))
-            {
-                PokecubeMod.log("Magnemite: " + rule + "");
-            }
             handleAddSpawn(spawnData, rule);
         }
         entry.setSpawnData(spawnData);

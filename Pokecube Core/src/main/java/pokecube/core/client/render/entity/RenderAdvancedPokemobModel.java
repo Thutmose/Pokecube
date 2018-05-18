@@ -139,7 +139,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             }
         }
         if (ret == null) ret = RenderPokemobs.getInstance().getEntityTexturePublic(entity);
-        if (pokemob != null) ret = pokemob.modifyTexture(ret);
+        else if (pokemob != null) ret = pokemob.modifyTexture(ret);
         return ret;
     }
 

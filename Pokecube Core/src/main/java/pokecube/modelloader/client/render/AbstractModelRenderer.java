@@ -125,7 +125,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
             ret = model_holder.texture;
         }
         if (ret == null) ret = RenderPokemobs.getInstance().getEntityTexturePublic(entity);
-        if (pokemob != null) ret = pokemob.modifyTexture(ret);
+        else if (pokemob != null) ret = pokemob.modifyTexture(ret);
         return ret;
     }
 

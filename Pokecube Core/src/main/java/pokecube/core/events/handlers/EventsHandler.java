@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 
 import javax.vecmath.Vector3f;
 
@@ -66,7 +65,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -85,6 +83,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.server.permission.IPermissionHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.context.PlayerContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.properties.GuardAICapability;
@@ -105,7 +106,6 @@ import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.KillEvent;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
@@ -129,6 +129,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.network.packets.PacketPokecube;
+import pokecube.core.utils.Permissions;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
@@ -803,6 +804,19 @@ public class EventsHandler
         }
         if (!entry.ridable || pokemob.getPokemonAIState(IPokemob.GUARDING)) return false;
         if (!CompatWrapper.isValid(pokemob.getPokemobInventory().getStackInSlot(0))) return false;
+
+        if (rider instanceof EntityPlayerMP && rider == pokemob.getOwner())
+        {
+            EntityPlayer player = (EntityPlayer) rider;
+            IPermissionHandler handler = PermissionAPI.getPermissionHandler();
+            PlayerContext context = new PlayerContext(player);
+            Config config = PokecubeCore.core.getConfig();
+            if (config.permsRide && !handler.hasPermission(player.getGameProfile(), Permissions.RIDEPOKEMOB, context))
+                return false;
+            if (config.permsRideSpecific
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.RIDESPECIFIC.get(entry), context))
+                return false;
+        }
         float scale = pokemob.getSize();
         Vector3f dims = pokemob.getPokedexEntry().getModelSize();
         return (dims.y * scale + dims.x * scale) > rider.width && Math.max(dims.x, dims.z) * scale > rider.width * 1.8;
@@ -925,66 +939,6 @@ public class EventsHandler
         if (attacker != null && damageSource.getImmediateSource() instanceof EntityLiving)
         {
             handleExp((EntityLiving) damageSource.getImmediateSource(), attacker, evt.getEntityLiving());
-        }
-    }
-
-    @SubscribeEvent
-    public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
-    {
-
-        if (evt.getTarget() == evt.getEntityLiving())
-        {
-            if (PokecubeMod.core.getConfig().debug)
-            {
-                PokecubeMod.log(Level.WARNING, evt.getTarget() + " is targetting self again.",
-                        new IllegalArgumentException());
-            }
-            return;
-        }
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
-        if (pokemob != null && pokemob.getOwner() != null)
-        {
-            if (evt.getTarget() == pokemob.getOwner())
-            {
-                if (PokecubeMod.core.getConfig().debug)
-                {
-                    PokecubeMod.log(Level.WARNING, evt.getTarget() + " is targetting owner.",
-                            new IllegalArgumentException());
-                }
-                return;
-            }
-            pokemob.onSetTarget(evt.getTarget());
-        }
-        if (evt.getTarget() != null && evt.getEntityLiving() instanceof EntityLiving)
-        {
-            List<IPokemob> pokemon = getPokemobs(evt.getTarget(), 32);
-            if (pokemon.isEmpty()) return;
-            double closest = 1000;
-            IPokemob newtarget = null;
-            for (IPokemob e : pokemon)
-            {
-                double dist = e.getEntity().getDistanceSqToEntity(evt.getEntityLiving());
-                if (e.getEntity() == evt.getEntityLiving()) continue;
-                if (dist < closest
-                        && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING))
-                        && e.isRoutineEnabled(AIRoutine.AGRESSIVE))
-                {
-                    closest = dist;
-                    newtarget = e;
-                }
-            }
-            if (newtarget != null && newtarget.getEntity() != evt.getEntityLiving())
-            {
-                ((EntityLiving) evt.getEntityLiving()).setAttackTarget(newtarget.getEntity());
-                IPokemob mob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
-                if (mob != null)
-                {
-                    mob.setPokemonAIState(IMoveConstants.ANGRY, true);
-                    mob.setPokemonAIState(IMoveConstants.SITTING, false);
-                }
-                newtarget.getEntity().setAttackTarget(evt.getEntityLiving());
-                newtarget.setPokemonAIState(IMoveConstants.ANGRY, true);
-            }
         }
     }
 

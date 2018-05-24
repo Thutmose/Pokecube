@@ -153,18 +153,6 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     }
 
     // 1.11
-    public boolean isVisuallyOpaque(IBlockState state)
-    {
-        return false;
-    }
-
-    // 1.10
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }
-
-    // 1.11
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {

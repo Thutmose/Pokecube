@@ -29,6 +29,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.IPermissionHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.context.PlayerContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.MoveUse;
@@ -50,6 +53,7 @@ import pokecube.core.interfaces.entity.impl.OngoingMoveEffect;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect.Status;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.Permissions;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 import thut.core.common.commands.CommandTools;
@@ -412,6 +416,17 @@ public class MoveEventsHandler
         if (action == null)
         {
             register(action = new DefaultAction(move));
+        }
+        if (PokecubeCore.core.getConfig().permsMoveAction && attacker.getOwner() instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) attacker.getOwner();
+            IPermissionHandler handler = PermissionAPI.getPermissionHandler();
+            PlayerContext context = new PlayerContext(player);
+            if (!handler.hasPermission(player.getGameProfile(), Permissions.MOVEWORLDACTION.get(move.name), context))
+            {
+                if (PokecubeMod.debug) PokecubeMod.log("Denied use of " + move.name + " for " + player);
+                return;
+            }
         }
         action.applyEffect(attacker, location);
     }

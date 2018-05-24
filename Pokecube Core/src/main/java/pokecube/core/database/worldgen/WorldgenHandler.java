@@ -49,11 +49,12 @@ public class WorldgenHandler
         public String dim_type;
         public String world_type;
         public String generator_options;
+        public Long   seed;
 
         @Override
         public String toString()
         {
-            return dimid + " " + world_name + " " + dim_type + " " + world_type + " " + generator_options;
+            return dimid + " " + world_name + " " + dim_type + " " + world_type + " " + generator_options + " " + seed;
         }
     }
 

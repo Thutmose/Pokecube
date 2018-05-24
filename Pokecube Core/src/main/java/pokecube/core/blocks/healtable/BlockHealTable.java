@@ -156,4 +156,16 @@ public class BlockHealTable extends BlockRotatable implements ITileEntityProvide
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite())
                 .withProperty(FIXED, ((meta & 8) > 0));
     }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
 }

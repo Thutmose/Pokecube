@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -119,6 +120,7 @@ import pokecube.core.network.NetworkWrapper;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
 import pokecube.core.utils.PCSaveHandler;
+import pokecube.core.utils.Permissions;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
@@ -452,6 +454,7 @@ public class PokecubeCore extends PokecubeMod
         StarterInfo.processStarterInfo();
         AbilityManager.init();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
+        Permissions.register();
     }
 
     @SubscribeEvent
@@ -572,16 +575,23 @@ public class PokecubeCore extends PokecubeMod
             }
             catch (Exception e1)
             {
-                if (fileIn != null) try
+                if (e1 instanceof UnknownHostException)
                 {
-                    fileIn.close();
+                    PokecubeMod.log(Level.WARNING, "Error loading pokegifts, unknown host " + location);
                 }
-                catch (IOException e)
+                else
                 {
-                    e.printStackTrace();
+                    if (fileIn != null) try
+                    {
+                        fileIn.close();
+                    }
+                    catch (IOException e)
+                    {
+                        PokecubeMod.log(Level.WARNING, "Error with PokeGifts", e);
+                    }
+                    fileIn = null;
+                    PokecubeMod.log(Level.WARNING, "Error with PokeGifts", e1);
                 }
-                fileIn = null;
-                e1.printStackTrace();
             }
             if (fileIn != null)
             {
@@ -601,7 +611,7 @@ public class PokecubeCore extends PokecubeMod
                 }
                 catch (IOException e)
                 {
-                    e.printStackTrace();
+                    PokecubeMod.log(Level.WARNING, "Error with PokeGifts", e);
                 }
             }
         }

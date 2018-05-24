@@ -1244,6 +1244,7 @@ public class PokedexEntryLoader
         for (SpawnRule rule : xmlStats.spawnRules)
         {
             handleAddSpawn(spawnData, rule);
+            if (PokecubeMod.debug) PokecubeMod.log("Handling Spawns for " + entry);
         }
         entry.setSpawnData(spawnData);
         if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);

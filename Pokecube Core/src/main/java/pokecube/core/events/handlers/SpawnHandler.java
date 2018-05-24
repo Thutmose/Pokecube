@@ -123,7 +123,7 @@ public final class SpawnHandler
         @Override
         public int apply(int level)
         {
-            return nums[0] + new Random().nextInt(nums[0] - nums[1]);
+            return nums[0] + new Random().nextInt(nums[1] - nums[0]);
         }
     }
 
@@ -826,7 +826,7 @@ public final class SpawnHandler
         if (world.provider.isNether()) return;
         List<Object> players = new ArrayList<Object>(world.playerEntities);
         if (players.size() < 1) return;
-        if (Math.random() > 0.999)
+        if (new Random().nextInt(100) == 0)
         {
             Random rand = new Random();
             Entity player = (Entity) players.get(rand.nextInt(players.size()));
@@ -862,7 +862,7 @@ public final class SpawnHandler
         if (!SpawnHandler.canSpawnInWorld(world)) return;
         try
         {
-            int rate = 20;
+            int rate = PokecubeCore.core.getConfig().spawnRate;
             if (world.getTotalWorldTime() % rate == 0)
             {
                 long time = System.nanoTime();

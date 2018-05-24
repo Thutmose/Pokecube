@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
@@ -14,8 +15,16 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
@@ -30,56 +39,205 @@ import thut.api.maths.Vector3;
 /** This IAIRunnable is to find targets for the pokemob to try to kill. */
 public class AIFindTarget extends AIBase implements IAICombat
 {
-    public static int                     DEAGROTIMER      = 50;
-    public static Set<Class<?>>           invalidClasses   = Sets.newHashSet();
-    public static Set<String>             invalidIDs       = Sets.newHashSet();
+    public static boolean handleDamagedTargets = true;
+    static
+    {
+        MinecraftForge.EVENT_BUS.register(AIFindTarget.class);
+    }
 
-    public static final Predicate<Entity> validTargets     = new Predicate<Entity>()
-                                                           {
-                                                               @Override
-                                                               public boolean apply(Entity input)
-                                                               {
-                                                                   String id = EntityList.getEntityString(input);
-                                                                   if (invalidIDs.contains(id)) return false;
-                                                                   ResourceLocation eid = EntityList.getKey(input);
-                                                                   if (eid != null) id = eid.toString();
-                                                                   if (invalidIDs.contains(id)) return false;
-                                                                   for (Class<?> clas : invalidClasses)
-                                                                   {
-                                                                       if (clas.isInstance(input)) return false;
-                                                                   }
-                                                                   return true;
-                                                               }
-                                                           };
+    public static int                     DEAGROTIMER    = 50;
+    public static Set<Class<?>>           invalidClasses = Sets.newHashSet();
+    public static Set<String>             invalidIDs     = Sets.newHashSet();
 
-    final IPokemob                        pokemob;
-    final EntityLiving                    entity;
-    Vector3                               v                = Vector3.getNewVector();
-    Vector3                               v1               = Vector3.getNewVector();
+    public static final Predicate<Entity> validTargets   = new Predicate<Entity>()
+                                                         {
+                                                             @Override
+                                                             public boolean apply(Entity input)
+                                                             {
+                                                                 String id = EntityList.getEntityString(input);
+                                                                 if (invalidIDs.contains(id)) return false;
+                                                                 ResourceLocation eid = EntityList.getKey(input);
+                                                                 if (eid != null) id = eid.toString();
+                                                                 if (invalidIDs.contains(id)) return false;
+                                                                 for (Class<?> clas : invalidClasses)
+                                                                 {
+                                                                     if (clas.isInstance(input)) return false;
+                                                                 }
+                                                                 return true;
+                                                             }
+                                                         };
 
-    final Predicate<Entity>               validGuardTarget = new Predicate<Entity>()
-                                                           {
-                                                               @Override
-                                                               public boolean apply(Entity input)
-                                                               {
-                                                                   IPokemob testMob = CapabilityPokemob
-                                                                           .getPokemobFor(input);
-                                                                   if (testMob != null && input != pokemob.getEntity())
-                                                                   {
-                                                                       if (!TeamManager.sameTeam(entity,
-                                                                               input)) { return true; }
-                                                                   }
-                                                                   else if (input instanceof EntityLivingBase)
-                                                                   {
-                                                                       if (!validTargets.apply(input)) return false;
-                                                                       if (!TeamManager.sameTeam(entity,
-                                                                               input)) { return true; }
-                                                                   }
-                                                                   return false;
-                                                               }
-                                                           };
-    private int                           agroTimer        = -1;
-    private EntityLivingBase              entityTarget     = null;
+    /** Prevents the owner from attacking their own pokemob, and takes care of
+     * properly setting attack targets for whatever was hurt. */
+    @SubscribeEvent
+    public static void onDamaged(LivingDamageEvent event)
+    {
+        if (!handleDamagedTargets || event.getEntity().getEntityWorld().isRemote) return;
+
+        DamageSource source = event.getSource();
+        EntityLivingBase attacked = event.getEntityLiving();
+        IPokemob pokemobCap = CapabilityPokemob.getPokemobFor(attacked);
+        if (pokemobCap == null) return;
+
+        Entity attacker = source.getTrueSource();
+
+        // Camcel the event if it is from owner.
+        if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED)
+                && ((attacker instanceof EntityPlayer && ((EntityPlayer) attacker) == pokemobCap.getOwner())))
+        {
+            event.setCanceled(true);
+            event.setResult(Result.DENY);
+            return;
+        }
+        pokemobCap.setPokemonAIState(IMoveConstants.SITTING, false);
+
+        if (attacked instanceof EntityLiving)
+        {
+            EntityLiving living = (EntityLiving) attacked;
+            EntityLivingBase oldTarget = living.getAttackTarget();
+
+            // Don't include dead old targets.
+            if (oldTarget != null && oldTarget.isDead) oldTarget = null;
+
+            if (!(oldTarget == null && attacker != living && attacker instanceof EntityLivingBase
+                    && living.getAttackTarget() != attacker))
+            {
+                attacker = null;
+            }
+
+            IPokemob agres = CapabilityPokemob.getPokemobFor(attacker);
+            if (agres != null)
+            {
+                if (agres.getPokedexEntry().isFood(pokemobCap.getPokedexEntry())
+                        && agres.getPokemonAIState(IMoveConstants.HUNTING))
+                {
+                    // track running away.
+                }
+                if (agres.getLover() == living && attacker != null)
+                {
+                    agres.setLover(attacker);
+                }
+
+            }
+
+            // Either keep old target, or agress the attacker.
+            if (oldTarget != null && living.getAttackTarget() != oldTarget) living.setAttackTarget(oldTarget);
+            else if (attacker instanceof EntityLivingBase) living.setAttackTarget((EntityLivingBase) attacker);
+        }
+
+    }
+
+    /** Prevents the owner from attacking their own pokemob. */
+    @SubscribeEvent
+    public static void onAttacked(LivingAttackEvent event)
+    {
+        if (!handleDamagedTargets || event.getEntity().getEntityWorld().isRemote) return;
+
+        DamageSource source = event.getSource();
+        EntityLivingBase attacked = event.getEntityLiving();
+        IPokemob pokemobCap = CapabilityPokemob.getPokemobFor(attacked);
+        if (pokemobCap == null) return;
+
+        Entity attacker = source.getTrueSource();
+
+        // Camcel the event if it is from owner.
+        if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED)
+                && ((attacker instanceof EntityPlayer && ((EntityPlayer) attacker) == pokemobCap.getOwner())))
+        {
+            event.setCanceled(true);
+            event.setResult(Result.DENY);
+            return;
+        }
+    }
+
+    @SubscribeEvent
+    public static void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
+    {
+        if (!handleDamagedTargets || evt.getEntity().getEntityWorld().isRemote) return;
+        // Only handle attack target set, not revenge target set.
+        if (evt.getTarget() == evt.getEntityLiving().getRevengeTarget()) return;
+
+        if (evt.getTarget() == evt.getEntityLiving())
+        {
+            if (PokecubeMod.core.getConfig().debug)
+            {
+                PokecubeMod.log(Level.WARNING, evt.getTarget() + " is targetting self again.",
+                        new IllegalArgumentException());
+            }
+            return;
+        }
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
+        if (pokemob != null && pokemob.getOwner() != null)
+        {
+            if (evt.getTarget() == pokemob.getOwner())
+            {
+                if (PokecubeMod.core.getConfig().debug)
+                {
+                    PokecubeMod.log(Level.WARNING, evt.getTarget() + " is targetting owner.",
+                            new IllegalArgumentException());
+                }
+                return;
+            }
+            pokemob.onSetTarget(evt.getTarget());
+        }
+        if (evt.getTarget() != null && evt.getEntityLiving() instanceof EntityLiving)
+        {
+            List<IPokemob> pokemon = EventsHandler.getPokemobs(evt.getTarget(), 32);
+            if (pokemon.isEmpty()) return;
+            double closest = 1000;
+            IPokemob newtarget = null;
+            for (IPokemob e : pokemon)
+            {
+                double dist = e.getEntity().getDistanceSqToEntity(evt.getEntityLiving());
+                if (e.getEntity() == evt.getEntityLiving()) continue;
+                if (dist < closest
+                        && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING))
+                        && e.isRoutineEnabled(AIRoutine.AGRESSIVE))
+                {
+                    closest = dist;
+                    newtarget = e;
+                }
+            }
+            if (newtarget != null && newtarget.getEntity() != evt.getEntityLiving())
+            {
+                ((EntityLiving) evt.getEntityLiving()).setAttackTarget(newtarget.getEntity());
+                IPokemob mob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
+                if (mob != null)
+                {
+                    mob.setPokemonAIState(IMoveConstants.ANGRY, true);
+                    mob.setPokemonAIState(IMoveConstants.SITTING, false);
+                }
+                newtarget.getEntity().setAttackTarget(evt.getEntityLiving());
+                newtarget.setPokemonAIState(IMoveConstants.ANGRY, true);
+            }
+        }
+    }
+
+    final IPokemob           pokemob;
+    final EntityLiving       entity;
+    Vector3                  v                = Vector3.getNewVector();
+    Vector3                  v1               = Vector3.getNewVector();
+
+    final Predicate<Entity>  validGuardTarget = new Predicate<Entity>()
+                                              {
+                                                  @Override
+                                                  public boolean apply(Entity input)
+                                                  {
+                                                      IPokemob testMob = CapabilityPokemob.getPokemobFor(input);
+                                                      if (testMob != null && input != pokemob.getEntity())
+                                                      {
+                                                          if (!TeamManager.sameTeam(entity, input)) { return true; }
+                                                      }
+                                                      else if (input instanceof EntityLivingBase)
+                                                      {
+                                                          if (!validTargets.apply(input)) return false;
+                                                          if (!TeamManager.sameTeam(entity, input)) { return true; }
+                                                      }
+                                                      return false;
+                                                  }
+                                              };
+    private int              agroTimer        = -1;
+    private EntityLivingBase entityTarget     = null;
 
     public AIFindTarget(IPokemob mob)
     {
@@ -154,7 +312,15 @@ public class AIFindTarget extends AIBase implements IAICombat
     public void run()
     {
         // No need to find a target if we have one.
-        if (entity.getAttackTarget() != null) return;
+        if (entity.getAttackTarget() != null)
+        {
+            // If target is dead, lets forget about it.
+            if (entity.getAttackTarget().isDead)
+            {
+                addTargetInfo(this.entity, null);
+            }
+            return;
+        }
         // Check if the pokemob is set to follow, and if so, look for mobs
         // nearby trying to attack the owner of the pokemob, if any such are
         // found, try to aggress them immediately.

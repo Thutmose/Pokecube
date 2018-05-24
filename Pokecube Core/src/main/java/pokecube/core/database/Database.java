@@ -803,11 +803,11 @@ public class Database
                     PokecubeMod.log("Editing spawns for " + entry);
                 }
                 PokedexEntryLoader.handleAddSpawn(data, xmlEntry);
-                if (data.matchers.isEmpty())
+                Database.spawnables.remove(entry);
+                if (!data.matchers.isEmpty())
                 {
-                    Database.spawnables.remove(entry);
+                    Database.spawnables.add(entry);
                 }
-                else if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
             }
         }
         catch (Exception e)

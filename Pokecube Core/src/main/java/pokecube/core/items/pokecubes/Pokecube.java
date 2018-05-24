@@ -29,13 +29,20 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.server.permission.IPermissionHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.context.PlayerContext;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.database.PokedexEntry;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.Permissions;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.core.common.commands.CommandTools;
@@ -315,6 +322,22 @@ public class Pokecube extends Item implements IPokecube
         ResourceLocation id = PokecubeItems.getCubeId(cube.getItem());
         if (id == null || !IPokecube.BEHAVIORS.containsKey(id)) return false;
         ItemStack stack = CompatWrapper.copy(cube);
+        boolean hasMob = PokecubeManager.hasMob(stack);
+        Config config = PokecubeCore.core.getConfig();
+        // Check permissions
+        if (hasMob && (config.permsSendOut || config.permsSendOutSpecific) && thrower instanceof EntityPlayer)
+        {
+            PokedexEntry entry = PokecubeManager.getPokedexEntry(stack);
+            EntityPlayer player = (EntityPlayer) thrower;
+            IPermissionHandler handler = PermissionAPI.getPermissionHandler();
+            PlayerContext context = new PlayerContext(player);
+            if (config.permsSendOut
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.SENDOUTPOKEMOB, context))
+                return false;
+            if (config.permsSendOutSpecific
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.SENDOUTSPECIFIC.get(entry), context))
+                return false;
+        }
         CompatWrapper.setStackSize(stack, 1);
         entity = new EntityPokecube(world, thrower, stack);
         Vector3 temp = Vector3.getNewVector().set(thrower).add(0, thrower.getEyeHeight(), 0);
@@ -324,8 +347,7 @@ public class Pokecube extends Item implements IPokecube
         entity.targetEntity = null;
         entity.targetLocation.clear();
         entity.forceSpawn = true;
-
-        if (PokecubeManager.hasMob(stack) && !thrower.isSneaking())
+        if (hasMob && !thrower.isSneaking())
         {
             entity.targetLocation.y = -1;
         }

@@ -116,6 +116,7 @@ public class LogicMiscUpdate extends LogicBase
         {
             entity.setAttackTarget(null);
         }
+        if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead) entity.setAttackTarget(null);
 
         // Particle stuff below here, WARNING, RESETTING RNG HERE
         rand = new Random();

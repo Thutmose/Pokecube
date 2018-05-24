@@ -108,7 +108,7 @@ public class ParticleFlow extends MoveAnimationBase
             }
             catch (NumberFormatException e)
             {
-                System.err.println(preset);
+                System.err.println(preset + " " + e);
             }
         }
         return this;

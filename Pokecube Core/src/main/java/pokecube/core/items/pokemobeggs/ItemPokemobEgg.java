@@ -33,6 +33,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.server.permission.IPermissionHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.context.PlayerContext;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -40,11 +44,13 @@ import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.events.EggEvent;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.utils.Permissions;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
@@ -170,7 +176,22 @@ public class ItemPokemobEgg extends Item
             IMobGenetics.GENETICS_CAP.getStorage().readNBT(IMobGenetics.GENETICS_CAP, eggs, null, genes);
             GeneticsManager.initFromGenes(eggs, mob);
         }
-        EntityLivingBase owner = getOwner(mob);
+        EntityLivingBase owner = imprintOwner(mob);
+        Config config = PokecubeCore.core.getConfig();
+        // Check permissions
+        if (owner instanceof EntityPlayer && (config.permsHatch || config.permsHatchSpecific))
+        {
+            PokedexEntry entry = mob.getPokedexEntry();
+            EntityPlayer player = (EntityPlayer) owner;
+            IPermissionHandler handler = PermissionAPI.getPermissionHandler();
+            PlayerContext context = new PlayerContext(player);
+            if (config.permsHatch
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.SENDOUTPOKEMOB, context))
+                return;
+            if (config.permsHatchSpecific
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.SENDOUTSPECIFIC.get(entry), context))
+                return;
+        }
         if (owner != null)
         {
             mob.setPokemonOwner(owner);
@@ -180,7 +201,7 @@ public class ItemPokemobEgg extends Item
         }
     }
 
-    public static EntityLivingBase getOwner(IPokemob mob)
+    public static EntityLivingBase imprintOwner(IPokemob mob)
     {
         Vector3 location = Vector3.getNewVector().set(mob.getEntity());
         EntityPlayer player = mob.getEntity().getEntityWorld().getClosestPlayer(location.x, location.y, location.z,

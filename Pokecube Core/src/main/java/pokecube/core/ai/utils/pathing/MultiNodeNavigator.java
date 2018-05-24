@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -15,7 +14,7 @@ import pokecube.core.ai.utils.pathing.node.MultiNodeWrapper;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
-public class MultiNodeNavigator extends PathNavigate
+public class MultiNodeNavigator extends PathNavigate2
 {
     public final NodeProcessor a;
     public final NodeProcessor b;

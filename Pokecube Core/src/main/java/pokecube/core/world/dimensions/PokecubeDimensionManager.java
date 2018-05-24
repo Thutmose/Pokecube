@@ -17,13 +17,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketWorldBorder;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.ServerWorldEventHandler;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldServerMulti;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -52,19 +49,12 @@ public class PokecubeDimensionManager
     public static boolean createNewSecretBaseDimension(int dim, boolean reset)
     {
         if (!DimensionManager.isDimensionRegistered(dim)) DimensionManager.registerDimension(dim, SECRET_BASE_TYPE);
-        WorldServer overworld = DimensionManager.getWorld(0);
         WorldServer world1 = DimensionManager.getWorld(dim);
         boolean registered = true;
         if (world1 == null)
         {
-            MinecraftServer mcServer = overworld.getMinecraftServer();
-            ISaveHandler savehandler = overworld.getSaveHandler();
-            world1 = (WorldServer) (new WorldServerMulti(mcServer, savehandler, dim, overworld, mcServer.profiler)
-                    .init());
-            WorldProviderSecretBase.initToDefaults(world1.getWorldBorder());
-            world1.addEventListener(new ServerWorldEventHandler(mcServer, world1));
-            MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world1));
-            mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
+            DimensionManager.initDimension(dim);
+            world1 = DimensionManager.getWorld(dim);
             registered = getInstance().dims.contains(dim);
             if (!registered)
             {
@@ -331,7 +321,7 @@ public class PokecubeDimensionManager
                     }
                 }
                 CustomDimensionManager.initDimension(dim.dimid, dim.world_name, dim.world_type, dim.generator_options,
-                        type);
+                        type, dim.seed);
             }
         }
     }
@@ -357,6 +347,7 @@ public class PokecubeDimensionManager
                 types.setString("dim-" + i + "-name", world.getWorldInfo().getWorldName());
                 types.setString("dim-" + i + "-options", world.getWorldInfo().getGeneratorOptions());
                 types.setString("dim-" + i + "-world", world.getWorldType().getName());
+                types.setLong("dim-" + i + "-seed", world.getSeed());
             }
             if (dimOwners.containsKey(i)) nbttagcompound.setString("dim_" + i, dimOwners.get(i));
         }
@@ -385,7 +376,8 @@ public class PokecubeDimensionManager
                 String worldName = typesTag.getString("dim-" + i + "-name");
                 String generatorOptions = typesTag.getString("dim-" + i + "-options");
                 String worldType = typesTag.getString("dim-" + i + "-world");
-                CustomDimensionManager.initDimension(i, worldName, worldType, generatorOptions);
+                Long seed = typesTag.hasKey("dim-" + i + "-seed") ? typesTag.getLong("dim-" + i + "-seed") : null;
+                CustomDimensionManager.initDimension(i, worldName, worldType, generatorOptions, seed);
             }
             else if (!DimensionManager.isDimensionRegistered(i)) DimensionManager.registerDimension(i, type);
             if (nbttagcompound.hasKey("dim_" + i))

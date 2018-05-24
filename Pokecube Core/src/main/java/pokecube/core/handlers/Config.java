@@ -2,6 +2,7 @@ package pokecube.core.handlers;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -55,6 +56,7 @@ public class Config extends ConfigBase
     public static final String           mobAI                        = "ai";
     public static final String           moves                        = "moves";
     public static final String           misc                         = "misc";
+    public static final String           perms                        = "permissions";
     public static final String           client                       = "client";
     public static final String           advanced                     = "advanced";
     public static final String           healthbars                   = "healthbars";
@@ -120,6 +122,37 @@ public class Config extends ConfigBase
     public boolean                       defaultInteractions          = true;
     @Configure(category = misc)
     public boolean                       berryBreeding                = true;
+
+    @Configure(category = perms)
+    public boolean                       permsCapture                 = true;
+    @Configure(category = perms)
+    public boolean                       permsCaptureSpecific         = true;
+    @Configure(category = perms)
+    public boolean                       permsHatch                   = true;
+    @Configure(category = perms)
+    public boolean                       permsHatchSpecific           = true;
+    @Configure(category = perms)
+    public boolean                       permsSendOut                 = true;
+    @Configure(category = perms)
+    public boolean                       permsSendOutSpecific         = true;
+    @Configure(category = perms)
+    public boolean                       permsRide                    = true;
+    @Configure(category = perms)
+    public boolean                       permsRideSpecific            = true;
+    @Configure(category = perms)
+    public boolean                       permsFly                     = true;
+    @Configure(category = perms)
+    public boolean                       permsFlySpecific             = true;
+    @Configure(category = perms)
+    public boolean                       permsSurf                    = true;
+    @Configure(category = perms)
+    public boolean                       permsSurfSpecific            = true;
+    @Configure(category = perms)
+    public boolean                       permsDive                    = true;
+    @Configure(category = perms)
+    public boolean                       permsDiveSpecific            = true;
+    @Configure(category = perms)
+    public boolean                       permsMoveAction              = true;
 
     // Move Use related settings
     @Configure(category = moves)
@@ -426,6 +459,9 @@ public class Config extends ConfigBase
     public int[]                         dimensionWhitelist           = {};
     @Configure(category = spawning)
     public boolean                       whiteListEnabled             = false;
+    @Configure(category = spawning)
+    /** Spawns run once every this many ticks.. */
+    public int                           spawnRate                    = 20;
 
     // Gui/client settings
     @Configure(category = client)
@@ -649,6 +685,7 @@ public class Config extends ConfigBase
             PokecubeTerrainChecker.structureSubbiomeMap.put(args[0], args[1]);
         }
         if (attackCooldown <= 0) attackCooldown = 1;
+        if (spawnRate <= 0) spawnRate = 0;
 
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;
@@ -941,7 +978,11 @@ public class Config extends ConfigBase
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    if (e instanceof UnknownHostException)
+                    {
+                        PokecubeMod.log(Level.WARNING, "Error loading contributors, unknown host");
+                    }
+                    else PokecubeMod.log(Level.WARNING, "Error loading contributors", e);
                 }
                 return null;
             }

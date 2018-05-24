@@ -292,8 +292,7 @@ public class BerryGenManager
 
     public static ItemStack getRandomBerryForBiome(World world, BlockPos location)
     {
-        // if (berryLocations.isEmpty())
-        parseConfig();
+        if (berryLocations.isEmpty()) parseConfig();
         SpawnBiomeMatcher toMatch = null;
         SpawnCheck checker = new SpawnCheck(Vector3.getNewVector().set(location), world);
         /** Shuffle list, then re-sort it. This allows the values of the same

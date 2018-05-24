@@ -588,6 +588,7 @@ public class EntityPokecube extends EntityPokecubeBase
         if (hitten != null)
         {
             if (hitten.getPokemonOwner() == shootingEntity) { return; }
+
             int tiltBak = tilt;
             CaptureEvent.Pre capturePre = new Pre(hitten, this);
             MinecraftForge.EVENT_BUS.post(capturePre);

@@ -93,6 +93,9 @@ public class AIHungry extends AIBase
     {
         super.doMainThreadTick(world);
 
+        int hungerTicks = 20;
+        if (entity.ticksExisted % hungerTicks != 0) return;
+
         int hungerTime = pokemob.getHungerTime();
         v.set(entity);
         sleepy = pokemob.getEntity().getAttackTarget() == null;
@@ -696,6 +699,10 @@ public class AIHungry extends AIBase
     public boolean shouldRun()
     {
         world = entity.getEntityWorld();
+
+        int hungerTicks = 20;
+        if (entity.ticksExisted % hungerTicks != 0) return false;
+
         boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
         if (ownedSleepCheck)
@@ -703,8 +710,8 @@ public class AIHungry extends AIBase
             pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
         }
         if (world == null || entity.getAttackTarget() != null) return false;
-        pokemob.setHungerCooldown(pokemob.getHungerCooldown() - 1);
-        pokemob.setHungerTime(pokemob.getHungerTime() + 1);
+        pokemob.setHungerCooldown(pokemob.getHungerCooldown() - hungerTicks);
+        pokemob.setHungerTime(pokemob.getHungerTime() + hungerTicks);
         boolean hunting = pokemob.getPokemonAIState(IMoveConstants.HUNTING);
         if (pokemob.getPokemonAIState(IMoveConstants.SLEEPING) || !hunting || pokemob.neverHungry())
         {

@@ -480,7 +480,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             EntityLivingBase entity = pokemob.getEntity().getAttackTarget();
-            if (entity == null) break render;
+            if (entity == null || entity.isDead) break render;
 
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             // Render HP

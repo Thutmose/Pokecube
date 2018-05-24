@@ -12,11 +12,19 @@ import javax.vecmath.Vector3f;
 import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraftforge.server.permission.IPermissionHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.context.PlayerContext;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.handlers.Config;
+import pokecube.core.utils.Permissions;
 import thut.api.entity.IMultiplePassengerEntity;
 
 /** Handles the HM behaviour.
@@ -102,7 +110,26 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     @Override
     public boolean shouldDismountInWater(Entity rider)
     {
-        return !pokemobCap.canUseDive();
+        boolean canDive = pokemobCap.canUseDive();
+        if (rider instanceof EntityPlayerMP)
+        {
+            EntityPlayer player = (EntityPlayer) rider;
+            IPermissionHandler handler = PermissionAPI.getPermissionHandler();
+            PlayerContext context = new PlayerContext(player);
+            PokedexEntry entry = pokemobCap.getPokedexEntry();
+            Config config = PokecubeCore.core.getConfig();
+            if (config.permsDive && canDive
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.DIVEPOKEMOB, context))
+            {
+                canDive = false;
+            }
+            if (config.permsDiveSpecific && canDive
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.DIVESPECIFIC.get(entry), context))
+            {
+                canDive = false;
+            }
+        }
+        return !canDive;
     }
 
     @Override
@@ -133,7 +160,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
         if (this.isBeingRidden() && (first = getPassengers().get(0)) == getOwner()) { return first; }
         return null;
     }
-    
+
     @Override
     public Entity getPassenger(Vector3f seatl)
     {

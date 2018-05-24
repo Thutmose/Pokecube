@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -95,7 +96,11 @@ public class ContributorManager
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.WARNING, "Error loading Contributors from " + location, e);
+            if (e instanceof UnknownHostException)
+            {
+                PokecubeMod.log(Level.WARNING, "Error loading contributors, unknown host " + location);
+            }
+            else PokecubeMod.log(Level.WARNING, "Error loading Contributors from " + location, e);
         }
     }
 }

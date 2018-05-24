@@ -4,16 +4,23 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.server.permission.IPermissionHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.context.PlayerContext;
 import pokecube.core.PokecubeCore;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.utils.Permissions;
 
 /** This manages the ridden controls of the pokemob. The booleans are set on the
  * client side, then sent via a packet to the server, and then the mob is moved
@@ -48,9 +55,50 @@ public class LogicMountedControl extends LogicBase
         boolean verticalControl = false;
         boolean waterSpeed = false;
         boolean airSpeed = !entity.onGround;
-        if (pokemob.canUseFly())
-            shouldControl = verticalControl = PokecubeCore.core.getConfig().flyEnabled || shouldControl;
-        if ((pokemob.canUseSurf() || pokemob.canUseDive()) && (waterSpeed = entity.isInWater()))
+
+        boolean canFly = pokemob.canUseFly();
+        boolean canSurf = pokemob.canUseSurf();
+        boolean canDive = pokemob.canUseDive();
+
+        if (rider instanceof EntityPlayerMP)
+        {
+            EntityPlayer player = (EntityPlayer) rider;
+            IPermissionHandler handler = PermissionAPI.getPermissionHandler();
+            PlayerContext context = new PlayerContext(player);
+            PokedexEntry entry = pokemob.getPokedexEntry();
+            if (config.permsFly && canFly
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.FLYPOKEMOB, context))
+            {
+                canFly = false;
+            }
+            if (config.permsFlySpecific && canFly
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.FLYSPECIFIC.get(entry), context))
+            {
+                canFly = false;
+            }
+            if (config.permsSurf && canSurf
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.SURFPOKEMOB, context))
+            {
+                canSurf = false;
+            }
+            if (config.permsSurfSpecific && canSurf
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.SURFSPECIFIC.get(entry), context))
+            {
+                canSurf = false;
+            }
+            if (config.permsDive && canDive
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.DIVEPOKEMOB, context))
+            {
+                canDive = false;
+            }
+            if (config.permsDiveSpecific && canDive
+                    && !handler.hasPermission(player.getGameProfile(), Permissions.DIVESPECIFIC.get(entry), context))
+            {
+                canDive = false;
+            }
+        }
+        if (canFly) shouldControl = verticalControl = PokecubeCore.core.getConfig().flyEnabled || shouldControl;
+        if ((canSurf || canDive) && (waterSpeed = entity.isInWater()))
             shouldControl = verticalControl = PokecubeCore.core.getConfig().surfEnabled || shouldControl;
 
         if (waterSpeed) airSpeed = false;

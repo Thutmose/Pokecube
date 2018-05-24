@@ -2,13 +2,12 @@ package pokecube.core.ai.utils.pathing;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import pokecube.core.ai.utils.pathing.node.WalkNodeLadderProcessor;
 import thut.api.maths.Vector3;
 
-public class LadderWalkNavigator extends PathNavigate
+public class LadderWalkNavigator extends PathNavigate2
 {
     private final boolean canFly;
 

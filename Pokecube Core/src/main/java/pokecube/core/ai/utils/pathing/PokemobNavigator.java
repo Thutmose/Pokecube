@@ -6,8 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.pathfinding.FlyingNodeProcessor;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.pathfinding.PathNavigateFlying;
 import net.minecraft.pathfinding.SwimNodeProcessor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -25,7 +23,7 @@ import thut.api.maths.Vector3;
  * whether the pokemob can navigate, as well as checks to see if the pathing
  * should terminate early in certain situations, such as "low priority" paths
  * which are close enough to the end, like when a mob is just idling around. */
-public class PokemobNavigator extends PathNavigate
+public class PokemobNavigator extends PathNavigate2
 {
     private Vector3        v                 = Vector3.getNewVector();
     private Vector3        v1                = Vector3.getNewVector();
@@ -33,7 +31,7 @@ public class PokemobNavigator extends PathNavigate
     private boolean        canFly;
     private final IPokemob pokemob;
     private PokedexEntry   lastEntry;
-    private PathNavigate   wrapped;
+    private PathNavigate2  wrapped;
     private boolean        lastGroundedState = false;
 
     public PokemobNavigator(IPokemob pokemob, World world)
@@ -45,9 +43,27 @@ public class PokemobNavigator extends PathNavigate
         canDive = pokemob.swims();
     }
 
-    private PathNavigate makeSwimingNavigator()
+    @Override
+    public void updateCache()
+    {
+        if (wrapped != null) this.wrapped.updateCache();
+    }
+
+    @Override
+    public void onUpdateNavigation()
+    {
+        updateCache();
+        super.onUpdateNavigation();
+    }
+
+    private PathNavigate2 makeSwimingNavigator()
     {
         return new MultiNodeNavigator(entity, world, new SwimNodeProcessor(), new WalkNodeLadderProcessor(), canFly);
+    }
+
+    private PathNavigate2 makeFlyingNavigator()
+    {
+        return new MultiNodeNavigator(entity, world, new FlyingNodeProcessor(), new WalkNodeLadderProcessor(), canFly);
     }
 
     private void checkValues()
@@ -67,7 +83,7 @@ public class PokemobNavigator extends PathNavigate
             this.canDive = entry.swims();
             if (this.canDive && this.canFly) wrapped = new MultiNodeNavigator(entity, world, new FlyingNodeProcessor(),
                     makeSwimingNavigator().getNodeProcessor(), canFly);
-            if (this.canFly && !canDive) wrapped = new PathNavigateFlying(entity, world);
+            if (this.canFly && !canDive) wrapped = makeFlyingNavigator();
             else if (canDive) wrapped = makeSwimingNavigator();
             else
             {

@@ -32,14 +32,21 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.server.permission.IPermissionHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.context.PlayerContext;
+import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.events.SpawnEvent.SendOut;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.utils.Permissions;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -375,8 +382,42 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     {
         if (getEntityWorld().isRemote || isReleasing()) { return null; }
         IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), getEntityWorld());
+        Config config = PokecubeCore.core.getConfig();
+        // Check permissions
+        if (config.permsSendOut && shootingEntity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) shootingEntity;
+            IPermissionHandler handler = PermissionAPI.getPermissionHandler();
+            PlayerContext context = new PlayerContext(player);
+            boolean denied = false;
+            if (!handler.hasPermission(player.getGameProfile(), Permissions.SENDOUTPOKEMOB, context)) denied = true;
+            if (denied)
+            {
+                Tools.giveItem((EntityPlayer) shootingEntity, getItem());
+                this.setDead();
+                return null;
+            }
+        }
         if (entity1 != null)
         {
+            // Check permissions
+            if (config.permsSendOutSpecific && shootingEntity instanceof EntityPlayer)
+            {
+                PokedexEntry entry = entity1.getPokedexEntry();
+                EntityPlayer player = (EntityPlayer) shootingEntity;
+                IPermissionHandler handler = PermissionAPI.getPermissionHandler();
+                PlayerContext context = new PlayerContext(player);
+                boolean denied = false;
+                if (!handler.hasPermission(player.getGameProfile(), Permissions.SENDOUTSPECIFIC.get(entry), context))
+                    denied = true;
+                if (denied)
+                {
+                    Tools.giveItem((EntityPlayer) shootingEntity, getItem());
+                    this.setDead();
+                    return null;
+                }
+            }
+
             Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
             Vector3 dv = v1.set(motionX, motionY, motionZ);
             v = Vector3.getNextSurfacePoint(getEntityWorld(), v, dv, Math.max(2, dv.mag()));

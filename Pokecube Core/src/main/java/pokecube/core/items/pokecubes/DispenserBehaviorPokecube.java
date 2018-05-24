@@ -72,8 +72,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         {
             IPokecube cube = (IPokecube) stack.getItem();
             Vector3 direction = Vector3.getNewVector().set(dir);
-            cube.throwPokecube(source.getWorld(), player, stack, direction, 0.25f);
-            stack.splitStack(1);
+            if (cube.throwPokecube(source.getWorld(), player, stack, direction, 0.25f)) stack.splitStack(1);
         }
         return stack;
     }

@@ -100,51 +100,34 @@ public class ContainerDaycare extends Container
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
-        if (slotId < 0) return CompatWrapper.nullStack;
-        if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
-        {
-            ItemStack itemstack = CompatWrapper.nullStack;
-            Slot slot = inventorySlots.get(slotId);
-
-            if (slot != null && slot.getHasStack())
-            {
-                ItemStack itemstack1 = slot.getStack();
-                itemstack = itemstack1.copy();
-
-                if (slotId < 6)
-                {
-                    if (!mergeItemStack(itemstack1, 1, 37, true)) { return CompatWrapper.nullStack; }
-                }
-                else
-                {
-                    if (itemstack != null
-                            && !tile.isItemValidForSlot(36, itemstack1)) { return CompatWrapper.nullStack; }
-                    if (!mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
-                }
-
-                if (!CompatWrapper.isValid(itemstack1))
-                {
-                    slot.putStack(CompatWrapper.nullStack);
-                }
-                else
-                {
-                    slot.onSlotChanged();
-                }
-
-                if (CompatWrapper.getStackSize(itemstack1) != CompatWrapper.getStackSize(itemstack))
-                {
-                    // slot.onPickupFromSlot(itemstack1);
-                }
-                else
-                {
-                    return CompatWrapper.nullStack;
-                }
-            }
-
-            if (CompatWrapper.isValid(itemstack)) { return itemstack; }
-            return CompatWrapper.nullStack;
-        }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int index)
+    {
+        ItemStack itemstack = CompatWrapper.nullStack;
+        Slot slot = this.inventorySlots.get(index);
+        if (slot != null && slot.getHasStack())
+        {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+            if (index < 1)
+            {
+                if (!this.mergeItemStack(itemstack1, 1, this.inventorySlots.size(),
+                        false)) { return CompatWrapper.nullStack; }
+            }
+            else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
+            if (!CompatWrapper.isValid(itemstack1))
+            {
+                slot.putStack(CompatWrapper.nullStack);
+            }
+            else
+            {
+                slot.onSlotChanged();
+            }
+        }
+        return itemstack;
     }
 
     @Override

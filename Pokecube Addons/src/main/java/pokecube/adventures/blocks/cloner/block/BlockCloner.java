@@ -13,7 +13,6 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -397,12 +396,6 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
             if (entity instanceof EntityPlayer)
             {
                 EntityPlayer player = (EntityPlayer) entity;
-
-                if (player.getEntityWorld().isRemote)
-                {
-                    // This fixes jitter, need a better way to handle this.
-                    Minecraft.getMinecraft().gameSettings.viewBobbing = false;
-                }
                 if (Math.abs(player.motionY) < 0.1 && !player.capabilities.isFlying)
                 {
                     entity.onGround = true;

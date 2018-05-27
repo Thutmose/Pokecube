@@ -540,6 +540,6 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
         // Refresh the datamanager for evs
         setEVs(getEVs());
 
-        setSize(getSize());
+        setSize((float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
     }
 }

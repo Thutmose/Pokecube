@@ -75,6 +75,7 @@ public class GuiAnimate extends GuiScreen
         else if (gender[1].equalsIgnoreCase("f"))
         {
             sexe = IPokemob.FEMALE;
+            
         }
         if (button.id == 2)
         {
@@ -204,6 +205,7 @@ public class GuiAnimate extends GuiScreen
         {
             IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
             if (pokemob == null) return;
+            pokemob.onGenesChanged();
             PacketPokedex.updateWatchEntry(entry);
             if (button.id == 13)
             {

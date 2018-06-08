@@ -1512,23 +1512,12 @@ public class PokedexEntry
 
     public String getTexture(byte gender)
     {
-        return getTexture(gender, 0);
-    }
-
-    public String getTexture(byte gender, long time)
-    {
-        return getTexture(getTrimmedName(), gender, time);
-    }
-
-    public String getTexture(String original, byte gender, long time)
-    {
-        if (original == null) original = getTrimmedName();
+        String original = getTrimmedName();
         int index = gender == IPokemob.FEMALE && textureDetails[1] != null ? 1 : 0;
         String[] textureSuffixs = textureDetails[index];
-        long suffixIndex = ((time % textureSuffixs.length * 3) / textureSuffixs.length);
-        String suffix = textureSuffixs[(int) suffixIndex];
+        String suffix = textureSuffixs[0];
         String ret = original + suffix + ".png";
-        if (!ret.startsWith(texturePath)) ret = texturePath + ret;
+        if (!ret.contains(texturePath)) ret = texturePath + ret;
         ret = ret.toLowerCase(Locale.ENGLISH);
         return ret;
     }

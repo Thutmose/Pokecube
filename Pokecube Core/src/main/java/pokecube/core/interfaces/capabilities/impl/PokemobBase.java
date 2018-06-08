@@ -16,6 +16,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.properties.IGuardAICapability;
@@ -257,6 +258,10 @@ public abstract class PokemobBase implements IPokemob
     // Essential Capabilites Objects
     /** The IMobGenetics used to store our genes. */
     public IMobGenetics            genes;
+
+    /** Used to cache current texture for quicker lookups, array to include any
+     * animated textures */
+    protected ResourceLocation[]   textures;
 
     @Override
     public void setEntity(EntityLiving entityIn)

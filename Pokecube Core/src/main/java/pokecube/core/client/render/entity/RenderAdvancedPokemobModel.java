@@ -136,6 +136,17 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             if (render.model_holder != null)
             {
                 ret = render.model_holder.texture;
+
+                if (ret != null && pokemob != null)
+                {
+                    PokedexEntry entry = pokemob.getPokedexEntry();
+                    if (ret.equals(new ResourceLocation(entry.getModId(),
+                            entry.texturePath + entry.getTrimmedName() + ".png")))
+                    {
+                        ret = null;
+                        render.model_holder.texture = null;
+                    }
+                }
             }
         }
         if (ret == null) ret = RenderPokemobs.getInstance().getEntityTexturePublic(entity);

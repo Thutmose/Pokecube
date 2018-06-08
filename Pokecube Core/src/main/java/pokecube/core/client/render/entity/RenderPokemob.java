@@ -325,7 +325,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         if (transformed != null)
         {
             int num = mob.getPokedexNb();
-
             if (num == 132)
             {
                 int rngval = entity.getRNGValue();

@@ -1,8 +1,11 @@
 package pokecube.core.interfaces.capabilities.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
@@ -13,7 +16,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Matrix3;
@@ -22,7 +27,8 @@ import thut.lib.CompatWrapper;
 
 public abstract class PokemobAI extends PokemobEvolves
 {
-    private boolean[] routineStates = new boolean[AIRoutine.values().length];
+    private boolean[]                               routineStates = new boolean[AIRoutine.values().length];
+    private Map<ResourceLocation, ResourceLocation> shinyTexs     = Maps.newHashMap();
 
     @Override
     public float getDirectionPitch()
@@ -59,7 +65,32 @@ public abstract class PokemobAI extends PokemobEvolves
     @SideOnly(Side.CLIENT)
     public ResourceLocation getTexture()
     {
-        return modifyTexture(null);
+        if (this.textures != null)
+        {
+            PokedexEntry entry = getPokedexEntry();
+            int index = getSexe() == IPokemob.FEMALE && entry.textureDetails[1] != null ? 1 : 0;
+            boolean shiny = isShiny();
+            int effects = entry.textureDetails[index].length;
+            int texIndex = ((getEntity().ticksExisted % effects * 3) / effects) + (shiny ? effects : 0);
+            ResourceLocation texture = textures[texIndex];
+            return texture;
+        }
+        else
+        {
+            String domain = getPokedexEntry().getModId();
+            int index = getSexe() == IPokemob.FEMALE && entry.textureDetails[1] != null ? 1 : 0;
+            int effects = entry.textureDetails[index].length;
+            int size = 2 * (effects);
+            textures = new ResourceLocation[size];
+            for (int i = 0; i < effects; i++)
+            {
+                textures[i] = new ResourceLocation(domain,
+                        entry.texturePath + entry.getTrimmedName() + entry.textureDetails[index][i] + ".png");
+                textures[i + effects] = new ResourceLocation(domain,
+                        entry.texturePath + entry.getTrimmedName() + entry.textureDetails[index][i] + "s.png");
+            }
+            return getTexture();
+        }
     }
 
     @Override
@@ -72,14 +103,30 @@ public abstract class PokemobAI extends PokemobEvolves
     @SideOnly(Side.CLIENT)
     public ResourceLocation modifyTexture(ResourceLocation texture)
     {
-        String domain = texture == null ? getPokedexEntry().getModId() : texture.getResourceDomain();
-        String texName = texture == null ? null : texture.getResourcePath();
-        if (texName != null && texName.endsWith(".png")) texName = texName.substring(0, texName.length() - 4);
-        texName = this.getPokedexEntry().getTexture(texName, this.getSexe(), getEntity().ticksExisted);
-        texture = new ResourceLocation(domain, texName);
-        if (!isShiny()) return texture;
-        String args = texName.substring(0, texName.length() - 4);
-        return new ResourceLocation(domain, args + "s.png");
+        if (texture == null) { return getTexture(); }
+        if (!texture.getResourcePath().contains("entity/"))
+        {
+            String path = getPokedexEntry().texturePath + texture.getResourcePath();
+            if (!path.endsWith(".png")) path = path + ".png";
+            texture = new ResourceLocation(texture.getResourceDomain(), path);
+        }
+        if (isShiny())
+        {
+            if (!shinyTexs.containsKey(texture))
+            {
+                String domain = texture.getResourceDomain();
+                String texName = texture.getResourcePath();
+                texName = texName.replace(".png", "s.png");
+                ResourceLocation modified = new ResourceLocation(domain, texName);
+                shinyTexs.put(texture, modified);
+                return modified;
+            }
+            else
+            {
+                texture = shinyTexs.get(texture);
+            }
+        }
+        return texture;
     }
 
     public List<AxisAlignedBB> getTileCollsionBoxes()

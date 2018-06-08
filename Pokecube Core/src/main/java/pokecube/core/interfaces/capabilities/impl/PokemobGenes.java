@@ -516,6 +516,9 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     @Override
     public void onGenesChanged()
     {
+        // Reset this incase gender or shininess changed..
+        this.textures = null;
+
         genesSpecies = null;
         getPokedexEntry();
         genesSize = null;

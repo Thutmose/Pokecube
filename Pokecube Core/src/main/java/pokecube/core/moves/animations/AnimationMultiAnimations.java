@@ -2,14 +2,21 @@ package pokecube.core.moves.animations;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.IWorldEventListener;
+import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.database.moves.json.JsonMoves.AnimationJson;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.presets.Thunder;
 
 public class AnimationMultiAnimations extends MoveAnimationBase
@@ -26,8 +33,14 @@ public class AnimationMultiAnimations extends MoveAnimationBase
 
     public static class WrappedAnimation
     {
-        IMoveAnimation wrapped;
-        int            start;
+        IMoveAnimation   wrapped;
+        ResourceLocation sound;
+        SoundEvent       soundEvent;
+        boolean          soundSource = false;
+        boolean          soundTarget = false;
+        float            volume      = 1;
+        float            pitch       = 1;
+        int              start;
     }
 
     List<WrappedAnimation> components      = Lists.newArrayList();
@@ -51,6 +64,14 @@ public class AnimationMultiAnimations extends MoveAnimationBase
             }
             duration = Math.max(duration, start + dur);
             WrappedAnimation wrapped = new WrappedAnimation();
+            if (anim.sound != null)
+            {
+                wrapped.sound = new ResourceLocation(anim.sound);
+                wrapped.soundSource = anim.soundSource != null ? anim.soundSource : false;
+                wrapped.soundTarget = anim.soundTarget != null ? anim.soundTarget : true;
+                wrapped.pitch = anim.pitch != null ? anim.pitch : 1;
+                wrapped.volume = anim.volume != null ? anim.volume : 1;
+            }
             wrapped.wrapped = animation;
             wrapped.start = start;
             components.add(wrapped);
@@ -104,6 +125,47 @@ public class AnimationMultiAnimations extends MoveAnimationBase
             if (toRun.start > tick) continue;
             info.currentTick = tick - toRun.start;
             toRun.wrapped.spawnClientEntities(info);
+            sound:
+            if (info.currentTick == 0 && toRun.sound != null)
+            {
+                World world = PokecubeCore.getWorld();
+                if (toRun.soundEvent == null)
+                {
+                    toRun.soundEvent = SoundEvent.REGISTRY.getObject(toRun.sound);
+                    if (toRun.soundEvent == null)
+                    {
+                        PokecubeMod.log(Level.WARNING, "No Registered Sound for " + toRun.sound);
+                        toRun.sound = null;
+                        break sound;
+                    }
+                }
+                if (toRun.soundSource)
+                {
+                    if (info.source != null)
+                    {
+                        world.playSound(info.source.x, info.source.y, info.source.z, toRun.soundEvent,
+                                SoundCategory.HOSTILE, toRun.volume, toRun.pitch, false);
+                    }
+                    else if (info.attacker != null)
+                    {
+                        world.playSound(info.attacker.posX, info.attacker.posY, info.attacker.posZ, toRun.soundEvent,
+                                SoundCategory.HOSTILE, toRun.volume, toRun.pitch, false);
+                    }
+                }
+                if (toRun.soundTarget)
+                {
+                    if (info.target != null)
+                    {
+                        world.playSound(info.target.x, info.target.y, info.target.z, toRun.soundEvent,
+                                SoundCategory.HOSTILE, toRun.volume, toRun.pitch, false);
+                    }
+                    else if (info.attacked != null)
+                    {
+                        world.playSound(info.attacked.posX, info.attacked.posY, info.attacked.posZ, toRun.soundEvent,
+                                SoundCategory.HOSTILE, toRun.volume, toRun.pitch, false);
+                    }
+                }
+            }
         }
     }
 

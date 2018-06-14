@@ -560,7 +560,7 @@ public class CommonProxy implements IGuiHandler
             }
             catch (JsonSyntaxException | JsonIOException | FileNotFoundException e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.WARNING, "Error with cache " + cacheFile, e);
             }
         }
         return new CachedLocs(modid);
@@ -594,7 +594,7 @@ public class CommonProxy implements IGuiHandler
         }
         catch (UnsupportedEncodingException e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.WARNING, "Error with model check " + modid + " " + entry, e);
         }
         cached.has = ret.clone();
         for (String file : files)

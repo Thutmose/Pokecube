@@ -46,6 +46,11 @@ public class JsonMoves
         public String  preset;
         public String  duration  = "5";
         public String  starttick = "0";
+        public String  sound;
+        public Boolean soundSource;
+        public Boolean soundTarget;
+        public Float   volume;
+        public Float   pitch;
         public boolean applyAfter;
 
         @Override

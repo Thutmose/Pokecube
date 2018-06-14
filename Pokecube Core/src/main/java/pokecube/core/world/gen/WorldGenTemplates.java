@@ -179,6 +179,7 @@ public class WorldGenTemplates implements IWorldGenerator
         public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
                 IChunkProvider chunkProvider)
         {
+            if (!SpawnHandler.canSpawnInWorld(world)) return;
             setTemplate(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
             if (templates.isEmpty()) return;
             TemplateSet[] arr = templates.toArray(new TemplateSet[templates.size()]);

@@ -104,10 +104,15 @@ public class LogicMiscUpdate extends LogicBase
                 }
             }
         }
+        int id = pokemob.getTargetID();
+
+        if (entity.getEntityWorld().isRemote) if (id <= 0 && entity.getAttackTarget() != null)
+        {
+            pokemob.setTargetID(entity.getAttackTarget().entityId);
+        }
 
         if (!entity.getEntityWorld().isRemote) return;
 
-        int id = pokemob.getTargetID();
         if (id >= 0 && entity.getAttackTarget() == null)
         {
             entity.setAttackTarget((EntityLivingBase) PokecubeMod.core.getEntityProvider().getEntity(world, id, false));

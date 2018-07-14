@@ -125,7 +125,7 @@ public class ContainerPokemob extends Container
     public boolean canInteractWith(EntityPlayer p_75145_1_)
     {
         return this.pokemobInv.isUsableByPlayer(p_75145_1_) && this.pokemob.getEntity().isEntityAlive()
-                && this.pokemob.getEntity().getDistanceToEntity(p_75145_1_) < 8.0F;
+                && this.pokemob.getEntity().getDistance(p_75145_1_) < 8.0F;
     }
 
     /** Called when the container is closed. */

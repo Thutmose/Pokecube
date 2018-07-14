@@ -47,7 +47,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (this.getAttackTarget() != null)
         {
-            float distanceToEntity = this.getAttackTarget().getDistanceToEntity(this);
+            float distanceToEntity = this.getAttackTarget().getDistance(this);
             attackEntityAsPokemob(par1Entity, distanceToEntity);
         }
         return super.attackEntityAsMob(par1Entity);

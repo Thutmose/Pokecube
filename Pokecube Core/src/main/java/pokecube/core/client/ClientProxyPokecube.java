@@ -361,7 +361,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor()
         {
             @Override
-            public int getColorFromItemstack(ItemStack stack, int tintIndex)
+            public int colorMultiplier(ItemStack stack, int tintIndex)
             {
                 PokedexEntry entry = ItemPokemobEgg.getEntry(stack);
                 if (entry != null)

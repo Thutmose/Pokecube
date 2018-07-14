@@ -393,7 +393,7 @@ public class EditTrainerPage extends ListPage
         RenderHelper.enableStandardItemLighting();
         float turn = entity.ticksExisted + partialTicks - entity.renderYawOffset;
         GL11.glRotatef(turn, 0.0F, 1.0F, 0.0F);
-        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
+        Minecraft.getMinecraft().getRenderManager().renderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
         GL11.glPopMatrix();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();

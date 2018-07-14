@@ -65,7 +65,7 @@ public class AIGuardEgg extends AIBase
     public void run()
     {
         pokemob.resetLoveStatus();
-        if (entity.getDistanceSqToEntity(egg) < 4) return;
+        if (entity.getDistanceSq(egg) < 4) return;
         Path path = entity.getNavigator().getPathToEntityLiving(egg);
         this.addEntityPath(entity, path, pokemob.getMovementSpeed());
     }

@@ -233,7 +233,7 @@ public class AIBattle extends AITrainerBase
 
         // Check if in range, if too far, target has run away, so forget about
         // it.
-        double distance = entity.getDistanceSqToEntity(trainer.getTarget());
+        double distance = entity.getDistanceSq(trainer.getTarget());
         if (distance > 1024)
         {
             trainer.setTarget(null);

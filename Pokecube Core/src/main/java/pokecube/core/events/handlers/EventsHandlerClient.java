@@ -198,7 +198,7 @@ public class EventsHandlerClient
         long time = Minecraft.getSystemTime();
         if (rotates) GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
         RenderHelper.enableStandardItemLighting();
-        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, 1.5F, false);
+        Minecraft.getMinecraft().getRenderManager().renderEntity(entity, 0, 0, 0, 0, 1.5F, false);
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
         GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
@@ -241,7 +241,7 @@ public class EventsHandlerClient
         {
             IPokemob mob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             if (mob != null && !(mob.getEntity().isDead) && mob.getEntity().addedToChunk && event.player
-                    .getDistanceToEntity(mob.getEntity()) > PokecubeMod.core.getConfig().autoRecallDistance)
+                    .getDistance(mob.getEntity()) > PokecubeMod.core.getConfig().autoRecallDistance)
             {
                 mob.returnToPokecube();
             }

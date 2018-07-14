@@ -147,7 +147,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 
                     if (source != DamageSource.DROWN)
                     {
-                        this.setBeenAttacked();
+                        this.markVelocityChanged();
                     }
 
                     if (entity != null)

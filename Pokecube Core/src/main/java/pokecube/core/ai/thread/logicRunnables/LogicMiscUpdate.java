@@ -352,7 +352,7 @@ public class LogicMiscUpdate extends LogicBase
         }
         if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && !entity.getNavigator().noPath())
         {
-            entity.getNavigator().clearPathEntity();
+            entity.getNavigator().clearPath();
         }
         if (pokemob.getPokemonAIState(IMoveConstants.PATHING) && entity.getNavigator().noPath() && pathTimer++ > 10)
         {

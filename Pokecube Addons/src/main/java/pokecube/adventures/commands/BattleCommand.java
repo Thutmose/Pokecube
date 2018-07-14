@@ -42,7 +42,7 @@ public class BattleCommand extends CommandBase
                     public boolean apply(EntityLiving input)
                     {
                         return input.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null)
-                                && input.getDistanceSqToEntity(player) < NEAR;
+                                && input.getDistanceSq(player) < NEAR;
                     }
                 });
         EntityLiving target = null;
@@ -50,7 +50,7 @@ public class BattleCommand extends CommandBase
         for (EntityLiving e : trainers)
         {
             double d;
-            if ((d = e.getDistanceSqToEntity(player)) < closest)
+            if ((d = e.getDistanceSq(player)) < closest)
             {
                 closest = (int) d;
                 target = e;

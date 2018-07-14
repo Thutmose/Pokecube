@@ -384,7 +384,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
             entity.limbSwingAmount = 0;
             PokeType flying = PokeType.getType("flying");
             entity.onGround = !pokemob.isType(flying);
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
+            Minecraft.getMinecraft().getRenderManager().renderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_COLOR_MATERIAL);
             GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);

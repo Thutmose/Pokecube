@@ -200,7 +200,7 @@ public class GuiTradingTable extends GuiContainer
         PokeType flying = PokeType.getType("flying");
         entity.onGround = !pokemob.isType(flying);
 
-        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
+        Minecraft.getMinecraft().getRenderManager().renderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
 
         GL11.glPopMatrix();
         EntityLivingBase owner = pokemob.getPokemonOwner();
@@ -215,7 +215,7 @@ public class GuiTradingTable extends GuiContainer
 
             GlStateManager.rotate(-shift * 20, 0, 1, 0);
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(owner, 0, 0, 0, 0, POKEDEX_RENDER, false);
+            Minecraft.getMinecraft().getRenderManager().renderEntity(owner, 0, 0, 0, 0, POKEDEX_RENDER, false);
             GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
         }
 

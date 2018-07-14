@@ -436,7 +436,7 @@ public abstract class AIBase implements IAIRunnable
             List<?> temp = new ArrayList<Object>(entities);
             for (Object o : temp)
             {
-                if (source.getDistanceSqToEntity((Entity) o) < dsq)
+                if (source.getDistanceSq((Entity) o) < dsq)
                 {
                     list.add((EntityPlayer) o);
                 }
@@ -472,7 +472,7 @@ public abstract class AIBase implements IAIRunnable
                 }
                 if (correctClass)
                 {
-                    if (source.getDistanceSqToEntity((Entity) o) < dsq)
+                    if (source.getDistanceSq((Entity) o) < dsq)
                     {
                         list.add(o);
                     }

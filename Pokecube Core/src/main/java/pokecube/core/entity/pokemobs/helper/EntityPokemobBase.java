@@ -383,10 +383,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.posZ += z;
             this.setPosition(posX, posY, posZ);
 
-            this.isCollidedHorizontally = x0 != x || z0 != z;
-            this.isCollidedVertically = y0 != y;
+            this.collidedHorizontally = x0 != x || z0 != z;
+            this.collidedVertically = y0 != y;
             this.onGround = y0 != y && y0 <= 0.0D;
-            this.isCollided = this.isCollidedHorizontally || this.isCollidedVertically;
+            this.collided = this.collidedHorizontally || this.collidedVertically;
             BlockPos blockpos = getPosition().down();
             IBlockState state = getEntityWorld().getBlockState(blockpos);
             Block block1 = state.getBlock();

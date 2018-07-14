@@ -73,7 +73,7 @@ public class LogicFloatFlySwim extends LogicBase
                     double width = Math.max(0.5, pokemob.getSize() * entry.length / 4);
                     if (dhs < width * width && dvs <= floatHeight * floatHeight)
                     {
-                        entity.getNavigator().clearPathEntity();
+                        entity.getNavigator().clearPath();
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class LogicFloatFlySwim extends LogicBase
                 double width = Math.max(0.5, pokemob.getSize() * entry.length / 4);
                 if (dhs < width * width && dvs <= floatHeight * floatHeight)
                 {
-                    entity.getNavigator().clearPathEntity();
+                    entity.getNavigator().clearPath();
                 }
             }
         }

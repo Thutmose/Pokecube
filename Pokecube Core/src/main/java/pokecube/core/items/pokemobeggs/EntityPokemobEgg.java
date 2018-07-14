@@ -103,7 +103,7 @@ public class EntityPokemobEgg extends EntityLiving
             }
         }
         if (this.isEntityInvulnerable(source)) { return false; }
-        this.setBeenAttacked();
+        this.markVelocityChanged();
         return false;
     }
 

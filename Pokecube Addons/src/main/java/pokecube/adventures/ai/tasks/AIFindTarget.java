@@ -97,7 +97,7 @@ public class AIFindTarget extends AITrainerBase
             for (Object o : targets)
             {
                 EntityLivingBase e = (EntityLivingBase) o;
-                double dist = e.getDistanceToEntity(entity);
+                double dist = e.getDistance(entity);
                 // Only visible or valid targets.
                 if (!matcher.apply(e) && dist < sight)
                 {

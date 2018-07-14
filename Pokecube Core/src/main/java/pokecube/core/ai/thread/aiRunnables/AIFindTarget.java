@@ -189,7 +189,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             IPokemob newtarget = null;
             for (IPokemob e : pokemon)
             {
-                double dist = e.getEntity().getDistanceSqToEntity(evt.getEntityLiving());
+                double dist = e.getEntity().getDistanceSq(evt.getEntityLiving());
                 if (e.getEntity() == evt.getEntityLiving()) continue;
                 if (dist < closest
                         && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING))
@@ -394,7 +394,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             Vector3 here = v1.set(entity, true);
             for (EntityLivingBase e : ret)
             {
-                double dist = e.getDistanceSqToEntity(entity);
+                double dist = e.getDistanceSq(entity);
                 v.set(e, true);
                 if (dist < closest && here.isVisible(world, v))
                 {
@@ -492,7 +492,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                 boolean stayOrGuard = pokemob.getPokemonAIState(IMoveConstants.GUARDING)
                         || pokemob.getPokemonAIState(IMoveConstants.STAYING);
                 if (owner != null && !stayOrGuard
-                        && owner.getDistanceToEntity(entity) > PokecubeMod.core.getConfig().chaseDistance)
+                        && owner.getDistance(entity) > PokecubeMod.core.getConfig().chaseDistance)
                 {
                     addTargetInfo(entity, null);
                     entityTarget = null;

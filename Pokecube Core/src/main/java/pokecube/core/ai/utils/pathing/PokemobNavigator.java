@@ -92,7 +92,7 @@ public class PokemobNavigator extends PathNavigate2
         }
         wrapped.getNodeProcessor().setCanEnterDoors(true);
         wrapped.getNodeProcessor().setCanSwim(true);
-        wrapped.getNodeProcessor().initProcessor(world, entity);
+        wrapped.getNodeProcessor().init(world, entity);
         wrapped.setSpeed(speed);
     }
 

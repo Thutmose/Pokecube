@@ -1201,7 +1201,7 @@ public class EventsHandler
             {
                 attacker.eat(pokemob.getAttackTarget());
                 attacker.setPokemonAIState(IMoveConstants.HUNTING, false);
-                pokemob.getNavigator().clearPathEntity();
+                pokemob.getNavigator().clearPath();
             }
         }
         else

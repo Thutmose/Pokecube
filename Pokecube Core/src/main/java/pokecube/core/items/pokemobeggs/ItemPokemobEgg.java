@@ -229,7 +229,7 @@ public class ItemPokemobEgg extends Item
 
                 if (t1 != closestTo && EntitySelectors.NOT_SPECTATING.apply(t1))
                 {
-                    double d1 = closestTo.getDistanceSqToEntity(t1);
+                    double d1 = closestTo.getDistanceSq(t1);
 
                     if (d1 <= d0)
                     {

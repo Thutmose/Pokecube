@@ -25,7 +25,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
 
         EntityLivingBase player = Minecraft.getMinecraft().player;
         if (!entity.addedToChunk || entity.getRidingEntity() == player) return false;
-        float d = entity.getDistanceToEntity(player);
+        float d = entity.getDistance(player);
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         boolean tameFactor = pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !pokemob.getPokemonAIState(IMoveConstants.STAYING);

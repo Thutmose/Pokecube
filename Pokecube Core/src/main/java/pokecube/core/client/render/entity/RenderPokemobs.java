@@ -121,7 +121,7 @@ public class RenderPokemobs extends RenderPokemob
                 }
                 EntityTools.copyEntityData(to, from);
                 EntityTools.copyEntityTransforms(to, entity);
-                Minecraft.getMinecraft().getRenderManager().doRenderEntity(to, x, y, z, par8, par9, false);
+                Minecraft.getMinecraft().getRenderManager().renderEntity(to, x, y, z, par8, par9, false);
             }
             catch (Exception e1)
             {

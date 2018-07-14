@@ -108,7 +108,7 @@ public class AIFollowOwner extends AIBase
         {
             return false;
         }
-        else if (pathing && this.thePet.getDistanceSqToEntity(entitylivingbase) > this.maxDist * this.maxDist)
+        else if (pathing && this.thePet.getDistanceSq(entitylivingbase) > this.maxDist * this.maxDist)
         {
             return true;
         }
@@ -116,7 +116,7 @@ public class AIFollowOwner extends AIBase
         {
             return false;
         }
-        else if (this.thePet.getDistanceSqToEntity(entitylivingbase) < this.minDist * this.minDist)
+        else if (this.thePet.getDistanceSq(entitylivingbase) < this.minDist * this.minDist)
         {
             return false;
         }

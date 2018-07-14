@@ -172,7 +172,7 @@ public class RenderHealth
             entity = ridingStack.pop();
             processing:
             {
-                float distance = passedEntity.getDistanceToEntity(viewPoint);
+                float distance = passedEntity.getDistance(viewPoint);
                 if (distance > config.maxDistance || !passedEntity.canEntityBeSeen(viewPoint) || entity.isInvisible())
                     break processing;
 

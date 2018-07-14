@@ -204,7 +204,7 @@ public class AIMate extends AIBase
 
             boolean validMate = pokemob.canMate((EntityAnimal) otherPokemob.getEntity());
             if (!validMate
-                    || entity.getDistanceSqToEntity(otherPokemob.getEntity()) > searchingLoveDist * searchingLoveDist)
+                    || entity.getDistanceSq(otherPokemob.getEntity()) > searchingLoveDist * searchingLoveDist)
                 continue;
             if (!Vector3.isVisibleEntityFromEntity(entity, otherPokemob.getEntity())
                     || otherPokemob.getPokemonAIState(IMoveConstants.ANGRY))

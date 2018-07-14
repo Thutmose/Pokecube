@@ -60,7 +60,7 @@ public class PokemobAIHurt extends EntityAIBase
      * target. */
     private boolean canEasilyReach(EntityLivingBase target)
     {
-        if (this.taskOwner.getDistanceSqToEntity(target) > 16) return false;
+        if (this.taskOwner.getDistanceSq(target) > 16) return false;
 
         this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
         Path path = this.taskOwner.getNavigator().getPathToEntityLiving(target);
@@ -91,7 +91,7 @@ public class PokemobAIHurt extends EntityAIBase
         {
             double d0 = this.getTargetDistance();
 
-            if (this.taskOwner.getDistanceSqToEntity(entitylivingbase) > d0 * d0) { return false; }
+            if (this.taskOwner.getDistanceSq(entitylivingbase) > d0 * d0) { return false; }
             if (this.shouldCheckSight)
             {
                 if (this.taskOwner.getEntitySenses().canSee(entitylivingbase))

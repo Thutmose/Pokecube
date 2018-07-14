@@ -366,7 +366,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                     this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
 
-                    if (this.isCollidedHorizontally && this.isOnLadder())
+                    if (this.collidedHorizontally && this.isOnLadder())
                     {
                         this.motionY = 0.2D;
                     }
@@ -418,7 +418,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         this.motionY -= 0.02D;
                     }
 
-                    if (this.isCollidedHorizontally && this.isOffsetPositionInLiquid(this.motionX,
+                    if (this.collidedHorizontally && this.isOffsetPositionInLiquid(this.motionX,
                             this.motionY + 0.6000000238418579D - this.posY + d4, this.motionZ))
                     {
                         this.motionY = 0.30000001192092896D;
@@ -459,7 +459,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     this.motionY -= 0.02D;
                 }
 
-                if (!isWaterMob && this.isCollidedHorizontally && this.isOffsetPositionInLiquid(this.motionX,
+                if (!isWaterMob && this.collidedHorizontally && this.isOffsetPositionInLiquid(this.motionX,
                         this.motionY + 0.6000000238418579D - this.posY + d0, this.motionZ))
                 {
                     this.motionY = 0.30000001192092896D;

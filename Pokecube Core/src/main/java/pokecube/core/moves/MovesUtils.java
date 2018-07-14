@@ -731,7 +731,7 @@ public class MovesUtils implements IMoveConstants
             {
                 return false;
             }
-            else attackedPokemob.getEntity().getNavigator().clearPathEntity();
+            else attackedPokemob.getEntity().getNavigator().clearPath();
             return true;
         }
         else if (attacked instanceof EntityLivingBase)
@@ -782,9 +782,9 @@ public class MovesUtils implements IMoveConstants
         if (targets != null) for (Entity e : targets)
         {
             if (!matcher.apply(e)) continue;
-            if (attacker.getDistanceToEntity(e) < closest)
+            if (attacker.getDistance(e) < closest)
             {
-                closest = attacker.getDistanceToEntity(e);
+                closest = attacker.getDistance(e);
                 target = e;
             }
         }

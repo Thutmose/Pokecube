@@ -140,7 +140,7 @@ public class AIHungry extends AIBase
                         Path path = entity.getNavigator().getPathToEntityLiving(hook);
                         addEntityPath(entity, path, moveSpeed);
                         addTargetInfo(entity, hook);
-                        if (entity.getDistanceSqToEntity(hook) < 2)
+                        if (entity.getDistanceSq(hook) < 2)
                         {
                             hook.caughtEntity = entity;
                             pokemob.eat(hook);

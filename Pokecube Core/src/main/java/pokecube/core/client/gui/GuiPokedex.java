@@ -503,7 +503,7 @@ public class GuiPokedex extends GuiScreen
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             RenderHelper.enableStandardItemLighting();
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, 0, false);
+            Minecraft.getMinecraft().getRenderManager().renderEntity(entity, 0, 0, 0, 0, 0, false);
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();
             GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);

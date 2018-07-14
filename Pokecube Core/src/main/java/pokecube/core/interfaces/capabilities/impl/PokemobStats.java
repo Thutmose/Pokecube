@@ -115,6 +115,7 @@ public abstract class PokemobStats extends PokemobGenes
                     }
                 }
             }
+            else getMoveStats().exp = old;
         }
         PacketSyncExp.sendUpdate(ret);
         return ret;

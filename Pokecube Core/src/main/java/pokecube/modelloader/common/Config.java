@@ -59,6 +59,8 @@ public class Config extends ConfigBase
             {
                 int prioro1 = Integer.MAX_VALUE;
                 int prioro2 = Integer.MIN_VALUE;
+                if (o2.equals("pokecube_mno")) return Integer.MIN_VALUE;
+                if (o1.equals("pokecube_mno")) return Integer.MAX_VALUE;
                 for (int i = 0; i < priorityOrder.length; i++)
                 {
                     if (o1.equals(priorityOrder[i])) prioro1 = i;

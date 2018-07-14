@@ -3,7 +3,6 @@ package pokecube.modelloader.client;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -62,16 +61,7 @@ public class ClientProxy extends CommonProxy
         TabulaPackLoader.clear();
         List<String> modList = Lists.newArrayList(modelProviders.keySet());
         // Sort to prioritise default mod
-        Collections.sort(modList, new Comparator<String>()
-        {
-            @Override
-            public int compare(String o1, String o2)
-            {
-                if (o1.equals(PokecubeMod.defaultMod)) return Integer.MAX_VALUE;
-                else if (o2.equals(PokecubeMod.defaultMod)) return Integer.MIN_VALUE;
-                return o1.compareTo(o2);
-            }
-        });
+        Collections.sort(modList, Config.instance.modIdComparator);
 
         ProgressBar bar = ProgressManager.push("Model Locations", modList.size());
         for (String mod : modList)
@@ -197,16 +187,7 @@ public class ClientProxy extends CommonProxy
         modModels.clear();
         TabulaPackLoader.remove(model);
         List<String> modList = Lists.newArrayList(modelProviders.keySet());
-        Collections.sort(modList, new Comparator<String>()
-        {
-            @Override
-            public int compare(String o1, String o2)
-            {
-                if (o1.equals(PokecubeMod.defaultMod)) return Integer.MAX_VALUE;
-                else if (o2.equals(PokecubeMod.defaultMod)) return Integer.MIN_VALUE;
-                return o1.compareTo(o2);
-            }
-        });
+        Collections.sort(modList, Config.instance.modIdComparator);
         boolean found = false;
         for (String mod : modList)
         {

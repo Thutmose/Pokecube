@@ -41,7 +41,7 @@ public class NBTStringHelper {
 		switch (type)
 		{
 		case 0:
-			return new NBTTagEnd();
+			return new NBTTagEnd2();
 		case 1:
 			return new NBTTagByte((byte) 0);
 		case 2:
@@ -135,5 +135,12 @@ public class NBTStringHelper {
 		default:
 			return "Unknown";
 		}
+	}
+	
+	private static class NBTTagEnd2 extends NBTTagEnd
+	{
+	    public NBTTagEnd2()
+        {
+        }
 	}
 }

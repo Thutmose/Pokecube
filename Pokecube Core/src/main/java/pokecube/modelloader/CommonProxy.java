@@ -16,7 +16,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -455,16 +454,7 @@ public class CommonProxy implements IGuiHandler
 
         List<String> modList = Lists.newArrayList(mobProviders.keySet());
         // Sort to prioritise default mod
-        Collections.sort(modList, new Comparator<String>()
-        {
-            @Override
-            public int compare(String o1, String o2)
-            {
-                if (o1.equals(PokecubeMod.defaultMod)) return Integer.MAX_VALUE;
-                else if (o2.equals(PokecubeMod.defaultMod)) return Integer.MIN_VALUE;
-                return o1.compareTo(o2);
-            }
-        });
+        Collections.sort(modList, Config.instance.modIdComparator);
         xmlFiles.clear();
         for (String modId : modList)
         {

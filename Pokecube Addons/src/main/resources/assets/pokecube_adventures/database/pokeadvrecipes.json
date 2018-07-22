@@ -1,0 +1,608 @@
+{
+  "recipes": [
+    {
+      "shapeless": false,
+      "handler": "dna",
+      "map": "",
+      "inputs": [
+        {
+          "key": "",
+          "values": {
+            "d": "1",
+            "id": "pokecube:fossil"
+          }
+        }
+      ],
+      "values": {
+        "pokemonE": "Genesect",
+        "lvl": "15",
+        "cost": "10000",
+        "chance": "0.1",
+        "remain": "0",
+        "priority": "-1"
+      }
+    },
+    {
+      "shapeless": false,
+      "handler": "dna",
+      "map": "",
+      "inputs": [
+        {
+          "key": "",
+          "values": {
+            "id": "pokecube_adventures:mewhair"
+          }
+        }
+      ],
+      "values": {
+        "pokemonE": "Mew",
+        "lvl": "15",
+        "cost": "10000",
+        "chance": "0.1",
+        "remain": "0",
+        "priority": "-1"
+      }
+    },
+    {
+      "shapeless": false,
+      "handler": "dna",
+      "map": "",
+      "inputs": [
+        {
+          "key": "",
+          "values": {
+            "id": "pokecube_adventures:mewhair"
+          }
+        }
+      ],
+      "values": {
+        "pokemonE": "Mewtwo",
+        "lvl": "15",
+        "cost": "10000",
+        "chance": "0.9",
+        "remain": "0",
+        "priority": "-1"
+      }
+    },
+    {
+      "shapeless": false,
+      "handler": "selector",
+      "map": "",
+      "inputs": [
+        {
+          "key": "",
+          "values": {
+            "id": "minecraft:nether_star"
+          }
+        }
+      ],
+      "values": {
+        "dna": "0.0",
+        "selector": "0.25"
+      }
+    },
+    {
+      "shapeless": false,
+      "handler": "cloner",
+      "map": "",
+      "inputs": [
+        {
+          "key": "",
+          "values": {
+            "id": "pokecube_adventures:mewhair"
+          }
+        },
+        {
+          "key": "",
+          "values": {
+            "d": "32767",
+            "id": "pokecube:pokemobegg"
+          }
+        },
+        {
+          "key": "",
+          "values": {
+            "d": "32767",
+            "id": "minecraft:potion"
+          }
+        }
+      ],
+      "values": {
+        "lvl": "15",
+        "cost": "10000",
+        "pokemon": "Ditto",
+        "remain": "0",
+        "priority": "-1"
+      }
+    },
+    {
+      "shapeless": false,
+      "handler": "cloner",
+      "map": "",
+      "inputs": [
+        {
+          "key": "",
+          "values": {
+            "id": "pokecube_adventures:mewhair"
+          }
+        },
+        {
+          "key": "",
+          "values": {
+            "d": "32767",
+            "id": "pokecube:pokemobegg"
+          }
+        },
+        {
+          "key": "",
+          "values": {
+            "id": "minecraft:potion",
+            "tag": "{Potion:\"minecraft:strong_regeneration\"}"
+          },
+          "tag": "{Potion:\"minecraft:strong_regeneration\"}"
+        }
+      ],
+      "values": {
+        "lvl": "70",
+        "cost": "30000",
+        "pokemon": "Mewtwo"
+      }
+    },
+    {
+      "shapeless": false,
+      "handler": "cloner",
+      "map": "",
+      "inputs": [
+        {
+          "key": "",
+          "values": {
+            "id": "minecraft:redstone_block"
+          }
+        },
+        {
+          "key": "",
+          "values": {
+            "id": "minecraft:iron_block"
+          }
+        },
+        {
+          "key": "",
+          "values": {
+            "id": "minecraft:diamond_block"
+          }
+        },
+        {
+          "key": "",
+          "values": {
+            "d": "1",
+            "id": "pokecube:fossil"
+          }
+        },
+        {
+          "key": "",
+          "values": {
+            "id": "minecraft:potion",
+            "tag": "{Potion:\"minecraft:strong_regeneration\"}"
+          },
+          "tag": "{Potion:\"minecraft:strong_regeneration\"}"
+        }
+      ],
+      "values": {
+        "lvl": "70",
+        "cost": "30000",
+        "pokemon": "Genesect"
+      }
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "III,SRS,SMS",
+      "output": {
+        "values": {
+          "id": "pokecube_adventures:cloner",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "pokecube:tradingtable"
+          }
+        },
+        {
+          "key": "S",
+          "values": {
+            "id": "minecraft:gold_block"
+          }
+        },
+        {
+          "key": "M",
+          "values": {
+            "id": "minecraft:golden_apple"
+          }
+        },
+        {
+          "key": "I",
+          "values": {
+            "id": "minecraft:iron_ingot"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "III,SRS,SMS",
+      "output": {
+        "values": {
+          "d": "1",
+          "id": "pokecube_adventures:cloner",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "pokecube_adventures:cloner"
+          }
+        },
+        {
+          "key": "S",
+          "values": {
+            "id": "minecraft:diamond_block"
+          }
+        },
+        {
+          "key": "M",
+          "values": {
+            "d": "1",
+            "id": "minecraft:golden_apple"
+          }
+        },
+        {
+          "key": "I",
+          "values": {
+            "id": "minecraft:nether_star"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "III,SRS,SMS",
+      "output": {
+        "values": {
+          "d": "2",
+          "id": "pokecube_adventures:cloner",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "pokecube:tradingtable"
+          }
+        },
+        {
+          "key": "S",
+          "values": {
+            "id": "minecraft:diamond_block"
+          }
+        },
+        {
+          "key": "M",
+          "values": {
+            "id": "minecraft:golden_apple"
+          }
+        },
+        {
+          "key": "I",
+          "values": {
+            "id": "minecraft:gold_ingot"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "III,SRS,SMS",
+      "output": {
+        "values": {
+          "id": "pokecube_adventures:afa",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "pokecube:tradingtable"
+          }
+        },
+        {
+          "key": "S",
+          "values": {
+            "id": "minecraft:iron_block"
+          }
+        },
+        {
+          "key": "M",
+          "values": {
+            "id": "minecraft:redstone"
+          }
+        },
+        {
+          "key": "I",
+          "values": {
+            "id": "minecraft:iron_ingot"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "III,SRS,SMS",
+      "output": {
+        "values": {
+          "d": "1",
+          "id": "pokecube_adventures:afa",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "pokecube:tradingtable"
+          }
+        },
+        {
+          "key": "S",
+          "values": {
+            "id": "minecraft:iron_block"
+          }
+        },
+        {
+          "key": "M",
+          "values": {
+            "id": "minecraft:emerald"
+          }
+        },
+        {
+          "key": "I",
+          "values": {
+            "id": "minecraft:iron_ingot"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "III,SRS,SMS",
+      "output": {
+        "values": {
+          "d": "2",
+          "id": "pokecube_adventures:afa",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "pokecube:tradingtable"
+          }
+        },
+        {
+          "key": "S",
+          "values": {
+            "id": "minecraft:iron_block"
+          }
+        },
+        {
+          "key": "M",
+          "values": {
+            "id": "minecraft:comparator"
+          }
+        },
+        {
+          "key": "I",
+          "values": {
+            "id": "minecraft:iron_ingot"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "BBB,BRB,BBB",
+      "output": {
+        "values": {
+          "id": "pokecube_adventures:pokesiphon",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "pokecube_adventures:afa"
+          }
+        },
+        {
+          "key": "B",
+          "values": {
+            "id": "minecraft:redstone_block"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "IEI,EIE,IEI",
+      "output": {
+        "values": {
+          "id": "pokecube_adventures:warppad",
+          "n": "2"
+        }
+      },
+      "inputs": [
+        {
+          "key": "E",
+          "values": {
+            "id": "minecraft:ender_eye"
+          }
+        },
+        {
+          "key": "I",
+          "values": {
+            "id": "minecraft:iron_block"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": " R ,ROR, E ",
+      "output": {
+        "values": {
+          "d": "1",
+          "id": "pokecube_adventures:pokemobTarget",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "minecraft:emerald"
+          }
+        },
+        {
+          "key": "O",
+          "values": {
+            "id": "minecraft:stone"
+          }
+        },
+        {
+          "key": "E",
+          "values": {
+            "id": "minecraft:ender_eye"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": " R ,ROR, E ",
+      "output": {
+        "values": {
+          "id": "pokecube_adventures:pokemobTarget",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "minecraft:redstone"
+          }
+        },
+        {
+          "key": "O",
+          "values": {
+            "id": "minecraft:stone"
+          }
+        },
+        {
+          "key": "E",
+          "values": {
+            "id": "minecraft:emerald"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": " R ,ROR, E ",
+      "output": {
+        "values": {
+          "d": "2",
+          "id": "pokecube_adventures:trainerspawner",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "R",
+          "values": {
+            "id": "minecraft:emerald"
+          }
+        },
+        {
+          "key": "O",
+          "values": {
+            "id": "minecraft:stone"
+          }
+        },
+        {
+          "key": "E",
+          "values": {
+            "id": "minecraft:emerald"
+          }
+        }
+      ],
+      "values": {}
+    },
+    {
+      "shapeless": false,
+      "handler": "default",
+      "map": "WWW,WPW,WWW",
+      "output": {
+        "values": {
+          "id": "pokecube_adventures:pokecubebag",
+          "n": "1"
+        }
+      },
+      "inputs": [
+        {
+          "key": "P",
+          "values": {
+            "d": "8",
+            "id": "pokecube:pc"
+          }
+        },
+        {
+          "key": "W",
+          "values": {
+            "d": "32767",
+            "id": "minecraft:wool"
+          }
+        }
+      ],
+      "values": {}
+    }
+  ]
+}

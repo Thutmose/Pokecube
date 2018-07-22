@@ -1,5 +1,7 @@
 package pokecube.core.database.recipes;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.GameData;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
@@ -76,7 +79,7 @@ public class XMLRecipeHandler
                 if (output != null && output.hasTagCompound()) System.err.println(output.getTagCompound());
             }
             else toAdd = new ShapedOreRecipe(group, output, IngredientHandler.parseShaped(inputs.toArray()));
-            GameData.register_impl(toAdd.setRegistryName(new ResourceLocation("pokecube", "autoloaded" + (num++))));
+            GameData.register_impl(toAdd.setRegistryName(new ResourceLocation("pokecube", "autoloaded" + num)));
         }
 
     }
@@ -157,6 +160,21 @@ public class XMLRecipeHandler
         try
         {
             parser.manageRecipe(recipe);
+            if (PokecubeMod.debug) try
+            {
+                File dir = new File(Database.CONFIGLOC + "recipes");
+                dir.mkdirs();
+                File outputFile = new File(dir, File.separator + "autoloaded" + (num++) + ".json");
+                String json = parser.serialize(recipe);
+                FileWriter writer = new FileWriter(outputFile);
+                writer.append(json);
+                writer.close();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
         }
         catch (NullPointerException e)
         {

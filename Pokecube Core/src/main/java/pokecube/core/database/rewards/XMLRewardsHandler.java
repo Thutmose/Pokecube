@@ -1,5 +1,7 @@
 package pokecube.core.database.rewards;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,7 @@ import pokecube.core.utils.Tools;
 
 public class XMLRewardsHandler
 {
+    private static int                       num           = 0;
     public static Set<String>                recipeFiles   = Sets.newHashSet();
     public static Map<String, IRewardParser> recipeParsers = Maps.newHashMap();
 
@@ -316,6 +319,20 @@ public class XMLRewardsHandler
         try
         {
             parser.process(recipe);
+            if (PokecubeMod.debug) try
+            {
+                File dir = new File(Database.CONFIGLOC + "rewards");
+                dir.mkdirs();
+                File outputFile = new File(dir, File.separator + "autoloaded" + (num++) + ".json");
+                String json = parser.serialize(recipe);
+                FileWriter writer = new FileWriter(outputFile);
+                writer.append(json);
+                writer.close();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
         catch (NullPointerException e)
         {

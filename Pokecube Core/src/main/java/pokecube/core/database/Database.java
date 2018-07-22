@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -1072,43 +1073,75 @@ public class Database
         }
         for (String name : XMLRecipeHandler.recipeFiles)
         {
-            name = name + ".xml";
-            File temp1 = new File(CONFIGLOC + name);
-            if (!temp1.exists() || (name.equals("recipes.xml") && FORCECOPYRECIPES))
+            String name1 = name + ".json";
+            File temp1 = new File(CONFIGLOC + name1);
+            // Check for json first
+            if (temp1.exists() || name.equals("recipes") && FORCECOPYRECIPES)
             {
-                ArrayList<String> rows = getFile("/assets/pokecube/database/" + name);
-                int n = 0;
+                // Check if needs to overwrite default database
+                if (name.equals("recipes") && FORCECOPYRECIPES)
+                {
+                    ArrayList<String> rows = getFile("/assets/pokecube/database/" + name1);
+                    int n = 0;
+                    try
+                    {
+                        File file = new File(CONFIGLOC + name1);
+                        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+                        for (int i = 0; i < rows.size(); i++)
+                        {
+                            out.write(rows.get(i) + "\n");
+                            n++;
+                        }
+                        out.close();
+                    }
+                    catch (Exception e)
+                    {
+                        PokecubeMod.log(Level.SEVERE, "Error with " + name1 + " " + n, e);
+                    }
+                }
                 try
                 {
-                    File file = new File(CONFIGLOC + name);
-                    Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
-                    for (int i = 0; i < rows.size(); i++)
+                    FileReader reader = new FileReader(temp1);
+                    XMLRecipes database = PokedexEntryLoader.gson.fromJson(reader, XMLRecipes.class);
+                    reader.close();
+                    for (XMLRecipe drop : database.recipes)
                     {
-                        out.write(rows.get(i) + "\n");
-                        n++;
+                        XMLRecipeHandler.addRecipe(drop);
                     }
-                    out.close();
                 }
                 catch (Exception e)
                 {
-                    PokecubeMod.log(Level.SEVERE, "Error with " + name + " " + n, e);
+                    PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
                 }
             }
-            try
+            else
             {
-                JAXBContext jaxbContext = JAXBContext.newInstance(XMLRecipes.class);
-                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-                FileReader reader = new FileReader(temp1);
-                XMLRecipes database = (XMLRecipes) unmarshaller.unmarshal(reader);
-                reader.close();
-                for (XMLRecipe drop : database.recipes)
+                name1 = name + ".xml";
+                temp1 = new File(CONFIGLOC + name1);
+                // If no json, assume old xml, check that next, and convert it
+                // to json.
+                try
                 {
-                    XMLRecipeHandler.addRecipe(drop);
+                    JAXBContext jaxbContext = JAXBContext.newInstance(XMLRecipes.class);
+                    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                    FileReader reader = new FileReader(temp1);
+                    XMLRecipes database = (XMLRecipes) unmarshaller.unmarshal(reader);
+                    reader.close();
+                    for (XMLRecipe drop : database.recipes)
+                    {
+                        XMLRecipeHandler.addRecipe(drop);
+                    }
+
+                    // Output fixed json file.
+                    File file = new File(CONFIGLOC + name1.replace(".xml", ".json"));
+                    FileWriter writer = new FileWriter(file);
+                    writer.append(PokedexEntryLoader.gson.toJson(database));
+                    writer.close();
                 }
-            }
-            catch (Exception e)
-            {
-                PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
+                }
             }
         }
     }
@@ -1122,43 +1155,75 @@ public class Database
         }
         for (String name : XMLRewardsHandler.recipeFiles)
         {
-            name = name + ".xml";
-            File temp1 = new File(CONFIGLOC + name);
-            if (!temp1.exists() || (name.equals("rewards.xml") && FORCECOPYREWARDS))
+            String name1 = name + ".json";
+            File temp1 = new File(CONFIGLOC + name1);
+            // Check for json first
+            if (temp1.exists() || name.equals("rewards")  && FORCECOPYRECIPES)
             {
-                ArrayList<String> rows = getFile("/assets/pokecube/database/" + name);
-                int n = 0;
+                // Check if needs to overwrite default database
+                if (name.equals("rewards") && FORCECOPYRECIPES)
+                {
+                    ArrayList<String> rows = getFile("/assets/pokecube/database/" + name1);
+                    int n = 0;
+                    try
+                    {
+                        File file = new File(CONFIGLOC + name1);
+                        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+                        for (int i = 0; i < rows.size(); i++)
+                        {
+                            out.write(rows.get(i) + "\n");
+                            n++;
+                        }
+                        out.close();
+                    }
+                    catch (Exception e)
+                    {
+                        PokecubeMod.log(Level.SEVERE, "Error with " + name1 + " " + n, e);
+                    }
+                }
                 try
                 {
-                    File file = new File(CONFIGLOC + name);
-                    Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
-                    for (int i = 0; i < rows.size(); i++)
+                    FileReader reader = new FileReader(temp1);
+                    XMLRewards database = PokedexEntryLoader.gson.fromJson(reader, XMLRewards.class);
+                    reader.close();
+                    for (XMLReward drop : database.recipes)
                     {
-                        out.write(rows.get(i) + "\n");
-                        n++;
+                        XMLRewardsHandler.addReward(drop);
                     }
-                    out.close();
                 }
                 catch (Exception e)
                 {
-                    PokecubeMod.log(Level.SEVERE, "Error with " + name + " " + n, e);
+                    PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
                 }
             }
-            try
+            else
             {
-                JAXBContext jaxbContext = JAXBContext.newInstance(XMLRewards.class);
-                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-                FileReader reader = new FileReader(temp1);
-                XMLRewards database = (XMLRewards) unmarshaller.unmarshal(reader);
-                reader.close();
-                for (XMLReward drop : database.recipes)
+                name1 = name + ".xml";
+                temp1 = new File(CONFIGLOC + name1);
+                // If no json, assume old xml, check that next, and convert it
+                // to json.
+                try
                 {
-                    XMLRewardsHandler.addReward(drop);
+                    JAXBContext jaxbContext = JAXBContext.newInstance(XMLRewards.class);
+                    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                    FileReader reader = new FileReader(temp1);
+                    XMLRewards database = (XMLRewards) unmarshaller.unmarshal(reader);
+                    reader.close();
+                    for (XMLReward drop : database.recipes)
+                    {
+                        XMLRewardsHandler.addReward(drop);
+                    }
+
+                    // Output fixed json file.
+                    File file = new File(CONFIGLOC + name1.replace(".xml", ".json"));
+                    FileWriter writer = new FileWriter(file);
+                    writer.append(PokedexEntryLoader.gson.toJson(database));
+                    writer.close();
                 }
-            }
-            catch (Exception e)
-            {
-                PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.SEVERE, "Error with " + temp1, e);
+                }
             }
         }
     }

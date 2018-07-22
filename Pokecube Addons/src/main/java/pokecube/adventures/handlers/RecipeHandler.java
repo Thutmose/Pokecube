@@ -210,7 +210,7 @@ public class RecipeHandler
         {
             temp.mkdirs();
         }
-        String name = "pokeadvrecipes.xml";
+        String name = "pokeadvrecipes.json";
         File temp1 = new File(CONFIGLOC + name);
         if (!temp1.exists() || Config.instance.forceRecipes)
         {
@@ -232,7 +232,7 @@ public class RecipeHandler
                 PokecubeMod.log(Level.WARNING, name + " " + n, e);
             }
         }
-        name = "pokeadvrewards.xml";
+        name = "pokeadvrewards.json";
         temp1 = new File(CONFIGLOC + name);
         if (!temp1.exists() || Config.instance.forceRecipes)
         {

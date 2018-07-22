@@ -365,7 +365,11 @@ public abstract class AIBase implements IAIRunnable
     /** Thread safe attack setting */
     protected void addMoveInfo(int attacker, int targetEnt, int dim, Vector3 target, float distance)
     {
-        if (!moves.isEmpty()) PokecubeMod.log(Level.WARNING, "adding duplicate move", new IllegalArgumentException());
+        if (!moves.isEmpty())
+        {
+            if (PokecubeMod.debug)
+                PokecubeMod.log(Level.WARNING, "adding duplicate move", new IllegalArgumentException());
+        }
         else moves.add(new MoveInfo(attacker, targetEnt, dim, target, distance));
     }
 

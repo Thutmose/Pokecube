@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.PokecubeMod;
 
 /** @author sebastien */
 public abstract class EntityDropPokemob extends EntityMovesPokemob
@@ -24,7 +25,8 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     @Nullable
     protected ResourceLocation getLootTable()
     {
-        return pokemobCap.getPokedexEntry().lootTable;
+        if (PokecubeMod.core.getConfig().pokemobsDropItems) return pokemobCap.getPokedexEntry().lootTable;
+        else return null;
     }
 
     @Override

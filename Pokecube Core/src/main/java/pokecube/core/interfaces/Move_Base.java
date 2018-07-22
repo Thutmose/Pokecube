@@ -1,5 +1,7 @@
 package pokecube.core.interfaces;
 
+import java.util.logging.Level;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -313,22 +315,36 @@ public abstract class Move_Base
             {
                 if (move.baseEntry.soundEffectSource != null)
                 {
-                    soundUser = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectSource));
+                    soundUser = SoundEvent.REGISTRY.getObject(new ResourceLocation(move.baseEntry.soundEffectSource));
+                    if (soundUser == null)
+                    {
+                        PokecubeMod.log(Level.WARNING, "No Sound found for `" + move.baseEntry.soundEffectSource
+                                + "` for attack " + getName());
+                    }
                     move.baseEntry.soundEffectSource = null;
                 }
-                attacker.playSound(soundUser, 1f, 1);
+                if (soundUser != null) attacker.playSound(soundUser, 1f, 1);
             }
         }
         if (attacked != null)
         {
             if (soundTarget != null || move.baseEntry.soundEffectTarget != null)
             {
-                if (move.baseEntry.soundEffectTarget != null)
+                if (soundTarget != null || move.baseEntry.soundEffectTarget != null)
                 {
-                    soundTarget = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectTarget));
-                    move.baseEntry.soundEffectTarget = null;
+                    if (move.baseEntry.soundEffectTarget != null)
+                    {
+                        soundTarget = SoundEvent.REGISTRY
+                                .getObject(new ResourceLocation(move.baseEntry.soundEffectTarget));
+                        if (soundTarget == null)
+                        {
+                            PokecubeMod.log(Level.WARNING, "No Sound found for `" + move.baseEntry.soundEffectTarget
+                                    + "` for attack " + getName());
+                        }
+                        move.baseEntry.soundEffectTarget = null;
+                    }
+                    if (soundTarget != null) attacked.playSound(soundTarget, 1f, 1);
                 }
-                attacked.playSound(soundTarget, 1f, 1);
             }
         }
         else if (attacker != null && targetPos != null)
@@ -337,11 +353,16 @@ public abstract class Move_Base
             {
                 if (move.baseEntry.soundEffectTarget != null)
                 {
-                    soundTarget = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectTarget));
+                    soundTarget = SoundEvent.REGISTRY.getObject(new ResourceLocation(move.baseEntry.soundEffectTarget));
+                    if (soundTarget == null)
+                    {
+                        PokecubeMod.log(Level.WARNING, "No Sound found for `" + move.baseEntry.soundEffectTarget
+                                + "` for attack " + getName());
+                    }
                     move.baseEntry.soundEffectTarget = null;
                 }
-                attacker.getEntityWorld().playSound((EntityPlayer) null, targetPos.x, targetPos.y, targetPos.z,
-                        soundTarget, attacker.getSoundCategory(), 1f, 1);
+                if (soundTarget != null) attacker.getEntityWorld().playSound((EntityPlayer) null, targetPos.x,
+                        targetPos.y, targetPos.z, soundTarget, attacker.getSoundCategory(), 1f, 1);
             }
         }
     }

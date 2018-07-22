@@ -19,7 +19,9 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
-import mezz.jei.config.Config.IngredientBlacklistType;
+import mezz.jei.config.IngredientBlacklistType;
+import mezz.jei.ingredients.IngredientBlacklistInternal;
+import mezz.jei.ingredients.IngredientFilter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
@@ -64,6 +66,8 @@ public class JEICompat implements IModPlugin
 
     public static boolean                                 autoHideJEI              = true;
 
+    IModRegistry                                          registry;
+
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
     {
@@ -83,6 +87,7 @@ public class JEICompat implements IModPlugin
     public void register(IModRegistry registry)
     {
         System.out.println("JEI INIT RECIPES");
+        this.registry = registry;
         registry.handleRecipes(RecipeFossilRevive.class, recipe -> new ClonerRecipeWrapper(recipe),
                 JEICompat.REANIMATOR);
         registry.handleRecipes(PokemobRecipe.class, recipe -> new PokemobRecipeWrapper(recipe), JEICompat.POKEMOB);
@@ -221,8 +226,11 @@ public class JEICompat implements IModPlugin
         {
             for (PokedexEntry e : relevant)
             {
-                mezz.jei.config.Config.addIngredientToConfigBlacklist(e, IngredientBlacklistType.ITEM,
-                        ingredientHelper);
+                IngredientBlacklistInternal blacklist = new IngredientBlacklistInternal();
+                blacklist.addIngredientToBlacklist(e, ingredientHelper);
+                IngredientFilter filter = new IngredientFilter(blacklist);
+                mezz.jei.config.Config.addIngredientToConfigBlacklist(filter, this.registry.getIngredientRegistry(), e,
+                        IngredientBlacklistType.ITEM, ingredientHelper);
             }
         }
     }

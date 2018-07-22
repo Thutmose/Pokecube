@@ -256,6 +256,8 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public boolean                       pokemobsDamageBlocks         = false;
     @Configure(category = mobAI)
+    public boolean                       pokemobsDropItems            = true;
+    @Configure(category = mobAI)
     public float                         expFromDeathDropScale        = 1;
     @Configure(category = mobAI)
     /** Do explosions occur and cause damage */

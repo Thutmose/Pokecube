@@ -14,6 +14,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.PokecubeAdv;
@@ -22,6 +23,7 @@ import pokecube.adventures.blocks.cloner.block.ItemBlockCloner;
 import pokecube.adventures.commands.Config;
 import pokecube.adventures.handlers.loot.Loot;
 import pokecube.adventures.handlers.loot.LootHelpers;
+import pokecube.adventures.handlers.loot.MakeDnaBottle;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.ItemExpShare;
 import pokecube.adventures.items.ItemTarget;
@@ -40,6 +42,11 @@ import pokecube.core.utils.PokeType;
 public class ItemHandler
 {
     public static Item badges = new ItemBadge().setRegistryName(PokecubeAdv.ID, "badge");
+    
+    static
+    {
+        LootFunctionManager.registerFunction(new MakeDnaBottle.Serializer());
+    }
 
     public static void addBadges(Object registry)
     {

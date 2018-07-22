@@ -239,7 +239,7 @@ public class EditRewardsPage extends ListPage
     }
 
     @Override
-    void initList()
+    protected void initList()
     {
         rewards.clear();
         List<Reward> rewardStacks = parent.rewards.getRewards();

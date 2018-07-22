@@ -114,6 +114,10 @@ traineredit.button.notify=Invisible
 traineredit.button.unfriendly=UnFriendly
 traineredit.button.friendly=Friendly
 
+traineredit.button.trainer=Trainer
+traineredit.button.leader=Leader
+traineredit.button.trader=Trader
+
 gui.jei.pokemobs=Pokémob Evolution
 gui.jei.pokemobs.interact=Pokémob Interactions
 gui.jei.pokemobs.moves=Pokémob Move Recipes

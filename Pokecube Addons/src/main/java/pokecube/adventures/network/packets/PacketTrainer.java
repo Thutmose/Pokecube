@@ -8,11 +8,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -28,13 +31,19 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
+import pokecube.adventures.entity.trainers.EntityLeader;
+import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.events.handlers.EventsHandler;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TimePeriod;
+import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
 
 public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, IMessage>
@@ -42,17 +51,25 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
     public static final String EDITSELF             = "pokecube_adventures.traineredit.self";
     public static final String EDITOTHER            = "pokecube_adventures.traineredit.other";
     public static final String EDITMOB              = "pokecube_adventures.traineredit.mob";
+    public static final String EDITTRAINER          = "pokecube_adventures.traineredit.trainer";
+    public static final String SPAWNTRAINER         = "pokecube_adventures.traineredit.spawn";
 
     public static final byte   MESSAGEUPDATETRAINER = 0;
     public static final byte   MESSAGENOTIFYDEFEAT  = 1;
     public static final byte   MESSAGEKILLTRAINER   = 2;
+    public static final byte   MESSAGEUPDATEMOB     = 3;
+    public static final byte   MESSAGESPAWNTRAINER  = 4;
 
     public static void register()
     {
         PermissionAPI.registerNode(EDITSELF, DefaultPermissionLevel.OP, "Allowed to edit self with trainer editor");
         PermissionAPI.registerNode(EDITOTHER, DefaultPermissionLevel.OP,
                 "Allowed to edit other player with trainer editor");
-        PermissionAPI.registerNode(EDITMOB, DefaultPermissionLevel.OP, "Allowed to edit trainer with trainer editor");
+        PermissionAPI.registerNode(EDITMOB, DefaultPermissionLevel.OP, "Allowed to edit pokemobs with trainer editor");
+        PermissionAPI.registerNode(EDITTRAINER, DefaultPermissionLevel.OP,
+                "Allowed to edit trainer with trainer editor");
+        PermissionAPI.registerNode(SPAWNTRAINER, DefaultPermissionLevel.OP,
+                "Allowed to spawn trainer with trainer editor");
     }
 
     byte                  message;
@@ -60,12 +77,18 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
 
     public static void sendEditOpenPacket(Entity target, EntityPlayerMP editor)
     {
-        String node = target == editor ? EDITSELF : target instanceof EntityPlayer ? EDITOTHER : EDITMOB;
+        String node = target == editor ? editor.isSneaking() ? EDITSELF : SPAWNTRAINER
+                : target instanceof EntityPlayer ? EDITOTHER
+                        : CapabilityHasPokemobs.getHasPokemobs(target) != null ? EDITTRAINER : EDITMOB;
         boolean canEdit = !editor.getServer().isDedicatedServer() || PermissionAPI.hasPermission(editor, node);
-        if (!canEdit) return;
+        if (!canEdit)
+        {
+            editor.sendMessage(new TextComponentString(TextFormatting.RED + "You are not allowed to do that."));
+            return;
+        }
         PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
         packet.data.setBoolean("O", true);
-        packet.data.setInteger("I", target.getEntityId());
+        packet.data.setInteger("I", target == null ? -1 : target.getEntityId());
         PokecubeMod.packetPipeline.sendTo(packet, editor);
     }
 
@@ -132,14 +155,14 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
             int id = message.data.getInteger("I");
             Entity mob = player.getEntityWorld().getEntityByID(id);
             IHasPokemobs cap = CapabilityHasPokemobs.getHasPokemobs(mob);
+            if (message.data.getBoolean("O"))
+            {
+                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, player.getEntityWorld(),
+                        mob.getEntityId(), 0, 0);
+                return;
+            }
             if (cap != null)
             {
-                if (message.data.getBoolean("O"))
-                {
-                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, player.getEntityWorld(),
-                            mob.getEntityId(), 0, 0);
-                    return;
-                }
                 IHasMessages messages = CapabilityNPCMessages.getMessages(mob);
                 IHasRewards rewards = CapabilityHasRewards.getHasRewards(mob);
                 IHasNPCAIStates ai = CapabilityNPCAIStates.getNPCAIStates(mob);
@@ -218,6 +241,56 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                 }
 
                 PacketHandler.sendEntityUpdate(mob);
+            }
+            return;
+        }
+        if (message.message == MESSAGEUPDATEMOB)
+        {
+            NBTBase tag = message.data.getTag("T");
+            int id = message.data.getInteger("I");
+            Entity mob = player.getEntityWorld().getEntityByID(id);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+            if (pokemob != null)
+            {
+                pokemob = PokecubeManager.itemToPokemob(new ItemStack((NBTTagCompound) tag), mob.getEntityWorld());
+                if (message.data.getBoolean("D"))
+                {
+                    mob.setDead();
+                }
+                else mob.readFromNBT(pokemob.getEntity().writeToNBT(new NBTTagCompound()));
+            }
+        }
+        if (message.message == MESSAGESPAWNTRAINER)
+        {
+            int id = message.data.getInteger("I");
+            TypeTrainer type = TypeTrainer.getTrainer(message.data.getString("T"));
+            if (type != null)
+            {
+                final int TRAINER = 0;
+                final int LEADER = 1;
+                final int TRADER = 2;
+                EntityTrainer trainer = null;
+                switch (id)
+                {
+                case TRAINER:
+                    trainer = new EntityTrainer(player.getEntityWorld());
+                    break;
+                case LEADER:
+                    trainer = new EntityLeader(player.getEntityWorld());
+                    break;
+                case TRADER:
+                    trainer = new EntityPokemartSeller(player.getEntityWorld());
+                    break;
+                }
+                if (trainer != null)
+                {
+                    trainer.initTrainer(type, 1);
+                    Vector3 look = Vector3.getNewVector().set(player.getLookVec());
+                    Vector3 pos = Vector3.getNewVector().set(player).addTo(look.x, 1, look.z);
+                    pos.moveEntity(trainer);
+                    player.getEntityWorld().spawnEntity(trainer);
+                    sendEditOpenPacket(trainer, (EntityPlayerMP) player);
+                }
             }
             return;
         }

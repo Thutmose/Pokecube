@@ -132,7 +132,7 @@ public class EditMessagesPage extends ListPage
     }
 
     @Override
-    void initList()
+    protected void initList()
     {
         List<IGuiListEntry> entries = Lists.newArrayList();
         for (MessageState state : MessageState.values())

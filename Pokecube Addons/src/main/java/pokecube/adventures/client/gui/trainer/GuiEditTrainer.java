@@ -21,6 +21,8 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHas
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class GuiEditTrainer extends GuiScreen
 {
@@ -98,13 +100,18 @@ public class GuiEditTrainer extends GuiScreen
         {
 
         }
+
+        protected void initList()
+        {
+
+        }
     }
 
     public static final ResourceLocation TEXTURE      = new ResourceLocation(PokecubeAdv.ID,
             "textures/gui/traineredit.png");
 
     final List<Page>                     pages        = Lists.newArrayList();
-    protected EditTrainerPage            mainPage;
+    protected Page                       mainPage;
     protected EditAIPage                 aiPage;
     protected EditRewardsPage            rewardsPage;
     protected EditMessagesPage           messagePage;
@@ -114,6 +121,7 @@ public class GuiEditTrainer extends GuiScreen
     public final IHasRewards             rewards;
     public final IHasMessages            messages;
     public final IHasNPCAIStates         aiStates;
+    public final IPokemob                pokemob;
     private int                          index        = 0;
 
     public GuiEditTrainer(Entity target)
@@ -123,6 +131,7 @@ public class GuiEditTrainer extends GuiScreen
         rewards = CapabilityHasRewards.getHasRewards(target);
         messages = CapabilityNPCMessages.getMessages(target);
         aiStates = CapabilityNPCAIStates.getNPCAIStates(target);
+        pokemob = CapabilityPokemob.getPokemobFor(target);
     }
 
     public List<GuiButton> getButtons()
@@ -136,17 +145,29 @@ public class GuiEditTrainer extends GuiScreen
         super.initGui();
         pages.clear();
         pokemobPages.clear();
-        pages.add(mainPage = new EditTrainerPage(this));
-        int num = 1;
-        for (int i = 0; i < trainer.getMaxPokemobCount(); i++)
+
+        if (trainer != null)
         {
-            EditPokemobPage page = new EditPokemobPage(this, i, num++);
-            pages.add(page);
-            pokemobPages.add(page);
+            pages.add(mainPage = new EditTrainerPage(this));
+            int num = 1;
+            for (int i = 0; i < trainer.getMaxPokemobCount(); i++)
+            {
+                EditPokemobPage page = new EditPokemobPage(this, i, num++);
+                pages.add(page);
+                pokemobPages.add(page);
+            }
+            if (rewards != null) pages.add(rewardsPage = new EditRewardsPage(this, num++));
+            if (messages != null) pages.add(messagePage = new EditMessagesPage(this, num++));
+            if (aiStates != null) pages.add(aiPage = new EditAIPage(this, num++));
         }
-        if (rewards != null) pages.add(rewardsPage = new EditRewardsPage(this, num++));
-        if (messages != null) pages.add(messagePage = new EditMessagesPage(this, num++));
-        if (aiStates != null) pages.add(aiPage = new EditAIPage(this, num++));
+        else if (pokemob != null)
+        {
+            pages.add(mainPage = new EditLivePokemobPage(this, pokemob));
+        }
+        else
+        {
+            pages.add(mainPage = new SpawnTrainerPage(this));
+        }
         for (Page page : pages)
             page.initGui();
         pages.get(getIndex()).onPageOpened();

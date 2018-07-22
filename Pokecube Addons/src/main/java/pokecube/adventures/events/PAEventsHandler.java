@@ -307,9 +307,7 @@ public class PAEventsHandler
         if (!(event.getObject() instanceof EntityLiving) || event.getObject().getEntityWorld() == null
                 || TypeTrainer.mobTypeMapper.getType((EntityLivingBase) event.getObject(), false) == null)
             return;
-        if (event.getCapabilities().containsKey(POKEMOBSCAP)
-                || event.getObject().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            return;
+        if (hasCap(event)) return;
         DefaultPokemobs mobs = new DefaultPokemobs();
         DefaultRewards rewards = new DefaultRewards();
 
@@ -336,6 +334,16 @@ public class PAEventsHandler
         }
         AIStuffHolder aiHolder = new AIStuffHolder((EntityLiving) event.getObject());
         event.addCapability(AISTUFFCAP, aiHolder);
+    }
+
+    private boolean hasCap(AttachCapabilitiesEvent<Entity> event)
+    {
+        if (event.getCapabilities().containsKey(POKEMOBSCAP)) return true;
+        for (ICapabilityProvider provider : event.getCapabilities().values())
+        {
+            if (provider.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null)) return true;
+        }
+        return false;
     }
 
     @SubscribeEvent

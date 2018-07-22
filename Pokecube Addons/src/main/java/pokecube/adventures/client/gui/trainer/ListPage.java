@@ -22,7 +22,7 @@ public abstract class ListPage extends Page
         initList();
     }
 
-    abstract void initList();
+    protected abstract void initList();
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException

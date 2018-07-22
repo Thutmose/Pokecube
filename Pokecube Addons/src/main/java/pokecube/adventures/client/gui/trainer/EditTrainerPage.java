@@ -119,10 +119,8 @@ public class EditTrainerPage extends ListPage
     }
 
     @Override
-    void initList()
+    protected void initList()
     {
-        // TODO Auto-generated method stub
-
         // Pokemob page buttons
         int num = parent.trainer.countPokemon();
         List<IGuiListEntry> entries = Lists.newArrayList();
@@ -251,18 +249,6 @@ public class EditTrainerPage extends ListPage
                 PokecubeMod.packetPipeline.sendToServer(packet);
             }
         }
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-    {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public void handleMouseInput() throws IOException
-    {
-        super.handleMouseInput();
     }
 
     @Override

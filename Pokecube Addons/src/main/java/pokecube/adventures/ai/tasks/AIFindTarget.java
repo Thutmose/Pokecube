@@ -67,6 +67,7 @@ public class AIFindTarget extends AITrainerBase
             @Override
             public boolean apply(EntityLivingBase input)
             {
+                if (!targetClass.isInstance(input)) return false;
                 if (input instanceof EntityPlayer) { return ((EntityPlayer) input).capabilities.isCreativeMode
                         || ((EntityPlayer) input).isSpectator() || !trainer.canBattle(input); }
                 return false;

@@ -55,6 +55,7 @@ import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.database.Database;
+import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.events.StarterEvent;
@@ -354,10 +355,21 @@ public class PAEventsHandler
         IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(npc);
         if (mobs == null || !npc.hasCapability(IAIMob.THUTMOBAI, null)) return;
         IAIMob mob = npc.getCapability(IAIMob.THUTMOBAI, null);
+
+        // All can battle, but only trainers will path during battle.
         mob.getAI().addAITask(new AIBattle(npc, !(npc instanceof EntityTrainer)).setPriority(0));
+
+        // All attack zombies.
         mob.getAI().addAITask(new AIFindTarget(npc, EntityZombie.class).setPriority(20));
+        // Only trainers specifically target players.
         if (npc instanceof EntityTrainer)
             mob.getAI().addAITask(new AIFindTarget(npc, EntityPlayer.class).setPriority(10));
+        // 5% chance of battling a random nearby pokemob if they see it.
+        mob.getAI().addAITask(new AIFindTarget(npc, 0.05f, EntityPokemob.class).setPriority(20));
+
+        // 1% chance of battling another of same class if seen
+        mob.getAI().addAITask(new AIFindTarget(npc, 0.05f, npc.getClass()).setPriority(20));
+
         TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc, true);
         if (newType == null) return;
         mobs.setType(newType);

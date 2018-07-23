@@ -13,14 +13,46 @@ import thut.api.maths.Vector3;
 
 public class AIFindTarget extends AITrainerBase
 {
-
     // The entity (normally a player) that is the target of this trainer.
-    Class<? extends EntityLivingBase> targetClass;
+    final Class<? extends EntityLivingBase>[] targetClass;
+    // Predicated to return true for invalid targets
+    final Predicate<EntityLivingBase>         invalidTargets;
 
-    public AIFindTarget(EntityLivingBase trainer, Class<? extends EntityLivingBase> targetClass)
+    private float                             agroChance = 1f;
+
+    @SafeVarargs
+    public AIFindTarget(EntityLivingBase entityIn, float agressionProbability,
+            Class<? extends EntityLivingBase>... targetClass)
     {
-        super(trainer);
+        super(entityIn);
         this.targetClass = targetClass;
+        invalidTargets = new Predicate<EntityLivingBase>()
+        {
+            private boolean validClass(EntityLivingBase input)
+            {
+                for (Class<? extends EntityLivingBase> s : targetClass)
+                {
+                    if (s.isInstance(input)) return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean apply(EntityLivingBase input)
+            {
+                if (!validClass(input)) return false;
+                if (input instanceof EntityPlayer) { return ((EntityPlayer) input).capabilities.isCreativeMode
+                        || ((EntityPlayer) input).isSpectator() || !trainer.canBattle(input); }
+                return false;
+            }
+        };
+        agroChance = agressionProbability;
+    }
+
+    @SafeVarargs
+    public AIFindTarget(EntityLivingBase entityIn, Class<? extends EntityLivingBase>... targetClass)
+    {
+        this(entityIn, 1, targetClass);
     }
 
     @Override
@@ -61,20 +93,9 @@ public class AIFindTarget extends AITrainerBase
     }
 
     public void updateTask()
-    { // Predicated to return true for invalid targets
-        Predicate<EntityLivingBase> matcher = new Predicate<EntityLivingBase>()
-        {
-            @Override
-            public boolean apply(EntityLivingBase input)
-            {
-                if (!targetClass.isInstance(input)) return false;
-                if (input instanceof EntityPlayer) { return ((EntityPlayer) input).capabilities.isCreativeMode
-                        || ((EntityPlayer) input).isSpectator() || !trainer.canBattle(input); }
-                return false;
-            }
-        };
+    {
         // Check if target is invalid.
-        if (trainer.getTarget() != null && (trainer.getTarget().isDead || matcher.apply(trainer.getTarget())))
+        if (trainer.getTarget() != null && (trainer.getTarget().isDead || invalidTargets.apply(trainer.getTarget())))
         {
             trainer.setTarget(null);
             trainer.resetPokemob();
@@ -82,6 +103,9 @@ public class AIFindTarget extends AITrainerBase
         }
         // If target is valid, return.
         if (trainer.getTarget() != null) return;
+
+        // Check random chance of actually aquiring a target.
+        if (Math.random() < agroChance) return;
 
         // Look for targets
         Vector3 here = Vector3.getNewVector().set(entity);
@@ -100,7 +124,7 @@ public class AIFindTarget extends AITrainerBase
                 EntityLivingBase e = (EntityLivingBase) o;
                 double dist = e.getDistance(entity);
                 // Only visible or valid targets.
-                if (!matcher.apply(e) && dist < sight)
+                if (!invalidTargets.apply(e) && dist < sight)
                 {
                     target = e;
                     break targetTrack;

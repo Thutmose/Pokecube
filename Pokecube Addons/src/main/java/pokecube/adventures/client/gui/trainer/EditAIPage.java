@@ -14,6 +14,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.adventures.client.gui.trainer.GuiEditTrainer.Page;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs.LevelMode;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.network.packets.PacketTrainer;
@@ -118,6 +119,9 @@ public class EditAIPage extends Page
                 ? I18n.format("traineredit.button.friendly") : I18n.format("traineredit.button.unfriendly");
         parent.getButtons().add(new Button(4, x - 120, y - 76, 60, 20, friendlyButton));
 
+        String levelsButton = I18n.format("traineredit.button.levels." + parent.trainer.getLevelMode());
+        parent.getButtons().add(new Button(5, x + 60, y + 44, 60, 20, levelsButton));
+
         textList.get(0).setValidator(floatValid);
         textList.get(0).setText(guard.getRoamDistance() + "");
         TimePeriod times = guard.getActiveTime();
@@ -147,6 +151,7 @@ public class EditAIPage extends Page
         ITextComponent mess;
         PacketTrainer packet;
         NBTBase tag;
+        DefaultPokemobs trainer = (DefaultPokemobs) parent.trainer;
         switch (button.id)
         {
         case 0:
@@ -169,7 +174,6 @@ public class EditAIPage extends Page
             parent.mc.player.sendStatusMessage(mess, true);
             break;
         case 3:
-            DefaultPokemobs trainer = (DefaultPokemobs) parent.trainer;
             trainer.notifyDefeat = !trainer.notifyDefeat;
             this.onPageClosed();
             packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
@@ -188,6 +192,20 @@ public class EditAIPage extends Page
             sendAIUpdate();
             mess = new TextComponentTranslation(
                     "traineredit.set.friendly." + parent.aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY));
+            parent.mc.player.sendStatusMessage(mess, true);
+            break;
+        case 5:
+            trainer.setLevelMode(
+                    LevelMode.values()[(trainer.getLevelMode().ordinal() + 1) % LevelMode.values().length]);
+            this.onPageClosed();
+            packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
+            tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer, null);
+            packet.data.setTag("T", tag);
+            packet.data.setInteger("I", parent.entity.getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            this.onPageOpened();
+            String levelsButton = I18n.format("traineredit.button.levels." + parent.trainer.getLevelMode());
+            mess = new TextComponentTranslation("traineredit.set.levels", levelsButton);
             parent.mc.player.sendStatusMessage(mess, true);
             break;
         }
@@ -365,6 +383,8 @@ public class EditAIPage extends Page
         y += 25;
         drawString(fontRenderer, I18n.format("traineredit.info.cooldown_p"), x - 115, y, 0xFFFFFFFF);
         drawString(fontRenderer, I18n.format("traineredit.info.cooldown_g"), x - 115, y + 20, 0xFFFFFFFF);
+
+        drawString(fontRenderer, I18n.format("traineredit.info.levels"), x + 60, y + 50, 0xFFFFFFFF);
     }
 
     @Override

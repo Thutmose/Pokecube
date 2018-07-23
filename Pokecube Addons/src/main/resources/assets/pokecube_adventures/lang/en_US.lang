@@ -97,6 +97,7 @@ traineredit.info.wanderdist=Wander Distance:
 traineredit.info.stationarytime=Stationary Time:
 traineredit.info.cooldown_p=Personal Battle Cooldown:
 traineredit.info.cooldown_g=Global Battle Cooldown:
+traineredit.info.levels=Gains Exp:
 
 traineredit.button.home=Back
 traineredit.button.delete=Delete
@@ -113,6 +114,9 @@ traineredit.button.nonotify=Visible
 traineredit.button.notify=Invisible
 traineredit.button.unfriendly=UnFriendly
 traineredit.button.friendly=Friendly
+traineredit.button.levels.CONFIG=CONFIG
+traineredit.button.levels.YES=YES
+traineredit.button.levels.NO=NO
 
 traineredit.button.trainer=Trainer
 traineredit.button.leader=Leader

@@ -56,6 +56,11 @@ public class CapabilityHasPokemobs
 
     public static interface IHasPokemobs
     {
+        public static enum LevelMode
+        {
+            CONFIG, YES, NO;
+        }
+
         /** Adds the pokemob back into the inventory, healing it as needed. */
         default boolean addPokemob(ItemStack mob)
         {
@@ -90,7 +95,7 @@ public class CapabilityHasPokemobs
                             {
                                 found = true;
                                 foundID = i;
-                                if (Config.instance.trainerslevel)
+                                if (canLevel())
                                 {
                                     PokecubeManager.heal(mob);
                                     setPokemob(i, mob.copy());
@@ -260,6 +265,17 @@ public class CapabilityHasPokemobs
         {
             return 6;
         }
+
+        void setLevelMode(LevelMode type);
+
+        LevelMode getLevelMode();
+
+        default boolean canLevel()
+        {
+            LevelMode type = getLevelMode();
+            if (type == LevelMode.CONFIG) return Config.instance.trainerslevel;
+            return type == LevelMode.YES ? true : false;
+        }
     }
 
     public static class Storage implements Capability.IStorage<IHasPokemobs>
@@ -283,7 +299,6 @@ public class CapabilityHasPokemobs
 
     public static class DefaultPokemobs implements IHasPokemobs, ICapabilitySerializable<NBTTagCompound>
     {
-
         public static class DefeatEntry implements Comparable<DefeatEntry>
         {
             public static DefeatEntry createFromNBT(NBTTagCompound nbt)
@@ -354,6 +369,7 @@ public class CapabilityHasPokemobs
         private boolean               canMegaEvolve    = false;
         private IPokemob              outMob;
         private List<ItemStack>       pokecubes;
+        private LevelMode             levelmode        = LevelMode.CONFIG;
 
         DataParamHolder               holder;
 
@@ -705,6 +721,7 @@ public class CapabilityHasPokemobs
             nbt.setLong("resetTime", this.resetTime);
             if (this.sight != -1) nbt.setInteger("sight", this.sight);
             nbt.setInteger("friendly", this.friendlyCooldown);
+            nbt.setString("levelMode", getLevelMode().name());
             return nbt;
         }
 
@@ -745,6 +762,7 @@ public class CapabilityHasPokemobs
             }
             this.notifyDefeat = nbt.getBoolean("notifyDefeat");
             this.friendlyCooldown = nbt.getInteger("friendly");
+            if (nbt.hasKey("levelMode")) this.setLevelMode(LevelMode.valueOf(nbt.getString("levelMode")));
         }
 
         @Override
@@ -775,6 +793,19 @@ public class CapabilityHasPokemobs
         public void setCanMegaEvolve(boolean flag)
         {
             canMegaEvolve = flag;
+        }
+
+        @Override
+        public void setLevelMode(LevelMode type)
+        {
+            if (type == null) type = LevelMode.CONFIG;
+            this.levelmode = type;
+        }
+
+        @Override
+        public LevelMode getLevelMode()
+        {
+            return levelmode;
         }
     }
 }

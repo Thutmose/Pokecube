@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
@@ -16,7 +17,7 @@ public class AIFindTarget extends AITrainerBase
     // The entity (normally a player) that is the target of this trainer.
     final Class<? extends EntityLivingBase>[] targetClass;
     // Predicated to return true for invalid targets
-    final Predicate<EntityLivingBase>         invalidTargets;
+    final Predicate<EntityLivingBase>         validTargets;
 
     private float                             agroChance = 1f;
 
@@ -26,7 +27,7 @@ public class AIFindTarget extends AITrainerBase
     {
         super(entityIn);
         this.targetClass = targetClass;
-        invalidTargets = new Predicate<EntityLivingBase>()
+        validTargets = new Predicate<EntityLivingBase>()
         {
             private boolean validClass(EntityLivingBase input)
             {
@@ -40,10 +41,16 @@ public class AIFindTarget extends AITrainerBase
             @Override
             public boolean apply(EntityLivingBase input)
             {
+                // Only target valid classes.
                 if (!validClass(input)) return false;
-                if (input instanceof EntityPlayer) { return ((EntityPlayer) input).capabilities.isCreativeMode
-                        || ((EntityPlayer) input).isSpectator() || !trainer.canBattle(input); }
-                return false;
+                // Don't target pets
+                if (input instanceof IEntityOwnable && ((IEntityOwnable) input).getOwner() == entityIn) return false;
+                // Don't target invulnerable players (spectator/creative)
+                if (input instanceof EntityPlayer
+                        && (((EntityPlayer) input).capabilities.isCreativeMode || ((EntityPlayer) input).isSpectator()))
+                    return false;
+                // Return true if player can battle the input.
+                return trainer.canBattle(input);
             }
         };
         agroChance = agressionProbability;
@@ -95,7 +102,7 @@ public class AIFindTarget extends AITrainerBase
     public void updateTask()
     {
         // Check if target is invalid.
-        if (trainer.getTarget() != null && (trainer.getTarget().isDead || invalidTargets.apply(trainer.getTarget())))
+        if (trainer.getTarget() != null && (trainer.getTarget().isDead || !validTargets.apply(trainer.getTarget())))
         {
             trainer.setTarget(null);
             trainer.resetPokemob();
@@ -124,7 +131,7 @@ public class AIFindTarget extends AITrainerBase
                 EntityLivingBase e = (EntityLivingBase) o;
                 double dist = e.getDistance(entity);
                 // Only visible or valid targets.
-                if (!invalidTargets.apply(e) && dist < sight)
+                if (validTargets.apply(e) && dist < sight)
                 {
                     target = e;
                     break targetTrack;

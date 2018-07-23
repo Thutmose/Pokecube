@@ -72,6 +72,7 @@ traineredit.set.reward=Set reward to %s.
 traineredit.set.rewardnew=Added Reward of %s.
 traineredit.set.removereward=Removed Reward of %s.
 traineredit.set.look=Look Angle set to %s.
+traineredit.set.levels=Set levelling mode to %s.
 
 traineredit.title.pokemob=Edit Pokemob
 traineredit.title.message=Event Messages and Actions

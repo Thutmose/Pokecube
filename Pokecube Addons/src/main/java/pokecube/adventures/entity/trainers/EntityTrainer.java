@@ -204,9 +204,10 @@ public class EntityTrainer extends EntityTrainerBase
         this.tasks.addTask(3, new EntityAIMoveTowardsTarget(this, 0.6, 10));
         this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
         this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
-        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
+        this.tasks.addTask(9,
+                new EntityAIWatchClosest2(this, EntityPlayer.class, Config.instance.trainerSightRange, 1.0F));
         this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
-        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, Config.instance.trainerSightRange));
         this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
         this.tasks.addTask(1, guardAI);
         if (location != null)

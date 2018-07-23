@@ -38,6 +38,7 @@ import pokecube.adventures.ai.helper.AIStuffHolder;
 import pokecube.adventures.ai.tasks.AIBattle;
 import pokecube.adventures.ai.tasks.AIFindTarget;
 import pokecube.adventures.commands.Config;
+import pokecube.adventures.entity.helper.EntityTrainerBase;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
@@ -362,7 +363,7 @@ public class PAEventsHandler
         // All attack zombies.
         mob.getAI().addAITask(new AIFindTarget(npc, EntityZombie.class).setPriority(20));
         // Only trainers specifically target players.
-        if (npc instanceof EntityTrainer)
+        if (npc instanceof EntityTrainerBase)
             mob.getAI().addAITask(new AIFindTarget(npc, EntityPlayer.class).setPriority(10));
         // 5% chance of battling a random nearby pokemob if they see it.
         mob.getAI().addAITask(new AIFindTarget(npc, 0.05f, EntityPokemob.class).setPriority(20));

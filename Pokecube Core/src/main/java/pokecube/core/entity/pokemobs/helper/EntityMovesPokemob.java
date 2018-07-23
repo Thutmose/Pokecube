@@ -3,14 +3,12 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.moves.PokemobDamageSource;
-import thut.api.maths.Vector3;
 
 /** @author Manchou */
 public abstract class EntityMovesPokemob extends EntitySexedPokemob
@@ -40,24 +38,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     (float) this.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
         }
         return damage;
-    }
-
-    @Override
-    public boolean attackEntityAsMob(Entity par1Entity)
-    {
-        if (this.getAttackTarget() != null)
-        {
-            float distanceToEntity = this.getAttackTarget().getDistance(this);
-            attackEntityAsPokemob(par1Entity, distanceToEntity);
-        }
-        return super.attackEntityAsMob(par1Entity);
-    }
-
-    protected void attackEntityAsPokemob(Entity entity, float f)
-    {
-        if (pokemobCap.getLover() == entity) return;
-        Vector3 v = Vector3.getNewVector().set(entity);
-        pokemobCap.executeMove(entity, v, f);
     }
 
     @Override

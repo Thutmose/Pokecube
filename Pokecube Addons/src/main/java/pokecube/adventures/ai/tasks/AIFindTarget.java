@@ -8,11 +8,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.ITargetWatcher;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
-public class AIFindTarget extends AITrainerBase
+public class AIFindTarget extends AITrainerBase implements ITargetWatcher
 {
     // The entity (normally a player) that is the target of this trainer.
     final Class<? extends EntityLivingBase>[] targetClass;
@@ -26,6 +27,7 @@ public class AIFindTarget extends AITrainerBase
             Class<? extends EntityLivingBase>... targetClass)
     {
         super(entityIn);
+        this.trainer.addTargetWatcher(this);
         this.targetClass = targetClass;
         validTargets = new Predicate<EntityLivingBase>()
         {
@@ -41,8 +43,13 @@ public class AIFindTarget extends AITrainerBase
             @Override
             public boolean apply(EntityLivingBase input)
             {
+                // If the input has attacked us recently, then return true
+                // regardless of following checks.
+                if (input.getLastAttackedEntity() == entity
+                        && input.ticksExisted - input.getLastAttackedEntityTime() < 50)
+                    return true;
                 // Only target valid classes.
-                if (!validClass(input)) return false;
+                if (!validClass(input) || !input.attackable()) return false;
                 // Don't target pets
                 if (input instanceof IEntityOwnable && ((IEntityOwnable) input).getOwner() == entityIn) return false;
                 // Don't target invulnerable players (spectator/creative)
@@ -101,18 +108,11 @@ public class AIFindTarget extends AITrainerBase
 
     public void updateTask()
     {
-        // Check if target is invalid.
-        if (trainer.getTarget() != null && (trainer.getTarget().isDead || !validTargets.apply(trainer.getTarget())))
-        {
-            trainer.setTarget(null);
-            trainer.resetPokemob();
-            return;
-        }
         // If target is valid, return.
         if (trainer.getTarget() != null) return;
 
         // Check random chance of actually aquiring a target.
-        if (Math.random() < agroChance) return;
+        if (Math.random() > agroChance) return;
 
         // Look for targets
         Vector3 here = Vector3.getNewVector().set(entity);
@@ -126,12 +126,13 @@ public class AIFindTarget extends AITrainerBase
             look.scalarMultBy(sight);
             look.addTo(here);
             List<EntityLivingBase> targets = MovesUtils.targetsHit(entity, look);
+            if(!targets.isEmpty())
             for (Object o : targets)
             {
                 EntityLivingBase e = (EntityLivingBase) o;
                 double dist = e.getDistance(entity);
                 // Only visible or valid targets.
-                if (validTargets.apply(e) && dist < sight)
+                if (validTargetSet(e) && dist < sight)
                 {
                     target = e;
                     break targetTrack;
@@ -153,5 +154,11 @@ public class AIFindTarget extends AITrainerBase
         }
         // Set trainers target
         trainer.setTarget(target);
+    }
+
+    @Override
+    public boolean validTargetSet(EntityLivingBase target)
+    {
+        return validTargets.apply(target);
     }
 }

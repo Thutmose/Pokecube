@@ -1,8 +1,12 @@
 package pokecube.adventures.entity.helper.capabilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -54,11 +58,39 @@ public class CapabilityHasPokemobs
         return pokemobHolder;
     }
 
+    public static interface ITargetWatcher
+    {
+        boolean validTargetSet(EntityLivingBase target);
+
+        default void onAdded(IHasPokemobs pokemobs)
+        {
+        }
+
+        default void onRemoved(IHasPokemobs pokemobs)
+        {
+        }
+    }
+
     public static interface IHasPokemobs
     {
         public static enum LevelMode
         {
             CONFIG, YES, NO;
+        }
+
+        default Set<ITargetWatcher> getTargetWatchers()
+        {
+            return Collections.emptySet();
+        }
+
+        default void addTargetWatcher(ITargetWatcher watcher)
+        {
+            watcher.onAdded(this);
+        }
+
+        default void removeTargetWatcher(ITargetWatcher watcher)
+        {
+            watcher.onRemoved(this);
         }
 
         /** Adds the pokemob back into the inventory, healing it as needed. */
@@ -370,6 +402,7 @@ public class CapabilityHasPokemobs
         private IPokemob              outMob;
         private List<ItemStack>       pokecubes;
         private LevelMode             levelmode        = LevelMode.CONFIG;
+        private Set<ITargetWatcher>   watchers         = Sets.newHashSet();
 
         DataParamHolder               holder;
 
@@ -383,6 +416,23 @@ public class CapabilityHasPokemobs
             resetTime = battleCooldown;
             holder = PAEventsHandler.getParameterHolder(user.getClass());
             if (!TypeTrainer.mobTypeMapper.shouldSync(user)) pokecubes = CompatWrapper.makeList(6);
+        }
+
+        public Set<ITargetWatcher> getTargetWatchers()
+        {
+            return watchers;
+        }
+
+        public void addTargetWatcher(ITargetWatcher watcher)
+        {
+            IHasPokemobs.super.addTargetWatcher(watcher);
+            watchers.add(watcher);
+        }
+
+        public void removeTargetWatcher(ITargetWatcher watcher)
+        {
+            IHasPokemobs.super.removeTargetWatcher(watcher);
+            watchers.remove(watcher);
         }
 
         public boolean hasDefeated(Entity e)
@@ -467,6 +517,20 @@ public class CapabilityHasPokemobs
         @Override
         public void setTarget(EntityLivingBase target)
         {
+            Set<ITargetWatcher> watchers = getTargetWatchers();
+            if (target != null && !watchers.isEmpty())
+            {
+                boolean valid = false;
+                for (ITargetWatcher watcher : watchers)
+                {
+                    if (watcher.validTargetSet(target))
+                    {
+                        valid = true;
+                        break;
+                    }
+                }
+                if (!valid) target = null;
+            }
             if (!CompatWrapper.isValid(getPokemob(0)))
             {
                 target = null;

@@ -158,7 +158,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
             if (message.data.getBoolean("O"))
             {
                 player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, player.getEntityWorld(),
-                        mob.getEntityId(), 0, 0);
+                        mob != null ? mob.getEntityId() : -1, 0, 0);
                 return;
             }
             if (cap != null)

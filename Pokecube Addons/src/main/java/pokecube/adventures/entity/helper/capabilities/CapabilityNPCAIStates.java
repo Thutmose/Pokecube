@@ -18,6 +18,7 @@ public class CapabilityNPCAIStates
     public static IHasNPCAIStates getNPCAIStates(ICapabilityProvider entityIn)
     {
         IHasNPCAIStates pokemobHolder = null;
+        if (entityIn == null) return null;
         if (entityIn.hasCapability(AISTATES_CAP, null)) pokemobHolder = entityIn.getCapability(AISTATES_CAP, null);
         else if (entityIn instanceof IHasNPCAIStates) return (IHasNPCAIStates) entityIn;
         return pokemobHolder;

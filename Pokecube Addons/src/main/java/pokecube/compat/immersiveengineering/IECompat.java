@@ -55,6 +55,40 @@ import thut.lib.CompatWrapper;
 
 public class IECompat
 {
+    @Method(modid = "immersiveengineering")
+    @CompatClass(phase = Phase.INIT)
+    public static void ConstructIE()
+    {
+        XMLRecipeHandler.recipeParsers.put("ie_crusher", new CrusherParser());
+        XMLRecipeHandler.recipeParsers.put("ie_squeezer", new SqueezerParser());
+        XMLRecipeHandler.recipeParsers.put("ie_alloy", new AlloyParser());
+        XMLRecipeHandler.recipeParsers.put("ie_arcfurnace", new ArcFurnaceParser());
+        XMLRecipeHandler.recipeParsers.put("ie_mixer", new MixerParser());
+        XMLRecipeHandler.recipeParsers.put("ie_fermenter", new FermenterParser());
+        XMLRecipeHandler.recipeParsers.put("ie_refinery", new RefineryParser());
+        XMLRecipeHandler.recipeParsers.put("ie_press", new PressParser());
+    }
+
+    @Method(modid = "immersiveengineering")
+    @CompatClass(phase = Phase.POST)
+    public static void PostInitIE()
+    {
+        BerryClocheHandler clocheHandler = new BerryClocheHandler();
+        BelljarHandler.registerHandler(clocheHandler);
+        for (Integer id : BerryManager.berryNames.keySet())
+        {
+            String name = BerryManager.berryNames.get(id);
+            ItemStack berry = BerryManager.getBerryItem(name);
+            Block berryCrop = BerryManager.berryCrop;
+            Block berryFruit = BerryManager.berryFruit;
+            boolean tree = TileEntityBerries.trees.containsKey(id);
+            Object soil = tree ? ApiUtils.createIngredientStack("treeLeaves") : new ItemStack(Blocks.DIRT);
+            clocheHandler.register(tree, berry.copy(), new ItemStack[] { berry.copy() },
+                    berryFruit.getDefaultState().withProperty(BerryManager.type, name), soil,
+                    berryCrop.getDefaultState().withProperty(BerryManager.type, name));
+        }
+    }
+
     private static final QName ENERGY  = new QName("energy");
     private static final QName NUMBER  = new QName("n");
     private static final QName TIME    = new QName("time");
@@ -456,39 +490,4 @@ public class IECompat
             seedRenderMap.put(comp, cropRender);
         }
     }
-
-    @Method(modid = "immersiveengineering")
-    @CompatClass(phase = Phase.CONSTRUCT)
-    public static void ConstructIE()
-    {
-        XMLRecipeHandler.recipeParsers.put("ie_crusher", new CrusherParser());
-        XMLRecipeHandler.recipeParsers.put("ie_squeezer", new SqueezerParser());
-        XMLRecipeHandler.recipeParsers.put("ie_alloy", new AlloyParser());
-        XMLRecipeHandler.recipeParsers.put("ie_arcfurnace", new ArcFurnaceParser());
-        XMLRecipeHandler.recipeParsers.put("ie_mixer", new MixerParser());
-        XMLRecipeHandler.recipeParsers.put("ie_fermenter", new FermenterParser());
-        XMLRecipeHandler.recipeParsers.put("ie_refinery", new RefineryParser());
-        XMLRecipeHandler.recipeParsers.put("ie_press", new PressParser());
-    }
-
-    @Method(modid = "immersiveengineering")
-    @CompatClass(phase = Phase.POST)
-    public static void PostInitIE()
-    {
-        BerryClocheHandler clocheHandler = new BerryClocheHandler();
-        BelljarHandler.registerHandler(clocheHandler);
-        for (Integer id : BerryManager.berryNames.keySet())
-        {
-            String name = BerryManager.berryNames.get(id);
-            ItemStack berry = BerryManager.getBerryItem(name);
-            Block berryCrop = BerryManager.berryCrop;
-            Block berryFruit = BerryManager.berryFruit;
-            boolean tree = TileEntityBerries.trees.containsKey(id);
-            Object soil = tree ? ApiUtils.createIngredientStack("treeLeaves") : new ItemStack(Blocks.DIRT);
-            clocheHandler.register(tree, berry.copy(), new ItemStack[] { berry.copy() },
-                    berryFruit.getDefaultState().withProperty(BerryManager.type, name), soil,
-                    berryCrop.getDefaultState().withProperty(BerryManager.type, name));
-        }
-    }
-
 }

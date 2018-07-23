@@ -30,6 +30,7 @@ public class CapabilityHasRewards
     public static IHasRewards getHasRewards(ICapabilityProvider entityIn)
     {
         IHasRewards pokemobHolder = null;
+        if (entityIn == null) return null;
         if (entityIn.hasCapability(REWARDS_CAP, null)) pokemobHolder = entityIn.getCapability(REWARDS_CAP, null);
         else if (entityIn instanceof IHasRewards) return (IHasRewards) entityIn;
         return pokemobHolder;

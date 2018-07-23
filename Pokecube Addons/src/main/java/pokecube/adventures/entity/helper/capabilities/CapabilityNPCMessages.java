@@ -29,6 +29,7 @@ public class CapabilityNPCMessages
     public static IHasMessages getMessages(ICapabilityProvider entityIn)
     {
         IHasMessages pokemobHolder = null;
+        if (entityIn == null) return null;
         if (entityIn.hasCapability(MESSAGES_CAP, null)) pokemobHolder = entityIn.getCapability(MESSAGES_CAP, null);
         else if (entityIn instanceof IHasMessages) return (IHasMessages) entityIn;
         return pokemobHolder;

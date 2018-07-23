@@ -92,7 +92,7 @@ public class ItemTrainer extends CompatItem
     {
         if (world.isRemote) { return new ActionResult<>(EnumActionResult.PASS, itemstack); }
         Entity target = Tools.getPointedEntity(player, 8);
-        if (target == null)
+        if (target == null && player.isSneaking())
         {
             target = player;
         }

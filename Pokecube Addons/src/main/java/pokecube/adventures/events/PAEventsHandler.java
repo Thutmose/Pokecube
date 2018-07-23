@@ -368,7 +368,7 @@ public class PAEventsHandler
         mob.getAI().addAITask(new AIFindTarget(npc, 0.05f, EntityPokemob.class).setPriority(20));
 
         // 1% chance of battling another of same class if seen
-        mob.getAI().addAITask(new AIFindTarget(npc, 0.05f, npc.getClass()).setPriority(20));
+        mob.getAI().addAITask(new AIFindTarget(npc, 0.01f, npc.getClass()).setPriority(20));
 
         TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc, true);
         if (newType == null) return;

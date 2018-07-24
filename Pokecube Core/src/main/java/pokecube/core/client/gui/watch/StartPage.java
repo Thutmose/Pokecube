@@ -31,7 +31,7 @@ public class StartPage extends ListPage
         @Override
         public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_)
         {
-            
+
         }
 
         @Override
@@ -61,6 +61,7 @@ public class StartPage extends ListPage
                 // Index plus 1 as 0 is the start page, and no button for it.
                 page.watch.pages.get(page.watch.index).onPageClosed();
                 page.watch.index = slotIndex + 1;
+                GuiPokeWatch.lastPage = page.watch.index;
                 page.watch.pages.get(page.watch.index).onPageOpened();
             }
             return false;

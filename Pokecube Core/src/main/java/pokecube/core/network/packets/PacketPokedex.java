@@ -52,10 +52,12 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
@@ -169,6 +171,30 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         packet.data.setTag("B", list);
         packet.data.setBoolean("M", watch);
         packet.data.setInteger("R", PokecubeCore.core.getConfig().baseRadarRange);
+        List<Vector4> meteors = PokecubeSerializer.getInstance().meteors;
+        if (!meteors.isEmpty())
+        {
+            double dist = Double.MAX_VALUE;
+            Vector4 closest = null;
+            Vector4 posv = new Vector4(player);
+            double check = 0;
+            for (Vector4 loc : meteors)
+            {
+                if (loc.w != posv.w) continue;
+                check = PokecubeSerializer.distSq(loc, posv);
+                if (check < dist)
+                {
+                    closest = loc;
+                    dist = check;
+                }
+            }
+            if (closest != null)
+            {
+                NBTTagCompound tag = new NBTTagCompound();
+                closest.writeToNBT(tag);
+                packet.data.setTag("V", tag);
+            }
+        }
         packet.message = BASERADAR;
         PokecubePacketHandler.sendToClient(packet, player);
     }
@@ -587,6 +613,10 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             boolean mode = message.data.getBoolean("M");
             player.openGui(PokecubeCore.instance, mode ? Config.GUIPOKEDEX_ID : Config.GUIPOKEWATCH_ID,
                     player.getEntityWorld(), 0, 0, 0);
+            if (message.data.hasKey("V"))
+                pokecube.core.client.gui.watch.SecretBaseRadarPage.closestMeteor = new Vector4(
+                        message.data.getCompoundTag("V"));
+            else pokecube.core.client.gui.watch.SecretBaseRadarPage.closestMeteor = null;
             if (!message.data.hasKey("B") || !(message.data.getTag("B") instanceof NBTTagList)) return;
             NBTTagList list = (NBTTagList) message.data.getTag("B");
             pokecube.core.client.gui.watch.SecretBaseRadarPage.bases.clear();

@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 /** @author Manchou */
 public class ItemLuckyEgg extends Item
@@ -49,7 +50,7 @@ public class ItemLuckyEgg extends Item
             }
             else
             {
-                boolean meteor = PokecubeSerializer.getInstance().canMeteorLand(location);
+                boolean meteor = PokecubeSerializer.getInstance().canMeteorLand(new Vector4(player));
                 player.sendMessage(new TextComponentString("Meteor Can Land: " + meteor));
             }
         }

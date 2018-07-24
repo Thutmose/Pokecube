@@ -51,6 +51,7 @@ import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -833,10 +834,14 @@ public final class SpawnHandler
             int dx = rand.nextInt(200) - 100;
             int dz = rand.nextInt(200) - 100;
             Vector3 v = this.v.set(player).add(dx, 0, dz);
-            v.add(0, 255 - player.posY, 0);
-            if (PokecubeSerializer.getInstance().canMeteorLand(v))
+            Vector4 loc = new Vector4(player);
+            loc.x += dx;
+            loc.z += dz;
+            loc.y = world.getHeight((int) loc.x, (int) loc.z);
+            if (PokecubeSerializer.getInstance().canMeteorLand(loc))
             {
                 Vector3 direction = v1.set(rand.nextGaussian() / 2, -1, rand.nextGaussian() / 2);
+                v.set(loc.x, loc.y, loc.z);
                 Vector3 location = Vector3.getNextSurfacePoint(world, v, direction, 255);
                 if (location != null)
                 {
@@ -850,8 +855,7 @@ public final class SpawnHandler
                         PokecubeMod.log(message);
                     }
                     boom.doExplosion();
-                    PokecubeSerializer.getInstance().addMeteorLocation(v);
-
+                    PokecubeSerializer.getInstance().addMeteorLocation(loc);
                 }
             }
         }

@@ -59,15 +59,18 @@ public class GuiPokeWatch extends GuiScreen
         PAGELIST.add(SecretBaseRadarPage.class);
     }
 
-    final List<WatchPage>     pages = Lists.newArrayList();
+    public static int         lastPage = -1;
+
+    final List<WatchPage>     pages    = Lists.newArrayList();
     public final IPokemob     pokemob;
     public final EntityPlayer player;
-    int                       index = 0;
+    int                       index    = 0;
 
     public GuiPokeWatch(EntityPlayer player, int startPage)
     {
         this(player);
         if (startPage >= 0 && startPage < pages.size()) index = startPage;
+        else if (lastPage >= 0 && lastPage < pages.size()) index = lastPage;
         PacketPokedex.sendLocationSpawnsRequest();
     }
 
@@ -193,6 +196,7 @@ public class GuiPokeWatch extends GuiScreen
         {
             pages.get(old).onPageClosed();
             pages.get(index).onPageOpened();
+            lastPage = index;
         }
         try
         {

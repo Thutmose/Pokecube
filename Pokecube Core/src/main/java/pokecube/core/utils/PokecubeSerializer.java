@@ -181,7 +181,7 @@ public class PokecubeSerializer
     }
 
     ISaveHandler                                       saveHandler;
-    private ArrayList<Vector3>                         meteors;
+    public ArrayList<Vector4>                          meteors;
 
     public HashMap<Integer, HashMap<BlockPos, Ticket>> chunks;
     private int                                        lastId = 0;
@@ -197,7 +197,7 @@ public class PokecubeSerializer
         serverId = PokecubeCore.proxy.getFolderName();
         if (myWorld != null) saveHandler = myWorld.getSaveHandler();
         lastId = 0;
-        meteors = new ArrayList<Vector3>();
+        meteors = new ArrayList<Vector4>();
         chunks = new HashMap<>();
         loadData();
     }
@@ -249,19 +249,33 @@ public class PokecubeSerializer
         saveData();
     }
 
-    public void addMeteorLocation(Vector3 v)
+    public void addMeteorLocation(Vector4 v)
     {
         meteors.add(v);
         save();
     }
 
-    public boolean canMeteorLand(Vector3 location)
+    public boolean canMeteorLand(Vector4 location)
     {
-        for (Vector3 v : meteors)
+        for (Vector4 v : meteors)
         {
-            if (v.distToSq(location) < MeteorDistance) return false;
+            if (tooClose(location, v)) return false;
         }
         return true;
+    }
+
+    public static double distSq(Vector4 location, Vector4 meteor)
+    {
+        double dx = location.x - meteor.x;
+        double dy = location.y - meteor.y;
+        double dz = location.z - meteor.z;
+        return dx * dx + dy * dy + dz * dz;
+    }
+
+    private boolean tooClose(Vector4 location, Vector4 meteor)
+    {
+        if (location.w != meteor.w) return false;
+        return distSq(location, meteor) < MeteorDistance;
     }
 
     public void clearInstance()
@@ -323,12 +337,22 @@ public class PokecubeSerializer
 
                     if (pokemobData != null)
                     {
-                        Vector3 location = Vector3.readFromNBT(pokemobData, METEORS);
+                        Vector4 location;
+                        // TODO remove this in a few versions.
+                        if (pokemobData.hasKey(METEORS + "x"))
+                        {
+                            int posX = pokemobData.getInteger(METEORS + "x");
+                            int posY = pokemobData.getInteger(METEORS + "y");
+                            int posZ = pokemobData.getInteger(METEORS + "z");
+                            int w = pokemobData.getInteger(METEORS + "w");
+                            location = new Vector4(posX, posY, posZ, w);
+                        }
+                        else location = new Vector4(pokemobData);
                         if (location != null && !location.isEmpty())
                         {
-                            for (Vector3 v : meteors)
+                            for (Vector4 v : meteors)
                             {
-                                if (v.distToSq(location) < 4) continue meteors;
+                                if (distSq(location, v) < 4) continue meteors;
                             }
                             meteors.add(location);
                         }
@@ -433,12 +457,12 @@ public class PokecubeSerializer
     {
         nbttagcompound.setInteger(LASTUID, lastId);
         NBTTagList tagListMeteors = new NBTTagList();
-        for (Vector3 v : meteors)
+        for (Vector4 v : meteors)
         {
             if (v != null && !v.isEmpty())
             {
                 NBTTagCompound nbt = new NBTTagCompound();
-                v.writeToNBT(nbt, METEORS);
+                v.writeToNBT(nbt);
                 tagListMeteors.appendTag(nbt);
             }
         }

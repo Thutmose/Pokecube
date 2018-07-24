@@ -37,10 +37,11 @@ import pokecube.core.utils.PokeType;
 
 public class PokemobInfoPage extends PageWithSubPages
 {
+    public static int savedIndex = 0;
 
-    IPokemob     pokemob;
-    IPokemob     renderMob;
-    GuiTextField search;
+    IPokemob          pokemob;
+    IPokemob          renderMob;
+    GuiTextField      search;
 
     public PokemobInfoPage(GuiPokeWatch watch)
     {
@@ -55,6 +56,7 @@ public class PokemobInfoPage extends PageWithSubPages
         int x = watch.width / 2 - 70;
         int y = watch.height / 2 + 53;
         search = new GuiTextField(0, fontRenderer, x, y, 140, 10);
+        index = savedIndex;
     }
 
     public void initPages(IPokemob pokemob)
@@ -112,10 +114,12 @@ public class PokemobInfoPage extends PageWithSubPages
         if (button.id == 3)// Next
         {
             changePage(index + 1);
+            savedIndex = index;
         }
         else if (button.id == 4)// Previous
         {
             changePage(index - 1);
+            savedIndex = index;
         }
         else if (button.id == 5)
         {

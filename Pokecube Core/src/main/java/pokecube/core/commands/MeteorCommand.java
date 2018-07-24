@@ -10,6 +10,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 public class MeteorCommand extends CommandBase
 {
@@ -54,6 +55,7 @@ public class MeteorCommand extends CommandBase
                     PokecubeMod.getFakePlayer(cSender.getEntityWorld()), location, energy).setMeteor(true);
             boom.doExplosion();
         }
-        PokecubeSerializer.getInstance().addMeteorLocation(v);
+        PokecubeSerializer.getInstance()
+                .addMeteorLocation(new Vector4(v.x, v.y, v.z, cSender.getEntityWorld().provider.getDimension()));
     }
 }

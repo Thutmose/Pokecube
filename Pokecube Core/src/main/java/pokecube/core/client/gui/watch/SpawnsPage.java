@@ -127,6 +127,7 @@ public class SpawnsPage extends ListPage
             PacketPokedex.updateWatchEntry(e);
             watch.pages.get(watch.index).onPageClosed();
             watch.index = 1;
+            GuiPokeWatch.lastPage = 1;
             PokemobInfoPage page = (PokemobInfoPage) watch.pages.get(watch.index);
             page.initPages(null);
             watch.pages.get(watch.index).onPageOpened();

@@ -289,6 +289,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
+    protected void collideWithNearbyEntities()
+    {
+        if (PokecubeCore.core.getConfig().pokemobCollisions)
+        {
+            super.collideWithNearbyEntities();
+        }
+    }
+
+    @Override
     /** Moves the entity based on the specified heading. Args: strafe, up,
      * forward */// TODO fix minor bugs here.
     public void travel(float strafe, float up, float forward)

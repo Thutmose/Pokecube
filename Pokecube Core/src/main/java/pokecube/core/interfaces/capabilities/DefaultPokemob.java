@@ -133,18 +133,6 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
     }
 
     @Override
-    public int getTotalAIState()
-    {
-        return dataManager.get(params.AIACTIONSTATESDW);
-    }
-
-    @Override
-    public void setTotalAIState(int state)
-    {
-        dataManager.set(params.AIACTIONSTATESDW, state);
-    }
-
-    @Override
     public int getTargetID()
     {
         return dataManager.get(params.ATTACKTARGETIDDW);

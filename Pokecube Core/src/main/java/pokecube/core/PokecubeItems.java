@@ -432,7 +432,7 @@ public class PokecubeItems extends Items
         if (!stacks.isEmpty()) return stacks.get(0).copy();
         Item item = getItem(name);
         if (item != null) { return new ItemStack(item); }
-        if (PokecubeMod.debug)
+        if (PokecubeMod.debug && stacktrace)
         {
             PokecubeMod.log(Level.WARNING, name + " Not found in list of items.", new NullPointerException());
         }

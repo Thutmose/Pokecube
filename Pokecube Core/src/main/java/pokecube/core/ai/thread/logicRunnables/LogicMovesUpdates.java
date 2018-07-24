@@ -83,19 +83,19 @@ public class LogicMovesUpdates extends LogicBase
             {
                 pokemob.setAttackCooldown(MovesUtils.getAttackDelay(pokemob, pokemob.getLastMoveUsed(), false, false));
             }
+
+            for (int i = 0; i < 4; i++)
+            {
+                int timer = pokemob.getDisableTimer(i);
+                if (timer > 0) pokemob.setDisableTimer(i, timer - 1);
+            }
+
+            if (pokemob.getMoveStats().DEFENSECURLCOUNTER > 0) pokemob.getMoveStats().DEFENSECURLCOUNTER--;
+            if (pokemob.getMoveStats().SPECIALCOUNTER > 0) pokemob.getMoveStats().SPECIALCOUNTER--;
+
+            updateStatusEffect();
+            doExplosionChecks();
         }
-
-        for (int i = 0; i < 4; i++)
-        {
-            int timer = pokemob.getDisableTimer(i);
-            if (timer > 0) pokemob.setDisableTimer(i, timer - 1);
-        }
-
-        if (pokemob.getMoveStats().DEFENSECURLCOUNTER > 0) pokemob.getMoveStats().DEFENSECURLCOUNTER--;
-        if (pokemob.getMoveStats().SPECIALCOUNTER > 0) pokemob.getMoveStats().SPECIALCOUNTER--;
-
-        if (!world.isRemote) updateStatusEffect();
-        if (!world.isRemote) doExplosionChecks();
 
         // Reset move specific counters if the move index has changed.
         if (index != pokemob.getMoveIndex())

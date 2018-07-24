@@ -28,6 +28,7 @@ import thut.lib.CompatWrapper;
 public abstract class PokemobAI extends PokemobEvolves
 {
     private boolean[]                               routineStates = new boolean[AIRoutine.values().length];
+    private int                                     cachedAIState;
     private Map<ResourceLocation, ResourceLocation> shinyTexs     = Maps.newHashMap();
 
     @Override
@@ -39,7 +40,21 @@ public abstract class PokemobAI extends PokemobEvolves
     @Override
     public boolean getPokemonAIState(int state)
     {
-        return (dataManager.get(params.AIACTIONSTATESDW) & state) != 0;
+        if (getEntity().getEntityWorld().isRemote) cachedAIState = dataManager.get(params.AIACTIONSTATESDW);
+        return (cachedAIState & state) != 0;
+    }
+
+    @Override
+    public int getTotalAIState()
+    {
+        return dataManager.get(params.AIACTIONSTATESDW);
+    }
+
+    @Override
+    public void setTotalAIState(int state)
+    {
+        cachedAIState = state;
+        dataManager.set(params.AIACTIONSTATESDW, state);
     }
 
     @Override
@@ -246,14 +261,8 @@ public abstract class PokemobAI extends PokemobEvolves
             here.set(getEntity());
             setHome(here.intX(), here.intY(), here.intZ(), 16);
         }
-        if (flag)
-        {
-            dataManager.set(params.AIACTIONSTATESDW, Integer.valueOf((byte0 | state)));
-        }
-        else
-        {
-            dataManager.set(params.AIACTIONSTATESDW, Integer.valueOf((byte0 & -state - 1)));
-        }
+        int newState = flag ? (byte0 | state) : (byte0 & -state - 1);
+        setTotalAIState(newState);
     }
 
     @Override

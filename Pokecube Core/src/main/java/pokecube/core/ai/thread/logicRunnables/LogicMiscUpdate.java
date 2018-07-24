@@ -28,22 +28,28 @@ import thut.lib.CompatWrapper;
  * is out of combat. */
 public class LogicMiscUpdate extends LogicBase
 {
-    public static final int[] FLAVCOLOURS       = new int[] { 0xFFFF4932, 0xFF4475ED, 0xFFF95B86, 0xFF2EBC63,
+    public static final int[]   FLAVCOLOURS       = new int[] { 0xFFFF4932, 0xFF4475ED, 0xFFF95B86, 0xFF2EBC63,
             0xFFEBCE36 };
-    public static int         EXITCUBEDURATION  = 40;
-    private int               lastHadTargetTime = 0;
-    private int[]             flavourAmounts    = new int[5];
-    private PokedexEntry      entry;
-    private String            particle          = null;
-    private boolean           reset             = false;
-    private boolean           initHome          = false;
-    private boolean           checkedEvol       = false;
-    private int               pathTimer         = 0;
-    Vector3                   v                 = Vector3.getNewVector();
+    public static int           EXITCUBEDURATION  = 40;
+
+    public static final boolean holiday           = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) == 25
+            && Calendar.getInstance().get(Calendar.MONTH) == 11;
+
+    private int                 lastHadTargetTime = 0;
+    private int[]               flavourAmounts    = new int[5];
+    private PokedexEntry        entry;
+    private String              particle          = null;
+    private boolean             reset             = false;
+    private boolean             initHome          = false;
+    private boolean             checkedEvol       = false;
+    private int                 pathTimer         = 0;
+    Vector3                     v                 = Vector3.getNewVector();
+    private static ItemStack    everstone;
 
     public LogicMiscUpdate(IPokemob entity)
     {
         super(entity);
+        if (everstone == null) everstone = PokecubeItems.getStack("everstone");
     }
 
     @Override
@@ -190,8 +196,7 @@ public class LogicMiscUpdate extends LogicBase
                 }
             }
         }
-        Calendar calendar = Calendar.getInstance();
-        if (calendar.get(Calendar.DAY_OF_MONTH) == 25 && calendar.get(Calendar.MONTH) == 11)
+        if (holiday)
         {
             particle = "aurora";// Merry Xmas
             particleIntensity = 10;
@@ -267,7 +272,7 @@ public class LogicMiscUpdate extends LogicBase
     private void checkEvolution()
     {
         boolean evolving = pokemob.getPokemonAIState(EVOLVING);
-        if (Tools.isSameStack(pokemob.getHeldItem(), PokecubeItems.getStack("everstone")))
+        if (Tools.isSameStack(pokemob.getHeldItem(), everstone))
         {
             if (evolving)
             {

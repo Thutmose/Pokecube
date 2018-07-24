@@ -324,6 +324,8 @@ public class Config extends ConfigBase
     public float                         flyPathingSpeedFactor        = 1.25f;
     @Configure(category = mobAI)
     public float                         swimPathingSpeedFactor       = 1.25f;
+    @Configure(category = mobAI)
+    public boolean                       pokemobCollisions            = true;
 
     public SoundEvent[]                  dodges                       = {};
     public SoundEvent[]                  leaps                        = {};

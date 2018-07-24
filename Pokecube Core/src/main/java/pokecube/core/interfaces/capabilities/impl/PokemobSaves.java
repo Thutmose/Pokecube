@@ -128,7 +128,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         // Read AI
         if (!aiTag.hasNoTags())
         {
-            dataManager.set(params.AIACTIONSTATESDW, aiTag.getInteger(AISTATE));
+            setTotalAIState(aiTag.getInteger(AISTATE));
             for (Field f : IMoveConstants.class.getFields())
             {
                 NonPersistantAI annot = f.getAnnotation(NonPersistantAI.class);
@@ -266,7 +266,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         }
         // Misc AI
         NBTTagCompound aiTag = new NBTTagCompound();
-        aiTag.setInteger(AISTATE, dataManager.get(params.AIACTIONSTATESDW));
+        aiTag.setInteger(AISTATE, getTotalAIState());
         aiTag.setInteger(HUNGER, getHungerTime());
         if (getHome() != null) aiTag.setIntArray(HOME,
                 new int[] { getHome().getX(), getHome().getY(), getHome().getZ(), (int) getHomeDistance() });

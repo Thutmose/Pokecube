@@ -132,6 +132,10 @@ public class CapabilityHasPokemobs
                                     PokecubeManager.heal(mob);
                                     setPokemob(i, mob.copy());
                                 }
+                                else
+                                {
+                                    mob = getPokemob(i);
+                                }
                                 break;
                             }
                         }

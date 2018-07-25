@@ -229,8 +229,16 @@ public class JEICompat implements IModPlugin
                 IngredientBlacklistInternal blacklist = new IngredientBlacklistInternal();
                 blacklist.addIngredientToBlacklist(e, ingredientHelper);
                 IngredientFilter filter = new IngredientFilter(blacklist);
-                mezz.jei.config.Config.addIngredientToConfigBlacklist(filter, this.registry.getIngredientRegistry(), e,
-                        IngredientBlacklistType.ITEM, ingredientHelper);
+                try
+                {
+                    mezz.jei.config.Config.addIngredientToConfigBlacklist(filter, this.registry.getIngredientRegistry(), e,
+                            IngredientBlacklistType.ITEM, ingredientHelper);
+                }
+                catch (Exception e1)
+                {
+//                    // TODO Auto-generated catch block
+//                    e1.printStackTrace();
+                }
             }
         }
     }

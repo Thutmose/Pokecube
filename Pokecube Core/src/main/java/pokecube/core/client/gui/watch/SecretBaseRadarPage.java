@@ -47,7 +47,7 @@ public class SecretBaseRadarPage extends WatchPage
         int x = watch.width / 2;
         int y = watch.height / 2 - 5;
         this.watch.getButtons().add(
-                new PageButton(button = watch.getButtons().size(), x + 64, y - 70, 12, 12, meteors ? "m" : "b", this));
+                new PageButton(button = watch.getButtons().size(), x + 64, y - 70, 12, 12, "", this));
     }
 
     @Override
@@ -151,12 +151,10 @@ public class SecretBaseRadarPage extends WatchPage
         if (meteors)
         {
             this.setTitle(I18n.format("pokewatch.title.meteorradar"));
-            button.displayString = "m";
         }
         else
         {
             this.setTitle(I18n.format("pokewatch.title.baseradar"));
-            button.displayString = "b";
         }
 
     }

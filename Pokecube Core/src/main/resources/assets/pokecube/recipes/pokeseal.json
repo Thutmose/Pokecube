@@ -1,0 +1,27 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "pokecube",
+  "pattern": [
+    "GGG",
+    "RBR",
+    "III"
+  ],
+  "key": {
+    "R": {
+      "item": "#DYERED"
+    },
+    "B": {
+      "item": "minecraft:stone_button"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "I": {
+      "item": "#DYEBLUE"
+    }
+  },
+  "result": {
+    "item": "pokecube:pokeseal",
+    "count": 6
+  }
+}

@@ -72,6 +72,7 @@ public class LogicMovesUpdates extends LogicBase
         super.doServerTick(world);
         v.set(entity);
 
+        // Run tasks that only should go on server side.
         if (!world.isRemote)
         {
             if (MovesUtils.isAbleToUseMoves(pokemob) == AbleStatus.ABLE)
@@ -95,28 +96,28 @@ public class LogicMovesUpdates extends LogicBase
 
             updateStatusEffect();
             doExplosionChecks();
+
+            // Reset move specific counters if the move index has changed.
+            if (index != pokemob.getMoveIndex())
+            {
+                pokemob.getMoveStats().FURYCUTTERCOUNTER = 0;
+                pokemob.getMoveStats().PHYSICALDAMAGETAKENCOUNTER = 0;
+                pokemob.getMoveStats().SPECIALDAMAGETAKENCOUNTER = 0;
+            }
+            index = pokemob.getMoveIndex();
+
+            if (pokemob.getMoves()[0] == null)
+            {
+                pokemob.learn(IMoveNames.MOVE_TACKLE);
+            }
         }
 
-        // Reset move specific counters if the move index has changed.
-        if (index != pokemob.getMoveIndex())
-        {
-            pokemob.getMoveStats().FURYCUTTERCOUNTER = 0;
-            pokemob.getMoveStats().PHYSICALDAMAGETAKENCOUNTER = 0;
-            pokemob.getMoveStats().SPECIALDAMAGETAKENCOUNTER = 0;
-        }
-        index = pokemob.getMoveIndex();
-
-        if (pokemob.getMoves()[0] == null)
-        {
-            pokemob.learn(IMoveNames.MOVE_TACKLE);
-        }
-
+        //Run tasks that can be on server or client.
         if (pokemob.getTransformedTo() != null && entity.getAttackTarget() == null
                 && !(pokemob.getPokemonAIState(IMoveConstants.MATING) || pokemob.getLover() != null))
         {
             pokemob.setTransformedTo(null);
         }
-
         if (pokemob.getTransformedTo() == null && pokemob.getLover() != null && hasMove(IMoveNames.MOVE_TRANSFORM))
         {
             pokemob.setTransformedTo(pokemob.getLover());

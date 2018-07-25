@@ -1,0 +1,45 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pokecube",
+  "ingredients": [
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    },
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    },
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    },
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    },
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    },
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    },
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    },
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    },
+    {
+      "item": "pokecube:tm",
+      "data": 19
+    }
+  ],
+  "result": {
+    "item": "minecraft:emerald"
+  }
+}

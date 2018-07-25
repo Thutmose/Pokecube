@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pokecube",
+  "pattern": [
+    "III",
+    "SRS",
+    "SMS"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "minecraft:stone",
+      "data": 0
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "pokecube:luckyegg",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "pokecube:pokecenter"
+  }
+}

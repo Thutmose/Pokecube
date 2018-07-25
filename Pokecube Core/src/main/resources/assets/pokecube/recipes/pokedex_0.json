@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pokecube",
+  "pattern": [
+    "PRR",
+    "RBR",
+    "RRR"
+  ],
+  "key": {
+    "P": {
+      "item": "pokecube:pokecube"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "pokecube:pokedex",
+    "data": 0
+  }
+}

@@ -847,15 +847,7 @@ public final class SpawnHandler
                 {
                     if (world.getClosestPlayer(location.x, location.y, location.z, 96, false) != null) return;
                     float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);
-                    ExplosionCustom boom = new ExplosionCustom(world, null, location, energy).setMeteor(true);
-                    if (PokecubeMod.debug)
-                    {
-                        String message = "Meteor at " + v + " with Direction of " + direction + " and energy of "
-                                + energy;
-                        PokecubeMod.log(message);
-                    }
-                    boom.doExplosion();
-                    PokecubeSerializer.getInstance().addMeteorLocation(loc);
+                    makeMeteor(world, location, energy);
                 }
             }
         }
@@ -883,5 +875,22 @@ public final class SpawnHandler
         {
             e.printStackTrace();
         }
+    }
+
+    public static void makeMeteor(World world, Vector3 location, float power)
+    {
+        if (power > 0)
+        {
+            ExplosionCustom boom = new ExplosionCustom(world, null, location, power).setMeteor(true)
+                    .setMaxRadius(PokecubeCore.core.getConfig().meteorRadius);
+            if (PokecubeMod.debug)
+            {
+                String message = "Meteor at " + location + " with energy of " + power;
+                PokecubeMod.log(message);
+            }
+            boom.doExplosion();
+        }
+        PokecubeSerializer.getInstance()
+                .addMeteorLocation(new Vector4(location.x, location.y, location.z, world.provider.getDimension()));
     }
 }

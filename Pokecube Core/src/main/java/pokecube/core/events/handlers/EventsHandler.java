@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.vecmath.Vector3f;
 
@@ -161,13 +162,16 @@ public class EventsHandler
                 List<BlockPos> thisTick = toProcess.get(evt.world.provider.getDimension());
                 if (thisTick == null || thisTick.isEmpty()) return;
                 int i = 0;
+                int num = 0;
                 for (i = 0; i < Math.min(1000, thisTick.size()); i++)
                 {
                     BlockPos pos = thisTick.get(i);
                     TerrainManager.getInstance().getTerrain(evt.world, pos).setBiome(pos, BiomeType.METEOR.getType());
+                    num = i + 1;
                 }
-                for (i = 0; i < Math.min(1000, thisTick.size()); i++)
-                    thisTick.remove(i);
+                if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Processed " + num + " blocks as meteor.");
+                for (i = 0; i < Math.min(num, thisTick.size()); i++)
+                    thisTick.remove(0);
             }
         }
 
@@ -505,6 +509,10 @@ public class EventsHandler
         {
             ExplosionCustom boom = (ExplosionCustom) evt.getExplosion();
             if (!boom.meteor) return;
+            if (PokecubeMod.debug)
+            {
+                PokecubeMod.log(Level.INFO, "Adding " + evt.getAffectedBlocks().size() + " for meteor processing.");
+            }
             meteorprocessor.addBlocks(evt.getAffectedBlocks(), evt.getWorld().provider.getDimension());
         }
     }

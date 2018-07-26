@@ -163,6 +163,9 @@ public class Config extends ConfigBase
     /** Scaling factor for pokemob explosions */
     public double                        blastStrength                = 100;
     @Configure(category = moves)
+    /** Scaling factor for pokemob explosions */
+    public int                           blastRadius                  = 16;
+    @Configure(category = moves)
     /** Capped damage to players by pok�mobs */
     public int                           maxWildPlayerDamage          = 10;
     @Configure(category = moves)
@@ -336,6 +339,8 @@ public class Config extends ConfigBase
     public boolean                       meteors                      = true;
     @Configure(category = world)
     public int                           meteorDistance               = 3000;
+    @Configure(category = world)
+    public int                           meteorRadius                 = 64;
     @Configure(category = world)
     public boolean                       doSpawnBuilding              = true;
     @Configure(category = world)

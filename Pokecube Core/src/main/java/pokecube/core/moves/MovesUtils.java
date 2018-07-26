@@ -21,6 +21,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.database.moves.MoveEntry.Category;
 import pokecube.core.interfaces.IMoveConstants;
@@ -698,7 +699,8 @@ public class MovesUtils implements IMoveConstants
     public static ExplosionCustom newExplosion(Entity entity, double par2, double par4, double par6, float par8,
             boolean par9, boolean par10)
     {
-        ExplosionCustom var11 = new ExplosionCustom(entity.getEntityWorld(), entity, par2, par4, par6, par8);
+        ExplosionCustom var11 = new ExplosionCustom(entity.getEntityWorld(), entity, par2, par4, par6, par8)
+                .setMaxRadius(PokecubeCore.core.getConfig().blastRadius);
         IPokemob poke = CapabilityPokemob.getPokemobFor(entity);
         if (poke != null)
         {

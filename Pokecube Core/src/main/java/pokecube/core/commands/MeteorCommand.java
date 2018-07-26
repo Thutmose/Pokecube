@@ -6,11 +6,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.PokecubeSerializer;
-import thut.api.boom.ExplosionCustom;
+import pokecube.core.events.handlers.SpawnHandler;
 import thut.api.maths.Vector3;
-import thut.api.maths.Vector4;
 
 public class MeteorCommand extends CommandBase
 {
@@ -48,14 +45,7 @@ public class MeteorCommand extends CommandBase
             }
         }
         Vector3 v = Vector3.getNewVector().set(cSender).add(0, 255 - cSender.getPosition().getY(), 0);
-        if (energy > 0)
-        {
-            Vector3 location = Vector3.getNextSurfacePoint(cSender.getEntityWorld(), v, Vector3.secondAxisNeg, 255);
-            ExplosionCustom boom = new ExplosionCustom(cSender.getEntityWorld(),
-                    PokecubeMod.getFakePlayer(cSender.getEntityWorld()), location, energy).setMeteor(true);
-            boom.doExplosion();
-        }
-        PokecubeSerializer.getInstance()
-                .addMeteorLocation(new Vector4(v.x, v.y, v.z, cSender.getEntityWorld().provider.getDimension()));
+        Vector3 location = Vector3.getNextSurfacePoint(cSender.getEntityWorld(), v, Vector3.secondAxisNeg, 255);
+        SpawnHandler.makeMeteor(cSender.getEntityWorld(), location, energy);
     }
 }

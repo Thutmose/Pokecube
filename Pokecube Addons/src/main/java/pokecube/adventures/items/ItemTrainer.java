@@ -80,8 +80,8 @@ public class ItemTrainer extends CompatItem
                 break;
             }
         }
-        capability.setActiveTime(TimePeriod.fullDay);
-        capability.setPos(v.getPosition());
+        capability.getPrimaryTask().setActiveTime(TimePeriod.fullDay);
+        capability.getPrimaryTask().setPos(v.getPosition());
         v.tasks.addTask(2, new GuardAI(v, capability));
         return true;
     }

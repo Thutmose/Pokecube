@@ -113,6 +113,7 @@ public class EditTrainerPage extends ListPage
     private int              MESSAGEINDEX = -1;
     private int              REWARDSINDEX = -1;
     private int              TRADESINDEX  = -1;
+    private int              ROUTESINDEX  = -1;
 
     public EditTrainerPage(GuiEditTrainer watch)
     {
@@ -189,6 +190,8 @@ public class EditTrainerPage extends ListPage
                 x + dx, y + dy + 24, 60, 12, I18n.format("traineredit.button.rewards")));
         if (parent.tradesPage != null) parent.getButtons().add(new Button(TRADESINDEX = parent.tradesPage.index, x + dx,
                 y + dy + 36, 60, 12, I18n.format("traineredit.button.trades")));
+        if (parent.routesPage != null) parent.getButtons().add(new Button(ROUTESINDEX = parent.routesPage.index, x + dx,
+                y + dy + 48, 60, 12, I18n.format("traineredit.button.routes")));
 
     }
 
@@ -280,7 +283,11 @@ public class EditTrainerPage extends ListPage
             parent.setIndex(TRADESINDEX);
             return;
         }
-
+        if (button.id == ROUTESINDEX)
+        {
+            parent.setIndex(ROUTESINDEX);
+            return;
+        }
         switch (button.id)
         {
         case TOGGLEGENDER:

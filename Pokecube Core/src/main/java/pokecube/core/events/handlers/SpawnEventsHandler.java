@@ -52,7 +52,7 @@ public class SpawnEventsHandler
             if (taskEntry.action instanceof GuardAI)
             {
                 capability = ((GuardAI) taskEntry.action).capability;
-                capability.setPos(pos.getPos());
+                capability.getPrimaryTask().setPos(pos.getPos());
                 break;
             }
         }

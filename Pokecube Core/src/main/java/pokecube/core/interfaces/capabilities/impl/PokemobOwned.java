@@ -99,14 +99,14 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     public BlockPos getHome()
     {
         if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
-        return guardCap.getPos();
+        return guardCap.getPrimaryTask().getPos();
     }
 
     @Override
     public float getHomeDistance()
     {
         if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
-        return guardCap.getRoamDistance();
+        return guardCap.getPrimaryTask().getRoamDistance();
     }
 
     @Override
@@ -171,7 +171,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public boolean hasHomeArea()
     {
-        return guardCap.getRoamDistance() > 0;
+        return guardCap.getPrimaryTask().getRoamDistance() > 0;
     }
 
     protected void initInventory()
@@ -377,10 +377,10 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     public void setHome(int x, int y, int z, int distance)
     {
         if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
-        guardCap.setPos(new BlockPos(x, y, z));
-        guardCap.setRoamDistance(distance);
+        guardCap.getPrimaryTask().setPos(new BlockPos(x, y, z));
+        guardCap.getPrimaryTask().setRoamDistance(distance);
         if (getEntity() instanceof EntityAnimal)
-            ((EntityAnimal) getEntity()).setHomePosAndDistance(guardCap.getPos(), distance);
+            ((EntityAnimal) getEntity()).setHomePosAndDistance(guardCap.getPrimaryTask().getPos(), distance);
     }
 
     @Override

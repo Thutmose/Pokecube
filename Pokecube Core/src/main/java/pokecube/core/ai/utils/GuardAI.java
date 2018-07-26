@@ -1,12 +1,7 @@
 package pokecube.core.ai.utils;
 
-import java.util.UUID;
-
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability.GuardState;
@@ -31,7 +26,6 @@ import pokecube.core.utils.TimePeriod;
 */
 public class GuardAI extends EntityAIBase
 {
-    private AttributeModifier       goingHome = null;
 
     public final IGuardAICapability capability;
     private final EntityLiving      entity;
@@ -41,19 +35,18 @@ public class GuardAI extends EntityAIBase
     {
         this.entity = entity;
         this.capability = capability;
-        goingHome = new AttributeModifier(UUID.fromString("4454b0d8-75ef-4689-8fce-daab61a7e1b0"), "Pokecube:GoingHome",
-                32 / 16.0 - 1.0, 2);
     }
 
     @Override
     public boolean shouldContinueExecuting()
     {
+        if (!capability.hasActiveTask(entity.getEntityWorld().getWorldTime(), 24000)) return false;
         switch (capability.getState())
         {
         case RUNNING:
-            if (capability.getPos() == null || (entity.getNavigator().noPath()
-                    && entity.getDistanceSq(capability.getPos()) < capability.getRoamDistance()
-                            * capability.getRoamDistance() / 2))
+            if (capability.getActiveTask().getPos() == null || (entity.getNavigator().noPath() && entity
+                    .getDistanceSq(capability.getActiveTask().getPos()) < capability.getActiveTask().getRoamDistance()
+                            * capability.getActiveTask().getRoamDistance() / 2))
             {
                 capability.setState(GuardState.COOLDOWN);
                 return true;
@@ -77,17 +70,17 @@ public class GuardAI extends EntityAIBase
     {
         super.resetTask();
         capability.setState(GuardState.IDLE);
-        entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).removeModifier(goingHome);
+        capability.getActiveTask().endTask(entity);
     }
 
     public void setPos(BlockPos pos)
     {
-        capability.setPos(pos);
+        capability.getActiveTask().setPos(pos);
     }
 
     public void setTimePeriod(TimePeriod time)
     {
-        capability.setActiveTime(time);
+        capability.getActiveTask().setActiveTime(time);
     }
 
     @Override
@@ -100,14 +93,12 @@ public class GuardAI extends EntityAIBase
         } // TODO find some way to determine actual length of day for things
           // like
           // AR support.
-        if (null == entity || entity.isDead || capability.getActiveTime() == null
-                || capability.getPos() == null) { return false; }
-        if (capability.getActiveTime() != TimePeriod.fullDay && !capability.getActiveTime()
-                .contains(entity.getEntityWorld().getWorldTime(), 24000)) { return false; }
-        BlockPos pos = capability.getPos();
+        if (null == entity || entity.isDead
+                || !capability.hasActiveTask(entity.getEntityWorld().getWorldTime(), 24000)) { return false; }
+        BlockPos pos = capability.getActiveTask().getPos();
         if (pos.equals(BlockPos.ORIGIN)) return false;
-        double distanceToGuardPointSq = entity.getDistanceSq(capability.getPos());
-        double maxDist = capability.getRoamDistance() * capability.getRoamDistance();
+        double distanceToGuardPointSq = entity.getDistanceSq(capability.getActiveTask().getPos());
+        double maxDist = capability.getActiveTask().getRoamDistance() * capability.getActiveTask().getRoamDistance();
         maxDist = Math.max(maxDist, entity.width);
         return (distanceToGuardPointSq > maxDist);
     }
@@ -116,11 +107,7 @@ public class GuardAI extends EntityAIBase
     public void startExecuting()
     {
         capability.setState(GuardState.RUNNING);
-        entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).removeModifier(goingHome);
-        entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(goingHome);
-        double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
-        entity.getNavigator().tryMoveToXYZ(capability.getPos().getX() + 0.5, capability.getPos().getY(),
-                capability.getPos().getZ() + 0.5, speed);
+        capability.getActiveTask().startTask(entity);
     }
 
     @Override
@@ -129,28 +116,11 @@ public class GuardAI extends EntityAIBase
         super.updateTask();
         if (capability.getState() == GuardState.RUNNING)
         {
-            boolean hasPath = !entity.getNavigator().noPath();
-            double maxDist = capability.getRoamDistance() * capability.getRoamDistance();
-            maxDist = Math.max(maxDist, entity.width);
-            if (!hasPath)
-            {
-                double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
-                entity.getNavigator().tryMoveToXYZ(capability.getPos().getX() + 0.5, capability.getPos().getY(),
-                        capability.getPos().getZ() + 0.5, speed);
-            }
-            else
-            {
-                PathPoint end = entity.getNavigator().getPath().getFinalPathPoint();
-                BlockPos endPos = new BlockPos(end.x, end.y, end.z);
-                if (endPos.distanceSq(capability.getPos()) > maxDist)
-                {
-                    double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)
-                            .getAttributeValue();
-                    entity.getNavigator().tryMoveToXYZ(capability.getPos().getX() + 0.5, capability.getPos().getY(),
-                            capability.getPos().getZ() + 0.5, speed);
-                }
-            }
-            if (entity.getDistanceSq(capability.getPos()) < maxDist) capability.setState(GuardState.COOLDOWN);
+            double maxDist = capability.getActiveTask().getRoamDistance()
+                    * capability.getActiveTask().getRoamDistance();
+            capability.getActiveTask().continueTask(entity);
+            if (entity.getDistanceSq(capability.getActiveTask().getPos()) < maxDist)
+                capability.setState(GuardState.COOLDOWN);
         }
 
     }

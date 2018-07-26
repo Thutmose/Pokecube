@@ -31,7 +31,7 @@ public class PathNavigateTrainer extends PathNavigateGround
     {
         if (trainer.aiStates.getAIState(IHasNPCAIStates.STATIONARY))
         {
-            BlockPos pos = trainer.guardAI.capability.getPos();
+            BlockPos pos = trainer.guardAI.capability.getPrimaryTask().getPos();
             if (pos != null && trainer.getDistanceSq(pos) > 1) return true;
             return false;
         }

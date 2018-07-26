@@ -131,9 +131,9 @@ public class EditAIPage extends Page
         parent.getButtons().add(new Button(8, x - 120, y + 15, 60, 12, button));
 
         textList.get(0).setValidator(floatValid);
-        textList.get(0).setText(guard.getRoamDistance() + "");
+        textList.get(0).setText(guard.getPrimaryTask().getRoamDistance() + "");
 
-        TimePeriod times = guard.getActiveTime();
+        TimePeriod times = guard.getPrimaryTask().getActiveTime();
         if (times == null)
         {
             times = new TimePeriod(0, 0);
@@ -172,9 +172,9 @@ public class EditAIPage extends Page
                     !parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY));
 
             IGuardAICapability guard = parent.entity.getCapability(EventsHandler.GUARDAI_CAP, null);
-            guard.setPos(parent.entity.getPosition());
-            guard.setActiveTime(!parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? new TimePeriod(0, 0)
-                    : TimePeriod.fullDay);
+            guard.getPrimaryTask().setPos(parent.entity.getPosition());
+            guard.getPrimaryTask().setActiveTime(!parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY)
+                    ? new TimePeriod(0, 0) : TimePeriod.fullDay);
             sendGuardUpdate();
             sendAIUpdate();
             mess = new TextComponentTranslation(
@@ -240,8 +240,7 @@ public class EditAIPage extends Page
             parent.mc.player.sendStatusMessage(mess, true);
             break;
         case 8:
-            parent.aiStates.setAIState(IHasNPCAIStates.TRADES,
-                    !parent.aiStates.getAIState(IHasNPCAIStates.TRADES));
+            parent.aiStates.setAIState(IHasNPCAIStates.TRADES, !parent.aiStates.getAIState(IHasNPCAIStates.TRADES));
             sendAIUpdate();
             mess = new TextComponentTranslation(
                     "traineredit.set.trade." + parent.aiStates.getAIState(IHasNPCAIStates.TRADES));
@@ -296,7 +295,7 @@ public class EditAIPage extends Page
         TimePeriod time = null;
         float start, end;
         IGuardAICapability guard = parent.entity.getCapability(EventsHandler.GUARDAI_CAP, null);
-        TimePeriod old = guard.getActiveTime();
+        TimePeriod old = guard.getPrimaryTask().getActiveTime();
         if (old == null) old = new TimePeriod(0, 0);
         start = (float) old.startTime;
         end = (float) old.endTime;
@@ -307,20 +306,22 @@ public class EditAIPage extends Page
         {
         case 0:
             argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
-            guard.setRoamDistance(argFloat);
+            guard.getPrimaryTask().setRoamDistance(argFloat);
             mess = new TextComponentTranslation("traineredit.set.guarddist", argFloat);
             sendGuardUpdate();
             break;
         case 1:
-            argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
-            time = new TimePeriod(argFloat, end);
-            guard.setActiveTime(time);
+            start = value.isEmpty() ? 0 : Float.parseFloat(value);
+            end = Float.parseFloat(textList.get(2).getText());
+            time = new TimePeriod(start, end);
+            guard.getPrimaryTask().setActiveTime(time);
             sendGuardUpdate();
             break;
         case 2:
-            argFloat = value.isEmpty() ? 0 : Float.parseFloat(value);
-            time = new TimePeriod(start, argFloat);
-            guard.setActiveTime(time);
+            end = value.isEmpty() ? 0 : Float.parseFloat(value);
+            start = Float.parseFloat(textList.get(1).getText());
+            time = new TimePeriod(start, end);
+            guard.getPrimaryTask().setActiveTime(time);
             sendGuardUpdate();
             break;
         case 3:

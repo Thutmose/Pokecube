@@ -293,8 +293,8 @@ public class EntityTrainer extends EntityTrainerBase
     {
         if (getNavigator().getPath() != null && aiStates.getAIState(IHasNPCAIStates.STATIONARY))
         {
-            if (guardAI.capability.getPos() == null || guardAI.capability.getPos().equals(BlockPos.ORIGIN)) { return; }
-            guardAI.capability.setActiveTime(TimePeriod.fullDay);
+            if (guardAI.capability.getPrimaryTask().getPos() == null) { return; }
+            guardAI.capability.getPrimaryTask().setActiveTime(TimePeriod.fullDay);
         }
         super.onUpdate();
     }

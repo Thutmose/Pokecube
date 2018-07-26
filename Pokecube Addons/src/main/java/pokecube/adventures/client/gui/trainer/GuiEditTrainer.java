@@ -22,6 +22,8 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHas
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.core.PokecubeCore;
+import pokecube.core.ai.properties.IGuardAICapability;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
@@ -117,8 +119,10 @@ public class GuiEditTrainer extends GuiScreen
     protected EditRewardsPage            rewardsPage;
     protected EditMessagesPage           messagePage;
     protected EditTradesPage             tradesPage;
+    protected EditRoutePage              routesPage;
     protected List<EditPokemobPage>      pokemobPages = Lists.newArrayList();
     public final Entity                  entity;
+    public final IGuardAICapability      guard;
     public final IHasPokemobs            trainer;
     public final IHasRewards             rewards;
     public final IHasMessages            messages;
@@ -134,6 +138,8 @@ public class GuiEditTrainer extends GuiScreen
         messages = CapabilityNPCMessages.getMessages(target);
         aiStates = CapabilityNPCAIStates.getNPCAIStates(target);
         pokemob = CapabilityPokemob.getPokemobFor(target);
+        if (entity != null) guard = entity.getCapability(EventsHandler.GUARDAI_CAP, null);
+        else guard = null;
     }
 
     public List<GuiButton> getButtons()
@@ -174,6 +180,7 @@ public class GuiEditTrainer extends GuiScreen
         {
             pages.add(tradesPage = new EditTradesPage(this, num++));
         }
+        if (guard != null) pages.add(routesPage = new EditRoutePage(this, num++));
         for (Page page : pages)
             page.initGui();
         pages.get(getIndex()).onPageOpened();

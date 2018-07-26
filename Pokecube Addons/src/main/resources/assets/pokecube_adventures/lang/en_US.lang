@@ -55,6 +55,8 @@ traineredit.set.mates.true=Trainer Set to mate.
 traineredit.set.mates.false=Trainer Set to not mate.
 traineredit.set.invulnerable.true=Trainer Set to invulnerable.
 traineredit.set.invulnerable.false=Trainer Set to vulnerable.
+traineredit.set.trade.true=Trainer Set to trade.
+traineredit.set.trade.false=Trainer Set to not trade.
 traineredit.set.gender.1=Trainer set as "Male".
 traineredit.set.gender.2=Trainer set as "Female".
 traineredit.set.type=Trainer Type set to %s.
@@ -128,6 +130,8 @@ traineredit.button.mates=Mates
 traineredit.button.nomates=No Mates
 traineredit.button.invulnerable=Invuln
 traineredit.button.vulnerable=Vulnerable
+traineredit.button.trade=Trade
+traineredit.button.notrade=No Trade
 
 traineredit.button.trainer=Trainer
 traineredit.button.leader=Leader

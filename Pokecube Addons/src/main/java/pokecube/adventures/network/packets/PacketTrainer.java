@@ -313,7 +313,6 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                     {
                         guard.setPos(mob.getPosition());
                         guard.setActiveTime(stationaryBefore ? new TimePeriod(0, 0) : TimePeriod.fullDay);
-                        guard.setRoamDistance(stationaryBefore ? 16 : 0);
                     }
                 }
 

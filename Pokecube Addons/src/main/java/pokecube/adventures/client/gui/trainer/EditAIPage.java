@@ -126,6 +126,9 @@ public class EditAIPage extends Page
         button = parent.aiStates.getAIState(IHasNPCAIStates.INVULNERABLE)
                 ? I18n.format("traineredit.button.invulnerable") : I18n.format("traineredit.button.vulnerable");
         parent.getButtons().add(new Button(7, x - 120, y + 63, 60, 12, button));
+        button = parent.aiStates.getAIState(IHasNPCAIStates.TRADES) ? I18n.format("traineredit.button.trade")
+                : I18n.format("traineredit.button.notrade");
+        parent.getButtons().add(new Button(8, x - 120, y + 15, 60, 12, button));
 
         textList.get(0).setValidator(floatValid);
         textList.get(0).setText(guard.getRoamDistance() + "");
@@ -172,7 +175,6 @@ public class EditAIPage extends Page
             guard.setPos(parent.entity.getPosition());
             guard.setActiveTime(!parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? new TimePeriod(0, 0)
                     : TimePeriod.fullDay);
-            guard.setRoamDistance(!parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? 16 : 0);
             sendGuardUpdate();
             sendAIUpdate();
             mess = new TextComponentTranslation(
@@ -235,6 +237,14 @@ public class EditAIPage extends Page
             sendAIUpdate();
             mess = new TextComponentTranslation(
                     "traineredit.set.invulnerable." + parent.aiStates.getAIState(IHasNPCAIStates.INVULNERABLE));
+            parent.mc.player.sendStatusMessage(mess, true);
+            break;
+        case 8:
+            parent.aiStates.setAIState(IHasNPCAIStates.TRADES,
+                    !parent.aiStates.getAIState(IHasNPCAIStates.TRADES));
+            sendAIUpdate();
+            mess = new TextComponentTranslation(
+                    "traineredit.set.trade." + parent.aiStates.getAIState(IHasNPCAIStates.TRADES));
             parent.mc.player.sendStatusMessage(mess, true);
             break;
         }

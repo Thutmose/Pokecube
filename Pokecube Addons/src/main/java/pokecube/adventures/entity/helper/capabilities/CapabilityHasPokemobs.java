@@ -499,7 +499,11 @@ public class CapabilityHasPokemobs
         @Override
         public void lowerCooldowns()
         {
-            if (aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY)) { return; }
+            if (aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY))
+            {
+                friendlyCooldown = 10;
+                return;
+            }
             if (friendlyCooldown-- >= 0) return;
             boolean done = getAttackCooldown() <= 0;
             if (done)

@@ -57,13 +57,13 @@ public class ItemTarget extends CompatItem
     public void interact(EntityInteract event)
     {
         ItemStack stack = event.getItemStack();
-        if (!CompatWrapper.isValid(stack) || stack.getItem() != this) return;
+        if (!CompatWrapper.isValid(stack) || stack.getItem() != this || event.getSide() == Side.CLIENT) return;
         EntityPlayer playerIn = event.getEntityPlayer();
         Entity target = event.getTarget();
         IGuardAICapability cap = target.getCapability(EventsHandler.GUARDAI_CAP, null);
         if (stack.getItemDamage() == 1 && cap != null)
         {
-            boolean canSet = true;
+            boolean canSet = event.getEntityPlayer().isCreative();
             if (target instanceof IEntityOwnable)
             {
                 canSet = ((IEntityOwnable) target).getOwner() == playerIn;
@@ -72,9 +72,6 @@ public class ItemTarget extends CompatItem
             {
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
                 cap.setPos(new BlockPos((int) (pos.x - 0.5), (int) (pos.y - 1), (int) (pos.z - 0.5)));
-                cap.setRoamDistance(playerIn.isSneaking() ? 1 : 16);
-                // TODO use a gui for this instead, and include settings like
-                // times for guarding.
                 playerIn.sendMessage(new TextComponentString("Set Home to " + pos));
                 event.setCanceled(true);
             }

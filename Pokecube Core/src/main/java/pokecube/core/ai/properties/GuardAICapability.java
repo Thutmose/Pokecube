@@ -15,11 +15,12 @@ public class GuardAICapability implements IGuardAICapability
             return new GuardAICapability();
         }
     }
+
     private BlockPos   pos;
-    private float      roamDistance;
+    private float      roamDistance = 2;
     private TimePeriod activeTime;
 
-    private GuardState state = GuardState.IDLE;
+    private GuardState state        = GuardState.IDLE;
 
     @Override
     public TimePeriod getActiveTime()

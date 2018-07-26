@@ -65,8 +65,8 @@ public final class TimePeriod
 
     public boolean contains(long time, long dayLength)
     {
-        time = time % 24000;
-        return (time >= startTick && time <= endTick);
+        time = time % dayLength;
+        return contains(time / ((double) dayLength));
     }
 
     public boolean overlaps(TimePeriod other)

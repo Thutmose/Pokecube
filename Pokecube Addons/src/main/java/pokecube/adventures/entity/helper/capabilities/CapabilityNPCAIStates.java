@@ -33,6 +33,7 @@ public class CapabilityNPCAIStates
         public static final int FIXEDDIRECTION = 1 << 4;
         public static final int MATES          = 1 << 5;
         public static final int INVULNERABLE   = 1 << 6;
+        public static final int TRADES         = 1 << 7;
 
         /** @return Direction to face if FIXEDDIRECTION */
         public float getDirection();
@@ -81,6 +82,10 @@ public class CapabilityNPCAIStates
     {
         int   state = 0;
         float direction;
+
+        public DefaultAIStates()
+        {
+        }
 
         @Override
         public boolean getAIState(int state)

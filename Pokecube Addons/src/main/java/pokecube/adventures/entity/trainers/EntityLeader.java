@@ -25,7 +25,7 @@ public class EntityLeader extends EntityTrainer
     {
         super(world);
         aiStates.setAIState(IHasNPCAIStates.STATIONARY, true);
-        trades = false;
+        aiStates.setAIState(IHasNPCAIStates.TRADES, false);
         ((DefaultPokemobs) pokemobsCap).resetTime = 0;
     }
 
@@ -38,7 +38,7 @@ public class EntityLeader extends EntityTrainer
     public EntityLeader(World par1World, Vector3 location)
     {
         super(par1World);
-        trades = false;
+        aiStates.setAIState(IHasNPCAIStates.TRADES, false);
 
         this.setSize(0.6F, 1.8F);
         this.tasks.addTask(0, new EntityAISwimming(this));
@@ -66,7 +66,7 @@ public class EntityLeader extends EntityTrainer
 
         TypeTrainer.getRandomTeam(pokemobsCap, this, level, getEntityWorld());
         setTypes();
-        trades = false;
+        aiStates.setAIState(IHasNPCAIStates.TRADES, false);
     }
 
     @Override

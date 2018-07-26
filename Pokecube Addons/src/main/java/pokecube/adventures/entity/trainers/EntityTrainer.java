@@ -59,15 +59,14 @@ import thut.lib.CompatWrapper;
 
 public class EntityTrainer extends EntityTrainerBase
 {
-    private boolean   randomize   = false;
-    public Vector3    location    = null;
-    public String     name        = "";
-    public String     playerName  = "";
-    public String     urlSkin     = "";
-    boolean           added       = false;
-    protected boolean trades      = true;
-    public GuardAI    guardAI;
-    public long       visibleTime = 0;
+    private boolean randomize   = false;
+    public Vector3  location    = null;
+    public String   name        = "";
+    public String   playerName  = "";
+    public String   urlSkin     = "";
+    boolean         added       = false;
+    public GuardAI  guardAI;
+    public long     visibleTime = 0;
 
     public EntityTrainer(World par1World)
     {
@@ -367,7 +366,7 @@ public class EntityTrainer extends EntityTrainerBase
             }
             else if (pokemobsCap.friendlyCooldown >= 0)
             {
-                if (!this.getEntityWorld().isRemote && trades)
+                if (!this.getEntityWorld().isRemote && aiStates.getAIState(IHasNPCAIStates.TRADES))
                 {
                     this.setCustomer(player);
                     player.displayVillagerTradeGui(this);
@@ -383,9 +382,9 @@ public class EntityTrainer extends EntityTrainerBase
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-        if (nbt.hasKey("trades")) trades = nbt.getBoolean("trades");
         playerName = nbt.getString("playerName");
         urlSkin = nbt.getString("urlSkin");
+        if (nbt.hasKey("trades")) aiStates.setAIState(IHasNPCAIStates.TRADES, nbt.getBoolean("trades"));
         randomize = nbt.getBoolean("randomTeam");
         name = nbt.getString("name");
         setTypes();
@@ -479,7 +478,6 @@ public class EntityTrainer extends EntityTrainerBase
         super.writeEntityToNBT(nbt);
         nbt.setString("playerName", playerName);
         nbt.setString("urlSkin", urlSkin);
-        nbt.setBoolean("trades", trades);
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
     }

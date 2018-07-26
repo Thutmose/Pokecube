@@ -1,5 +1,6 @@
 package pokecube.adventures.ai.helper;
 
+import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -16,6 +17,13 @@ public class PathNavigateTrainer extends PathNavigateGround
         this.trainer = entitylivingIn;
         this.setBreakDoors(true);
         this.setEnterDoors(true);
+    }
+
+    @Override
+    public boolean setPath(Path pathentityIn, double speedIn)
+    {
+        // TODO Auto-generated method stub
+        return super.setPath(pathentityIn, speedIn);
     }
 
     @Override

@@ -50,7 +50,7 @@ public abstract class EntityTrainerBase extends EntityHasTrades
                 && !aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY))
         {
             despawncounter++;
-            if (despawncounter > 50)
+            if (despawncounter > 200)
             {
                 this.setDead();
             }

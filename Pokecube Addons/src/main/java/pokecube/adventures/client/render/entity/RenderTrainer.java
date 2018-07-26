@@ -38,12 +38,16 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 
     private ModelBiped                                male;
     private ModelBiped                                female;
+    private ModelBiped                                childMale;
+    private ModelBiped                                childFemale;
 
     public RenderTrainer(RenderManager manager)
     {
         super(manager, new ModelBiped(0.0F), 0.5f);
         male = new ModelPlayer(0, false);
         female = new ModelPlayer(0, true);
+        childMale = new ModelPlayer(0.5f, false);
+        childFemale = new ModelPlayer(0.5f, true);
         this.addLayer(new BagRenderer(this));
         LayerRenderer<?> badHeadRenderer = null;
         for (Object o : layerRenderers)
@@ -72,11 +76,11 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
         if (((EntityTrainer) entity).visibleTime > time) return;
         if (((EntityTrainer) entity).pokemobsCap.getGender() == 1)
         {
-            mainModel = male;
+            mainModel = entity.isChild() ? childMale : male;
         }
         else
         {
-            mainModel = female;
+            mainModel = entity.isChild() ? childFemale : female;
         }
         GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
         super.doRender(entity, x, y, z, entityYaw, partialTicks);

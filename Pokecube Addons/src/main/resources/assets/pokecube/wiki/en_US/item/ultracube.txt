@@ -1,5 +1,0 @@
-[prefix{l}]Ultracube[prefix{}]
-This cube has 2x the capture rate of the Pokecube, but is much more expensive to make.
-
-[prefix{l}]Recipe[prefix{}]
-[crafting{200,80,key=item/ultracube}]

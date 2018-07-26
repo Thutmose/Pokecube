@@ -5,12 +5,15 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.ai.EntityAIMoveIndoors;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
 import net.minecraft.entity.ai.EntityAIOpenDoor;
+import net.minecraft.entity.ai.EntityAIRestrictOpenDoor;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -35,7 +38,10 @@ import pokecube.adventures.ai.helper.PathNavigateTrainer;
 import pokecube.adventures.commands.Config;
 import pokecube.adventures.commands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.core.PokecubeItems;
@@ -148,7 +154,9 @@ public class EntityTrainer extends EntityTrainerBase
             }
         }
         if (source == DamageSource.DROWN) return false;
-        if (Config.instance.trainersInvul) return false;
+        // Apply 0 damage to still count as an "attack"
+        if (Config.instance.trainersInvul || aiStates.getAIState(IHasNPCAIStates.INVULNERABLE))
+            return super.attackEntityFrom(source, 0.0f);
         return super.attackEntityFrom(source, amount);
     }
 
@@ -193,7 +201,6 @@ public class EntityTrainer extends EntityTrainerBase
             if (mob.getPokemonOwner() != null && pokemobsCap.getTarget() == null)
             {
                 if (pokemobsCap.getAttackCooldown() <= 0) pokemobsCap.setTarget(mob.getPokemonOwner());
-                pokemobsCap.throwCubeAt(entity);
             }
         }
     }
@@ -202,6 +209,8 @@ public class EntityTrainer extends EntityTrainerBase
     {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(3, new EntityAIMoveTowardsTarget(this, 0.6, 10));
+        this.tasks.addTask(2, new EntityAIMoveIndoors(this));
+        this.tasks.addTask(3, new EntityAIRestrictOpenDoor(this));
         this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
         this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
         this.tasks.addTask(9,
@@ -496,5 +505,30 @@ public class EntityTrainer extends EntityTrainerBase
     protected PathNavigate createNavigator(World worldIn)
     {
         return new PathNavigateTrainer(this, worldIn);
+    }
+
+    @Override
+    public EntityAgeable createChild(EntityAgeable ageable)
+    {
+        if (isChild() || this.getGrowingAge() > 0 || !aiStates.getAIState(IHasNPCAIStates.MATES)) return null;
+        if (pokemobsCap.getGender() == 2)
+        {
+            IHasPokemobs other = CapabilityHasPokemobs.getHasPokemobs(ageable);
+            IHasNPCAIStates otherAI = CapabilityNPCAIStates.getNPCAIStates(ageable);
+            if (other != null && otherAI != null && otherAI.getAIState(IHasNPCAIStates.MATES) && other.getGender() == 1)
+            {
+                if (location == null) location = Vector3.getNewVector();
+                EntityTrainer baby = TrainerSpawnHandler.getInstance().getTrainer(location.set(this), getEntityWorld());
+                if (baby != null) baby.setGrowingAge(-24000);
+                return baby;
+            }
+        }
+        return null;
+    }
+
+    /** This is called when Entity's growing age timer reaches 0 (negative
+     * values are considered as a child, positive as an adult) */
+    protected void onGrowingAdult()
+    {
     }
 }

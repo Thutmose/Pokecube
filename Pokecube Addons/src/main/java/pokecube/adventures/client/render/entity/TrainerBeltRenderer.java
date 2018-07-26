@@ -9,6 +9,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
@@ -94,6 +95,12 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         if (!CompatWrapper.isValid(entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.LEGS)))
         {
             s = 0.465f;
+        }
+        if (entitylivingbaseIn instanceof EntityAgeable && entitylivingbaseIn.isChild())
+        {
+            s *= 0.6;
+            dz -= 0.525;
+            
         }
         GL11.glScalef(s, s, s);
         this.livingEntityRenderer.bindTexture(belt_1);

@@ -5,6 +5,7 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -16,6 +17,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.village.MerchantRecipe;
+import net.minecraft.village.MerchantRecipeList;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -89,6 +92,20 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
         packet.data.setBoolean("O", true);
         packet.data.setInteger("I", target == null ? -1 : target.getEntityId());
+
+        if (target != null)
+        {
+            NBTTagCompound tag = new NBTTagCompound();
+            IHasNPCAIStates ai = CapabilityNPCAIStates.getNPCAIStates(target);
+            IGuardAICapability guard = target.getCapability(EventsHandler.GUARDAI_CAP, null);
+            IHasPokemobs pokemobs = CapabilityHasPokemobs.getHasPokemobs(target);
+            if (ai != null)
+                tag.setTag("A", CapabilityNPCAIStates.storage.writeNBT(CapabilityNPCAIStates.AISTATES_CAP, ai, null));
+            if (guard != null) tag.setTag("G", EventsHandler.storage.writeNBT(EventsHandler.GUARDAI_CAP, guard, null));
+            if (pokemobs != null) tag.setTag("P",
+                    CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, pokemobs, null));
+            packet.data.setTag("C", tag);
+        }
         PokecubeMod.packetPipeline.sendTo(packet, editor);
     }
 
@@ -157,11 +174,71 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
             IHasPokemobs cap = CapabilityHasPokemobs.getHasPokemobs(mob);
             if (message.data.getBoolean("O"))
             {
+                if (mob != null && message.data.hasKey("C"))
+                {
+                    NBTTagCompound nbt = message.data.getCompoundTag("C");
+                    IHasNPCAIStates ai = CapabilityNPCAIStates.getNPCAIStates(mob);
+                    IGuardAICapability guard = mob.getCapability(EventsHandler.GUARDAI_CAP, null);
+                    IHasPokemobs pokemobs = CapabilityHasPokemobs.getHasPokemobs(mob);
+                    if (nbt.hasKey("A"))
+                    {
+                        if (ai != null)
+                        {
+                            CapabilityNPCAIStates.storage.readNBT(CapabilityNPCAIStates.AISTATES_CAP, ai, null,
+                                    nbt.getTag("A"));
+                        }
+                    }
+                    if (nbt.hasKey("G"))
+                    {
+                        if (guard != null)
+                        {
+                            EventsHandler.storage.readNBT(EventsHandler.GUARDAI_CAP, guard, null, nbt.getTag("G"));
+                        }
+                    }
+                    if (nbt.hasKey("P"))
+                    {
+                        if (pokemobs != null)
+                        {
+                            CapabilityHasPokemobs.storage.readNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, pokemobs, null,
+                                    nbt.getTag("P"));
+                        }
+                    }
+                }
                 player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, player.getEntityWorld(),
                         mob != null ? mob.getEntityId() : -1, 0, 0);
                 return;
             }
-            if (cap != null)
+            if (tag instanceof NBTTagCompound && ((NBTTagCompound) tag).hasKey("TR") && mob instanceof IMerchant)
+            {
+                NBTTagCompound nbt = ((NBTTagCompound) tag);
+                int index = nbt.getInteger("I");
+                NBTTagCompound tag2 = new NBTTagCompound();
+                mob.writeToNBT(tag2);
+                MerchantRecipeList list = new MerchantRecipeList(tag2.getCompoundTag("Offers"));
+                if (nbt.hasKey("R"))
+                {
+                    MerchantRecipe recipe = new MerchantRecipe(nbt.getCompoundTag("R"));
+                    if (index < list.size()) list.set(index, recipe);
+                    else list.add(recipe);
+                }
+                else
+                {
+                    if (nbt.hasKey("N"))
+                    {
+                        int index1 = nbt.getInteger("I");
+                        int index2 = index1 + nbt.getInteger("N");
+                        MerchantRecipe temp = list.get(index1);
+                        list.set(index1, list.get(index2));
+                        list.set(index2, temp);
+                    }
+                    else if (index < list.size()) list.remove(index);
+                }
+
+                tag2.setTag("Offers", list.getRecipiesAsTags());
+                mob.readFromNBT(tag2);
+                PacketHandler.sendEntityUpdate(mob);
+            }
+            else if (cap != null)
             {
                 IHasMessages messages = CapabilityNPCMessages.getMessages(mob);
                 IHasRewards rewards = CapabilityHasRewards.getHasRewards(mob);
@@ -258,6 +335,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                     mob.setDead();
                 }
                 else mob.readFromNBT(pokemob.getEntity().writeToNBT(new NBTTagCompound()));
+                PacketHandler.sendEntityUpdate(mob);
             }
         }
         if (message.message == MESSAGESPAWNTRAINER)

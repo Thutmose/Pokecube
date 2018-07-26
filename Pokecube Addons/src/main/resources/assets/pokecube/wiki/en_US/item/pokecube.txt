@@ -1,5 +1,0 @@
-[prefix{l}]Pokecube[prefix{}]
-This is the standard Pokecube, It is used to capture pokemobs, and has the default capture rate.
-
-[prefix{l}]Recipe[prefix{}]
-[crafting{200,80,key=item/pokecube}]

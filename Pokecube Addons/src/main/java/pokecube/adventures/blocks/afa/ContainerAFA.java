@@ -32,6 +32,13 @@ public class ContainerAFA extends Container
             return PokecubeManager.isFilled(itemstack)
                     || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), itemstack);
         }
+
+        @Override
+        public boolean canTakeStack(EntityPlayer playerIn)
+        {
+            TileEntityAFA tile = (TileEntityAFA) inventory;
+            return tile.placer.equals(playerIn.getUniqueID());
+        }
     }
 
     public TileEntityAFA tile;
@@ -71,7 +78,7 @@ public class ContainerAFA extends Container
     @Override
     public boolean canInteractWith(EntityPlayer playerIn)
     {
-        return playerIn.getUniqueID().equals(tile.placer);
+        return true;
     }
 
     protected void clearSlots()

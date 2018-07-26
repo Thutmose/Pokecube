@@ -129,8 +129,10 @@ public class CommonProxy implements IGuiHandler
 
         static class CachedLoc
         {
-            String checksum;
-            String file;
+            static Map<String, String> checksums = Maps.newHashMap();
+
+            String                     checksum;
+            String                     file;
 
             public CachedLoc(String file)
             {
@@ -141,17 +143,19 @@ public class CommonProxy implements IGuiHandler
                 }
                 catch (NoSuchAlgorithmException | IOException e)
                 {
-
                     throw new RuntimeException("Error with file? " + file + " " + e);
                 }
             }
 
             private String computeChecksum(String file2) throws NoSuchAlgorithmException, IOException
             {
+                if (checksums.containsKey(file2)) return checksums.get(file2);
                 MessageDigest digest = MessageDigest.getInstance("SHA1");
                 InputStream stream = FileUtils.openInputStream(new File(file2));
                 digest.update(IOUtils.toByteArray(stream));
-                return new String(digest.digest());
+                String sum = new String(digest.digest());
+                checksums.put(file2, sum);
+                return sum;
             }
 
             public boolean stillValid()
@@ -502,6 +506,7 @@ public class CommonProxy implements IGuiHandler
             ProgressManager.pop(bar2);
         }
         ProgressManager.pop(bar);
+        CachedLoc.checksums.clear();
     }
 
     public void populateModels()

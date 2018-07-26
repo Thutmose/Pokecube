@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IMerchant;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
@@ -115,6 +116,7 @@ public class GuiEditTrainer extends GuiScreen
     protected EditAIPage                 aiPage;
     protected EditRewardsPage            rewardsPage;
     protected EditMessagesPage           messagePage;
+    protected EditTradesPage             tradesPage;
     protected List<EditPokemobPage>      pokemobPages = Lists.newArrayList();
     public final Entity                  entity;
     public final IHasPokemobs            trainer;
@@ -146,10 +148,10 @@ public class GuiEditTrainer extends GuiScreen
         pages.clear();
         pokemobPages.clear();
 
+        int num = 1;
         if (trainer != null)
         {
             pages.add(mainPage = new EditTrainerPage(this));
-            int num = 1;
             for (int i = 0; i < trainer.getMaxPokemobCount(); i++)
             {
                 EditPokemobPage page = new EditPokemobPage(this, i, num++);
@@ -168,6 +170,10 @@ public class GuiEditTrainer extends GuiScreen
         {
             pages.add(mainPage = new SpawnTrainerPage(this));
         }
+        if (entity instanceof IMerchant)
+        {
+            pages.add(tradesPage = new EditTradesPage(this, num++));
+        }
         for (Page page : pages)
             page.initGui();
         pages.get(getIndex()).onPageOpened();
@@ -183,6 +189,7 @@ public class GuiEditTrainer extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+        this.mc = minecraft;
         minecraft.renderEngine.bindTexture(new ResourceLocation(PokecubeAdv.ID, "textures/gui/traineredit.png"));
         int j2 = (width - 256) / 2;
         int k2 = (height - 160) / 2;

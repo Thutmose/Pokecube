@@ -1,5 +1,0 @@
-[prefix{l}]Divecube[prefix{}]
-This cube has a higher capture rate for water type pokemobs currently in water.
-
-[prefix{l}]Recipe[prefix{}]
-[crafting{200,80,key=item/divecube}]

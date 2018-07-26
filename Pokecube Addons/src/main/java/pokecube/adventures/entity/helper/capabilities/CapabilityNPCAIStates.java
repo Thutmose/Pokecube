@@ -31,6 +31,8 @@ public class CapabilityNPCAIStates
         public static final int THROWING       = 1 << 2;
         public static final int PERMFRIENDLY   = 1 << 3;
         public static final int FIXEDDIRECTION = 1 << 4;
+        public static final int MATES          = 1 << 5;
+        public static final int INVULNERABLE   = 1 << 6;
 
         /** @return Direction to face if FIXEDDIRECTION */
         public float getDirection();

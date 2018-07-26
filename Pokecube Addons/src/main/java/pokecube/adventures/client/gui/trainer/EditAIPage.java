@@ -55,7 +55,7 @@ public class EditAIPage extends Page
         textList.add(new GuiTextField(3, fontRenderer, x + dx, y - 20, 60, 10));
         textList.add(new GuiTextField(4, fontRenderer, x + dx, y, 60, 10));
 
-        textList.add(new GuiTextField(5, fontRenderer, x + dx - 60, y + 30, 30, 10));
+        textList.add(new GuiTextField(5, fontRenderer, x + dx - 78, y + 29, 30, 10));
     }
 
     @Override
@@ -101,34 +101,41 @@ public class EditAIPage extends Page
         parent.getButtons().add(new Button(0, x - 25, y + 64, 50, 12, home));
         String wanderbutton = parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY)
                 ? I18n.format("traineredit.button.stationary") : I18n.format("traineredit.button.wander");
-        parent.getButtons().add(new Button(1, x - 120, y - 56, 60, 20, wanderbutton));
+        parent.getButtons().add(new Button(1, x - 120, y - 64, 60, 12, wanderbutton));
 
         String rotateButton = parent.aiStates.getAIState(IHasNPCAIStates.FIXEDDIRECTION)
                 ? I18n.format("traineredit.button.norotates") : I18n.format("traineredit.button.rotates");
-        parent.getButtons().add(new Button(2, x - 120, y + 24, 60, 20, rotateButton));
+        parent.getButtons().add(new Button(2, x - 120, y + 27, 60, 12, rotateButton));
 
         if (parent.trainer instanceof DefaultPokemobs)
         {
-
             String visible = ((DefaultPokemobs) parent.trainer).notifyDefeat ? I18n.format("traineredit.button.notify")
                     : I18n.format("traineredit.button.nonotify");
-            parent.getButtons().add(new Button(3, x - 120, y + 44, 60, 20, visible));
+            parent.getButtons().add(new Button(3, x - 120, y + 39, 60, 12, visible));
         }
 
         String friendlyButton = parent.aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY)
                 ? I18n.format("traineredit.button.friendly") : I18n.format("traineredit.button.unfriendly");
-        parent.getButtons().add(new Button(4, x - 120, y - 76, 60, 20, friendlyButton));
+        parent.getButtons().add(new Button(4, x - 120, y - 76, 60, 12, friendlyButton));
 
         String levelsButton = I18n.format("traineredit.button.levels." + parent.trainer.getLevelMode());
-        parent.getButtons().add(new Button(5, x + 60, y + 44, 60, 20, levelsButton));
+        parent.getButtons().add(new Button(5, x + 60, y + 44, 60, 12, levelsButton));
+        String button = parent.aiStates.getAIState(IHasNPCAIStates.MATES) ? I18n.format("traineredit.button.mates")
+                : I18n.format("traineredit.button.nomates");
+        parent.getButtons().add(new Button(6, x - 120, y + 51, 60, 12, button));
+        button = parent.aiStates.getAIState(IHasNPCAIStates.INVULNERABLE)
+                ? I18n.format("traineredit.button.invulnerable") : I18n.format("traineredit.button.vulnerable");
+        parent.getButtons().add(new Button(7, x - 120, y + 63, 60, 12, button));
 
         textList.get(0).setValidator(floatValid);
         textList.get(0).setText(guard.getRoamDistance() + "");
+
         TimePeriod times = guard.getActiveTime();
         if (times == null)
         {
             times = new TimePeriod(0, 0);
         }
+        times = new TimePeriod(((int) (times.startTime * 1000)) / 1000d, ((int) (times.endTime * 1000)) / 1000d);
         textList.get(1).setValidator(floatValid);
         textList.get(1).setText(times.startTime + "");
         textList.get(2).setValidator(floatValid);
@@ -160,6 +167,13 @@ public class EditAIPage extends Page
         case 1:
             parent.aiStates.setAIState(IHasNPCAIStates.STATIONARY,
                     !parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY));
+
+            IGuardAICapability guard = parent.entity.getCapability(EventsHandler.GUARDAI_CAP, null);
+            guard.setPos(parent.entity.getPosition());
+            guard.setActiveTime(!parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? new TimePeriod(0, 0)
+                    : TimePeriod.fullDay);
+            guard.setRoamDistance(!parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? 16 : 0);
+            sendGuardUpdate();
             sendAIUpdate();
             mess = new TextComponentTranslation(
                     "traineredit.set.stationary." + parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY));
@@ -208,6 +222,21 @@ public class EditAIPage extends Page
             mess = new TextComponentTranslation("traineredit.set.levels", levelsButton);
             parent.mc.player.sendStatusMessage(mess, true);
             break;
+        case 6:
+            parent.aiStates.setAIState(IHasNPCAIStates.MATES, !parent.aiStates.getAIState(IHasNPCAIStates.MATES));
+            sendAIUpdate();
+            mess = new TextComponentTranslation(
+                    "traineredit.set.mates." + parent.aiStates.getAIState(IHasNPCAIStates.MATES));
+            parent.mc.player.sendStatusMessage(mess, true);
+            break;
+        case 7:
+            parent.aiStates.setAIState(IHasNPCAIStates.INVULNERABLE,
+                    !parent.aiStates.getAIState(IHasNPCAIStates.INVULNERABLE));
+            sendAIUpdate();
+            mess = new TextComponentTranslation(
+                    "traineredit.set.invulnerable." + parent.aiStates.getAIState(IHasNPCAIStates.INVULNERABLE));
+            parent.mc.player.sendStatusMessage(mess, true);
+            break;
         }
     }
 
@@ -220,16 +249,6 @@ public class EditAIPage extends Page
             if (textList.get(i).isFocused()) checks[i] = true;
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
-
-        for (int i = 0; i < textList.size(); i++)
-        {
-            if (checks[i] && !textList.get(i).isFocused())
-            {
-                textList.get(i).setFocused(true);
-                updateField(i);
-                textList.get(i).setFocused(false);
-            }
-        }
     }
 
     @Override
@@ -343,10 +362,6 @@ public class EditAIPage extends Page
         packet.data.setTag("T", tag);
         packet.data.setByte("V", (byte) 4);
         packet.data.setInteger("I", parent.entity.getEntityId());
-        guard.setPos(parent.entity.getPosition());
-        guard.setActiveTime(
-                !parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? new TimePeriod(0, 0) : TimePeriod.fullDay);
-        guard.setRoamDistance(!parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? 16 : 0);
         PokecubeMod.packetPipeline.sendToServer(packet);
         onPageOpened();
     }
@@ -359,11 +374,6 @@ public class EditAIPage extends Page
         packet.data.setTag("T", tag);
         packet.data.setByte("V", (byte) 3);
         packet.data.setInteger("I", parent.entity.getEntityId());
-        IGuardAICapability guard = parent.entity.getCapability(EventsHandler.GUARDAI_CAP, null);
-        guard.setPos(parent.entity.getPosition());
-        guard.setActiveTime(
-                !parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? new TimePeriod(0, 0) : TimePeriod.fullDay);
-        guard.setRoamDistance(!parent.aiStates.getAIState(IHasNPCAIStates.STATIONARY) ? 16 : 0);
         PokecubeMod.packetPipeline.sendToServer(packet);
         onPageOpened();
     }

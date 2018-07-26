@@ -25,6 +25,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.commands.Config;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.TrainerSpawnEvent;
@@ -157,45 +160,19 @@ public class TrainerSpawnHandler
 
         if (count < 2)
         {
-            TypeTrainer ttype = null;
-            Material m = v.getBlockMaterial(w);
-
-            if (m == Material.AIR && v.offset(EnumFacing.DOWN).getBlockMaterial(w) == Material.AIR)
-            {
-                v = v.getTopBlockPos(w).offsetBy(EnumFacing.UP);
-            }
-            SpawnCheck checker = new SpawnCheck(v, w);
-            types:
-            for (TypeTrainer type : TypeTrainer.typeMap.values())
-            {
-                for (Entry<SpawnBiomeMatcher, Float> entry : type.matchers.entrySet())
-                {
-                    SpawnBiomeMatcher matcher = entry.getKey();
-                    Float value = entry.getValue();
-                    if (w.rand.nextFloat() < value && matcher.matches(checker))
-                    {
-                        ttype = type;
-                        break types;
-                    }
-                }
-            }
-            if (ttype == null) return;
-
-            int level = SpawnHandler.getSpawnLevel(w, v, Database.getEntry(1));
             long time = System.nanoTime();
-            EntityTrainer t = new EntityTrainer(w, ttype, level);
-
-            TrainerSpawnEvent event = new TrainerSpawnEvent(ttype, t, v.getPos(), w);
+            EntityTrainer t = getTrainer(v, w);
+            if (t == null) return;
+            IHasPokemobs cap = CapabilityHasPokemobs.getHasPokemobs(t);
+            TrainerSpawnEvent event = new TrainerSpawnEvent(cap.getType(), t, v.getPos(), w);
             if (MinecraftForge.EVENT_BUS.post(event))
             {
                 t.setDead();
                 return;
             }
-
             double dt = (System.nanoTime() - time) / 1000000D;
-            if (dt > 20) System.err.println(
-                    FMLCommonHandler.instance().getEffectiveSide() + " Trainer " + ttype.name + " " + dt + "ms ");
-
+            if (dt > 20) System.err.println(FMLCommonHandler.instance().getEffectiveSide() + " Trainer "
+                    + cap.getType().name + " " + dt + "ms ");
             v.offsetBy(EnumFacing.UP).moveEntity(t);
             if (t.pokemobsCap.countPokemon() > 0
                     && SpawnHandler.checkNoSpawnerInArea(w, (int) t.posX, (int) t.posY, (int) t.posZ))
@@ -220,5 +197,35 @@ public class TrainerSpawnHandler
             if (dt > 50) System.err
                     .println(FMLCommonHandler.instance().getEffectiveSide() + "Trainer Spawn Tick took " + dt + "ms");
         }
+    }
+
+    public EntityTrainer getTrainer(Vector3 v, World w)
+    {
+        TypeTrainer ttype = null;
+        Material m = v.getBlockMaterial(w);
+        if (m == Material.AIR && v.offset(EnumFacing.DOWN).getBlockMaterial(w) == Material.AIR)
+        {
+            v = v.getTopBlockPos(w).offsetBy(EnumFacing.UP);
+        }
+        SpawnCheck checker = new SpawnCheck(v, w);
+        types:
+        for (TypeTrainer type : TypeTrainer.typeMap.values())
+        {
+            for (Entry<SpawnBiomeMatcher, Float> entry : type.matchers.entrySet())
+            {
+                SpawnBiomeMatcher matcher = entry.getKey();
+                Float value = entry.getValue();
+                if (w.rand.nextFloat() < value && matcher.matches(checker))
+                {
+                    ttype = type;
+                    break types;
+                }
+            }
+        }
+        if (ttype == null) return null;
+        int level = SpawnHandler.getSpawnLevel(w, v, Database.getEntry(1));
+        EntityTrainer trainer = new EntityTrainer(w, ttype, level);
+        trainer.aiStates.setAIState(IHasNPCAIStates.MATES, true);
+        return trainer;
     }
 }

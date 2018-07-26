@@ -1,5 +1,0 @@
-[prefix{l}]Premiercube[prefix{}]
-This is a variant of standard Pokecube.  It has the same capture rate, but is used to make more advanced cubes.
-
-[prefix{l}]Recipe[prefix{}]
-[crafting{200,80,key=item/premiercube}]

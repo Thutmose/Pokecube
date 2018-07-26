@@ -9,6 +9,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombie;
@@ -37,6 +38,7 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.helper.AIStuffHolder;
 import pokecube.adventures.ai.tasks.AIBattle;
 import pokecube.adventures.ai.tasks.AIFindTarget;
+import pokecube.adventures.ai.tasks.AIMate;
 import pokecube.adventures.commands.Config;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
 import pokecube.adventures.entity.helper.MessageState;
@@ -364,7 +366,11 @@ public class PAEventsHandler
         mob.getAI().addAITask(new AIFindTarget(npc, EntityZombie.class).setPriority(20));
         // Only trainers specifically target players.
         if (npc instanceof EntityTrainerBase)
+        {
             mob.getAI().addAITask(new AIFindTarget(npc, EntityPlayer.class).setPriority(10));
+            mob.getAI()
+                    .addAITask(new AIMate(npc, (Class<? extends EntityAgeable>) ((EntityTrainerBase) npc).getClass()));
+        }
         // 5% chance of battling a random nearby pokemob if they see it.
         mob.getAI().addAITask(new AIFindTarget(npc, 0.05f, EntityPokemob.class).setPriority(20));
 

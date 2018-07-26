@@ -100,6 +100,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     @Override
     public void setRecipes(MerchantRecipeList recipeList)
     {
+        this.itemList = recipeList;
     }
 
     @Override
@@ -132,12 +133,6 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
                 this.playSound(SoundEvents.ENTITY_VILLAGER_NO, this.getSoundVolume(), this.getSoundPitch());
             }
         }
-    }
-
-    @Override
-    public EntityAgeable createChild(EntityAgeable ageable)
-    {
-        return null;
     }
 
     public abstract void populateBuyingList(EntityPlayer player);

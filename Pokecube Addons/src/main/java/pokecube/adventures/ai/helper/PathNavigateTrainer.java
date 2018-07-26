@@ -14,6 +14,8 @@ public class PathNavigateTrainer extends PathNavigateGround
     {
         super(entitylivingIn, worldIn);
         this.trainer = entitylivingIn;
+        this.setBreakDoors(true);
+        this.setEnterDoors(true);
     }
 
     @Override

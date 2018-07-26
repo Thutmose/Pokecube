@@ -86,23 +86,22 @@ public class AIFindTarget extends AITrainerBase implements ITargetWatcher
 
     public boolean shouldExecute()
     {
+        if (trainer.getTarget() != null)
+        { // Check if target is invalid.
+            if (trainer.getTarget() != null && trainer.getTarget().isDead)
+            {
+                trainer.setTarget(null);
+                trainer.resetPokemob();
+                return false;
+            }
+        }
         // Dead trainers can't fight.
-        if (!entity.isEntityAlive()) return false;
+        if (!entity.isEntityAlive() || entity.ticksExisted % 20 != 0) return false;
         // Permfriendly trainers shouldn't fight.
         if (aiTracker != null && aiTracker.getAIState(IHasNPCAIStates.PERMFRIENDLY)) return false;
         // Trainers on cooldown shouldn't fight, neither should friendly ones
-        if (trainer.getCooldown() > entity.getEntityWorld().getTotalWorldTime() || !trainer.isAgressive())
-        {
-            if (trainer.getTarget() != null)
-            { // Check if target is invalid.
-                if (trainer.getTarget() != null && trainer.getTarget().isDead)
-                {
-                    trainer.setTarget(null);
-                    trainer.resetPokemob();
-                }
-            }
-            return false;
-        }
+        if (trainer.getCooldown() > entity.getEntityWorld().getTotalWorldTime()
+                || !trainer.isAgressive()) { return false; }
         return true;
     }
 
@@ -126,8 +125,7 @@ public class AIFindTarget extends AITrainerBase implements ITargetWatcher
             look.scalarMultBy(sight);
             look.addTo(here);
             List<EntityLivingBase> targets = MovesUtils.targetsHit(entity, look);
-            if(!targets.isEmpty())
-            for (Object o : targets)
+            if (!targets.isEmpty()) for (Object o : targets)
             {
                 EntityLivingBase e = (EntityLivingBase) o;
                 double dist = e.getDistance(entity);

@@ -73,7 +73,7 @@ public class EditTrainerPage extends ListPage
             fits = fits && button.y + button.height <= yOffset + guiHeight;
             if (fits)
             {
-                button.drawButton(page.mc, mouseX, mouseY, partialTicks);
+                button.drawButton(page.parent.mc, mouseX, mouseY, partialTicks);
             }
         }
 
@@ -112,6 +112,7 @@ public class EditTrainerPage extends ListPage
     private int              AIINDEX      = -1;
     private int              MESSAGEINDEX = -1;
     private int              REWARDSINDEX = -1;
+    private int              TRADESINDEX  = -1;
 
     public EditTrainerPage(GuiEditTrainer watch)
     {
@@ -121,6 +122,7 @@ public class EditTrainerPage extends ListPage
     @Override
     protected void initList()
     {
+        this.mc = parent.mc;
         // Pokemob page buttons
         int num = parent.trainer.countPokemon();
         List<IGuiListEntry> entries = Lists.newArrayList();
@@ -165,26 +167,28 @@ public class EditTrainerPage extends ListPage
         int dx = 63;
         int dy = -5;
         if (parent.aiPage != null) parent.getButtons().add(new Button(AIINDEX = parent.aiPage.index, x + dx, y + dy, 60,
-                20, I18n.format("traineredit.button.ai")));
+                12, I18n.format("traineredit.button.ai")));
         String next = ">";
         String prev = "<";
         // Cycle Trainer Type buttons
         int o = -20;
-        parent.getButtons().add(new Button(PREVTYPE, x + o, y - 55, 20, 20, prev));
-        parent.getButtons().add(new Button(NEXTYPE, x + 20 + o, y - 55, 20, 20, next));
+        parent.getButtons().add(new Button(PREVTYPE, x + o, y - 55, 20, 13, prev));
+        parent.getButtons().add(new Button(NEXTYPE, x + 20 + o, y - 55, 20, 13, next));
 
-        parent.getButtons().add(new Button(TOGGLEPREFIX, x - 30 + o, y - 75, 20, 20, "P"));
+        parent.getButtons().add(new Button(TOGGLEPREFIX, x - 30 + o, y - 72, 20, 13, "P"));
         // Gender button
         String gender = parent.trainer.getGender() == 1 ? "\u2642" : "\u2640";
-        parent.getButtons().add(new Button(TOGGLEGENDER, x + 45, y - 75, 20, 20, gender));
+        parent.getButtons().add(new Button(TOGGLEGENDER, x + 45, y - 75, 20, 13, gender));
         // Kill button
-        parent.getButtons().add(new Button(KILL, x + dx, y + dy + 60, 60, 20, I18n.format("traineredit.button.kill")));
+        parent.getButtons().add(new Button(KILL, x + dx, y + dy + 67, 60, 12, I18n.format("traineredit.button.kill")));
 
         // Messages and rewards buttons.
         if (parent.messagePage != null) parent.getButtons().add(new Button(MESSAGEINDEX = parent.messagePage.index,
-                x + dx, y + dy + 20, 60, 20, I18n.format("traineredit.button.messages")));
+                x + dx, y + dy + 12, 60, 12, I18n.format("traineredit.button.messages")));
         if (parent.rewardsPage != null) parent.getButtons().add(new Button(REWARDSINDEX = parent.rewardsPage.index,
-                x + dx, y + dy + 40, 60, 20, I18n.format("traineredit.button.rewards")));
+                x + dx, y + dy + 24, 60, 12, I18n.format("traineredit.button.rewards")));
+        if (parent.tradesPage != null) parent.getButtons().add(new Button(TRADESINDEX = parent.tradesPage.index, x + dx,
+                y + dy + 36, 60, 12, I18n.format("traineredit.button.trades")));
 
     }
 
@@ -269,6 +273,11 @@ public class EditTrainerPage extends ListPage
         if (button.id == REWARDSINDEX)
         {
             parent.setIndex(REWARDSINDEX);
+            return;
+        }
+        if (button.id == TRADESINDEX)
+        {
+            parent.setIndex(TRADESINDEX);
             return;
         }
 
@@ -379,7 +388,11 @@ public class EditTrainerPage extends ListPage
         RenderHelper.enableStandardItemLighting();
         float turn = entity.ticksExisted + partialTicks - entity.renderYawOffset;
         GL11.glRotatef(turn, 0.0F, 1.0F, 0.0F);
-        Minecraft.getMinecraft().getRenderManager().renderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
+        GL11.glColor3f(1, 1, 1);
+        double dy = -0.123;
+        double dx = 0;
+        double dz = 0;
+        Minecraft.getMinecraft().getRenderManager().renderEntity(entity, dx, dy, dz, 0, 1.5F, false);
         GL11.glPopMatrix();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();

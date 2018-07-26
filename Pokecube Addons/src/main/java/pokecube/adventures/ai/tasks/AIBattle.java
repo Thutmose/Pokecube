@@ -99,13 +99,6 @@ public class AIBattle extends AITrainerBase
 
     void doAggression()
     {
-        // If target is no longer visbile, forget about it and reset.
-        if (!Vector3.isVisibleEntityFromEntity(entity, trainer.getTarget()))
-        {
-            if (noSeeTicks++ > PokecubeAdv.conf.trainerDeAgressTicks) trainer.resetPokemob();
-            return;
-        }
-        noSeeTicks = 0;
         // Check if maybe mob was sent out, but just not seen
         List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(entity);
         if (!pokemobs.isEmpty())
@@ -231,6 +224,17 @@ public class AIBattle extends AITrainerBase
                     .setPath(((EntityLiving) entity).getNavigator().getPathToPos(battleLoc), 0.75);
         }
 
+        // If target is no longer visbile, forget about it and reset.
+        if (!Vector3.isVisibleEntityFromEntity(entity, trainer.getTarget()))
+        {
+            if (noSeeTicks++ > PokecubeAdv.conf.trainerDeAgressTicks)
+            {
+                trainer.setTarget(null);
+                trainer.resetPokemob();
+            }
+            return;
+        }
+        noSeeTicks = 0;
         // Check if in range, if too far, target has run away, so forget about
         // it.
         double distance = entity.getDistanceSq(trainer.getTarget());

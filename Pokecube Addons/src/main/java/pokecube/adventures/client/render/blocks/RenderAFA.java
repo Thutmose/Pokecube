@@ -3,6 +3,7 @@ package pokecube.adventures.client.render.blocks;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +28,18 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
 
         GL11.glTranslatef((float) x + 0.5F, (float) y, (float) z + 0.5F);
         GL11.glPushMatrix();
+
+        GlStateManager.pushMatrix();
+
+        GL11.glTranslatef(0.405f, 0.645f, -0.5f);
+        GL11.glScaled(0.15, 0.15, 0.15);
+
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        ItemStack item = te.getStackInSlot(0);
+        Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, null);
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.popMatrix();
+
         float offset = 0.2f;
 
         float dx, dy, dz;
@@ -59,6 +72,8 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
             mob.getEntity().prevLimbSwingAmount = 0;
         }
 
+        GlStateManager.enableDepth();
+        GlStateManager.enableCull();
         Object o;
         if ((o = RenderPokemobs.getInstance().getRenderer(mob.getPokedexEntry())) instanceof RenderAdvancedPokemobModel)
         {
@@ -74,13 +89,6 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
             render.overrideAnim = false;
         }
         GL11.glPopMatrix();
-        GL11.glTranslatef(0.405f, 0.645f, -0.5f);
-        GL11.glScaled(0.15, 0.15, 0.15);
-
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        ItemStack item = te.getStackInSlot(0);
-        Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, null);
-        RenderHelper.enableStandardItemLighting();
         GL11.glPopMatrix();
     }
 

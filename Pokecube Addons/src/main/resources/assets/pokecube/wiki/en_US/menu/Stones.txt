@@ -1,7 +1,0 @@
-[crafting{200,15,key=item/thunderstone}]
-[crafting{200,125,key=item/firestone}]
-[crafting{200,235,key=item/leafstone}]
-[crafting{200,345,key=item/duskstone}]
-[crafting{200,455,key=item/dawnstone}]
-[crafting{200,565,key=item/shinystone}]
-[crafting{200,675,key=item/everstone}]

@@ -39,7 +39,6 @@ public class PacketSyncNewMoves implements IMessage, IMessageHandler<PacketSyncN
             packet.entityId = pokemob.getEntity().getEntityId();
             PokecubeMod.packetPipeline.sendTo(packet, player);
         }
-
     }
 
     public PacketSyncNewMoves()

@@ -146,11 +146,6 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
                 }
             }
             setHungerTime(aiTag.getInteger(HUNGER));
-            int[] home = aiTag.getIntArray(HOME);
-            if (home.length == 4)
-            {
-                setHome(home[0], home[1], home[2], home[3]);
-            }
             NBTTagCompound routines = aiTag.getCompoundTag(AIROUTINES);
             for (String s : routines.getKeySet())
             {
@@ -268,8 +263,6 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         NBTTagCompound aiTag = new NBTTagCompound();
         aiTag.setInteger(AISTATE, getTotalAIState());
         aiTag.setInteger(HUNGER, getHungerTime());
-        if (getHome() != null) aiTag.setIntArray(HOME,
-                new int[] { getHome().getX(), getHome().getY(), getHome().getZ(), (int) getHomeDistance() });
         NBTTagCompound aiRoutineTag = new NBTTagCompound();
         for (AIRoutine routine : AIRoutine.values())
         {

@@ -1,7 +1,8 @@
 package pokecube.core.interfaces.pokemob.commandhandlers;
 
 import io.netty.buffer.ByteBuf;
-import pokecube.core.ai.utils.GuardAI;
+import pokecube.core.ai.properties.IGuardAICapability;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
@@ -39,19 +40,19 @@ public class StanceHandler implements IMobCommandHandler
             boolean stay;
             pokemob.setPokemonAIState(IMoveConstants.STAYING,
                     stay = !pokemob.getPokemonAIState(IMoveConstants.STAYING));
+            IGuardAICapability guard = pokemob.getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
             if (stay)
             {
                 Vector3 mid = Vector3.getNewVector().set(pokemob.getEntity());
-                pokemob.setHome(mid.intX(), mid.intY(), mid.intZ(), 16);
-                if (pokemob.getGuardAI() != null)
+                if (guard != null)
                 {
-                    ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
-                    ((GuardAI) pokemob.getGuardAI()).setPos(mid.getPos());
+                    guard.getPrimaryTask().setActiveTime(TimePeriod.fullDay);
+                    guard.getPrimaryTask().setPos(mid.getPos());
                 }
             }
             else
             {
-                if (pokemob.getGuardAI() != null) ((GuardAI) pokemob.getGuardAI()).setTimePeriod(new TimePeriod(0, 0));
+                if (guard != null) guard.getPrimaryTask().setActiveTime(TimePeriod.fullDay);
             }
         }
         else if (key == BUTTONTOGGLESIT)

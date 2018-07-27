@@ -45,10 +45,9 @@ public interface IGuardAICapability
             TimePeriod time;
             if ((time = getActiveTime()) != null)
             {
-                tag.setFloat("start", (float) time.startTime);
-                tag.setFloat("end", (float) time.endTime);
+                tag.setLong("start", time.startTick);
+                tag.setLong("end", time.endTick);
             }
-            System.out.println(tag);
             return tag;
         }
 
@@ -57,8 +56,7 @@ public interface IGuardAICapability
             NBTTagCompound nbt = (NBTTagCompound) tag;
             if (nbt.hasKey("pos")) setPos(NBTUtil.getPosFromTag(nbt.getCompoundTag("pos")));
             setRoamDistance(nbt.getFloat("d"));
-            setActiveTime(new TimePeriod(nbt.getFloat("start"), nbt.getFloat("end")));
-            System.out.println(tag);
+            setActiveTime(new TimePeriod((int) nbt.getLong("start"), (int) nbt.getLong("end")));
         }
     }
 

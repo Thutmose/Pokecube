@@ -78,6 +78,7 @@ import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.client.gui.blocks.GuiTMCreator;
 import pokecube.core.client.gui.blocks.GuiTradingTable;
 import pokecube.core.client.gui.pokemob.GuiPokemobAI;
+import pokecube.core.client.gui.pokemob.GuiPokemobRoutes;
 import pokecube.core.client.gui.pokemob.GuiPokemobStorage;
 import pokecube.core.client.gui.watch.GuiPokeWatch;
 import pokecube.core.client.items.BerryTextureHandler;
@@ -186,6 +187,12 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             IPokemob e = CapabilityPokemob
                     .getPokemobFor(PokecubeMod.core.getEntityProvider().getEntity(world, x, true));
             return new GuiPokemobStorage(player.inventory, e);
+        }
+        if (guiID == Config.GUIPOKEMOBROUTE_ID)
+        {
+            IPokemob e = CapabilityPokemob
+                    .getPokemobFor(PokecubeMod.core.getEntityProvider().getEntity(world, x, true));
+            return new GuiPokemobRoutes(player.inventory, e);
         }
         if (guiID == Config.GUITRADINGTABLE_ID)
         {

@@ -10,6 +10,7 @@ import static pokecube.core.handlers.Config.GUIPC_ID;
 import static pokecube.core.handlers.Config.GUIPOKECENTER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEDEX_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBAI_ID;
+import static pokecube.core.handlers.Config.GUIPOKEMOBROUTE_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBSPAWNER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBSTORE_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOB_ID;
@@ -148,6 +149,7 @@ public class Mod_Pokecube_Helper
         GUIPOKEMOBAI_ID = num++;
         GUIPOKEWATCH_ID = num++;
         GUIPOKEMOBSTORE_ID = num++;
+        GUIPOKEMOBROUTE_ID = num++;
 
         Config config = PokecubeCore.core.getConfig();
 

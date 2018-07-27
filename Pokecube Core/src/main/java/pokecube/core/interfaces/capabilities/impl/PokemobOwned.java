@@ -34,7 +34,6 @@ import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.events.SpawnEvent;
-import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
@@ -98,14 +97,14 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public BlockPos getHome()
     {
-        if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
+        if (guardCap.getActiveTask() != null) return guardCap.getActiveTask().getPos();
         return guardCap.getPrimaryTask().getPos();
     }
 
     @Override
     public float getHomeDistance()
     {
-        if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
+        if (guardCap.getActiveTask() != null) return guardCap.getActiveTask().getRoamDistance();
         return guardCap.getPrimaryTask().getRoamDistance();
     }
 
@@ -376,7 +375,6 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public void setHome(int x, int y, int z, int distance)
     {
-        if (guardCap == null) guardCap = getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
         guardCap.getPrimaryTask().setPos(new BlockPos(x, y, z));
         guardCap.getPrimaryTask().setRoamDistance(distance);
         if (getEntity() instanceof EntityAnimal)

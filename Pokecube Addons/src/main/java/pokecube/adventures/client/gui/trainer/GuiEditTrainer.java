@@ -220,7 +220,6 @@ public class GuiEditTrainer extends GuiScreen
     @Override
     public void handleMouseInput() throws IOException
     {
-        pages.get(getIndex()).handleMouseInput();
         super.handleMouseInput();
     }
 

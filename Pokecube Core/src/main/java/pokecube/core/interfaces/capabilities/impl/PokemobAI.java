@@ -58,12 +58,6 @@ public abstract class PokemobAI extends PokemobEvolves
     }
 
     @Override
-    public EntityAIBase getGuardAI()
-    {
-        return guardAI;
-    }
-
-    @Override
     public ItemStack getPokecube()
     {
         return pokecube;

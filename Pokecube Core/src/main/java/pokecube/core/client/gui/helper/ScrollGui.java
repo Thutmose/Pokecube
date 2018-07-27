@@ -15,6 +15,9 @@ import net.minecraft.util.math.MathHelper;
 public class ScrollGui extends GuiListExtended
 {
     final List<IGuiListEntry> entries;
+    /** Whether the gui will scroll smoothly, if false, there is no scroll bar
+     * and it will scroll in steps. */
+    public boolean            scrollBar = true;
 
     public ScrollGui(Minecraft mcIn, int widthIn, int heightIn, int slotHeightIn, int offsetX, int offsetY,
             List<IGuiListEntry> entries)
@@ -128,7 +131,7 @@ public class ScrollGui extends GuiListExtended
             GlStateManager.shadeModel(7425);
             GlStateManager.disableTexture2D();
             int j1 = this.getMaxScroll();
-            if (j1 > 0)
+            if (scrollBar && j1 > 0)
             {
                 int k1 = (this.bottom - this.top) * (this.bottom - this.top) / this.getContentHeight();
                 k1 = MathHelper.clamp(k1, 32, this.bottom - this.top - 8);
@@ -221,7 +224,7 @@ public class ScrollGui extends GuiListExtended
 
                         if (this.mouseX >= i3 && this.mouseX <= j1)
                         {
-                            this.scrollMultiplier = -1.0F;
+                            this.scrollMultiplier = -1.0F * (scrollBar ? 1 : 0);
                             int k1 = this.getMaxScroll();
 
                             if (k1 < 1)
@@ -236,7 +239,7 @@ public class ScrollGui extends GuiListExtended
                         }
                         else
                         {
-                            this.scrollMultiplier = 1.0F;
+                            this.scrollMultiplier = 1.0F * (scrollBar ? 1 : 0);
                         }
 
                         if (flag1)
@@ -270,11 +273,11 @@ public class ScrollGui extends GuiListExtended
             {
                 if (i2 > 0)
                 {
-                    i2 = -1;
+                    i2 = scrollBar ? -1 : -slotHeight;
                 }
                 else if (i2 < 0)
                 {
-                    i2 = 1;
+                    i2 = scrollBar ? 1 : slotHeight;
                 }
 
                 this.amountScrolled += (float) (i2 * (this.slotHeight));

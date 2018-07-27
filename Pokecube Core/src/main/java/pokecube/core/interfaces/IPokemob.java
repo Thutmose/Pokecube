@@ -17,7 +17,6 @@ import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -560,8 +559,6 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
     int getEvolutionTicks();
 
     int getExplosionState();
-
-    EntityAIBase getGuardAI();
 
     /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();

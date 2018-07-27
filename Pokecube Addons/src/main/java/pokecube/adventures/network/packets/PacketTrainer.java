@@ -40,8 +40,7 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.properties.IGuardAICapability;
-import pokecube.core.ai.properties.IGuardAICapability.IGuardTask;
-import pokecube.core.ai.properties.GuardAICapability.GuardTask;
+import pokecube.core.client.gui.helper.RouteEditHelper;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -214,30 +213,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
             IGuardAICapability guard = mob.getCapability(EventsHandler.GUARDAI_CAP, null);
             if (tag instanceof NBTTagCompound && ((NBTTagCompound) tag).hasKey("GU") && guard != null)
             {
-                NBTTagCompound nbt = ((NBTTagCompound) tag);
-                int index = nbt.getInteger("I");
-                if (nbt.hasKey("V"))
-                {
-                    // TODO generalize this maybe?
-                    GuardTask task = new GuardTask();
-                    System.out.println(nbt.getTag("V"));
-                    task.load(nbt.getTag("V"));
-                    if (index < guard.getTasks().size()) guard.getTasks().set(index, task);
-                    else guard.getTasks().add(task);
-                }
-                else
-                {
-                    if (nbt.hasKey("N"))
-                    {
-                        int index1 = nbt.getInteger("I");
-                        int index2 = index1 + nbt.getInteger("N");
-                        IGuardTask temp = guard.getTasks().get(index1);
-                        guard.getTasks().set(index1, guard.getTasks().get(index2));
-                        guard.getTasks().set(index2, temp);
-                    }
-                    else if (index < guard.getTasks().size()) guard.getTasks().remove(index);
-                }
-                PacketHandler.sendEntityUpdate(mob);
+                RouteEditHelper.applyServerPacket(tag, mob, guard);
                 return;
             }
             if (tag instanceof NBTTagCompound && ((NBTTagCompound) tag).hasKey("TR") && mob instanceof IMerchant)
@@ -348,7 +324,6 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                                 .setActiveTime(stationaryBefore ? new TimePeriod(0, 0) : TimePeriod.fullDay);
                     }
                 }
-
                 PacketHandler.sendEntityUpdate(mob);
             }
             return;

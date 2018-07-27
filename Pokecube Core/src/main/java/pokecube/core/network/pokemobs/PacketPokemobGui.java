@@ -9,12 +9,14 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.packets.PacketSyncRoutes;
 
 public class PacketPokemobGui implements IMessage, IMessageHandler<PacketPokemobGui, IMessage>
 {
     public static final byte MAIN    = 0;
     public static final byte AI      = 1;
     public static final byte STORAGE = 2;
+    public static final byte ROUTES  = 3;
 
     byte                     message;
     int                      id;
@@ -79,6 +81,9 @@ public class PacketPokemobGui implements IMessage, IMessageHandler<PacketPokemob
         case STORAGE:
             id = Config.GUIPOKEMOBSTORE_ID;
             break;
+        case ROUTES:
+            PacketSyncRoutes.sendUpdateClientPacket(entity, ctx.getServerHandler().player, true);
+            return;
         }
         if (id > 0) ctx.getServerHandler().player.openGui(PokecubeMod.core, id, entity.getEntityWorld(),
                 entity.getEntityId(), 0, 0);

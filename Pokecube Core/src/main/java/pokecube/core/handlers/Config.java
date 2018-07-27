@@ -74,6 +74,7 @@ public class Config extends ConfigBase
     public static int                    GUIPOKEMOB_ID;
     public static int                    GUIPOKEMOBAI_ID;
     public static int                    GUIPOKEMOBSTORE_ID;
+    public static int                    GUIPOKEMOBROUTE_ID;
     public static int                    GUITRADINGTABLE_ID;
     public static int                    GUITMTABLE_ID;
 

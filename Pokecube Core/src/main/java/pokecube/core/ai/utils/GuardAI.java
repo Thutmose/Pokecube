@@ -70,17 +70,21 @@ public class GuardAI extends EntityAIBase
     {
         super.resetTask();
         capability.setState(GuardState.IDLE);
-        capability.getActiveTask().endTask(entity);
+        if (capability.getActiveTask() != null) capability.getActiveTask().endTask(entity);
     }
 
     public void setPos(BlockPos pos)
     {
-        capability.getActiveTask().setPos(pos);
+        if (capability.hasActiveTask(entity.getEntityWorld().getWorldTime(), 24000))
+            capability.getActiveTask().setPos(pos);
+        else capability.getPrimaryTask().setPos(pos);
     }
 
     public void setTimePeriod(TimePeriod time)
     {
-        capability.getActiveTask().setActiveTime(time);
+        if (capability.hasActiveTask(entity.getEntityWorld().getWorldTime(), 24000))
+            capability.getActiveTask().setActiveTime(time);
+        else capability.getPrimaryTask().setActiveTime(time);
     }
 
     @Override

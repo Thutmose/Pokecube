@@ -84,6 +84,7 @@ public class GuiPokemobStorage extends GuiContainer
         int yOffset = height / 2 - 77;
         buttonList.add(new GuiButton(0, xOffset + 60, yOffset, 30, 10, "Inv"));
         buttonList.add(new GuiButton(1, xOffset + 30, yOffset, 30, 10, "AI"));
+        buttonList.add(new GuiButton(2, xOffset + 00, yOffset, 30, 10, "RT"));
         xOffset += 29;
         int dy = 13;
         int ds = 10;
@@ -291,7 +292,7 @@ public class GuiPokemobStorage extends GuiContainer
         }
         else
         {
-
+            PacketPokemobGui.sendPagePacket(PacketPokemobGui.ROUTES, entity.getEntityId());
         }
     }
 

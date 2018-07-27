@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
@@ -37,7 +38,7 @@ public class GuardAICapability implements IGuardAICapability
         public GuardTask()
         {
             executingGuardTask = new AttributeModifier(UUID.fromString("4454b0d8-75ef-4689-8fce-daab61a7e1b0"),
-                    "pokecube:guard_task", 32 / 16.0 - 1.0, 2);
+                    "pokecube:guard_task", 5, 2);
         }
 
         @Override
@@ -94,28 +95,46 @@ public class GuardAICapability implements IGuardAICapability
             double maxDist = this.getRoamDistance() * this.getRoamDistance();
             maxDist = Math.max(maxDist, entity.width);
 
-            if (lastPos != null && lastPos.equals(newPos))
+            if (hasPath)
             {
-                if (lastPosCounter-- >= 0)
+                if (lastPos != null && lastPos.equals(newPos))
                 {
+                    if (lastPosCounter-- >= 0)
+                    {
 
+                    }
+                    else
+                    {
+                        lastPosCounter = 10;
+                        hasPath = false;
+                    }
                 }
                 else
                 {
                     lastPosCounter = 10;
-                    hasPath = false;
                 }
-            }
-            else
-            {
-                lastPosCounter = 10;
             }
 
             if (!hasPath)
             {
                 double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
-                entity.getNavigator().tryMoveToXYZ(this.getPos().getX() + 0.5, this.getPos().getY(),
+                boolean pathed = entity.getNavigator().tryMoveToXYZ(this.getPos().getX() + 0.5, this.getPos().getY(),
                         this.getPos().getZ() + 0.5, speed);
+                IAttributeInstance attri = entity.getNavigator().pathSearchRange;
+                if (!pathed)
+                {
+                    if (!attri.hasModifier(executingGuardTask))
+                    {
+                        attri.applyModifier(executingGuardTask);
+                    }
+                }
+                else
+                {
+                    if (attri.hasModifier(executingGuardTask))
+                    {
+                        attri.removeModifier(executingGuardTask);
+                    }
+                }
             }
             else
             {
@@ -165,6 +184,8 @@ public class GuardAICapability implements IGuardAICapability
     @Override
     public boolean hasActiveTask(long time, long daylength)
     {
+        if (activeTask != null)
+            System.out.println(activeTask + " " + activeTask.getActiveTime().contains(time, daylength));
         if (activeTask != null && activeTask.getActiveTime().contains(time, daylength)) return true;
         for (IGuardTask task : getTasks())
         {

@@ -60,7 +60,7 @@ public final class TimePeriod
 
     public boolean contains(double time)
     {
-        return wrapped ? time <= startTime || time >= endTime : (time >= startTime && time <= endTime);
+        return wrapped ? time >= startTime || time <= endTime : (time >= startTime && time <= endTime);
     }
 
     public boolean contains(long time, long dayLength)

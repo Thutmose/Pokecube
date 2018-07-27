@@ -85,6 +85,7 @@ traineredit.title.message=Event Messages and Actions
 traineredit.title.aipage=AI Settings
 traineredit.title.rewards=Defeat Rewards
 traineredit.title.trades=Edit Trades
+traineredit.title.routes=Edit Routes
 
 traineredit.info.pokemob=Pokemob
 traineredit.info.moves=Moves
@@ -112,6 +113,7 @@ traineredit.button.delete=Delete
 traineredit.button.newpokemob=Add New
 traineredit.button.rewards=Rewards
 traineredit.button.trades=Trades
+traineredit.button.routes=Routes
 traineredit.button.messages=Messages
 traineredit.button.ai=AI Settings
 traineredit.button.kill=Delete

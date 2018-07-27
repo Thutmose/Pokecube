@@ -41,6 +41,7 @@ public class GuardAI extends EntityAIBase
     public boolean shouldContinueExecuting()
     {
         if (!capability.hasActiveTask(entity.getEntityWorld().getWorldTime(), 24000)) return false;
+        capability.getActiveTask().continueTask(entity);
         switch (capability.getState())
         {
         case RUNNING:
@@ -100,7 +101,7 @@ public class GuardAI extends EntityAIBase
         if (null == entity || entity.isDead
                 || !capability.hasActiveTask(entity.getEntityWorld().getWorldTime(), 24000)) { return false; }
         BlockPos pos = capability.getActiveTask().getPos();
-        if (pos.equals(BlockPos.ORIGIN)) return false;
+        if (pos == null || pos.equals(BlockPos.ORIGIN)) return false;
         double distanceToGuardPointSq = entity.getDistanceSq(capability.getActiveTask().getPos());
         double maxDist = capability.getActiveTask().getRoamDistance() * capability.getActiveTask().getRoamDistance();
         maxDist = Math.max(maxDist, entity.width);

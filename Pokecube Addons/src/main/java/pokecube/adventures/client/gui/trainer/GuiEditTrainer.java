@@ -47,6 +47,7 @@ public class GuiEditTrainer extends GuiScreen
             this.fontRenderer = parent.fontRenderer;
         }
 
+        //Allows access below
         @Override
         protected void actionPerformed(GuiButton button) throws IOException
         {
@@ -63,12 +64,14 @@ public class GuiEditTrainer extends GuiScreen
             }
         }
 
+        //Allows access below
         @Override
         protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
         {
             super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         }
 
+        //Allows access below
         @Override
         protected void mouseReleased(int mouseX, int mouseY, int state)
         {
@@ -206,20 +209,9 @@ public class GuiEditTrainer extends GuiScreen
     }
 
     @Override
-    public void handleInput() throws IOException
-    {
-        super.handleInput();
-    }
-
-    @Override
-    public void handleKeyboardInput() throws IOException
-    {
-        super.handleKeyboardInput();
-    }
-
-    @Override
     public void handleMouseInput() throws IOException
     {
+        pages.get(getIndex()).handleMouseInput();
         super.handleMouseInput();
     }
 
@@ -255,12 +247,6 @@ public class GuiEditTrainer extends GuiScreen
     {
         super.keyTyped(typedChar, keyCode);
         pages.get(getIndex()).keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public void updateScreen()
-    {
-        super.updateScreen();
     }
 
     public int getIndex()

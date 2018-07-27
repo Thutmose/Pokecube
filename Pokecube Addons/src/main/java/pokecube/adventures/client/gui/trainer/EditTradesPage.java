@@ -480,12 +480,6 @@ public class EditTradesPage extends ListPage
     }
 
     @Override
-    public void initGui()
-    {
-        super.initGui();
-    }
-
-    @Override
     protected void onPageOpened()
     {
         int x = parent.width / 2;
@@ -528,18 +522,6 @@ public class EditTradesPage extends ListPage
                 ((TradeEntry) list.getListEntry(i)).sell.mouseClicked(mouseX, mouseY, mouseButton);
             }
         }
-    }
-
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-    {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        super.mouseReleased(mouseX, mouseY, state);
     }
 
     @Override

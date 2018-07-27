@@ -14,8 +14,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.client.gui.helper.RouteEditHelper;
-import pokecube.core.client.gui.helper.ScrollGui;
 import pokecube.core.client.gui.helper.RouteEditHelper.GuardEntry;
+import pokecube.core.client.gui.helper.ScrollGui;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class EditRoutePage extends ListPage
@@ -123,6 +123,11 @@ public class EditRoutePage extends ListPage
         {
             ((GuardEntry) list.getListEntry(i)).keyTyped(typedChar, keyCode);
         }
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException
+    {
     }
 
     @Override

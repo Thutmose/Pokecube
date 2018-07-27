@@ -184,8 +184,6 @@ public class GuardAICapability implements IGuardAICapability
     @Override
     public boolean hasActiveTask(long time, long daylength)
     {
-        if (activeTask != null)
-            System.out.println(activeTask + " " + activeTask.getActiveTime().contains(time, daylength));
         if (activeTask != null && activeTask.getActiveTime().contains(time, daylength)) return true;
         for (IGuardTask task : getTasks())
         {

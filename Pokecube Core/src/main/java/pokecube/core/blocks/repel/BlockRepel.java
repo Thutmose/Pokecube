@@ -62,9 +62,10 @@ public class BlockRepel extends Block implements ITileEntityProvider
         TileEntity te = worldIn.getTileEntity(pos);
         if (te instanceof TileEntityRepel && heldStack != null && heldStack.getItem() instanceof ItemBerry)
         {
+            ItemBerry berry = (ItemBerry) heldStack.getItem();
             TileEntityRepel repel = (TileEntityRepel) te;
             repel.invalidate();
-            repel.distance = (byte) Math.max(5, heldStack.getItemDamage());
+            repel.distance = (byte) Math.max(5, berry.index);
             repel.validate();
             if (!worldIn.isRemote)
                 playerIn.sendMessage(new TextComponentTranslation("repel.info.setrange", repel.distance));

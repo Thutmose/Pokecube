@@ -8,66 +8,58 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class ItemMegawearable extends Item
 {
-    private static int                        index         = 0;
-
-    private static Int2ObjectArrayMap<String> wearableIndex = new Int2ObjectArrayMap<>();
-    private static Map<String, String>        wearables     = Maps.newHashMap();
+    private static Map<String, String> wearables = Maps.newHashMap();
 
     public static void registerWearable(String name, String slot)
     {
-        wearableIndex.put(index++, name);
         wearables.put(name, slot);
     }
 
-    public static int getWearableCount()
+    public static String getSlot(String name)
     {
-        return index;
+        return wearables.get(name);
     }
 
     public static Collection<String> getWearables()
     {
-        return wearableIndex.values();
-    }
-
-    public static String getWearable(int id)
-    {
-        return wearableIndex.get(id);
-    }
-
-    public static String getSlot(int id)
-    {
-        return wearables.get(wearableIndex.get(id));
+        return wearables.keySet();
     }
 
     static
     {
-        registerWearable("megaring", "FINGER");
-        registerWearable("megabelt", "WAIST");
-        registerWearable("megahat", "HAT");
+        registerWearable("ring", "FINGER");
+        registerWearable("belt", "WAIST");
+        registerWearable("hat", "HAT");
     }
 
-    public ItemMegawearable()
+    public final String name;
+    public final String slot;
+
+    public ItemMegawearable(String name, String slot)
     {
         super();
         this.setMaxStackSize(1);
         this.setMaxDamage(0);
-        this.setHasSubtypes(true);
+        this.name = name;
+        this.slot = slot;
+        this.setRegistryName(PokecubeMod.ID, "mega_" + name);
+        this.setCreativeTab(PokecubeMod.creativeTabPokecube);
+        this.setUnlocalizedName(this.getRegistryName().getResourcePath());
+
     }
 
     /** allows items to add custom lines of information to the mouseover
@@ -83,28 +75,6 @@ public class ItemMegawearable extends Item
             String s = I18n.format(colour.getUnlocalizedName());
             tooltip.add(s);
         }
-    }
-
-    @Override
-    /** returns a list of items with the same ID, but different meta (eg: dye
-     * returns 16 items) */
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
-    {
-        if (tab != getCreativeTab()) return;
-        for (int i = 0; i < getWearableCount(); i++)
-        {
-            subItems.add(new ItemStack(this, 1, i));
-        }
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        String name = super.getUnlocalizedName(stack);
-        String variant = getWearable(stack.getItemDamage());
-        name = "item." + variant;
-        return name;
     }
 
     /** Determines if the specific ItemStack can be placed in the specified

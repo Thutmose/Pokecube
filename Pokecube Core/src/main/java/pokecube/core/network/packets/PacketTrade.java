@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
+import pokecube.core.blocks.tradingTable.TileEntityTMMachine;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.network.PacketHandler;
@@ -91,7 +92,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
         {
             if (player.openContainer instanceof ContainerTMCreator)
             {
-                TileEntityTradingTable tradeTable = ((ContainerTMCreator) player.openContainer).getTile();
+                TileEntityTMMachine tradeTable = ((ContainerTMCreator) player.openContainer).getTile();
                 tradeTable.addMoveToTM(message.data.getString("M"));
             }
         }
@@ -99,7 +100,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
         {
             if (player.openContainer instanceof ContainerTMCreator)
             {
-                TileEntityTradingTable tradeTable = ((ContainerTMCreator) player.openContainer).getTile();
+                TileEntityTMMachine tradeTable = ((ContainerTMCreator) player.openContainer).getTile();
                 ArrayList<String> moves = new ArrayList<String>();
                 for (int i = 0; i < message.data.getInteger("N"); i++)
                     moves.add(message.data.getString("M" + i));

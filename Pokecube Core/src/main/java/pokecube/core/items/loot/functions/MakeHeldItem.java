@@ -9,22 +9,16 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.ItemHeldItems;
-import thut.lib.CompatWrapper;
 
 public class MakeHeldItem extends LootFunction
 {
-    @ObjectHolder(value = "pokecube:held")
-    public static final Item                  ITEM    = null;
-
     private static final Map<String, Integer> nameMap = Maps.newHashMap();
 
     final String                              arg;
@@ -38,21 +32,10 @@ public class MakeHeldItem extends LootFunction
     @Override
     public ItemStack apply(ItemStack stack, Random rand, LootContext context)
     {
-        if (ITEM == null)
-        {
-            PokecubeMod.log(Level.SEVERE, "No Held Item Registered?");
-            return stack;
-        }
-        if (nameMap.isEmpty())
-        {
-            for (int i = 0; i < ItemHeldItems.variants.size(); i++)
-            {
-                nameMap.put(ItemHeldItems.variants.get(i), i);
-            }
-        }
         if (nameMap.containsKey(arg))
         {
-            ItemStack newStack = new ItemStack(ITEM, CompatWrapper.getStackSize(stack), nameMap.get(arg));
+            ItemStack newStack = PokecubeItems.getStack(arg);
+            newStack.setCount(stack.getCount());
             newStack.setTagCompound(stack.getTagCompound());
             return newStack;
         }

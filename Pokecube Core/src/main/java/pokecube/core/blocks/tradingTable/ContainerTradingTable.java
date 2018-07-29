@@ -45,11 +45,8 @@ public class ContainerTradingTable extends Container
     public void bindInventories(InventoryPlayer playerInv)
     {
         clearSlots();
-        if (tile.trade)
-        {
-            addSlotToContainer(new SlotTrade(tile, 0, 35, 14));
-            addSlotToContainer(new SlotTrade(tile, 1, 125, 14));
-        }
+        addSlotToContainer(new SlotTrade(tile, 0, 35, 14));
+        addSlotToContainer(new SlotTrade(tile, 1, 125, 14));
         bindPlayerInventory(playerInv);
     }
 

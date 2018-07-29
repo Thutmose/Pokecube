@@ -12,7 +12,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.oredict.OreDictionary;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
-import pokecube.adventures.blocks.cloner.block.BlockCloner;
+import pokecube.adventures.blocks.cloner.block.BlockReanimator;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredRecipe;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import thut.core.common.blocks.BlockRotatable;
@@ -139,7 +139,7 @@ public class TileEntityCloner extends TileClonerBase
 
     private void checkCollision()
     {
-        BlockCloner.checkCollision(this);
+        BlockReanimator.checkCollision(this);
     }
 
     @Override

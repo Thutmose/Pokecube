@@ -188,6 +188,25 @@ public class RouteEditHelper
             location.textboxKeyTyped(typedChar, keyCode);
             timeperiod.textboxKeyTyped(typedChar, keyCode);
             variation.textboxKeyTyped(typedChar, keyCode);
+
+            if (keyCode == Keyboard.KEY_TAB)
+            {
+                if (location.isFocused())
+                {
+                    location.setFocused(false);
+                    timeperiod.setFocused(true);
+                }
+                else if (timeperiod.isFocused())
+                {
+                    timeperiod.setFocused(false);
+                    variation.setFocused(true);
+                }
+                else if (variation.isFocused())
+                {
+                    variation.setFocused(false);
+                    location.setFocused(true);
+                }
+            }
             if (keyCode != Keyboard.KEY_RETURN) return;
             if (!(location.isFocused() || timeperiod.isFocused() || variation.isFocused())) return;
             update();

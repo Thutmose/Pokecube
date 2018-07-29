@@ -16,7 +16,7 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.handlers.ItemGenerator;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.lib.CompatWrapper;
 
@@ -45,9 +45,9 @@ public class MakeMegastone extends LootFunction
         }
         if (nameMap.isEmpty())
         {
-            for (int i = 0; i < HeldItemHandler.megaVariants.size(); i++)
+            for (int i = 0; i < ItemGenerator.variants.size(); i++)
             {
-                nameMap.put(HeldItemHandler.megaVariants.get(i), i);
+                nameMap.put(ItemGenerator.variants.get(i), i);
             }
         }
         if (nameMap.containsKey(arg))

@@ -191,6 +191,7 @@ public class EditLivePokemobPage extends Page
         parent.getButtons().add(new Button(MINIVS, x + 38, y - 20, 20, 20, "v"));
         parent.getButtons().add(new Button(RANDABILITY, x + 22, y + 39, 10, 10, "R"));
         parent.getButtons().add(new Button(RANDNATURE, x - 78, y + 39, 10, 10, "R"));
+        parent.getButtons().add(new Button(99, x + 73, y + 24, 50, 12, I18n.format("traineredit.button.routes")));
 
         // Init values in text fields
         for (int i = 0; i < 4; i++)
@@ -380,6 +381,10 @@ public class EditLivePokemobPage extends Page
             parent.mainPage.initList();
             parent.setIndex(0);
             break;
+        case 99:
+            parent.routesPage.scroll = true;
+            parent.setIndex(parent.routesPage.index);
+            return;
         case 1:
             pokemob.getEntity().setDead();
             mess = new TextComponentTranslation("traineredit.info.deletemob");

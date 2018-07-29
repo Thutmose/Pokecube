@@ -1,46 +1,45 @@
 package pokecube.core.items;
 
+import java.util.Map;
 import java.util.logging.Level;
 
-import net.minecraft.creativetab.CreativeTabs;
+import com.google.common.collect.Maps;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 
 public class ItemTM extends Item
 {
+    private static Map<PokeType, ItemTM> tms = Maps.newHashMap();
 
-    public static void addMoveToStack(String move, ItemStack stack)
+    public static ItemStack getTM(String move)
     {
-        if (stack.getItem() instanceof ItemTM)
+        ItemStack stack = ItemStack.EMPTY;
+        Move_Base attack = MovesUtils.getMoveFromName(move.trim());
+        if (attack == null)
         {
-            Move_Base attack = MovesUtils.getMoveFromName(move.trim());
-            if (attack == null)
-            {
-                PokecubeMod.log(Level.WARNING, "Attempting to make TM for un-registered move: " + move);
-                return;
-            }
-            NBTTagCompound nbt = stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound();
-
-            nbt.setString("move", move.trim());
-            stack.setTagCompound(nbt);
-            stack.setItemDamage(attack.getType(null).ordinal());
-            String name = MovesUtils.getMoveName(move.trim()).getFormattedText();
-            if (name.startsWith("pokemob.move.")) name = name.replaceFirst("pokemob.move.", "");
-            stack.setStackDisplayName(name);
+            PokecubeMod.log(Level.WARNING, "Attempting to make TM for un-registered move: " + move);
+            return stack;
         }
+        stack = new ItemStack(tms.get(attack.move.type));
+        NBTTagCompound nbt = stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound();
+        nbt.setString("move", move.trim());
+        stack.setTagCompound(nbt);
+        String name = MovesUtils.getMoveName(move.trim()).getFormattedText();
+        if (name.startsWith("pokemob.move.")) name = name.replaceFirst("pokemob.move.", "");
+        stack.setStackDisplayName(name);
+        return stack;
     }
 
     public static boolean feedToPokemob(ItemStack stack, Entity entity)
@@ -129,42 +128,28 @@ public class ItemTM extends Item
 
     public static boolean applyEffect(EntityLivingBase mob, ItemStack stack)
     {
-        if (mob.getEntityWorld().isRemote) return true;
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
-        int num = stack.getItemDamage();
+        if (mob.getEntityWorld().isRemote) return stack.hasTagCompound();
         if (stack.hasTagCompound())
         {
             // Check if is TM or valid candy
-            if (num != 20 || PokecubeItems.isValid(stack)) { return feedToPokemob(stack, mob); }
-            // If invalid candy, drop level since it is bad candy
-            if (num == 20)
-            {
-                int xp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() - 1);
-                pokemob.setExp(xp, true);
-                stack.setTagCompound(null);
-                return true;
-            }
-        }
-        else
-        {
-            // If invalid candy, drop level since it is bad candy
-            if (num == 20)
-            {
-                int xp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() - 1);
-                pokemob.setExp(xp, true);
-                stack.setTagCompound(null);
-                return true;
-            }
+            return feedToPokemob(stack, mob);
         }
         return false;
     }
 
-    public ItemTM()
+    public final PokeType type;
+
+    public ItemTM(PokeType type)
     {
         super();
         this.setMaxStackSize(64);
         this.setMaxDamage(0);
-        this.setHasSubtypes(true);
+        String name = type.name.equals("???") ? "unknown" : type.name;
+        this.setRegistryName(PokecubeMod.ID, "tm_" + name);
+        this.setUnlocalizedName("tm_" + name);
+        if (type == PokeType.unknown) this.setCreativeTab(PokecubeMod.creativeTabPokecube);
+        this.type = type;
+        tms.put(type, this);
     }
 
     /** If this function returns true (or the item is damageable), the
@@ -173,30 +158,6 @@ public class ItemTM extends Item
     public boolean getShareTag()
     {
         return true;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    /** returns a list of items with the same ID, but different meta (eg: dye
-     * returns 16 items) */
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
-    {
-        if (!this.isInCreativeTab(tab)) return;
-        subItems.add(new ItemStack(this, 1, 0));
-        subItems.add(new ItemStack(this, 1, 19));
-    }
-
-    /** Returns the unlocalized name of this item. This version accepts an
-     * ItemStack so different stacks can have different names based on their
-     * damage or NBT. */
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        int i = stack.getItemDamage();
-
-        if (i == 20) return "item.candy";
-        if (i == 19) return "item.emerald_shard";
-        return super.getUnlocalizedName() + i;
     }
 
 }

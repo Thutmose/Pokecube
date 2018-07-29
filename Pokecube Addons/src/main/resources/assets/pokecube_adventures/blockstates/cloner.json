@@ -4,26 +4,12 @@
 		"textures": {
 			"#None": "pokecube_adventures:blocks/reanimator"
 		},
-        "model": "pokecube_adventures:reanimator.obj"
+		"model": "pokecube_adventures:reanimator.obj"
 	},
 	"variants": {
-		"variant": {
-			"splicer": {
-                "textures": {
-                    "#None": "pokecube_adventures:blocks/splicer"
-                },
-				"model": "pokecube_adventures:splicer.obj"
-			},
-			"reanimator": {
-				"model": "pokecube_adventures:reanimator.obj"
-			},
-			"extractor": {
-                "textures": {
-                    "#None": "pokecube_adventures:blocks/extractor"
-                },
-				"model": "pokecube_adventures:extractor.obj"
-			}
-		},
+		"inventory": [{
+			"transform": "forge:default-block"
+		}],
 		"facing": {
 			"east": {
 				"y": 0

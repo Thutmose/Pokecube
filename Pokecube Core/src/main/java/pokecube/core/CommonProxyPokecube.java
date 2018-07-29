@@ -22,6 +22,7 @@ import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
+import pokecube.core.blocks.tradingTable.TileEntityTMMachine;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
@@ -111,8 +112,8 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         if (id == Config.GUITMTABLE_ID)
         {
             TileEntity tile_entity = world.getTileEntity(pos);
-            if (tile_entity instanceof TileEntityTradingTable) { return new ContainerTMCreator(
-                    (TileEntityTradingTable) tile_entity, player.inventory); }
+            if (tile_entity instanceof TileEntityTMMachine) { return new ContainerTMCreator(
+                    (TileEntityTMMachine) tile_entity, player.inventory); }
         }
         if (id == Config.GUITRADINGTABLE_ID)
         {

@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -46,25 +45,18 @@ import pokecube.core.blocks.pokecubeTable.BlockPokecubeTable;
 import pokecube.core.blocks.repel.BlockRepel;
 import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.database.Database;
-import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.ItemFossil;
-import pokecube.core.items.ItemHeldItems;
 import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.items.ItemPokedex;
-import pokecube.core.items.ItemTM;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.loot.functions.MakeBerry;
 import pokecube.core.items.loot.functions.MakeFossil;
 import pokecube.core.items.loot.functions.MakeHeldItem;
 import pokecube.core.items.loot.functions.MakeMegastone;
 import pokecube.core.items.loot.functions.MakeVitamin;
-import pokecube.core.items.megastuff.ItemMegastone;
-import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.items.revive.ItemRevive;
@@ -100,36 +92,27 @@ public class PokecubeItems extends Items
     /** List of grass blocks for pokemobs to eat. */
     public static HashSet<Block>                     grasses        = new HashSet<Block>();
 
-    public static Item                               held           = new ItemHeldItems()
-            .setRegistryName(PokecubeMod.ID, "held");
     public static Item                               luckyEgg       = new ItemLuckyEgg().setUnlocalizedName("luckyegg")
             .setCreativeTab(creativeTabPokecube);
     public static Item                               pokemobEgg     = new ItemPokemobEgg()
             .setUnlocalizedName("pokemobegg");
-    public static Item                               pokedex        = (new ItemPokedex()).setUnlocalizedName("pokedex");
+    public static Item                               pokedex        = (new ItemPokedex(false, true));
+    public static Item                               pokewatch      = (new ItemPokedex(true, true));
     public static Item                               berryJuice;
-    public static Item                               berries        = new ItemBerry()
-            .setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setUnlocalizedName("berry")
-            .setRegistryName(PokecubeMod.ID, "berry");
-    public static Item                               megastone      = (new ItemMegastone())
-            .setUnlocalizedName("megastone");
-    public static Item                               megaring       = (new ItemMegawearable())
-            .setUnlocalizedName("megaring");
-    public static Item                               fossil         = new ItemFossil().setRegistryName(PokecubeMod.ID,
-            "fossil");
+    public static Item                               nullberry      = new ItemBerry("null", 0, 0, 0, 0, 0, 0, null);
 
     public static Item                               revive         = (new ItemRevive()).setUnlocalizedName("revive");
-    public static Item                               tm             = (new ItemTM()).setUnlocalizedName("tm");
     public static Block                              pokecenter     = (new BlockHealTable())
             .setUnlocalizedName("pokecenter").setCreativeTab(creativeTabPokecubeBlocks);
     public static Block                              repelBlock     = new BlockRepel();
     public static Block                              tableBlock     = new BlockPokecubeTable();
     public static Block                              nest           = new BlockNest().setUnlocalizedName("pokemobnest");
     // .setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-    public static Block                              pc             = (new BlockPC()).setUnlocalizedName("pc");
+    public static Block                              pc_top         = (new BlockPC(true));
+    public static Block                              pc_base        = (new BlockPC(false));
 
-    public static Block                              tradingtable   = (new BlockTradingTable())
-            .setUnlocalizedName("tradingtable");
+    public static Block                              trading_table  = (new BlockTradingTable(true));
+    public static Block                              tm_machine     = (new BlockTradingTable(false));
     public static Block                              fossilStone    = (new BlockFossilStone()).setHardness(3F)
             .setResistance(4F).setUnlocalizedName("fossilstone").setRegistryName(PokecubeMod.ID, "fossilstone");
 
@@ -455,7 +438,6 @@ public class PokecubeItems extends Items
             if (b.getDefaultState().getMaterial() == Blocks.WHEAT.getDefaultState().getMaterial())
                 PokecubeItems.grasses.add(b);
         }
-        postInitFossils();
     }
 
     private static void initVanillaHeldItems()
@@ -548,31 +530,6 @@ public class PokecubeItems extends Items
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
         times.add(time);
         stack.getTagCompound().setLong("time", time);
-    }
-
-    private static void postInitFossils()
-    {
-        List<ItemStack> toRemove = Lists.newArrayList();
-        for (int i = 0; i < HeldItemHandler.fossilVariants.size(); i++)
-        {
-            ItemStack stack = new ItemStack(PokecubeItems.fossil, 1, i);
-            String s = HeldItemHandler.fossilVariants.get(i);
-            PokecubeItems.addSpecificItemStack(s, stack);
-            PokecubeItems.registerFossil(stack, s);
-        }
-        for (ItemStack s : fossils.keySet())
-        {
-            PokedexEntry num = fossils.get(s);
-            if (!Pokedex.getInstance().isRegistered(num))
-            {
-                toRemove.add(s);
-                if (PokecubeMod.debug) PokecubeMod.log("Removing Fossil " + num + " " + s.getDisplayName());
-            }
-        }
-        for (ItemStack s : toRemove)
-        {
-            fossils.remove(s);
-        }
     }
 
     @SuppressWarnings("unchecked")

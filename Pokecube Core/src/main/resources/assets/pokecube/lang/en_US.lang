@@ -280,26 +280,6 @@ item.berry.hate1.desc=%1$s somewhat hates this.
 item.berry.hate2.desc=%1$s hates this a lot.
 item.berry.hate3.desc=%1$s hates this very much.
 
-item.badgeunknown.name=??? badge
-item.badgenormal.name=Normal badge
-item.badgefighting.name=Fighting badge
-item.badgeflying.name=Flying badge
-item.badgepoison.name=Poison badge
-item.badgeground.name=Ground badge
-item.badgerock.name=Rock badge
-item.badgebug.name=Bug badge
-item.badgeghost.name=Ghost badge
-item.badgesteel.name=Steel badge
-item.badgefire.name=Fire badge
-item.badgewater.name=Water badge
-item.badgegrass.name=Grass badge
-item.badgeelectric.name=Electric badge
-item.badgepsychic.name=Psychic badge
-item.badgeice.name=Ice badge
-item.badgedragon.name=Dragon badge
-item.badgedark.name=Dark badge
-item.badgefairy.name=Fairy badge
-
 item.pokedex.name=Pokédex
 tile.pokecenter.name=Pokécenter
 tile.pokecenter.heal=Heal
@@ -313,13 +293,13 @@ tile.pc.next=Next
 tile.pc.previous=Previous
 tile.pc.public=Public PC
 
-tile.tradingtable.tm.name=TM Table
-tile.tradingtable.trading.name=Trading Table
+tile.tm_machine.name=TM Machine
+tile.trading_table.name=Trading Table
 tile.tradingtable.trade=Trade
 tile.tradingtable.apply=Apply
 tile.tradingtable.mode=Mode
-tile.pc.base.name=PC Base
-tile.pc.top.name=PC Top
+tile.pc_base.name=PC Base
+tile.pc_top.name=PC Top
 tile.pc.autoon=Auto On
 tile.pc.autooff=Auto Off
 tile.pc.rename=Rename
@@ -334,9 +314,9 @@ item.pokecube.leaves=Leaves
 
 tile.fossilstone.name=Fossil Stone
 
-item.megaring.name=Mega Ring
-item.megabelt.name=Mega Belt
-item.megahat.name=Mega Hat
+item.mega_ring.name=Mega Ring
+item.mega_belt.name=Mega Belt
+item.mega_hat.name=Mega Hat
 item.megastone.name=Mega Stone
 item.revive.name=Revive
 

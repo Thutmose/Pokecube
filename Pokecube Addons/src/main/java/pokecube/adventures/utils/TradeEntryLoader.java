@@ -22,8 +22,7 @@ import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer.TrainerTrade;
 import pokecube.adventures.entity.trainers.TypeTrainer.TrainerTrades;
 import pokecube.core.PokecubeItems;
-import pokecube.core.handlers.HeldItemHandler;
-import pokecube.core.items.ItemHeldItems;
+import pokecube.core.handlers.ItemGenerator;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.vitamins.ItemVitamin;
 import pokecube.core.moves.MovesUtils;
@@ -163,7 +162,7 @@ public class TradeEntryLoader
         String custom = trade.custom;
         if (custom.equals("allMegas"))
         {
-            for (String s : HeldItemHandler.megaVariants)
+            for (String s : ItemGenerator.variants)
             {
                 if ((s.contains("mega") && !s.equals("megastone")) || s.contains("orb"))
                 {
@@ -218,8 +217,10 @@ public class TradeEntryLoader
         }
         else if (custom.equals("allGenericHeld"))
         {
-            for (String s : ItemHeldItems.variants)
+            for (String s : ItemGenerator.variants)
             {
+                if ((s.contains("mega") && !s.equals("megastone")) || s.contains("orb")) continue;
+
                 ItemStack sell = PokecubeItems.getStack(s);
                 Map<QName, String> values;
                 TrainerTrade recipe;
@@ -250,8 +251,7 @@ public class TradeEntryLoader
             {
                 int index = i;
                 String name = moves.get(index);
-                ItemStack sell = PokecubeItems.getStack("tm");
-                ItemTM.addMoveToStack(name, sell);
+                ItemStack sell = ItemTM.getTM(name);
                 Map<QName, String> values;
                 TrainerTrade recipe;
                 ItemStack buy1 = CompatWrapper.nullStack;

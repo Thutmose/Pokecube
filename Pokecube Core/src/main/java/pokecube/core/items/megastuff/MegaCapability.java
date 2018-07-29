@@ -9,6 +9,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.items.ItemHeldItems;
 import thut.lib.CompatWrapper;
 
 public class MegaCapability implements ICapabilityProvider, IMegaCapability
@@ -55,9 +56,11 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
                                                                              if (matches(stack, toEvolve)) return true;
                                                                          }
                                                                      }
-                                                                     for (int i = 0; i < player.inventory.armorInventory.size(); i++)
+                                                                     for (int i = 0; i < player.inventory.armorInventory
+                                                                             .size(); i++)
                                                                      {
-                                                                         ItemStack stack = player.inventory.armorInventory.get(i);
+                                                                         ItemStack stack = player.inventory.armorInventory
+                                                                                 .get(i);
                                                                          if (stack != null)
                                                                          {
                                                                              if (matches(stack, toEvolve)) return true;
@@ -105,8 +108,8 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
     public boolean isStone(ItemStack stack)
     {
         if (stack.getItem() instanceof IMegaCapability) return ((IMegaCapability) stack.getItem()).isStone(stack);
-        return stack.getItem() instanceof ItemMegastone && stack.hasTagCompound()
-                && stack.getTagCompound().getString("pokemon").contains("mega");
+        return stack.getItem() instanceof ItemHeldItems
+                && stack.getItem().getRegistryName().getResourcePath().contains("mega");
     }
 
     @Override
@@ -126,8 +129,8 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
     public PokedexEntry getEntry(ItemStack stack)
     {
         if (stack.getItem() instanceof IMegaCapability) return ((IMegaCapability) stack.getItem()).getEntry(stack);
-        if (stack.getItem() instanceof ItemMegastone
-                && stack.hasTagCompound()) { return Database.getEntry(stack.getTagCompound().getString("pokemon")); }
+        if (stack.getItem() instanceof ItemHeldItems) { return Database
+                .getEntry(stack.getItem().getRegistryName().getResourcePath()); }
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("gemTag"))
         {
             ItemStack stack2 = CompatWrapper.fromTag(CompatWrapper.getTag(stack, "gemTag", false));

@@ -30,6 +30,7 @@ public class EditRoutePage extends ListPage
 
     protected final int      index;
     final IGuardAICapability guard;
+    public boolean           scroll = false;
 
     public EditRoutePage(GuiEditTrainer watch, int index)
     {
@@ -96,7 +97,8 @@ public class EditRoutePage extends ListPage
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        if (scroll) super.mouseClicked(mouseX, mouseY, mouseButton);
+        scroll = false;
         int slot = list.getSlotIndexFromScreenCoords(mouseX, mouseY);
         for (int i = 0; i < list.getSize(); i++)
         {
@@ -128,6 +130,8 @@ public class EditRoutePage extends ListPage
     @Override
     public void handleMouseInput() throws IOException
     {
+        scroll = true;
+        super.handleMouseInput();
     }
 
     @Override

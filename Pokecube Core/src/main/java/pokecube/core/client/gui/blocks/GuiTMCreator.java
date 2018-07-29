@@ -15,7 +15,7 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
-import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
+import pokecube.core.blocks.tradingTable.TileEntityTMMachine;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
@@ -25,7 +25,7 @@ import pokecube.core.utils.PokeType;
 
 public class GuiTMCreator extends GuiContainer
 {
-    final TileEntityTradingTable table;
+    final TileEntityTMMachine table;
     ContainerTMCreator           cont;
     GuiTextField                 textFieldSearch;
 
@@ -38,7 +38,7 @@ public class GuiTMCreator extends GuiContainer
     {
         super(container);
         cont = container;
-        this.table = cont.getTile() == null ? new TileEntityTradingTable() : cont.getTile();
+        this.table = cont.getTile() == null ? new TileEntityTMMachine() : cont.getTile();
     }
 
     @Override

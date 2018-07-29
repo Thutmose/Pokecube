@@ -1,9 +1,0 @@
-{
-    "parent": "block/orientable",
-    "textures": {
-        "top": "pokecube_adventures:blocks/celebitop",
-        "bottom": "pokecube_adventures:blocks/celebitop",
-        "front": "pokecube_adventures:blocks/celebi",
-        "side": "pokecube_adventures:blocks/celebi"
-    }
-}

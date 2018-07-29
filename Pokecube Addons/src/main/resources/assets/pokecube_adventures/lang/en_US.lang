@@ -2,42 +2,63 @@
 
 block.rfsiphon.info=Energy Output: %1$s/%2$s
 
-item.pokemobTarget.name=Target
-item.warplinker.name=Warp Pad Linker
-item.biomeSetter.name=Sub-Biome Setter
+item.target.name=Target
+item.linker.name=Location Linker
+item.biome_setter.name=Sub-Biome Setter
 item.exp_share.name=Exp. Share
-item.trainerSpawner.name=Trainer Editor
-item.leaderSpawner.name=Leader Editor
-item.traderSpawner.name=Trader Editor
+item.trainerspawner.name=Trainer Editor
 item.pokecubebag.name=Bag
+
+item.badge_unknown.name=??? badge
+item.badge_normal.name=Normal badge
+item.badge_fighting.name=Fighting badge
+item.badge_flying.name=Flying badge
+item.badge_poison.name=Poison badge
+item.badge_ground.name=Ground badge
+item.badge_rock.name=Rock badge
+item.badge_bug.name=Bug badge
+item.badge_ghost.name=Ghost badge
+item.badge_steel.name=Steel badge
+item.badge_fire.name=Fire badge
+item.badge_water.name=Water badge
+item.badge_grass.name=Grass badge
+item.badge_electric.name=Electric badge
+item.badge_psychic.name=Psychic badge
+item.badge_ice.name=Ice badge
+item.badge_dragon.name=Dragon badge
+item.badge_dark.name=Dark badge
+item.badge_fairy.name=Fairy badge
 
 igwtab.entry.Stones=Evolution Stones
 
-tile.oranLog.name=Oran Wood
-tile.oranWood.name=Oran Planks
-tile.oranLeaves.name=Oran Leaves
-tile.sitrusLog.name=Sitrus Wood
-tile.sitrusWood.name=Sitrus Planks
-tile.sitrusLeaves.name=Sitrus Leaves
-tile.pechaLog.name=Pecha Wood
-tile.pechaWood.name=Pecha Planks
-tile.pechaLeaves.name=Pecha Leaves
-tile.nanabLog.name=Nanab Wood
-tile.nanabWood.name=Nanab Planks
-tile.nanabLeaves.name=Nanab Leaves
-tile.leppaLog.name=Leppa Wood
-tile.leppaWood.name=Leppa Planks
-tile.leppaLeaves.name=Leppa Leaves
-tile.enigmaLog.name=Enigma Wood
-tile.enigmaWood.name=Enigma Planks
-tile.enigmaLeaves.name=Enigma Leaves
+tile.bark_oran.name=Oran Bark
+tile.bark_sitrus.name=Sitrus Bark
+tile.bark_pecha.name=Pecha Bark
+tile.bark_nanab.name=Nanab Bark
+tile.bark_leppa.name=Leppa Bark
+tile.bark_enigma.name=Enigma Bark
+
+tile.log_oran.name=Oran Wood
+tile.log_sitrus.name=Sitrus Wood
+tile.log_pecha.name=Pecha Wood
+tile.log_nanab.name=Nanab Wood
+tile.log_leppa.name=Leppa Wood
+tile.log_enigma.name=Enigma Wood
+
+tile.plank_oran.name=Oran Planks
+tile.plank_sitrus.name=Sitrus Planks
+tile.plank_pecha.name=Pecha Planks
+tile.plank_nanab.name=Nanab Planks
+tile.plank_leppa.name=Leppa Planks
+tile.plank_enigma.name=Enigma Planks
+
 tile.warppad.name=Warp Pad
-tile.cloner.splicer.name=Gene Splicer
-tile.cloner.extractor.name=Gene Extractor
-tile.cloner.reanimator.name=Cloning Device
-tile.afa.amplifier.name=Ability Field Amplifier
-tile.afa.daycare.name=Daycare Block
-tile.afa.commander.name=Pokemob Command Block
+tile.splicer.name=Gene Splicer
+tile.extractor.name=Gene Extractor
+tile.reanimator.name=Cloning Device
+tile.afa.name=Ability Field Amplifier
+tile.daycare.name=Daycare Block
+tile.pokecommand.name=Pokemob Command Block
 tile.pokesiphon.name=Energy Siphon
 
 traineredit.gui.urlskin=URL Skin

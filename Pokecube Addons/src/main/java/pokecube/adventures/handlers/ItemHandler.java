@@ -1,38 +1,37 @@
 package pokecube.adventures.handlers;
 
-import static pokecube.core.PokecubeItems.addSpecificItemStack;
-import static pokecube.core.PokecubeItems.getItem;
 import static pokecube.core.PokecubeItems.register;
+import static pokecube.core.PokecubeItems.registerItemTexture;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
 
 import java.util.function.Predicate;
 
-import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.blocks.afa.ItemBlockAFA;
-import pokecube.adventures.blocks.cloner.block.ItemBlockCloner;
 import pokecube.adventures.commands.Config;
 import pokecube.adventures.handlers.loot.Loot;
 import pokecube.adventures.handlers.loot.LootHelpers;
 import pokecube.adventures.handlers.loot.MakeDnaBottle;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.ItemExpShare;
+import pokecube.adventures.items.ItemLinker;
+import pokecube.adventures.items.ItemSubbiomeSetter;
 import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeItems;
+import pokecube.core.blocks.ItemBlockGeneric;
 import pokecube.core.blocks.pc.ContainerPC;
-import pokecube.core.handlers.HeldItemHandler;
-import pokecube.core.handlers.HeldItemHandler.IMoveModifier;
+import pokecube.core.handlers.ItemGenerator;
+import pokecube.core.handlers.ItemGenerator.IMoveModifier;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
@@ -41,8 +40,6 @@ import pokecube.core.utils.PokeType;
 
 public class ItemHandler
 {
-    public static Item badges = new ItemBadge().setRegistryName(PokecubeAdv.ID, "badge");
-    
     static
     {
         LootFunctionManager.registerFunction(new MakeDnaBottle.Serializer());
@@ -50,11 +47,18 @@ public class ItemHandler
 
     public static void addBadges(Object registry)
     {
-        PokecubeItems.register(badges, registry);
+
         for (PokeType type : PokeType.values())
         {
-            ItemStack stack = new ItemStack(badges, 1, type.ordinal());
-            PokecubeItems.addSpecificItemStack("badge_" + type.name, stack);
+            Item badge = new ItemBadge(type);
+            PokecubeItems.register(badge, registry);
+            if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            {
+                String name = type.name.equals("???") ? "unknown" : type.name;
+                registerItemTexture(badge, 0,
+                        new ModelResourceLocation("pokecube_adventures:" + "badge_" + name, "inventory"));
+            }
+            ItemStack stack = new ItemStack(badge, 1, 0);
             PokecubeItems.addToHoldables(stack);
         }
     }
@@ -85,70 +89,47 @@ public class ItemHandler
                     new ModelResourceLocation("pokecube_adventures:mewhair", "inventory"));
         }
 
-        Item target = new ItemTarget().setUnlocalizedName("pokemobTarget")
-                .setRegistryName(PokecubeAdv.ID, "pokemobTarget").setCreativeTab(creativeTabPokecube);
+        Item target = new ItemTarget().setRegistryName(PokecubeAdv.ID, "target").setUnlocalizedName("target")
+                .setCreativeTab(creativeTabPokecube);
         register(target, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            ModelBakery.registerItemVariants(target, new ResourceLocation("pokecube_adventures:spawner"));
             PokecubeItems.registerItemTexture(target, 0,
-                    new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
-            PokecubeItems.registerItemTexture(target, 1,
-                    new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
-            PokecubeItems.registerItemTexture(target, 2,
-                    new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
-            PokecubeItems.registerItemTexture(target, 3,
-                    new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
+                    new ModelResourceLocation(target.getRegistryName().toString(), "inventory"));
+        }
+        target = new ItemLinker().setRegistryName(PokecubeAdv.ID, "linker").setUnlocalizedName("linker")
+                .setCreativeTab(creativeTabPokecube);
+        register(target, registry);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(target, 0,
+                    new ModelResourceLocation(target.getRegistryName().toString(), "inventory"));
+        }
+        target = new ItemSubbiomeSetter().setRegistryName(PokecubeAdv.ID, "biome_setter")
+                .setUnlocalizedName("biome_setter").setCreativeTab(creativeTabPokecube);
+        register(target, registry);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(target, 0,
+                    new ModelResourceLocation(target.getRegistryName().toString(), "inventory"));
         }
         Item trainer = new ItemTrainer().setUnlocalizedName("trainerspawner")
                 .setRegistryName(PokecubeAdv.ID, "trainerspawner").setCreativeTab(creativeTabPokecube);
         register(trainer, registry);
-        addSpecificItemStack("traderSpawner", new ItemStack(trainer, 1, 2));
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            ModelBakery.registerItemVariants(trainer, new ResourceLocation("pokecube_adventures:spawner"));
             PokecubeItems.registerItemTexture(trainer, 0,
-                    new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
-            PokecubeItems.registerItemTexture(trainer, 1,
-                    new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
-            PokecubeItems.registerItemTexture(trainer, 2,
-                    new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
-            PokecubeItems.registerItemTexture(trainer, 3,
-                    new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
+                    new ModelResourceLocation(trainer.getRegistryName().toString(), "inventory"));
         }
         Item bag = new ItemBag().setUnlocalizedName("pokecubebag").setRegistryName(PokecubeAdv.ID, "pokecubebag")
                 .setCreativeTab(creativeTabPokecube);
         register(bag, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            ModelBakery.registerItemVariants(bag, new ResourceLocation("pokecube_adventures:bag"));
             PokecubeItems.registerItemTexture(bag, 0,
-                    new ModelResourceLocation("pokecube_adventures:bag", "inventory"));
+                    new ModelResourceLocation(bag.getRegistryName().toString(), "inventory"));
         }
-        addSpecificItemStack("warplinker", new ItemStack(target, 1, 1));
         addBadges(registry);
-
-        ItemBlock item = new ItemBlockCloner(BlockHandler.cloner);
-        item.setRegistryName(BlockHandler.cloner.getRegistryName());
-        register(item, registry);
-        PokecubeItems.addSpecificItemStack("extractor", new ItemStack(BlockHandler.cloner, 1, 2));
-        PokecubeItems.addSpecificItemStack("splicer", new ItemStack(BlockHandler.cloner, 1, 1));
-        PokecubeItems.addSpecificItemStack("reanimator", new ItemStack(BlockHandler.cloner, 1, 0));
-
-        item = new ItemBlockAFA(BlockHandler.afa);
-        item.setRegistryName(BlockHandler.afa.getRegistryName());
-        register(item, registry);
-        PokecubeItems.addSpecificItemStack("daycare", new ItemStack(BlockHandler.afa, 1, 1));
-        PokecubeItems.addSpecificItemStack("commander", new ItemStack(BlockHandler.afa, 1, 2));
-        PokecubeItems.addSpecificItemStack("afa", new ItemStack(BlockHandler.afa, 1, 0));
-
-        item = new ItemBlock(BlockHandler.siphon);
-        item.setRegistryName(BlockHandler.siphon.getRegistryName());
-        register(item, registry);
-
-        item = new ItemBlock(BlockHandler.warppad);
-        item.setRegistryName(BlockHandler.warppad.getRegistryName());
-        register(item, registry);
 
         ContainerPC.CUSTOMPCWHILTELIST.add(new Predicate<ItemStack>()
         {
@@ -159,7 +140,7 @@ public class ItemHandler
             }
         });
 
-        HeldItemHandler.ITEMMODIFIERS.put(new Predicate<ItemStack>()
+        ItemGenerator.ITEMMODIFIERS.put(new Predicate<ItemStack>()
         {
             @Override
             public boolean test(ItemStack t)
@@ -176,6 +157,14 @@ public class ItemHandler
                 if (type == moveUse.attackType) moveUse.PWR *= 1.2;
             }
         });
+
+        for (Block block : BlockHandler.blocks)
+        {
+            ItemBlock item = new ItemBlockGeneric(block);
+            register(item, registry);
+            if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+                registerItemTexture(item, 0, new ModelResourceLocation(item.getRegistryName().toString(), "inventory"));
+        }
     }
 
     public static void handleLoot()
@@ -185,14 +174,10 @@ public class ItemHandler
                 Loot.getEntryItem(share, 10, 1, "pokecube_adventures:exp_share"));
         if (Config.instance.HMLoot)
         {
-            ItemStack cut = new ItemStack(getItem("tm"));
-            ItemTM.addMoveToStack(IMoveNames.MOVE_CUT, cut);
-            ItemStack flash = new ItemStack(getItem("tm"));
-            ItemTM.addMoveToStack(IMoveNames.MOVE_FLASH, flash);
-            ItemStack dig = new ItemStack(getItem("tm"));
-            ItemTM.addMoveToStack(IMoveNames.MOVE_DIG, dig);
-            ItemStack rocksmash = new ItemStack(getItem("tm"));
-            ItemTM.addMoveToStack(IMoveNames.MOVE_ROCKSMASH, rocksmash);
+            ItemStack cut = ItemTM.getTM(IMoveNames.MOVE_CUT);
+            ItemStack flash = ItemTM.getTM(IMoveNames.MOVE_FLASH);
+            ItemStack dig = ItemTM.getTM(IMoveNames.MOVE_DIG);
+            ItemStack rocksmash = ItemTM.getTM(IMoveNames.MOVE_ROCKSMASH);
 
             LootHelpers.addLootEntry(LootTableList.CHESTS_JUNGLE_TEMPLE, null,
                     Loot.getEntryItem(cut, 10, 1, "pokecube_adventures:cut"));

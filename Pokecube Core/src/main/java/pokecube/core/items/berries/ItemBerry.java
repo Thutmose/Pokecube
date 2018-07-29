@@ -21,6 +21,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
@@ -29,16 +30,27 @@ import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.UsableItemEffects.BerryUsable.BerryEffect;
 
 /** @author Oracion
  * @author Manchou */
 public class ItemBerry extends Item implements IMoveConstants, IPlantable
 {
-    public ItemBerry()
+    public final int    index;
+    public final String name;
+
+    public ItemBerry(String name, int index, int spicy, int dry, int sweet, int bitter, int sour, BerryEffect effect)
     {
         super();
-        this.setHasSubtypes(true);
         this.setMaxDamage(0);
+        String id = Loader.instance().activeModContainer().getModId();
+        this.setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setRegistryName(id, "berry_" + name);
+        this.setUnlocalizedName(id + ".berry_" + name);
+        this.index = index;
+        this.name = name;
+        BerryManager.berryItems.put(index, this);
+        BerryManager.addBerry(name, index, spicy, dry, sweet, bitter, sour, effect);
     }
 
     /** allows items to add custom lines of information to the mouseover
@@ -110,9 +122,9 @@ public class ItemBerry extends Item implements IMoveConstants, IPlantable
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
         if (!this.isInCreativeTab(tab)) return;
-        for (Integer i : BerryManager.berryNames.keySet())
+        // for (Integer i : BerryManager.berryNames.keySet())
         {
-            subItems.add(new ItemStack(this, 1, i));
+            subItems.add(new ItemStack(this, 1, 0));
         }
     }
 
@@ -122,7 +134,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPlantable
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        return "item." + BerryManager.berryNames.get(stack.getItemDamage()) + "Berry";
+        return "item." + name + "Berry";
     }
 
     // 1.11
@@ -136,7 +148,6 @@ public class ItemBerry extends Item implements IMoveConstants, IPlantable
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        int index = stack.getItemDamage();
         net.minecraft.block.state.IBlockState state = worldIn.getBlockState(pos);
         if (side == EnumFacing.UP && playerIn.canPlayerEdit(pos.offset(side), side, stack)
                 && state.getBlock().canSustainPlant(state, worldIn, pos, EnumFacing.UP, (IPlantable) Items.WHEAT_SEEDS)

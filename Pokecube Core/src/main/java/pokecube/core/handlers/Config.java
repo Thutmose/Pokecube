@@ -624,8 +624,6 @@ public class Config extends ConfigBase
     @Configure(category = items, needsMcRestart = true)
     public String[]                      customHeldItems              = {};
     @Configure(category = items, needsMcRestart = true)
-    public String[]                      customMegaStones             = {};
-    @Configure(category = items, needsMcRestart = true)
     public String[]                      customFossils                = {};
 
     /** List of blocks to be considered for the floor of a cave. */

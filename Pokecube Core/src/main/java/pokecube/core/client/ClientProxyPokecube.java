@@ -3,11 +3,6 @@
  */
 package pokecube.core.client;
 
-import static pokecube.core.PokecubeItems.registerItemTexture;
-import static pokecube.core.handlers.ItemHandler.log0;
-import static pokecube.core.handlers.ItemHandler.log1;
-import static pokecube.core.handlers.ItemHandler.plank0;
-
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Locale;
@@ -23,7 +18,6 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -53,7 +47,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -61,12 +54,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.CommonProxyPokecube;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.blocks.berries.BlockBerryLog;
-import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.blocks.pokecubeTable.TileEntityPokecubeTable;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
+import pokecube.core.blocks.tradingTable.TileEntityTMMachine;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.client.gui.GuiChooseFirstPokemob;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
@@ -81,12 +73,6 @@ import pokecube.core.client.gui.pokemob.GuiPokemobAI;
 import pokecube.core.client.gui.pokemob.GuiPokemobRoutes;
 import pokecube.core.client.gui.pokemob.GuiPokemobStorage;
 import pokecube.core.client.gui.watch.GuiPokeWatch;
-import pokecube.core.client.items.BerryTextureHandler;
-import pokecube.core.client.items.FossilTextureHandler;
-import pokecube.core.client.items.HeldItemTextureHandler;
-import pokecube.core.client.items.MegaStoneTextureHandler;
-import pokecube.core.client.items.VitaminTextureHandler;
-import pokecube.core.client.items.WearableTextureHandler;
 import pokecube.core.client.models.ModelPokemobEgg;
 import pokecube.core.client.render.RenderMoves;
 import pokecube.core.client.render.blocks.RenderPokecubeTable;
@@ -201,7 +187,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
         if (guiID == Config.GUITMTABLE_ID)
         {
-            TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
+            TileEntityTMMachine tile = (TileEntityTMMachine) world.getTileEntity(pos);
             return new GuiTMCreator(new ContainerTMCreator(tile, player.inventory));
         }
         if (guiID == Config.GUIPC_ID)
@@ -255,93 +241,10 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public void initItemModels()
     {
-        Item tm = PokecubeItems.tm;
-
-        for (int i = 0; i < 19; i++)
-        {
-            ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:tm" + i));
-            registerItemTexture(tm, i, new ModelResourceLocation("pokecube:tm" + i, "inventory"));
-        }
-        ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:rarecandy"));
-        registerItemTexture(tm, 20, new ModelResourceLocation("pokecube:rarecandy", "inventory"));
-
-        ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:emerald_shard"));
-        registerItemTexture(tm, 19, new ModelResourceLocation("pokecube:emerald_shard", "inventory"));
-
         OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase(java.util.Locale.ENGLISH));
-
         Item item2 = Item.getItemFromBlock(PokecubeItems.tableBlock);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":pokecube_table", "inventory"));
-
-        item2 = Item.getItemFromBlock(PokecubeItems.pc);
-        ModelLoader.setCustomModelResourceLocation(item2, 0,
-                new ModelResourceLocation(PokecubeMod.ID + ":pc_base", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(item2, 8,
-                new ModelResourceLocation(PokecubeMod.ID + ":pc_top", "inventory"));
-
-        item2 = Item.getItemFromBlock(PokecubeItems.tradingtable);
-        ModelLoader.setCustomModelResourceLocation(item2, 0,
-                new ModelResourceLocation(PokecubeMod.ID + ":tradingtable", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(item2, 8,
-                new ModelResourceLocation(PokecubeMod.ID + ":tmc", "inventory"));
-
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:pechaplank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:oranplank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:leppaplank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:sitrusplank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:enigmaplank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:nanabplank"));
-        registerItemTexture(Item.getItemFromBlock(plank0), 0,
-                new ModelResourceLocation("pokecube:pechaplank", "inventory"));
-        registerItemTexture(Item.getItemFromBlock(plank0), 1,
-                new ModelResourceLocation("pokecube:oranplank", "inventory"));
-        registerItemTexture(Item.getItemFromBlock(plank0), 2,
-                new ModelResourceLocation("pokecube:leppaplank", "inventory"));
-        registerItemTexture(Item.getItemFromBlock(plank0), 3,
-                new ModelResourceLocation("pokecube:sitrusplank", "inventory"));
-        registerItemTexture(Item.getItemFromBlock(plank0), 4,
-                new ModelResourceLocation("pokecube:enigmaplank", "inventory"));
-        registerItemTexture(Item.getItemFromBlock(plank0), 5,
-                new ModelResourceLocation("pokecube:nanabplank", "inventory"));
-
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:pechawood"));
-        registerItemTexture(Item.getItemFromBlock(log0), 0,
-                new ModelResourceLocation("pokecube:pechawood", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:oranwood"));
-        registerItemTexture(Item.getItemFromBlock(log0), 1,
-                new ModelResourceLocation("pokecube:oranwood", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:leppawood"));
-        registerItemTexture(Item.getItemFromBlock(log0), 2,
-                new ModelResourceLocation("pokecube:leppawood", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:sitruswood"));
-        registerItemTexture(Item.getItemFromBlock(log0), 3,
-                new ModelResourceLocation("pokecube:sitruswood", "inventory"));
-
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:enigmawood"));
-        registerItemTexture(Item.getItemFromBlock(log1), 0,
-                new ModelResourceLocation("pokecube:enigmawood", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:nanabwood"));
-        registerItemTexture(Item.getItemFromBlock(log1), 1,
-                new ModelResourceLocation("pokecube:nanabwood", "inventory"));
-
-        // check if something provides more than just null berries, either
-        // resourcepack or mobs.
-        boolean berries = PokecubeMod.core.getConfig().extraberries || Loader.isModLoaded("pokecube_mobs");
-        if (!berries)
-        {
-            // If not, just register nullberry.
-            ModelBakery.registerItemVariants(PokecubeItems.berries, new ResourceLocation("pokecube:nullberry"));
-            registerItemTexture(PokecubeItems.berries, 0, new ModelResourceLocation("pokecube:nullberry", "inventory"));
-        }
-        // if so, register item models here.
-        else BerryTextureHandler.registerItemModels();
-
-        MegaStoneTextureHandler.registerItemModels();
-        VitaminTextureHandler.registerItemModels();
-        FossilTextureHandler.registerItemModels();
-        HeldItemTextureHandler.registerItemModels();
-        WearableTextureHandler.registerItemModels();
     }
 
     @Override
@@ -351,14 +254,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         map = (new StateMap.Builder())
                 .ignore(new IProperty[] { BerryManager.type, BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE }).build();
         ModelLoader.setCustomStateMapper(BerryManager.berryLeaf, map);
-
-        ModelLoader.setCustomStateMapper(log0,
-                (new StateMap.Builder()).withName(BlockBerryLog.VARIANT0).withSuffix("wood").build());
-        ModelLoader.setCustomStateMapper(log1,
-                (new StateMap.Builder()).withName(BlockBerryLog.VARIANT4).withSuffix("wood").build());
-
-        ModelLoader.setCustomStateMapper(plank0,
-                (new StateMap.Builder()).withName(BlockBerryWood.VARIANT).withSuffix("plank").build());
     }
 
     @Override

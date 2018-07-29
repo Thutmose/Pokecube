@@ -1,5 +1,6 @@
 package pokecube.core.world.gen.village.buildings;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -190,9 +191,9 @@ public abstract class TemplateStructureBase extends Village
                 for (BlockPos blockpos : map.keySet())
                 {
                     String s = (String) map.get(blockpos);
-                    if (s.equals("Floor"))
+                    if (s.toLowerCase(Locale.ENGLISH).startsWith("floor"))
                     {
-                        setOffset(-blockpos.getY() + 1);
+                        setOffset(-blockpos.getY());
                         blockpos = blockpos.add(templatePosition);
                         if (boxIn.isVecInside(blockpos))
                         {

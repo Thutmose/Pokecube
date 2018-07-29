@@ -1,7 +1,0 @@
-{
-    "parent": "block/cube_column",
-    "textures": {
-        "end": "pokecube:blocks/sitruswood_top",
-        "side": "pokecube:blocks/sitruswood"
-    }
-}

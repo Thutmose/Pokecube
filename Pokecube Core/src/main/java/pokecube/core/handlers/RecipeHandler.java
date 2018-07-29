@@ -25,20 +25,17 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         ResourceLocation group = new ResourceLocation(PokecubeMod.ID, "defaults");
         IRecipe recipe;
 
-        OreDictionary.registerOre("logWood", new ItemStack(ItemHandler.log0, 1, OreDictionary.WILDCARD_VALUE));
-        OreDictionary.registerOre("logWood", new ItemStack(ItemHandler.log1, 1, OreDictionary.WILDCARD_VALUE));
-        OreDictionary.registerOre("plankWood", new ItemStack(ItemHandler.plank0, 1, OreDictionary.WILDCARD_VALUE));
-        for (int i = 0; i < 4; i++)
+        for (String s : ItemGenerator.logs.keySet())
         {
-            recipe = new ShapelessRecipes(group.toString(), new ItemStack(ItemHandler.plank0, 4, i),
-                    NonNullList.<Ingredient> withSize(1, Ingredient.fromStacks(new ItemStack(ItemHandler.log0, 1, i))));
-            GameData.register_impl(recipe.setRegistryName(new ResourceLocation(PokecubeMod.ID, "log0" + i)));
-        }
-        for (int i = 0; i < 2; i++)
-        {
-            recipe = new ShapelessRecipes(group.toString(), new ItemStack(ItemHandler.plank0, 4, i + 4),
-                    NonNullList.<Ingredient> withSize(1, Ingredient.fromStacks(new ItemStack(ItemHandler.log1, 1, i))));
-            GameData.register_impl(recipe.setRegistryName(new ResourceLocation(PokecubeMod.ID, "log0" + (i + 4))));
+            OreDictionary.registerOre("logWood", ItemGenerator.logs.get(s));
+            OreDictionary.registerOre("logWood", ItemGenerator.barks.get(s));
+            OreDictionary.registerOre("plankWood", ItemGenerator.planks.get(s));
+            recipe = new ShapelessRecipes(group.toString(), new ItemStack(ItemGenerator.planks.get(s), 4), NonNullList
+                    .<Ingredient> withSize(1, Ingredient.fromStacks(new ItemStack(ItemGenerator.logs.get(s)))));
+            GameData.register_impl(recipe.setRegistryName(new ResourceLocation(PokecubeMod.ID, s + "_0")));
+            recipe = new ShapelessRecipes(group.toString(), new ItemStack(ItemGenerator.planks.get(s), 4), NonNullList
+                    .<Ingredient> withSize(1, Ingredient.fromStacks(new ItemStack(ItemGenerator.barks.get(s)))));
+            GameData.register_impl(recipe.setRegistryName(new ResourceLocation(PokecubeMod.ID, s + "_1")));
         }
 
         GameData.register_impl(

@@ -16,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
-import pokecube.core.PokecubeItems;
 import pokecube.core.items.ItemTM;
 import pokecube.core.moves.MovesUtils;
 import thut.core.common.commands.CommandTools;
@@ -70,8 +69,7 @@ public class TMCommand extends CommandBase
                     player = world.getPlayerEntityByName(name);
                 }
 
-                ItemStack tm = PokecubeItems.getStack("tm");
-                ItemTM.addMoveToStack(temp, tm);
+                ItemStack tm = ItemTM.getTM(temp);
 
                 if (targets != null)
                 {
@@ -117,8 +115,7 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
-            BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         Collection<String> moves = MovesUtils.moves.keySet();
         List<String> ret = new ArrayList<String>();

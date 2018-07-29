@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pokecube",
+  "pattern": [
+    " P ",
+    "R R",
+    " R "
+  ],
+  "key": {
+    "P": {
+      "item": "pokecube:pokedex",
+      "data": 0
+    },
+    "R": {
+      "item": "minecraft:rabbit_hide"
+    }
+  },
+  "result": {
+    "item": "pokecube:pokewatch"
+  }
+}

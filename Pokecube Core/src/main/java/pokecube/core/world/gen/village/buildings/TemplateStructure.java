@@ -1,5 +1,6 @@
 package pokecube.core.world.gen.village.buildings;
 
+import java.util.Locale;
 import java.util.Random;
 
 import net.minecraft.block.BlockStairs;
@@ -54,7 +55,8 @@ public class TemplateStructure extends TemplateStructureBase
                 chest.setLootTable(loot, rand.nextLong());
             }
         }
-        else if (marker.equals("Floor") && world.getBlockState(pos.down()).getBlock() instanceof BlockStairs)
+        else if (marker.toLowerCase(Locale.ENGLISH).startsWith("stair")
+                && world.getBlockState(pos.down()).getBlock() instanceof BlockStairs)
         {
             if (!world.getBlockState(pos.down(2)).getMaterial().isSolid())
             {

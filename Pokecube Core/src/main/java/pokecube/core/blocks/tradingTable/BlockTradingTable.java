@@ -5,7 +5,6 @@ import java.util.Random;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,18 +28,21 @@ import thut.lib.CompatWrapper;
 
 public class BlockTradingTable extends BlockRotatable implements ITileEntityProvider
 {
-    public static final PropertyBool TMC = PropertyBool.create("tmc");
+    public final boolean tradingTable;
 
-    public BlockTradingTable()
+    public BlockTradingTable(boolean tradingtable)
     {
         super(Material.CLOTH);
+        this.tradingTable = tradingtable;
         // this.setBlockBounds(0, 0, 0, 1, 0.75f, 1);
         this.setCreativeTab(PokecubeMod.creativeTabPokecube);
-        this.setDefaultState(
-                this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TMC, false));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setHardness(100);
         this.setResistance(100);
         this.setLightOpacity(0);
+        this.setRegistryName("pokecube", tradingtable ? "trading_table" : "tm_machine");
+        this.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        this.setUnlocalizedName(getRegistryName().getResourcePath());
     }
 
     @Override
@@ -53,13 +55,13 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] { FACING, TMC });
+        return new BlockStateContainer(this, new IProperty[] { FACING });
     }
 
     @Override
     public TileEntity createNewTileEntity(World var1, int var2)
     {
-        return new TileEntityTradingTable();
+        return tradingTable ? new TileEntityTradingTable() : new TileEntityTMMachine();
     }
 
     private void dropItems(World world, BlockPos pos)
@@ -122,7 +124,6 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     public int getMetaFromState(IBlockState state)
     {
         int ret = state.getValue(FACING).getIndex();
-        if ((state.getValue(TMC))) ret += 8;
         return ret;
     }
 
@@ -131,13 +132,11 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     public IBlockState getStateFromMeta(int meta)
     {
         EnumFacing enumfacing = EnumFacing.getFront(meta);
-
-        boolean tmc = (meta & 8) > 0;
         if (enumfacing.getAxis() == EnumFacing.Axis.Y)
         {
             enumfacing = EnumFacing.NORTH;
         }
-        return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(TMC, tmc);
+        return this.getDefaultState().withProperty(FACING, enumfacing);
     }
 
     @Override
@@ -164,15 +163,18 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        TileEntityTradingTable table = (TileEntityTradingTable) worldIn.getTileEntity(pos);
-        table.openGUI(playerIn);
-        return true;
-    }
-
-    @Override
-    public int damageDropped(IBlockState state)
-    {
-        return state.getValue(TMC) ? 8 : 0;
+        if (tradingTable)
+        {
+            TileEntityTradingTable table = (TileEntityTradingTable) worldIn.getTileEntity(pos);
+            table.openGUI(playerIn);
+            return true;
+        }
+        else 
+        {
+            TileEntityTMMachine table = (TileEntityTMMachine) worldIn.getTileEntity(pos);
+            table.openGUI(playerIn);
+            return true;
+        }
     }
 
     @Override
@@ -181,8 +183,8 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     }
 
     @Override
-    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
-            int meta, EntityLivingBase placer)
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY,
+            float hitZ, int meta, EntityLivingBase placer)
     {
         return this.getStateFromMeta(meta).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }

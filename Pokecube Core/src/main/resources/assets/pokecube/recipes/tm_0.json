@@ -18,7 +18,6 @@
     }
   },
   "result": {
-    "item": "pokecube:tm",
-    "data": 0
+    "item": "pokecube:tm_unknown"
   }
 }

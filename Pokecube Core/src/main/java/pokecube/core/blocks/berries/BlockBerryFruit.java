@@ -147,7 +147,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public Item getItemDropped(IBlockState state, Random p_149650_2_, int p_149650_3_)
     {
-        return PokecubeItems.berries;
+        return PokecubeItems.nullberry;
     }
 
     /** Convert the BlockState into the correct metadata value */

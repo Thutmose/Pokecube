@@ -27,7 +27,6 @@ public class ItemBag extends Item
         super();
         this.setMaxStackSize(1);
         this.setMaxDamage(0);
-        this.setHasSubtypes(true);
     }
 
     /** allows items to add custom lines of information to the mouseover

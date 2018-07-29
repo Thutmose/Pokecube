@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional.Method;
 import pokecube.core.PokecubeItems;
-import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.handlers.ItemGenerator;
 import thut.bling.recipe.RecipeLoader;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
@@ -23,9 +23,9 @@ public class BlingCompat
 
     public BlingCompat()
     {
-        for (int i = 4; i < HeldItemHandler.megaVariants.size(); i++)
+        for (int i = 4; i < ItemGenerator.variants.size(); i++)
         {
-            String s = HeldItemHandler.megaVariants.get(i);
+            String s = ItemGenerator.variants.get(i);
             String tex = null;
             ItemStack stack = PokecubeItems.getStack(s);
             tex = "pokecube:textures/items/" + stack.getDisplayName().toLowerCase(Locale.ENGLISH) + ".png";

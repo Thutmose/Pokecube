@@ -7,12 +7,10 @@
   ],
   "key": {
     "R": {
-      "item": "pokecube:berry",
-      "data": 64
+      "item": "pokecube_mobs:berry_rowap"
     },
     "J": {
-      "item": "pokecube:berry",
-      "data": 63
+      "item": "pokecube_mobs:berry_jaboca"
     }
   },
   "result": {

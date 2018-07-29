@@ -287,15 +287,20 @@ public class WearablesCompat
     {
         String getVariant(ItemStack stack)
         {
-            if (stack.getItemDamage() < ItemMegawearable.getWearableCount())
-                return ItemMegawearable.getWearable(stack.getItemDamage());
+            if (stack.getItem() instanceof ItemMegawearable) { return ((ItemMegawearable) stack.getItem()).name; }
+            return "";
+        }
+
+        String getSlotSt(ItemStack stack)
+        {
+            if (stack.getItem() instanceof ItemMegawearable) { return ((ItemMegawearable) stack.getItem()).slot; }
             return "";
         }
 
         @Override
         public thut.wearables.EnumWearable getSlot(ItemStack stack)
         {
-            return thut.wearables.EnumWearable.valueOf(ItemMegawearable.getSlot(stack.getItemDamage()));
+            return thut.wearables.EnumWearable.valueOf(getSlotSt(stack));
         }
 
         @SideOnly(Side.CLIENT)

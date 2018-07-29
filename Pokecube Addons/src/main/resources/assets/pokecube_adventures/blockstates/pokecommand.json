@@ -1,0 +1,6 @@
+{
+	"variants": {
+		"normal": { "model": "pokecube_adventures:pokecommand" },
+		"inventory": { "model": "pokecube_adventures:pokecommand" }
+	}
+}

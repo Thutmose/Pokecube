@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
-import pokecube.adventures.blocks.cloner.block.BlockCloner;
+import pokecube.adventures.blocks.cloner.block.BlockReanimator;
 import pokecube.adventures.commands.Config;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -218,7 +218,7 @@ public class RecipeFossilRevive implements IPoweredRecipe
             // You can give him more XP if you want
             entity = (pokemob = pokemob.setForSpawn(exp)).getEntity();
             if (tile.getUser() != null && tame) pokemob.setPokemonOwner(tile.getUser());
-            EnumFacing dir = world.getBlockState(pos).getValue(BlockCloner.FACING);
+            EnumFacing dir = world.getBlockState(pos).getValue(BlockReanimator.FACING);
             entity.setLocationAndAngles(pos.getX() + 0.5 + dir.getFrontOffsetX(), pos.getY() + 1,
                     pos.getZ() + 0.5 + dir.getFrontOffsetZ(), world.rand.nextFloat() * 360F, 0.0F);
             world.spawnEntity(entity);

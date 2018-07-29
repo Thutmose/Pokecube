@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pokecube",
+  "pattern": [
+    " S ",
+    "I I",
+    " I "
+  ],
+  "key": {
+    "S": {
+      "item": "pokecube:megastone",
+      "data": 0
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "pokecube:mega_ring"
+  }
+}

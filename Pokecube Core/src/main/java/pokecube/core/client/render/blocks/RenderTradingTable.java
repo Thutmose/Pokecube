@@ -38,7 +38,6 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
         TileEntityTradingTable table = (TileEntityTradingTable) tileentity;
         IBlockState state = table.getWorld().getBlockState(table.getPos());
         if (!(state.getBlock() instanceof BlockTradingTable)) return;
-        if (state.getValue(BlockTradingTable.TMC)) return;
 
         glPushMatrix();
         glTranslated(x, y, z);

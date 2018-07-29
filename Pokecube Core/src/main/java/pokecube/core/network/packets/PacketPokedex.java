@@ -611,7 +611,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         if (message.message == BASERADAR)
         {
             boolean mode = message.data.getBoolean("M");
-            player.openGui(PokecubeCore.instance, mode ? Config.GUIPOKEDEX_ID : Config.GUIPOKEWATCH_ID,
+            player.openGui(PokecubeCore.instance, !mode ? Config.GUIPOKEDEX_ID : Config.GUIPOKEWATCH_ID,
                     player.getEntityWorld(), 0, 0, 0);
             if (message.data.hasKey("V"))
                 pokecube.core.client.gui.watch.SecretBaseRadarPage.closestMeteor = new Vector4(

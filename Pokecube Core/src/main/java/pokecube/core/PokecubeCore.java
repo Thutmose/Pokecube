@@ -30,7 +30,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -102,13 +101,6 @@ import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.items.berries.BerryManager;
-import pokecube.core.items.loot.datafixers.BadgeFixer;
-import pokecube.core.items.loot.datafixers.FossilFixer;
-import pokecube.core.items.loot.datafixers.HeldItemFixer;
-import pokecube.core.items.loot.datafixers.MegaStoneFixer;
-import pokecube.core.items.loot.datafixers.MegaWearableFixer;
-import pokecube.core.items.loot.datafixers.VitaminFixer;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MoveQueue.MoveQueuer;
@@ -291,7 +283,6 @@ public class PokecubeCore extends PokecubeMod
         currentConfig = config;
         helper = new Mod_Pokecube_Helper();
         CombatTypeLoader.loadTypes();
-        BerryManager.addBerry("null", 0, 0, 0, 0, 0, 0);
         checkConfigFiles();
         MoveEventsHandler.getInstance();
     }
@@ -783,12 +774,6 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void serverLoad(FMLServerAboutToStartEvent event)
     {
-        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new MegaStoneFixer());
-        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new HeldItemFixer());
-        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new MegaWearableFixer());
-        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new FossilFixer());
-        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new VitaminFixer());
-        event.getServer().getDataFixer().registerFix(FixTypes.ITEM_INSTANCE, new BadgeFixer());
     }
 
     @EventHandler

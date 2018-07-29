@@ -81,10 +81,11 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
 
     public static void sendEditOpenPacket(Entity target, EntityPlayerMP editor)
     {
-        String node = target == editor ? editor.isSneaking() ? EDITSELF : SPAWNTRAINER
+        String node = target == editor || target == null ? editor.isSneaking() ? EDITSELF : SPAWNTRAINER
                 : target instanceof EntityPlayer ? EDITOTHER
                         : CapabilityHasPokemobs.getHasPokemobs(target) != null ? EDITTRAINER : EDITMOB;
         boolean canEdit = !editor.getServer().isDedicatedServer() || PermissionAPI.hasPermission(editor, node);
+
         if (!canEdit)
         {
             editor.sendMessage(new TextComponentString(TextFormatting.RED + "You are not allowed to do that."));
@@ -172,8 +173,6 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
             NBTBase tag = message.data.getTag("T");
             int id = message.data.getInteger("I");
             Entity mob = player.getEntityWorld().getEntityByID(id);
-            if (mob == null) return;
-            IHasPokemobs cap = CapabilityHasPokemobs.getHasPokemobs(mob);
             if (message.data.getBoolean("O"))
             {
                 if (mob != null && message.data.hasKey("C"))
@@ -210,6 +209,8 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                         mob != null ? mob.getEntityId() : -1, 0, 0);
                 return;
             }
+            if (mob == null) return;
+            IHasPokemobs cap = CapabilityHasPokemobs.getHasPokemobs(mob);
             IGuardAICapability guard = mob.getCapability(EventsHandler.GUARDAI_CAP, null);
             if (tag instanceof NBTTagCompound && ((NBTTagCompound) tag).hasKey("GU") && guard != null)
             {
@@ -389,7 +390,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         if (message.message == MESSAGEKILLTRAINER)
         {
             int id = message.data.getInteger("I");
-            EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
+            Entity trainer = player.getEntityWorld().getEntityByID(id);
             trainer.setDead();
         }
     }

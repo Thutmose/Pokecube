@@ -351,7 +351,7 @@ public class BerryGenManager
             SpawnBiomeMatcher matcher = SpawnBiomeMatcher.ALLMATCHER;
             matcher.reset();
             List<ItemStack> berries = Lists.newArrayList();
-            berries.add(new ItemStack(PokecubeItems.berries));
+            berries.add(new ItemStack(PokecubeItems.nullberry));
             matchers.add(matcher);
             berryLocations.put(matcher, berries);
         }

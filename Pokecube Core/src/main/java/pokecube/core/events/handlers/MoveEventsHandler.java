@@ -36,7 +36,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.MoveUse;
 import pokecube.core.events.MoveUse.MoveWorldAction;
-import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.handlers.ItemGenerator;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
@@ -465,7 +465,7 @@ public class MoveEventsHandler
         IPokemob applied = user ? attacker : target;
         if (applied != null && applied.getHeldItem() != null)
         {
-            HeldItemHandler.processHeldItemUse(move, applied, applied.getHeldItem());
+            ItemGenerator.processHeldItemUse(move, applied, applied.getHeldItem());
         }
     }
 
@@ -542,7 +542,7 @@ public class MoveEventsHandler
 
         if (applied.getHeldItem() != null)
         {
-            HeldItemHandler.processHeldItemUse(move, applied, applied.getHeldItem());
+            ItemGenerator.processHeldItemUse(move, applied, applied.getHeldItem());
         }
 
         if (applied.getAbility() != null)

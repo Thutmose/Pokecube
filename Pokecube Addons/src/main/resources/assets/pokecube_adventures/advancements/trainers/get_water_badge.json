@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "pokecube_adventures:badge",
+      "item": "pokecube_adventures:badge_water",
       "data": 11
     },
     "title": {
@@ -17,8 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "pokecube_adventures:badge",
-            "data": 11
+            "item": "pokecube_adventures:badge_water"
           }
         ]
       }

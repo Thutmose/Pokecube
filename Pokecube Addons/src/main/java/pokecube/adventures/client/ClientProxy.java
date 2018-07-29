@@ -1,18 +1,11 @@
 package pokecube.adventures.client;
 
-import static pokecube.adventures.handlers.BlockHandler.afa;
-import static pokecube.adventures.handlers.BlockHandler.cloner;
-import static pokecube.adventures.handlers.BlockHandler.siphon;
-import static pokecube.adventures.handlers.BlockHandler.warppad;
-import static pokecube.core.PokecubeItems.registerItemTexture;
-
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -22,11 +15,9 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -53,7 +44,6 @@ import pokecube.adventures.client.render.blocks.RenderCloner;
 import pokecube.adventures.client.render.entity.RenderTarget;
 import pokecube.adventures.client.render.entity.RenderTrainer;
 import pokecube.adventures.client.render.entity.TrainerBeltRenderer;
-import pokecube.adventures.client.render.item.BadgeTextureHandler;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
@@ -130,28 +120,6 @@ public class ClientProxy extends CommonProxy
     @Override
     public void initItemModels()
     {
-        Item item2 = Item.getItemFromBlock(cloner);
-        ModelLoader.setCustomModelResourceLocation(item2, 0,
-                new ModelResourceLocation(PokecubeAdv.ID + ":reanimator", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(item2, 1,
-                new ModelResourceLocation(PokecubeAdv.ID + ":splicer", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(item2, 2,
-                new ModelResourceLocation(PokecubeAdv.ID + ":extractor", "inventory"));
-
-        item2 = Item.getItemFromBlock(afa);
-        ModelLoader.setCustomModelResourceLocation(item2, 0,
-                new ModelResourceLocation(PokecubeAdv.ID + ":amplifier", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(item2, 1,
-                new ModelResourceLocation(PokecubeAdv.ID + ":daycare", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(item2, 2,
-                new ModelResourceLocation(PokecubeAdv.ID + ":commander", "inventory"));
-
-        registerItemTexture(Item.getItemFromBlock(warppad), 0,
-                new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
-
-        registerItemTexture(Item.getItemFromBlock(siphon), 0,
-                new ModelResourceLocation("pokecube_adventures:pokesiphon", "inventory"));
-        BadgeTextureHandler.registerItemModels();
     }
 
     @Override

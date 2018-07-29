@@ -1,0 +1,7 @@
+# Blender MTL File: 'tradingtable.blend'
+# Material Count: 1
+
+newmtl tm_machine
+Kd 1.000000 1.000000 1.000000
+d 1.000000
+map_Kd pokecube:blocks/tm_machine

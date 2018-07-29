@@ -21,9 +21,9 @@ public class ContainerTMCreator extends Container
         return true;
     }
 
-    TileEntityTradingTable tile;
+    TileEntityTMMachine tile;
 
-    public ContainerTMCreator(TileEntityTradingTable tile, InventoryPlayer playerInv)
+    public ContainerTMCreator(TileEntityTMMachine tile, InventoryPlayer playerInv)
     {
         this.tile = tile;
         if (tile != null) tile.moves(playerInv.player);
@@ -59,7 +59,7 @@ public class ContainerTMCreator extends Container
         this.inventorySlots.clear();
     }
 
-    public TileEntityTradingTable getTile()
+    public TileEntityTMMachine getTile()
     {
         return tile;
     }

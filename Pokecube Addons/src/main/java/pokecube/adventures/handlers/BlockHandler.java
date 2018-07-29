@@ -1,12 +1,20 @@
 package pokecube.adventures.handlers;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.BlockAFA;
+import pokecube.adventures.blocks.afa.BlockCommander;
+import pokecube.adventures.blocks.afa.BlockDaycare;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.afa.TileEntityCommander;
 import pokecube.adventures.blocks.afa.TileEntityDaycare;
-import pokecube.adventures.blocks.cloner.block.BlockCloner;
+import pokecube.adventures.blocks.cloner.block.BlockExtractor;
+import pokecube.adventures.blocks.cloner.block.BlockReanimator;
+import pokecube.adventures.blocks.cloner.block.BlockSplicer;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntityGeneExtractor;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntitySplicer;
@@ -20,13 +28,7 @@ import thut.lib.CompatWrapper;
 
 public class BlockHandler
 {
-    public static Block warppad = new BlockWarpPad().setUnlocalizedName("warppad").setRegistryName(PokecubeAdv.ID,
-            "warppad");
-    public static Block cloner  = new BlockCloner().setUnlocalizedName("cloner").setRegistryName(PokecubeAdv.ID,
-            "cloner");
-    public static Block afa     = new BlockAFA().setUnlocalizedName("afa").setRegistryName(PokecubeAdv.ID, "afa");
-    public static Block siphon  = new BlockSiphon().setUnlocalizedName("pokesiphon").setRegistryName(PokecubeAdv.ID,
-            "pokesiphon");
+    public static List<Block> blocks  = Lists.newArrayList();
 
     public static void registerTiles(Object registry)
     {
@@ -42,17 +44,53 @@ public class BlockHandler
 
     public static void registerBlocks(Object registry)
     {
+        Block block = new BlockWarpPad();
+        block.setUnlocalizedName("warppad").setRegistryName(PokecubeAdv.ID, "warppad");
+        blocks.add(block);
+        block.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        PokecubeItems.register(block, registry);
 
-        PokecubeItems.register(warppad, registry);
-        warppad.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        block = new BlockSiphon();
+        block.setUnlocalizedName("pokesiphon").setRegistryName(PokecubeAdv.ID, "pokesiphon");
+        blocks.add(block);
+        block.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        PokecubeItems.register(block, registry);
 
-        cloner.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(cloner, registry);
+        block = new BlockAFA();
+        block.setUnlocalizedName("afa").setRegistryName(PokecubeAdv.ID, "afa");
+        blocks.add(block);
+        block.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        PokecubeItems.register(block, registry);
 
-        afa.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(afa, registry);
+        block = new BlockDaycare();
+        block.setUnlocalizedName("daycare").setRegistryName(PokecubeAdv.ID, "daycare");
+        blocks.add(block);
+        block.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        PokecubeItems.register(block, registry);
 
-        siphon.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(siphon, registry);
+        block = new BlockCommander();
+        block.setUnlocalizedName("pokecommand").setRegistryName(PokecubeAdv.ID, "pokecommand");
+        blocks.add(block);
+        block.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        PokecubeItems.register(block, registry);
+
+        block = new BlockReanimator();
+        block.setUnlocalizedName("reanimator").setRegistryName(PokecubeAdv.ID, "reanimator");
+        blocks.add(block);
+        block.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        PokecubeItems.register(block, registry);
+
+        block = new BlockSplicer();
+        block.setUnlocalizedName("splicer").setRegistryName(PokecubeAdv.ID, "splicer");
+        blocks.add(block);
+        block.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        PokecubeItems.register(block, registry);
+
+        block = new BlockExtractor();
+        block.setUnlocalizedName("extractor").setRegistryName(PokecubeAdv.ID, "extractor");
+        blocks.add(block);
+        block.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        PokecubeItems.register(block, registry);
+
     }
 }

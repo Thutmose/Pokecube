@@ -1,8 +1,0 @@
-{
-   "variants": {
-       "axis=y": { "model": "pokecube:oranwood" },
-       "axis=z": { "model": "pokecube:oranwood_side" },
-       "axis=x": { "model": "pokecube:oranwood_side", "y": 90  },
-       "axis=none": { "model": "pokecube:oranwood_bark" }
-    }
-}

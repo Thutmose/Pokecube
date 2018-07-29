@@ -6,10 +6,8 @@
         },
         "model": "pokecube_adventures:afa.obj"
      },
-    "variants": {
-        "variant=amplifier": { "model": "pokecube_adventures:afa.obj" },
-        "variant=daycare": { "model": "pokecube_adventures:daycare.obj" },
-        "variant=commander": { "model": "pokecube_adventures:commander" },
+   "variants": {
+        "normal": { "model": "pokecube_adventures:afa.obj" },
         "inventory": [{
             "transform": "forge:default-block"
         }]

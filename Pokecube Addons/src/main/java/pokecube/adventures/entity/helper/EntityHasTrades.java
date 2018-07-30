@@ -26,7 +26,7 @@ import thut.lib.CompatWrapper;
 
 public abstract class EntityHasTrades extends EntityAgeable implements IMerchant, INpc, IEntityAdditionalSpawnData
 {
-    public static final int      VERSION       = 4;
+    public static final int      VERSION       = 5;
 
     protected boolean            clear         = false;
     protected boolean            shouldrefresh = false;

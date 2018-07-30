@@ -167,6 +167,7 @@ public class TradeEntryLoader
                 if ((s.contains("mega") && !s.equals("megastone")) || s.contains("orb"))
                 {
                     ItemStack sell = PokecubeItems.getStack(s);
+                    sell.setItemDamage(0);
                     Map<QName, String> values;
                     TrainerTrade recipe;
                     ItemStack buy1 = CompatWrapper.nullStack;
@@ -194,6 +195,7 @@ public class TradeEntryLoader
             for (String s : ItemVitamin.vitamins)
             {
                 ItemStack sell = PokecubeItems.getStack(s);
+                sell.setItemDamage(0);
                 Map<QName, String> values;
                 TrainerTrade recipe;
                 ItemStack buy1 = CompatWrapper.nullStack;
@@ -219,9 +221,10 @@ public class TradeEntryLoader
         {
             for (String s : ItemGenerator.variants)
             {
-                if ((s.contains("mega") && !s.equals("megastone")) || s.contains("orb")) continue;
+                if ((s.contains("mega") && !s.equals("megastone")) || s.contains("orb") || s.equals("shiny_charm")) continue;
 
                 ItemStack sell = PokecubeItems.getStack(s);
+                sell.setItemDamage(0);
                 Map<QName, String> values;
                 TrainerTrade recipe;
                 ItemStack buy1 = CompatWrapper.nullStack;

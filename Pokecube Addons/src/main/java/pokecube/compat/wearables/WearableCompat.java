@@ -138,18 +138,9 @@ public class WearableCompat
         }
 
         @Override
-        public void onPutOn(EntityLivingBase player, ItemStack itemstack, EnumWearable slot, int subIndex)
+        public boolean dyeable(ItemStack stack)
         {
-        }
-
-        @Override
-        public void onTakeOff(EntityLivingBase player, ItemStack itemstack, EnumWearable slot, int subIndex)
-        {
-        }
-
-        @Override
-        public void onUpdate(EntityLivingBase player, ItemStack itemstack, EnumWearable slot, int subIndex)
-        {
+            return true;
         }
     }
 }

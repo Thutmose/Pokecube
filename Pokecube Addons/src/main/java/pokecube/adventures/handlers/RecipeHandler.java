@@ -7,7 +7,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
@@ -24,7 +23,6 @@ import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import pokecube.adventures.commands.Config;
-import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -37,7 +35,6 @@ import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.megastuff.RecipeWearables;
 import thut.api.entity.genetics.Alleles;
 import thut.lib.CompatWrapper;
 
@@ -285,14 +282,5 @@ public class RecipeHandler
         RecipeSelector recipe = new RecipeSelector();
         recipe.setRegistryName(new ResourceLocation(PokecubeAdv.ID, "selectormerging"));
         GameData.register_impl(recipe);
-
-        RecipeWearables.dyeables.add(new Predicate<ItemStack>()
-        {
-            @Override
-            public boolean test(ItemStack t)
-            {
-                return t.getItem() instanceof ItemBag;
-            }
-        });
     }
 }

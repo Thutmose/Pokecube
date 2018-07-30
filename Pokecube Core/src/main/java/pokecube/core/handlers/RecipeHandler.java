@@ -13,7 +13,6 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.RecipeBrewBerries;
-import pokecube.core.items.megastuff.RecipeWearables;
 import pokecube.core.items.pokecubes.RecipePokeseals;
 import pokecube.core.items.revive.RecipeRevive;
 
@@ -38,8 +37,6 @@ public class RecipeHandler extends Mod_Pokecube_Helper
             GameData.register_impl(recipe.setRegistryName(new ResourceLocation(PokecubeMod.ID, s + "_1")));
         }
 
-        GameData.register_impl(
-                new RecipeWearables().setRegistryName(new ResourceLocation(PokecubeMod.ID, "wearables")));
         GameData.register_impl(
                 new RecipePokeseals().setRegistryName(new ResourceLocation(PokecubeMod.ID, "pokeseals")));
         GameData.register_impl(new RecipeRevive().setRegistryName(new ResourceLocation(PokecubeMod.ID, "revive")));

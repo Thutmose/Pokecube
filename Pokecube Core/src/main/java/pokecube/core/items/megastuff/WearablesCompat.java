@@ -107,7 +107,7 @@ public class WearablesCompat
 
             }
         });
-        renderers.put("megaring", new WearablesRenderer()
+        renderers.put("ring", new WearablesRenderer()
         {
             // rings use own model, so only 1 layer here, ring model handles own
             // textures.
@@ -124,7 +124,7 @@ public class WearablesCompat
                 ring.render(wearer, 0, 0, partialTicks, 0, 0, 0.0625f);
             }
         });
-        renderers.put("megabelt", new WearablesRenderer()
+        renderers.put("belt", new WearablesRenderer()
         {
             // 2 layers of belt rendering for the different colours.
             @SideOnly(Side.CLIENT)
@@ -184,7 +184,7 @@ public class WearablesCompat
                 GL11.glPopMatrix();
             }
         });
-        renderers.put("megahat", new WearablesRenderer()
+        renderers.put("hat", new WearablesRenderer()
         {
             // 2 layers of hat rendering for the different colours.
             @SideOnly(Side.CLIENT)
@@ -277,7 +277,7 @@ public class WearablesCompat
         {
             event.addCapability(WEARABLESKEY, new WearableMega());
         }
-        else if (event.getObject().getItem() == PokecubeItems.pokedex)
+        else if (event.getObject().getItem() == PokecubeItems.pokewatch)
         {
             event.addCapability(WEARABLESKEY, new WearableWatch());
         }
@@ -350,7 +350,7 @@ public class WearablesCompat
         @Override
         public thut.wearables.EnumWearable getSlot(ItemStack stack)
         {
-            return stack.getItemDamage() == 8 ? thut.wearables.EnumWearable.WRIST : null;
+            return thut.wearables.EnumWearable.WRIST;
         }
 
         @SideOnly(Side.CLIENT)

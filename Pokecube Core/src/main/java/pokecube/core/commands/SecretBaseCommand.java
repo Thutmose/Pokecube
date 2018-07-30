@@ -1,5 +1,7 @@
 package pokecube.core.commands;
 
+import java.util.UUID;
+
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.CommandBase;
@@ -82,7 +84,15 @@ public class SecretBaseCommand extends CommandBase
                 catch (Exception e)
                 {
                     String playerName = args[1];
-                    GameProfile profile = new GameProfile(null, playerName);
+                    UUID id = null;
+                    try
+                    {
+                        id = UUID.fromString(playerName);
+                    }
+                    catch (Exception e2)
+                    {
+                    }
+                    GameProfile profile = new GameProfile(id, playerName);
                     profile = TileEntitySkull.updateGameprofile(profile);
                     if (profile.getId() == null) { throw new CommandException(
                             "Error, cannot find profile for " + playerName); }

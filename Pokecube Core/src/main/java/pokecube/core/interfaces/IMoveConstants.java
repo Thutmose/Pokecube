@@ -113,10 +113,10 @@ public interface IMoveConstants extends IMoveNames
     /** A sleeping pokemon will try to sit at its home location */
     @NonPersistantAI
     static final int SLEEPING             = 1 << 6;
-    /** Indicates that the pokemon is going to execute a utility move. */
+    /** Indicates that the pokemon is going to execute a move. */
     @NonPersistantAI
     static final int EXECUTINGMOVE        = 1 << 7;
-    /** Indeicates that there is a new utility move to use. */
+    /** Indeicates that there is a new move to use. */
     @NonPersistantAI
     static final int NEWEXECUTEMOVE       = 1 << 8;
     /** Pokemon cannot have item used on it */

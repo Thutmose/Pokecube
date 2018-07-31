@@ -26,14 +26,14 @@ import thut.core.client.render.model.IPartTexturer;
 public abstract class AbstractModelRenderer<T extends EntityLiving> extends RenderLivingBase<T>
         implements IModelRenderer<T>
 {
-    final Vector3             rotPoint          = Vector3.getNewVector();
+    final Vector3             rotPoint                  = Vector3.getNewVector();
 
     private IPartTexturer     texturer;
     private IAnimationChanger animator;
 
     // Used to check if it has a custom sleeping animation.
-    private boolean           checkedForSleep   = false;
-    private boolean           hasSleepAnimation = false;
+    private boolean           checkedForSleep           = false;
+    private boolean           hasSleepAnimation         = false;
 
     // Values used to properly reset the GL state after rendering.
     public ModelHolder        model_holder;

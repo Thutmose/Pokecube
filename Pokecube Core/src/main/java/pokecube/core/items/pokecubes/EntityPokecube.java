@@ -399,9 +399,9 @@ public class EntityPokecube extends EntityPokecubeBase
         if (targetEntity != null)
         {
             target.set(targetEntity);
-            if (targetEntity.getDistanceSq(this) < 9)
+            if (targetEntity.getDistanceSq(this) < 4)
             {
-                this.collideWithEntity(targetEntity);
+                this.applyEntityCollision(targetEntity);
             }
         }
         else
@@ -412,9 +412,14 @@ public class EntityPokecube extends EntityPokecubeBase
         {
             Vector3 here = Vector3.getNewVector().set(this);
             Vector3 dir = Vector3.getNewVector().set(target);
-            double dist = dir.distanceTo(here);
-            if (dist > 1) dist = 1 / dist;
-            else dist = 1;
+            if (targetEntity != null)
+            {
+                dir.x += targetEntity.motionX;
+                dir.y += targetEntity.motionY;
+                dir.z += targetEntity.motionZ;
+            }
+            double dist = dir.distanceTo(here) / 2;
+            if (dist > 1) dist = 1;
             dir.subtractFrom(here);
             dir.scalarMultBy(dist);
             dir.setVelocities(this);

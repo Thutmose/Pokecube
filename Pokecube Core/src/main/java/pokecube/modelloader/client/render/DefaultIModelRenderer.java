@@ -21,7 +21,6 @@ import thut.core.client.render.wrappers.ModelWrapper;
 public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModelRenderer<T>
 {
     public String                           name;
-    public String                           currentPhase = "idle";
     public HashMap<String, PartInfo>        parts        = Maps.newHashMap();
     HashMap<String, ArrayList<Vector5>>     global;
     public HashMap<String, List<Animation>> animations   = Maps.newHashMap();

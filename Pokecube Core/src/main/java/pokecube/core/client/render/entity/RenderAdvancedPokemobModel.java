@@ -13,7 +13,9 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.moves.MovesUtils;
 import pokecube.modelloader.client.render.AbstractModelRenderer;
 import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.client.render.ModelWrapper;
@@ -27,12 +29,20 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         return AnimationLoader.getModel(name);
     }
 
+    // Used to check if it has a custom sleeping animation.
+    private boolean          checkedForContactAttack   = false;
+    private boolean          hasContactAttackAnimation = false;
+
+    // Used to check if it has a custom sleeping animation.
+    private boolean          checkedForRangedAttack    = false;
+    private boolean          hasRangedAttackAnimation  = false;
+
     public IModelRenderer<T> model;
     final String             modelName;
-    public boolean           overrideAnim = false;
+    public boolean           overrideAnim              = false;
     private ModelWrapper     wrapper;
 
-    public String            anim         = "";
+    public String            anim                      = "";
 
     boolean                  blend;
 
@@ -163,6 +173,35 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         boolean asleep = pokemob.getStatus() == IMoveConstants.STATUS_SLP
                 || pokemob.getPokemonAIState(IMoveConstants.SLEEPING);
 
+        if (!checkedForContactAttack)
+        {
+            hasContactAttackAnimation = model.hasAnimation("attack_contact", entity);
+            checkedForContactAttack = true;
+        }
+        if (!checkedForRangedAttack)
+        {
+            hasRangedAttackAnimation = model.hasAnimation("attack_ranged", entity);
+            checkedForRangedAttack = true;
+        }
+        if (pokemob.getPokemonAIState(IPokemob.EXECUTINGMOVE))
+        {
+            int index = pokemob.getMoveIndex();
+            Move_Base move;
+            if (index < 4 && (move = MovesUtils.getMoveFromName(pokemob.getMove(index))) != null)
+            {
+                if (hasContactAttackAnimation && (move.getAttackCategory() & IMoveConstants.CATEGORY_CONTACT) > 0)
+                {
+                    phase = "attack_contact";
+                    return phase;
+                }
+                if (hasRangedAttackAnimation && (move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)
+                {
+                    phase = "attack_ranged";
+                    return phase;
+                }
+            }
+        }
+
         if (asleep && model.hasAnimation("sleeping", entity))
         {
             phase = "sleeping";
@@ -203,7 +242,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             phase = "walk";
             return phase;
         }
-
         return phase;
     }
 

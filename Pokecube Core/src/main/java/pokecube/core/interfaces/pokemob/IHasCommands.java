@@ -48,6 +48,7 @@ public interface IHasCommands
         {
             PokecubeMod.log(Level.SEVERE,
                     "Error Handling command for type " + command + " for mob " + pokemob.getEntity(), e);
+            PokecubeMod.log(Level.SEVERE, "Owner: " + pokemob.getOwner());
         }
     }
 }

@@ -59,6 +59,7 @@ public class ItemGenerator
         {
             ItemFossil item = new ItemFossil(type);
             PokecubeItems.register(item, registry);
+            PokecubeItems.registerFossil(new ItemStack(item), type);
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             {
                 registerItemTexture(item, 0, new ModelResourceLocation("pokecube:fossil_" + type, "inventory"));

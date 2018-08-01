@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.PokedexEntry.SpawnData;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.database.stats.ISpecialCaptureCondition;
 import pokecube.core.database.stats.ISpecialSpawnCondition;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
@@ -44,6 +46,11 @@ public class LegendarySpawns
         PokedexEntry entry = Database.getEntry(name);
         if (block == Blocks.DIAMOND_BLOCK && entry != null)
         {
+            SpawnData data = entry.getSpawnData();
+            if (data != null) for (SpawnBiomeMatcher matcher : data.matchers.keySet())
+            {
+                if (data.getWeight(matcher) > 0) return;
+            }
             ISpecialSpawnCondition spawnCondition = ISpecialSpawnCondition.spawnMap.get(entry);
             ISpecialCaptureCondition captureCondition = ISpecialCaptureCondition.captureMap.get(entry);
             if (spawnCondition != null)

@@ -229,6 +229,7 @@ public class GuardAICapability implements IGuardAICapability
     @Override
     public IGuardTask getPrimaryTask()
     {
+        if (tasks.isEmpty()) tasks.add(new GuardTask());
         return tasks.get(0);
     }
 }

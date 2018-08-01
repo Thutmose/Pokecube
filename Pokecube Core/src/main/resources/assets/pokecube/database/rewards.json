@@ -49,8 +49,7 @@
       "key": "default",
       "output": {
         "values": {
-          "d": "1",
-          "id": "pokecube:tm",
+          "id": "pokecube:tm_normal",
           "tag": "{move:\"cut\",display:{Name:\"Cut\"}}",
           "n": "1"
         },
@@ -71,8 +70,7 @@
       "key": "default",
       "output": {
         "values": {
-          "d": "1",
-          "id": "pokecube:tm",
+          "id": "pokecube:tm_normal",
           "tag": "{move:\"flash\",display:{Name:\"Flash\"}}",
           "n": "1"
         },
@@ -93,8 +91,7 @@
       "key": "default",
       "output": {
         "values": {
-          "d": "2",
-          "id": "pokecube:tm",
+          "id": "pokecube:tm_fighting",
           "tag": "{move:\"rocksmash\",display:{Name:\"Rock Smash\"}}",
           "n": "1"
         },
@@ -134,8 +131,7 @@
       "key": "default",
       "output": {
         "values": {
-          "d": "1",
-          "id": "pokecube:megastone",
+          "id": "pokecube:shiny_charm",
           "n": "1"
         }
       },

@@ -43,6 +43,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Permissions;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.core.common.commands.CommandTools;
@@ -123,12 +124,15 @@ public class Pokecube extends Item implements IPokecube
                 list.add("ERROR");
                 return;
             }
-            float health = pokemob.getStat(Stats.HP, true);
+
+            NBTTagCompound pokeTag = item.getTagCompound().getCompoundTag(TagNames.POKEMOB);
+            
+            
+            float health = pokeTag.getFloat("Health");
             float maxHealth = pokemob.getStat(Stats.HP, false);
             int lvlexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel());
             int exp = pokemob.getExp() - lvlexp;
             int neededexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() + 1) - lvlexp;
-
             list.add(I18n.format("pokecube.tooltip.level", pokemob.getLevel()));
             list.add(I18n.format("pokecube.tooltip.health", health, maxHealth));
             list.add(I18n.format("pokecube.tooltip.xp", exp, neededexp));

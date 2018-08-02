@@ -27,6 +27,7 @@ public class CustomDimensionManager
             DimensionType dimType, Long seed)
     {
         World overworld = DimensionManager.getWorld(0);
+        if (overworld == null) return;
         if (dimType == null)
         {
             dimType = DimensionType.OVERWORLD;

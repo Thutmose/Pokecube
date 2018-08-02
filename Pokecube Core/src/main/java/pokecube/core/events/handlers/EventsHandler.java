@@ -539,15 +539,44 @@ public class EventsHandler
     }
 
     @SubscribeEvent
+    public void interactEvent(PlayerInteractEvent.RightClickBlock evt)
+    {
+        String ID = "LastSuccessInteractEvent";
+        long time = evt.getEntityPlayer().getEntityData().getLong(ID);
+        if (time == evt.getEntityPlayer().getEntityWorld().getTotalWorldTime())
+        {
+            evt.setCanceled(true);
+            return;
+        }
+    }
+
+    @SubscribeEvent
+    public void interactEvent(PlayerInteractEvent.RightClickItem evt)
+    {
+        String ID = "LastSuccessInteractEvent";
+        long time = evt.getEntityPlayer().getEntityData().getLong(ID);
+        if (time == evt.getEntityPlayer().getEntityWorld().getTotalWorldTime())
+        {
+            evt.setCanceled(true);
+            return;
+        }
+    }
+
+    @SubscribeEvent
     public void interactEvent(PlayerInteractEvent.EntityInteractSpecific evt)
     {
         String ID = "LastSuccessInteractEvent";
-        long time = evt.getTarget().getEntityData().getLong(ID);
-        if (time == evt.getTarget().getEntityWorld().getTotalWorldTime()) return;
+        long time = evt.getEntityPlayer().getEntityData().getLong(ID);
+        if (time == evt.getEntityPlayer().getEntityWorld().getTotalWorldTime())
+        {
+            evt.setCanceled(true);
+            return;
+        }
         processInteract(evt, evt.getTarget());
         if (evt.isCanceled())
         {
-            evt.getTarget().getEntityData().setLong(ID, evt.getTarget().getEntityWorld().getTotalWorldTime());
+            evt.getEntityPlayer().getEntityData().setLong(ID,
+                    evt.getEntityPlayer().getEntityWorld().getTotalWorldTime());
         }
     }
 
@@ -555,12 +584,17 @@ public class EventsHandler
     public void interactEvent(PlayerInteractEvent.EntityInteract evt)
     {
         String ID = "LastSuccessInteractEvent";
-        long time = evt.getTarget().getEntityData().getLong(ID);
-        if (time == evt.getTarget().getEntityWorld().getTotalWorldTime()) return;
+        long time = evt.getEntityPlayer().getEntityData().getLong(ID);
+        if (time == evt.getEntityPlayer().getEntityWorld().getTotalWorldTime())
+        {
+            evt.setCanceled(true);
+            return;
+        }
         processInteract(evt, evt.getTarget());
         if (evt.isCanceled())
         {
-            evt.getTarget().getEntityData().setLong(ID, evt.getTarget().getEntityWorld().getTotalWorldTime());
+            evt.getEntityPlayer().getEntityData().setLong(ID,
+                    evt.getEntityPlayer().getEntityWorld().getTotalWorldTime());
         }
     }
 

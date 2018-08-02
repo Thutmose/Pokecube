@@ -192,7 +192,6 @@ public class GuiArranger
                             int dy = my - j;
                             PokecubeMod.core.getConfig().messagePos[0] -= dx * mess[4];
                             PokecubeMod.core.getConfig().messagePos[1] -= dy * mess[5];
-                            if (dx != 0 || dy != 0) PokecubeMod.core.getConfig().setSettings();
                         }
                         break;
                     case 1:
@@ -215,7 +214,6 @@ public class GuiArranger
                             int dy = my - j;
                             PokecubeMod.core.getConfig().guiPos[0] -= dx * guiS[4];
                             PokecubeMod.core.getConfig().guiPos[1] -= dy * guiS[5];
-                            if (dx != 0 || dy != 0) PokecubeMod.core.getConfig().setSettings();
                         }
                         break;
                     case 2:
@@ -238,7 +236,6 @@ public class GuiArranger
                             int dy = my - j;
                             PokecubeMod.core.getConfig().targetPos[0] -= dx * targ[4];
                             PokecubeMod.core.getConfig().targetPos[1] -= dy * targ[5];
-                            if (dx != 0 || dy != 0) PokecubeMod.core.getConfig().setSettings();
                         }
                         break;
                     case 3:
@@ -261,7 +258,6 @@ public class GuiArranger
                             int dy = my - j;
                             PokecubeMod.core.getConfig().telePos[0] -= dx * teles[4];
                             PokecubeMod.core.getConfig().telePos[1] -= dy * teles[5];
-                            if (dx != 0 || dy != 0) PokecubeMod.core.getConfig().setSettings();
                         }
                         break;
                     }

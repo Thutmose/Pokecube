@@ -4,7 +4,6 @@
 package pokecube.core.client;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Locale;
@@ -559,7 +558,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 }
                 catch (Exception e)
                 {
-                    PokecubeMod.log(Level.SEVERE, "Error copying " + field.getName(), e);
+//                    PokecubeMod.log(Level.SEVERE, "Error copying " + field.getName(), e);
                 }
             }
         }

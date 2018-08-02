@@ -536,6 +536,7 @@ public class Config extends ConfigBase
     @Configure(category = advanced)
     public String[]                      damageBlocksBlacklist        = {};
     @Configure(category = advanced)
+    @SyncConfig
     public int                           evolutionTicks               = 50;
     @Configure(category = advanced)
     @SyncConfig
@@ -547,8 +548,10 @@ public class Config extends ConfigBase
     @Configure(category = advanced)
     public int[]                         teleDimBlackList             = {};
     @Configure(category = advanced)
+    @SyncConfig
     public int                           telePearlsCostSameDim        = 0;
     @Configure(category = advanced)
+    @SyncConfig
     public int                           telePearlsCostOtherDim       = 16;
     @Configure(category = advanced)
     /** This is the version to match in configs, this is set after loading the

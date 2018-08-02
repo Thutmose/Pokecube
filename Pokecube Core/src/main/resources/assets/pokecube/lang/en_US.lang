@@ -1,20 +1,20 @@
 ﻿#Pokécube translation
 
-key.pokemob.next=Next Pokemob
-key.pokemob.prev=Previous Pokemob
+key.pokemob.next=Next Pokémob
+key.pokemob.prev=Previous Pokémob
 key.pokemob.move.next=Next Move
 key.pokemob.move.prev=Previous Move
-key.pokemob.recall=Recall Pokemob
-key.pokemob.attack=Pokemob Attack
-key.pokemob.stance=Pokemob Stance
+key.pokemob.recall=Recall Pokémob
+key.pokemob.attack=Pokémob Attack
+key.pokemob.stance=Pokémob Stance
 key.pokemob.megaevolve=Mega Evolve
 key.pokemob.b=Stop Evolution
 key.pokemob.move.1=Move 1
 key.pokemob.move.2=Move 2
 key.pokemob.move.3=Move 3
 key.pokemob.move.4=Move 4
-key.pokemob.up=Pokemob Up
-key.pokemob.down=Pokemob Down
+key.pokemob.up=Pokémob Up
+key.pokemob.down=Pokémob Down
 key.pokemob.speed.up=Ride Speed Up
 key.pokemob.speed.down=Ride Speed Down
 key.pokemob.arrangegui=Arrange Gui
@@ -97,7 +97,7 @@ pokemob.gui.empty=EMPTY
 pokemob.gui.face=SIDE
 pokemob.gui.updatestorage=Storage Settings updated.
 
-pokemob.description.type=%1$s is a %2$s Pokemob. 
+pokemob.description.type=%1$s is a %2$s Pokémob. 
 pokemob.description.evolve.level=%1$s evolves into %2$s at Level %3$s.
 pokemob.description.evolve.item=%1$s evolves into %2$s when given a %3$s.
 pokemob.description.evolve.item.male=%1$s evolves into %2$s when male and given a %3$s.

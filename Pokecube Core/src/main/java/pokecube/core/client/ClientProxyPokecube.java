@@ -3,6 +3,8 @@
  */
 package pokecube.core.client;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Locale;
@@ -86,6 +88,7 @@ import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.handlers.Config;
+import pokecube.core.handlers.SyncConfig;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -100,6 +103,7 @@ import thut.core.client.render.animation.CapabilityAnimation;
 import thut.core.client.render.particle.IParticle;
 import thut.core.client.render.particle.ParticleFactory;
 import thut.core.client.render.particle.ParticleHandler;
+import thut.core.common.config.Configure;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -519,6 +523,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public void handshake(boolean revert)
     {
+        setValues(revert);
         if (revert)
         {
             ((PokecubeCore) PokecubeMod.core).currentConfig = ((PokecubeCore) PokecubeMod.core).config;
@@ -526,6 +531,37 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         else if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
         {
             ((PokecubeCore) PokecubeMod.core).currentConfig = ((PokecubeCore) PokecubeMod.core).config_client;
+        }
+    }
+
+    private void setValues(boolean revert)
+    {
+        Config config = ((PokecubeCore) PokecubeMod.core).config;
+        Config config_client = ((PokecubeCore) PokecubeMod.core).config_client;
+        for (Field field : Config.class.getDeclaredFields())
+        {
+            SyncConfig c = field.getAnnotation(SyncConfig.class);
+            Configure conf = field.getAnnotation(Configure.class);
+            /** client stuff doesn't need to by synced, clients will use the
+             * dummy config while on servers. */
+            if (conf != null && c == null)
+            {
+                try
+                {
+                    if (revert)
+                    {
+                        config.updateField(field, field.get(config_client));
+                    }
+                    else
+                    {
+                        config_client.updateField(field, field.get(config));
+                    }
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.SEVERE, "Error copying " + field.getName(), e);
+                }
+            }
         }
     }
 

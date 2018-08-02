@@ -30,14 +30,27 @@ public class AttackLocationHandler implements IMobCommandHandler
     public void handleCommand(IPokemob pokemob)
     {
         int currentMove = pokemob.getMoveIndex();
-        MinecraftForge.EVENT_BUS.post(new CommandAttackEvent(pokemob.getEntity(), null));
-        if (currentMove != 5 && MovesUtils.canUseMove(pokemob))
+        CommandAttackEvent evt = new CommandAttackEvent(pokemob.getEntity(), null);
+        MinecraftForge.EVENT_BUS.post(evt);
+
+        if (!evt.isCanceled() && currentMove != 5 && MovesUtils.canUseMove(pokemob))
         {
             Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
+            // Send move use message first.
             ITextComponent mess = new TextComponentTranslation("pokemob.action.usemove",
                     pokemob.getPokemonDisplayName(),
                     new TextComponentTranslation(MovesUtils.getUnlocalizedMove(move.getName())));
             pokemob.displayMessageToOwner(mess);
+
+            // If too hungry, send message about that.
+            if (pokemob.getHungerTime() > 0)
+            {
+                mess = new TextComponentTranslation("pokemob.action.hungry", pokemob.getPokemonDisplayName());
+                pokemob.displayMessageToOwner(mess);
+                return;
+            }
+
+            // Otherwise execute the move.
             if (pokemob.getUtilityMoveAI() != null)
             {
                 pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);

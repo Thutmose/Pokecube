@@ -164,6 +164,7 @@ pokecube.secretBase.enter=Use "/pokebase exit" to leave, or create an exit with 
 pokemob.action.sendout=%1$s was sent out
 pokemob.action.return=%1$s §ahas returned to the Pokécube
 pokemob.action.usemove=You tell %1$s to use %2$s
+pokemob.action.hungry=§c%1$s is too hungry to do that!
 pokemob.action.faint.enemy=§aEnemy %1$s §ahas fainted!
 pokemob.action.faint.own=§cYour %1$s §chas fainted!
 pokemob.action.denydamageblock=§cpokemobsDamageBlocks is disabled via configs

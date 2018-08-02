@@ -98,7 +98,7 @@ public class AIHungry extends AIBase
 
         int hungerTime = pokemob.getHungerTime();
         v.set(entity);
-        sleepy = pokemob.getEntity().getAttackTarget() == null;
+        sleepy = !pokemob.getPokemonAIState(IPokemob.ANGRY);
         if (sleepy) for (TimePeriod p : pokemob.getPokedexEntry().activeTimes())
         {// TODO find some way to determine actual length of day for things like
          // AR support.
@@ -152,9 +152,10 @@ public class AIHungry extends AIBase
 
         double hurtTime = deathTime / 2d;
         Random rand = new Random(pokemob.getRNGValue());
-        int tick = rand.nextInt(100);
-        if (hungerTime > hurtTime && !entity.getEntityWorld().isRemote && entity.getAttackTarget() == null
-                && !pokemob.neverHungry() && entity.ticksExisted % 100 == tick)
+        int cur = (entity.ticksExisted / hungerTicks);
+        int tick = rand.nextInt(10);
+        if (hungerTime > hurtTime && !entity.getEntityWorld().isRemote && !pokemob.getPokemonAIState(IPokemob.ANGRY)
+                && !pokemob.neverHungry() && cur % 10 == tick)
         {
             boolean ate = false;
             for (int i = 2; i < 7; i++)
@@ -303,8 +304,8 @@ public class AIHungry extends AIBase
         int hunger = Math.max(hungerTime, -deathTime / 4);
         if (hunger != hungerTime) pokemob.setHungerTime(hunger);
 
-        if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == tick
-                && !entity.getEntityWorld().isRemote && pokemob.getHungerCooldown() < 0 && pokemob.getHungerTime() < 0)
+        if (entity.getAttackTarget() == null && !entity.isDead && !entity.getEntityWorld().isRemote
+                && pokemob.getHungerCooldown() < 0 && pokemob.getHungerTime() < 0 && cur % 10 == tick)
         {
             float dh = Math.max(1, entity.getMaxHealth() * 0.05f);
             float toHeal = entity.getHealth() + dh;

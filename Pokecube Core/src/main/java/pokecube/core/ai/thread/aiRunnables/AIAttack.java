@@ -311,6 +311,11 @@ public class AIAttack extends AIBase implements IAICombat
                 float attackerHeight = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
                 float attackerWidth = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
 
+                attackerLength = Math.max(attackerLength, attackerHeight);
+                attackerWidth = Math.max(attackerWidth, attackerHeight);
+                attackerLength = Math.max(attackerLength, attackerWidth);
+                attackerWidth = attackerLength;
+
                 float attackedLength = entityTarget.width;
                 float attackedHeight = entityTarget.height;
                 float attackedWidth = entityTarget.width;

@@ -260,9 +260,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             mon2.setPokemonOwner(trader1);
             mon1.setPokemonOwner(trader2);
             boolean mon1everstone = PokecubeManager.getHeldItem(poke1) != CompatWrapper.nullStack
-                    && Tools.isSameStack(PokecubeManager.getHeldItem(poke1), PokecubeItems.getStack("everstone"));
+                    && Tools.isStack(PokecubeManager.getHeldItem(poke1), "everstone");
             boolean mon2everstone = PokecubeManager.getHeldItem(poke2) != CompatWrapper.nullStack
-                    && Tools.isSameStack(PokecubeManager.getHeldItem(poke2), PokecubeItems.getStack("everstone"));
+                    && Tools.isStack(PokecubeManager.getHeldItem(poke2), "everstone");
             if (!mon1everstone) mon1.setTraded(true);
             if (!mon2everstone) mon2.setTraded(true);
             poke1 = PokecubeManager.pokemobToItem(mon1);

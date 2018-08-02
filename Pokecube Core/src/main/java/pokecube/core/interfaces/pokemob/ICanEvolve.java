@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import pokecube.core.PokecubeCore;
-import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
@@ -165,8 +164,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
      * @return whether should evolve */
     default boolean canEvolve(ItemStack stack)
     {
-        if (stack != CompatWrapper.nullStack && Tools.isSameStack(stack, PokecubeItems.getStack("everstone")))
-            return false;
+        if (stack != CompatWrapper.nullStack && Tools.isStack(stack, "everstone")) return false;
         if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
         {
             for (EvolutionData d : getPokedexEntry().getEvolutions())

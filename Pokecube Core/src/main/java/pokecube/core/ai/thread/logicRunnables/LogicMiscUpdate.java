@@ -44,12 +44,10 @@ public class LogicMiscUpdate extends LogicBase
     private boolean             checkedEvol       = false;
     private int                 pathTimer         = 0;
     Vector3                     v                 = Vector3.getNewVector();
-    private static ItemStack    everstone;
 
     public LogicMiscUpdate(IPokemob entity)
     {
         super(entity);
-        if (everstone == null) everstone = PokecubeItems.getStack("everstone");
     }
 
     @Override
@@ -272,7 +270,7 @@ public class LogicMiscUpdate extends LogicBase
     private void checkEvolution()
     {
         boolean evolving = pokemob.getPokemonAIState(EVOLVING);
-        if (Tools.isSameStack(pokemob.getHeldItem(), everstone))
+        if (Tools.isStack(pokemob.getHeldItem(), "everstone"))
         {
             if (evolving)
             {

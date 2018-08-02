@@ -486,6 +486,14 @@ public class Tools
         return entity.getEntityWorld().isAnyPlayerWithinRangeAt(entity.posX, entity.posY, entity.posZ, range);
     }
 
+    public static boolean isStack(ItemStack stack, String oredict)
+    {
+        List<ItemStack> ores = OreDictionary.getOres(oredict);
+        for (ItemStack ore : ores)
+            if (isSameStack(stack, ore, true)) return true;
+        return false;
+    }
+
     public static boolean isSameStack(ItemStack a, ItemStack b)
     {
         return isSameStack(a, b, false);

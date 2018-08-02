@@ -229,8 +229,8 @@ public class PokedexEntry
                     else correctItem = Tools.isSameStack(mobs, item, true);
                 }
             }
-            if (Tools.isSameStack(mob.getHeldItem(), PokecubeItems.getStack("everstone"))) { return false; }
-            if (Tools.isSameStack(mobs, PokecubeItems.getStack("everstone"))) { return false; }
+            if (Tools.isStack(mob.getHeldItem(), "everstone")) { return false; }
+            if (Tools.isStack(mobs, "everstone")) { return false; }
             ret = ret && correctItem;
             boolean correctLevel = mob.getLevel() >= level;
             ret = ret && correctLevel;

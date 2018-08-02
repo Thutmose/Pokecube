@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.world.IBlockAccess;
-import pokecube.core.PokecubeItems;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemobUseable;
@@ -38,7 +37,7 @@ public abstract class PokemobHungry extends PokemobMoves
                 ActionResult<ItemStack> result = usable.onUse(this, item, getEntity());
                 if (result.getType() == EnumActionResult.SUCCESS) this.setHeldItem(result.getResult());
             }
-            if (Tools.isSameStack(item, PokecubeItems.getStack("leppaberry")))
+            if (Tools.isStack(item, "leppaberry"))
             {
                 hungerValue *= 2;
             }

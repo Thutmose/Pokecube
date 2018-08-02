@@ -44,7 +44,6 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHas
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
-import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
@@ -115,7 +114,7 @@ public class EntityTrainer extends EntityTrainerBase
                 if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
                 UUID trader1 = mon1.getPokemonOwnerID();
                 boolean everstone = CompatWrapper.isValid(PokecubeManager.getHeldItem(stack))
-                        && Tools.isSameStack(PokecubeManager.getHeldItem(stack), PokecubeItems.getStack("everstone"));
+                        && Tools.isStack(PokecubeManager.getHeldItem(stack), "everstone");
                 mon.setOriginalOwnerUUID(getUniqueID());
                 mon.setPokemonOwner(trader1);
                 mon.setTraded(!everstone);

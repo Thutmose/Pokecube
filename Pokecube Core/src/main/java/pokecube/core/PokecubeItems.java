@@ -475,26 +475,15 @@ public class PokecubeItems extends Items
 
     public static boolean isValidEvoItem(ItemStack stack)
     {
-        boolean ret = false;
         if (!CompatWrapper.isValid(stack)) return false;
-        NonNullList<ItemStack> evoItems = OreDictionary.getOres("pokemob_evo");
-        for (ItemStack s : evoItems)
-        {
-            if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
-        }
-        return ret;
+        return Tools.isStack(stack, "pokemob_evo");
     }
 
     public static boolean isValidHeldItem(ItemStack stack)
     {
         if (!CompatWrapper.isValid(stack)) return false;
         if (stack.hasCapability(IPokemobUseable.USABLEITEM_CAP, null)) return true;
-        List<ItemStack> heldItems = OreDictionary.getOres("pokemob_held");
-        for (ItemStack s : heldItems)
-        {
-            if (Tools.isSameStack(s, stack)) return true;
-        }
-        return false;
+        return Tools.isStack(stack, "pokemob_held");
     }
 
     public static void loadTime(NBTTagCompound nbt)
@@ -516,10 +505,8 @@ public class PokecubeItems extends Items
     {
         ItemStack candy = PokecubeItems.getStack("rarecandy");
         if (!CompatWrapper.isValid(candy)) return CompatWrapper.nullStack;
-
         makeStackValid(candy);
         candy.setStackDisplayName("Rare Candy");
-
         return candy;
     }
 

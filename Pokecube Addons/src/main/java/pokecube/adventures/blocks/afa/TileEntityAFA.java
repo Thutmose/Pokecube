@@ -334,8 +334,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         frozen = nbt.getBoolean("frozen");
         animationTime = nbt.getFloat("animTime");
         animation = nbt.getString("animation");
-        ItemStack reference = PokecubeItems.getStack("shiny_charm");
-        shiny = Tools.isSameStack(reference, inventory.get(0));
+        shiny = Tools.isStack(inventory.get(0), "shiny_charm");
     }
 
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
@@ -357,8 +356,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
             ability = null;
         }
         if (ability != null) ability.destroy();
-        ItemStack reference = PokecubeItems.getStack("shiny_charm");
-        shiny = Tools.isSameStack(reference, inventory.get(0));
+        shiny = Tools.isStack(inventory.get(0), "shiny_charm");
         if (!CompatWrapper.isValid(inventory.get(0))) return;
         if (ability != null)
         {

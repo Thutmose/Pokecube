@@ -611,14 +611,13 @@ public class EventsHandler
             ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
             // Check shearable interaction.
             if (CompatWrapper.isValid(held) && Tools.isSameStack(key, held) && entry.interact(key)) { return; }
-            evt.setCanceled(true);
-            evt.setCancellationResult(EnumActionResult.SUCCESS);
             // uncomment this for 1.11.2 and 1.12
             if (hand != EnumHand.MAIN_HAND) return;
             // Check Pokedex Entry defined Interaction for player.
             if (entry.interact(player, pokemob, true))
             {
                 evt.setCanceled(true);
+                evt.setCancellationResult(EnumActionResult.SUCCESS);
                 return;
             }
             Item torch = Item.getItemFromBlock(Blocks.TORCH);
@@ -670,6 +669,7 @@ public class EventsHandler
                         if (!player.capabilities.isCreativeMode) held.splitStack(1);
                     }
                     evt.setCanceled(true);
+                    evt.setCancellationResult(EnumActionResult.SUCCESS);
                     return;
                 }
             }
@@ -698,6 +698,7 @@ public class EventsHandler
                     pokemob.setSpecialInfo(dye.getDyeDamage());
                     if (!player.capabilities.isCreativeMode) CompatWrapper.increment(held, -1);
                     evt.setCanceled(true);
+                    evt.setCancellationResult(EnumActionResult.SUCCESS);
                     return;
                 }
                 else if (held.getItem() == Items.SHEARS) { return; }
@@ -710,8 +711,10 @@ public class EventsHandler
                 {
                     player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, entity.getEntityWorld(),
                             (int) entity.posX, (int) entity.posY, (int) entity.posZ);
+                    evt.setCanceled(true);
+                    return;
                 }
-                evt.setCanceled(true);
+                evt.setCancellationResult(EnumActionResult.SUCCESS);
                 return;
             }
             boolean deny = pokemob.getPokemonAIState(IMoveConstants.NOITEMUSE);
@@ -755,6 +758,7 @@ public class EventsHandler
                     entity.setAttackTarget(null);
                     entity.getEntityWorld().setEntityState(entity, (byte) 18);
                     evt.setCanceled(true);
+                    evt.setCancellationResult(EnumActionResult.SUCCESS);
                     return;
                 }
             }
@@ -778,6 +782,7 @@ public class EventsHandler
                             }
                         }
                         evt.setCanceled(true);
+                        evt.setCancellationResult(EnumActionResult.SUCCESS);
                         return;
                     }
                     // Otherwise check if useable item.
@@ -790,6 +795,7 @@ public class EventsHandler
                             player.setHeldItem(hand, result.getResult());
                             pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
                             evt.setCanceled(true);
+                            evt.setCancellationResult(EnumActionResult.SUCCESS);
                             return;
                         }
                     }
@@ -812,6 +818,7 @@ public class EventsHandler
                                     CompatWrapper.nullStack);
                         }
                         evt.setCanceled(true);
+                        evt.setCancellationResult(EnumActionResult.SUCCESS);
                         return;
                     }
                 }
@@ -822,6 +829,7 @@ public class EventsHandler
                     player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, entity.getEntityWorld(),
                             entity.getEntityId(), 0, 0);
                     evt.setCanceled(true);
+                    evt.setCancellationResult(EnumActionResult.SUCCESS);
                     return;
                 }
             }
@@ -831,6 +839,7 @@ public class EventsHandler
             {
                 entity.setJumping(false);
                 evt.setCanceled(true);
+                evt.setCancellationResult(EnumActionResult.SUCCESS);
                 return;
             }
         }
@@ -930,9 +939,8 @@ public class EventsHandler
         if (killer != null && evt.giveExp)
         {
             EntityLivingBase owner = killer.getPokemonOwner();
-            ItemStack egg = PokecubeItems.getStack("luckyegg");
             ItemStack stack = killer.getHeldItem();
-            if (Tools.isSameStack(stack, egg))
+            if (Tools.isStack(stack, "luckyegg"))
             {
                 int exp = killer.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor,
                         killed.getBaseXP(), killed.getLevel());
@@ -940,14 +948,13 @@ public class EventsHandler
             }
             if (owner != null)
             {
-                ItemStack share = PokecubeItems.getStack("exp_share");
                 List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(owner);
                 for (IPokemob mob : pokemobs)
                 {
                     if (mob != null)
                     {
                         IPokemob poke = mob;
-                        if (Tools.isSameStack(share, mob.getHeldItem()))
+                        if (Tools.isStack(mob.getHeldItem(), "exp_share"))
                         {
                             int exp = poke.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor,
                                     killed.getBaseXP(), killed.getLevel());

@@ -189,6 +189,12 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
             entity.setPathPriority(PathNodeType.DAMAGE_FIRE, 0);
             entity.setPathPriority(PathNodeType.DANGER_FIRE, 0);
         }
+        else
+        {
+            entity.setPathPriority(PathNodeType.LAVA, 20);
+            entity.setPathPriority(PathNodeType.DAMAGE_FIRE, 8);
+            entity.setPathPriority(PathNodeType.DANGER_FIRE, 8);
+        }
         if (swims())
         {
             entity.setPathPriority(PathNodeType.WATER, 0);

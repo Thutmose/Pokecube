@@ -65,7 +65,7 @@ public class WalkNodeLadderProcessor extends WalkNodeProcessor
             laddar = laddar || getLadder(x + dir.getFrontOffsetX(), y, z + dir.getFrontOffsetZ()) != null;
         }
         point.nodeType = PathNodeType.OPEN;
-        point.costMalus += 5;
+        point.costMalus += laddar ? 1 : 5;
         return point;
     }
 

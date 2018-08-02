@@ -131,7 +131,10 @@ public class PokemobNavigator extends PathNavigate2
         Vector3 v1 = Vector3.getNewVector().set(start);
         Vector3 v2 = Vector3.getNewVector().set(end);
         boolean ground = !canFly;
-        if (ground && ((int) start.y) != ((int) end.y)) { return false; }
+
+        // TODO check to see that all blocks in direction have same path
+        // weighting
+        if (ground) { return false; }
         double dx = sizeX / 2d;
         double dy = sizeY;
         double dz = sizeZ / 2d;

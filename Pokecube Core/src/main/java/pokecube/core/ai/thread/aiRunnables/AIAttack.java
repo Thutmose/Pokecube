@@ -109,7 +109,7 @@ public class AIAttack extends AIBase implements IAICombat
                         this.entityTarget.posZ);
                 canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
 
-                if (CapabilityPokemob.getPokemobFor(entityTarget) == null)
+                if (CapabilityPokemob.getPokemobFor(entityTarget) == null && pokemob.getPokemonAIState(IPokemob.ANGRY))
                 {
                     ForgeHooks.onLivingSetAttackTarget(attacker, entityTarget);
                 }
@@ -179,7 +179,7 @@ public class AIAttack extends AIBase implements IAICombat
                 }
                 catch (Exception e)
                 {
-                    System.out.println("Error with message for " + entityTarget);
+                    PokecubeMod.log(Level.WARNING, "Error with message for " + entityTarget, e);
                 }
                 pokemob.setAttackCooldown(PokecubeMod.core.getConfig().pokemobagressticks);
             }
@@ -203,6 +203,7 @@ public class AIAttack extends AIBase implements IAICombat
         {
             setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
             addEntityPath(attacker, null, movementSpeed);
+            chaseTime = 0;
             if (PokecubeCore.debug)
             {
                 PokecubeMod.log(Level.INFO, "Too Long Chase, Forgetting Target: " + attacker + " " + entityTarget);
@@ -369,17 +370,6 @@ public class AIAttack extends AIBase implements IAICombat
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }
         }
-        // If delay taking too long, ensure to set for repating, and to set
-        // target, incase things have got stuck. TODO replace this with other
-        // variable.
-        // if (delayTime < -20)
-        // {
-        // shouldPath = true;
-        // applyDelay(pokemob, move.name, distanced);
-        // addTargetInfo(attacker, entityTarget);
-        // pokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
-        // targetLoc.set(entityTarget);
-        // }
         boolean delay = false;
         // Check if the attack should, applying a new delay if this is the
         // case..
@@ -400,6 +390,7 @@ public class AIAttack extends AIBase implements IAICombat
         {
             setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
         }
+
         // If all the conditions match, queue up an attack.
         if (!targetLoc.isEmpty() && delay && inRange)
         {

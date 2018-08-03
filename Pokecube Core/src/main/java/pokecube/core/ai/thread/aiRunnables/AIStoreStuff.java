@@ -226,7 +226,7 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
             // We should be pathing to berries, so return true to stop other
             // storage tasks.
             if (PokecubeMod.debug) PokecubeMod
-                    .log(pokemob.getPokemonDisplayName().getUnformattedText() + " Pathing to Berries at " + storageLoc);
+                    .log(pokemob.getPokemonDisplayName().getUnformattedText() + " Pathing to Berries at " + berryLoc);
             return true;
         }
         for (int i = 0; i < (Math.min(berries.getSlots(), MAXSIZE)); i++)
@@ -327,7 +327,7 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
                     emptyInventory.getZ() + 0.5, speed);
             // We should be pathing, so return true.
             if (PokecubeMod.debug) PokecubeMod
-                    .log(pokemob.getPokemonDisplayName().getUnformattedText() + " Pathing to Pick Up at " + storageLoc);
+                    .log(pokemob.getPokemonDisplayName().getUnformattedText() + " Pathing to Pick Up at " + emptyInventory);
             return true;
         }
         boolean collected = false;

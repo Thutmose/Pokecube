@@ -51,7 +51,6 @@ import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -148,11 +147,11 @@ public class EntityTrainer extends EntityTrainerBase
             }
             if (pokemobsCap.getAttackCooldown() <= 0)
             {
-                pokemobsCap.setTarget((EntityLivingBase) entity);
+                // Only set target if not already have one.
+                if (pokemobsCap.getTarget() == null) pokemobsCap.setTarget((EntityLivingBase) entity);
                 if (entity != source.getTrueSource()) return false;
             }
         }
-        if (source instanceof PokemobDamageSource) amount = 0;
         if (source == DamageSource.DROWN) return false;
         // Apply 0 damage to still count as an "attack"
         if (Config.instance.trainersInvul || aiStates.getAIState(IHasNPCAIStates.INVULNERABLE))

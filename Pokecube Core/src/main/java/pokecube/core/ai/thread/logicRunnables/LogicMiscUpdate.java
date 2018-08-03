@@ -309,24 +309,27 @@ public class LogicMiscUpdate extends LogicBase
 
     private void checkAIStates()
     {
-        lastHadTargetTime--;
-
         int state = pokemob.getTotalAIState();
+        boolean angry = getAIState(IMoveConstants.ANGRY, state);
 
         // If angry and has no target, make it not angry.
-        if (getAIState(IMoveConstants.ANGRY, state) && entity.getAttackTarget() == null && lastHadTargetTime <= 0)
+        if (angry && lastHadTargetTime-- <= 0)
         {
             pokemob.setPokemonAIState(ANGRY, false);
         }
-        else if (entity.getAttackTarget() != null)
+        else if (angry && entity.getAttackTarget() != null)
         {
             lastHadTargetTime = 100;
-            pokemob.setPokemonAIState(ANGRY, true);
+            reset = false;
+        }
+        else if(!angry && reset)
+        {
+            lastHadTargetTime = 100;
             reset = false;
         }
 
         // If not angry, and not been so for a while, reset stat modifiers.
-        if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+        if (!angry)
         {
             if (lastHadTargetTime <= 0 && !reset)
             {

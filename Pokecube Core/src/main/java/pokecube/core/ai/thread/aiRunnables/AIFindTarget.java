@@ -14,7 +14,6 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -456,22 +455,19 @@ public class AIFindTarget extends AIBase implements IAICombat
             // owned
             if (target.isDead)
             {
-                if (target instanceof IEntityOwnable)
-                {
-                    EntityLivingBase newTarget = ((IEntityOwnable) target).getOwner() instanceof EntityLivingBase
-                            ? (EntityLivingBase) ((IEntityOwnable) target).getOwner() : null;
-                    entityTarget = newTarget;
-                    addTargetInfo(entity, entityTarget);
-                }
-                else
-                {
-                    addTargetInfo(entity, null);
-                    entityTarget = null;
-                }
+                addTargetInfo(entity, null);
+                entityTarget = null;
             }
 
             // If our target is us, we should forget it.
             if (target == entity)
+            {
+                addTargetInfo(entity, null);
+                entityTarget = null;
+            }
+
+            // If we are not angry, we should forget target.
+            if (!pokemob.getPokemonAIState(IPokemob.ANGRY))
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;

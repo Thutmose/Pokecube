@@ -487,7 +487,6 @@ public class CapabilityHasPokemobs
             aiStates.setAIState(IHasNPCAIStates.THROWING, false);
             aiStates.setAIState(IHasNPCAIStates.INBATTLE, false);
             setOutMob(null);
-            setCooldown(user.getEntityWorld().getTotalWorldTime() + battleCooldown);
         }
 
         @Override
@@ -588,8 +587,9 @@ public class CapabilityHasPokemobs
         public void onDefeated(Entity defeater)
         {
             if (hasDefeated(defeater)) return;
-            if (defeater != null && defeater instanceof EntityPlayer)
+            if (defeater instanceof EntityPlayer)
             {
+                setCooldown(user.getEntityWorld().getTotalWorldTime() + battleCooldown);
                 DefeatEntry entry = new DefeatEntry(defeater.getCachedUniqueIdString(),
                         user.getEntityWorld().getTotalWorldTime());
                 if (defeaters.contains(entry))
@@ -600,13 +600,14 @@ public class CapabilityHasPokemobs
                 {
                     defeaters.add(entry);
                 }
+                if (rewards.getRewards() != null)
+                {
+                    EntityPlayer player = (EntityPlayer) defeater;
+                    rewards.giveReward(player, user);
+                    checkDefeatAchievement(player);
+                }
             }
-            if (rewards.getRewards() != null && defeater instanceof EntityPlayer)
-            {
-                EntityPlayer player = (EntityPlayer) defeater;
-                rewards.giveReward(player, user);
-                checkDefeatAchievement(player);
-            }
+            else setCooldown(user.getEntityWorld().getTotalWorldTime() + 10);
             if (defeater != null)
             {
                 messages.sendMessage(MessageState.DEFEAT, defeater, user.getDisplayName(), defeater.getDisplayName());
@@ -643,7 +644,6 @@ public class CapabilityHasPokemobs
                 if (getCooldown() <= user.getEntityWorld().getTotalWorldTime())
                 {
                     onDefeated(getTarget());
-                    setCooldown(user.getEntityWorld().getTotalWorldTime() + battleCooldown);
                     setNextSlot(0);
                 }
             }

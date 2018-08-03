@@ -53,6 +53,8 @@ public class AIBattle extends AITrainerBase
     {
         Entity mobTarget = trainer.getOutMob().getEntity().getAttackTarget();
         IPokemob target = CapabilityPokemob.getPokemobFor(mobTarget);
+        if (!trainer.getOutMob().getPokemonAIState(IPokemob.ANGRY))
+            trainer.getOutMob().setPokemonAIState(IPokemob.ANGRY, true);
         // check if pokemob's target is same as trainers.
         if (mobTarget != trainer.getTarget() && target == null)
         {

@@ -102,6 +102,7 @@ public class ActionTeleport implements IMoveAction
                 IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
                 if (attackedMob != null)
                 {
+                    attackedMob.setPokemonAIState(IPokemob.ANGRY, false);
                     attackedMob.getEntity().setAttackTarget(null);
                 }
             }

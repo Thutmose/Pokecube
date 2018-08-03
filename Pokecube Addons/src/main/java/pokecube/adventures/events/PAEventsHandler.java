@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.INpc;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -67,6 +68,8 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.moves.PokemobDamageSource;
+import pokecube.core.moves.TerrainDamageSource;
 import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -216,6 +219,13 @@ public class PAEventsHandler
     {
         IHasPokemobs pokemobHolder = CapabilityHasPokemobs.getHasPokemobs(evt.getEntityLiving());
         IHasMessages messages = CapabilityNPCMessages.getMessages(evt.getEntityLiving());
+
+        if (evt.getEntityLiving() instanceof INpc && !Config.instance.pokemobsHarmNPCs
+                && (evt.getSource() instanceof PokemobDamageSource || evt.getSource() instanceof TerrainDamageSource))
+        {
+            evt.setAmount(0);
+        }
+
         if (evt.getSource().getTrueSource() instanceof EntityLivingBase)
         {
             if (messages != null)

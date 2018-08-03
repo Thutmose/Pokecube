@@ -28,12 +28,6 @@ public class RecipeBag implements IDefaultRecipe
         return output;
     }
 
-    // @Override
-    // public int getRecipeSize()
-    // {
-    // return 10;
-    // }
-
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {

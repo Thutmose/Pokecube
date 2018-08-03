@@ -376,12 +376,6 @@ public class EditPokemobPage extends Page
     }
 
     @Override
-    public void handleMouseInput() throws IOException
-    {
-        super.handleMouseInput();
-    }
-
-    @Override
     protected void actionPerformed(GuiButton button) throws IOException
     {
         ITextComponent mess;

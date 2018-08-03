@@ -261,18 +261,6 @@ public class EditAIPage extends Page
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-    {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        super.mouseReleased(mouseX, mouseY, state);
-    }
-
-    @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
         super.keyTyped(typedChar, keyCode);

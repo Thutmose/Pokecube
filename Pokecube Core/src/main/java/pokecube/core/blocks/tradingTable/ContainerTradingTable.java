@@ -1,12 +1,9 @@
 package pokecube.core.blocks.tradingTable;
 
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
@@ -90,32 +87,6 @@ public class ContainerTradingTable extends Container
     public void putStackInSlot(int par1, ItemStack par2ItemStack)
     {
         if (this.getSlot(par1) != null) this.getSlot(par1).putStack(par2ItemStack);
-    }
-
-    // 1.11
-    @SideOnly(Side.CLIENT)
-    public void func_190896_a(List<ItemStack> stacks)
-    {
-        for (int i = 0; i < stacks.size(); ++i)
-        {
-            this.getSlot(i).putStack((ItemStack) stacks.get(i));
-        }
-    }
-
-    // 1.10
-    @SideOnly(Side.CLIENT)
-    public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack)
-    {
-        for (int i = 0; i < par1ArrayOfItemStack.length; ++i)
-        {
-            if (this.getSlot(i) != null) this.getSlot(i).putStack(par1ArrayOfItemStack[i]);
-        }
-    }
-
-    @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
-    {
-        return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -112,14 +111,6 @@ public abstract class BlockBase extends BlockRotatable implements ITileEntityPro
             float hitZ, int meta, EntityLivingBase placer)
     {
         return this.getStateFromMeta(meta).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-    }
-
-    /** The type of render function called. 3 for standard block models, 2 for
-     * TESR's, 1 for liquids, -1 is no render */
-    @Override
-    public EnumBlockRenderType getRenderType(IBlockState state)
-    {
-        return EnumBlockRenderType.MODEL;
     }
 
     @Override

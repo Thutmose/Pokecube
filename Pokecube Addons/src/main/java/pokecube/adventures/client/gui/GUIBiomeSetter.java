@@ -83,15 +83,6 @@ public class GUIBiomeSetter extends GuiScreen
             this.mc.displayGuiScreen((GuiScreen) null);
             this.mc.setIngameFocus();
         }
-//        textField0.textboxKeyTyped(par1, par2);
-    }
-
-    @Override
-    protected void mouseClicked(int par1, int par2, int par3) throws IOException
-    {
-        super.mouseClicked(par1, par2, par3);
-
-//        textField0.mouseClicked(par1, par2, par3);
     }
 
     @Override

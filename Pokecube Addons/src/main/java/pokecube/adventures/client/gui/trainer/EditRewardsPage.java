@@ -233,12 +233,6 @@ public class EditRewardsPage extends ListPage
     }
 
     @Override
-    public void initGui()
-    {
-        super.initGui();
-    }
-
-    @Override
     protected void initList()
     {
         rewards.clear();

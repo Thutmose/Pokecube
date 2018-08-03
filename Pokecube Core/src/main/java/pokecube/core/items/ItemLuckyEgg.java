@@ -28,16 +28,10 @@ public class ItemLuckyEgg extends Item
         this.setHasSubtypes(true);
     }
 
-    // 1.11
+    @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
     {
-        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
-    }
-
-    // 1.10
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
-            EnumHand hand)
-    {
+        ItemStack itemstack = player.getHeldItem(hand);
         if (world.isRemote) { return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack); }
         if (player.capabilities.isCreativeMode)
         {

@@ -11,7 +11,6 @@ import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -21,9 +20,9 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.TileEntityOwnable;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.IHasCommands;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
@@ -31,7 +30,7 @@ import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
 import thut.api.maths.Vector3;
 
 @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")
-public class TileEntityCommander extends TileEntityOwnable implements ITickable, SimpleComponent
+public class TileEntityCommander extends TileEntityOwnable implements SimpleComponent
 {
     protected boolean          addedToNetwork = false;
     private UUID               pokeID         = null;
@@ -104,17 +103,6 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     {
         super.readFromNBT(nbt);
         if (nbt.hasKey("pokeIDMost")) pokeID = nbt.getUniqueId("pokeID");
-    }
-
-    @Override
-    public void update()
-    {
-    }
-
-    @Override
-    public void validate()
-    {
-        super.validate();
     }
 
     @Override

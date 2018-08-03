@@ -47,6 +47,7 @@ public abstract class ListPage extends Page
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
     {
+        // Prevents super call.
     }
 
     @Override

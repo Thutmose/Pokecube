@@ -202,7 +202,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
             registerItemTexture(luckyEgg, 0, new ModelResourceLocation("egg", "inventory"));
         addToHoldables("luckyegg");
 
-        register(pokemobEgg.setRegistryName(PokecubeMod.ID, "pokemobegg"), registry);
+        register(pokemobEgg, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokemobEgg, 0, new ModelResourceLocation("pokecube:pokemobegg", "inventory"));
         OreDictionary.registerOre("egg", new ItemStack(pokemobEgg, 1, OreDictionary.WILDCARD_VALUE));

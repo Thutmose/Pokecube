@@ -34,7 +34,6 @@ import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.helper.AIStuffHolder;
 import pokecube.adventures.ai.tasks.AIBattle;
@@ -62,7 +61,6 @@ import pokecube.core.database.Database;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
-import pokecube.core.events.StarterEvent;
 import pokecube.core.events.StructureEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
@@ -104,16 +102,6 @@ public class PAEventsHandler
             if (genders == 3) mobs.setGender((byte) (Math.random() < 0.5 ? 1 : 2));
             TypeTrainer.getRandomTeam(mobs, (EntityLivingBase) trainer, maxXp, trainer.getEntityWorld());
         }
-    }
-
-    @SubscribeEvent
-    public void PlayerLoggin(PlayerLoggedInEvent evt)
-    {
-    }
-
-    @SubscribeEvent
-    public void PlayerStarter(StarterEvent.Pick evt)
-    {
     }
 
     @SubscribeEvent

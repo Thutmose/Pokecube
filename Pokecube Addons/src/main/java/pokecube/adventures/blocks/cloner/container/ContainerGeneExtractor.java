@@ -56,14 +56,12 @@ public class ContainerGeneExtractor extends ContainerBase
     @Override
     public boolean canInteractWith(EntityPlayer playerIn)
     {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     protected void updateCrafting()
     {
-        // TODO Auto-generated method stub
 
     }
 

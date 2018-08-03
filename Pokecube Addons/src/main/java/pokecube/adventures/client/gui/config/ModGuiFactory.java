@@ -8,24 +8,10 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 
 public class ModGuiFactory implements IModGuiFactory
 {
-//    @SuppressWarnings("deprecation")
-//    @Override
-//    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
-//    {
-//        return null;
-//    }
-
     @Override
     public void initialize(Minecraft minecraftInstance)
     {
-
     }
-
-//    @Override
-//    public Class<? extends GuiScreen> mainConfigGuiClass()
-//    {
-//        return ModGuiConfig.class;
-//    }
 
     @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()

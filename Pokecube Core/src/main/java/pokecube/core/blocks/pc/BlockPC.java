@@ -8,7 +8,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -91,30 +90,10 @@ public class BlockPC extends BlockRotatable implements ITileEntityProvider
     }
 
     // 1.11
-    public boolean isVisuallyOpaque(IBlockState state)
-    {
-        return false;
-    }
-
-    // 1.10
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }
-
-    // 1.11
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        return onBlockActivated(worldIn, pos, state, playerIn, hand, playerIn.getHeldItem(hand), side, hitX, hitY,
-                hitZ);
-    }
-
-    // 1.10
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-
         this.setLightLevel(1f);
         if (!top) { return false; }
         IBlockState down = worldIn.getBlockState(pos.down());

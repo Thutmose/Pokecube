@@ -17,7 +17,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -114,12 +113,6 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     }
 
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-    {
-        return super.getExtendedState(state, world, pos);
-    }
-
-    @Override
     /** Convert the BlockState into the correct metadata value */
     public int getMetaFromState(IBlockState state)
     {
@@ -151,18 +144,11 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
         return false;
     }
 
-    // 1.11
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        return onBlockActivated(worldIn, pos, state, playerIn, hand, playerIn.getHeldItem(hand), side, hitX, hitY,
-                hitZ);
-    }
 
-    // 1.10
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
         if (tradingTable)
         {
             TileEntityTradingTable table = (TileEntityTradingTable) worldIn.getTileEntity(pos);
@@ -175,11 +161,6 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
             table.openGUI(playerIn);
             return true;
         }
-    }
-
-    @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-    {
     }
 
     @Override

@@ -2,7 +2,6 @@ package pokecube.core.blocks.tradingTable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -11,16 +10,6 @@ import thut.lib.CompatWrapper;
 
 public class ContainerTMCreator extends Container
 {
-    /** Returns true if the item is a filled pokecube.
-     *
-     * @param itemstack
-     *            the itemstack to test
-     * @return true if the id is a filled pokecube one, false otherwise */
-    protected static boolean isItemValid(ItemStack itemstack)
-    {
-        return true;
-    }
-
     TileEntityTMMachine tile;
 
     public ContainerTMCreator(TileEntityTMMachine tile, InventoryPlayer playerInv)
@@ -62,12 +51,6 @@ public class ContainerTMCreator extends Container
     public TileEntityTMMachine getTile()
     {
         return tile;
-    }
-
-    @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
-    {
-        return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

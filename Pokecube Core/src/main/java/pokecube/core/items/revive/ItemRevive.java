@@ -7,6 +7,11 @@ public class ItemRevive extends Item
     public ItemRevive()
     {
         super();
-        this.setHasSubtypes(true);
+    }
+
+    @Override
+    public boolean getShareTag()
+    {
+        return true;
     }
 }

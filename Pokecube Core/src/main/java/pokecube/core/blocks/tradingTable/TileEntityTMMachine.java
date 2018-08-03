@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
@@ -176,7 +177,7 @@ public class TileEntityTMMachine extends TileEntityOwnable implements DefaultInv
 
                 if (mob == null)
                 {
-                    System.err.println("Corrupted Pokemon in PC");
+                    PokecubeMod.log(Level.WARNING, "Corrupted Pokemon in PC. " + stack.getDisplayName());
                     continue;
                 }
 
@@ -270,7 +271,7 @@ public class TileEntityTMMachine extends TileEntityOwnable implements DefaultInv
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack)
     {
-        return true;
+        return itemstack.getItem() instanceof ItemTM;
     }
 
     @Override
@@ -375,12 +376,6 @@ public class TileEntityTMMachine extends TileEntityOwnable implements DefaultInv
         }
         tagCompound.setTag("Inventory", itemList);
         return tagCompound;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-        DefaultInventory.super.setInventorySlotContents(index, stack);
     }
 
     @Override

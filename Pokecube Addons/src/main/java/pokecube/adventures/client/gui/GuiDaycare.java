@@ -1,7 +1,5 @@
 package pokecube.adventures.client.gui;
 
-import java.io.IOException;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
@@ -31,12 +29,6 @@ public class GuiDaycare extends GuiContainer
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) throws IOException
-    {
-
     }
 
     @Override

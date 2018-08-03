@@ -482,18 +482,7 @@ public class EntityTrainer extends EntityTrainerBase
         nbt.setString("name", name);
     }
 
-    // TODO new mechant method names.
-    public World func_190670_t_()
-    {
-        return this.getEntityWorld();
-    }
-
-    // TODO new mechant method names.
-    public BlockPos func_190671_u_()
-    {
-        return new BlockPos(this);
-    }
-
+    @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand)
     {
         return processInteract(player, hand, player.getHeldItem(hand));

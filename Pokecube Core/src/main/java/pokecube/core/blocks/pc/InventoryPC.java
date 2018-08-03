@@ -498,7 +498,7 @@ public class InventoryPC implements IInventory
         return ret;
     }
 
-    // 1.11
+    @Override
     public boolean isEmpty()
     {
         return true;

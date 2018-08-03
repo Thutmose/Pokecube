@@ -95,7 +95,7 @@ public class PokecubeItems extends Items
     public static Item                               luckyEgg       = new ItemLuckyEgg().setUnlocalizedName("luckyegg")
             .setCreativeTab(creativeTabPokecube);
     public static Item                               pokemobEgg     = new ItemPokemobEgg()
-            .setUnlocalizedName("pokemobegg");
+            .setRegistryName(PokecubeMod.ID, "pokemobegg").setUnlocalizedName("pokemobegg");
     public static Item                               pokedex        = (new ItemPokedex(false, true));
     public static Item                               pokewatch      = (new ItemPokedex(true, true));
     public static Item                               berryJuice;

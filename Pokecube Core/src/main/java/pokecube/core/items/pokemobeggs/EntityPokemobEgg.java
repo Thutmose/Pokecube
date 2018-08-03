@@ -80,8 +80,8 @@ public class EntityPokemobEgg extends EntityLiving
     /** Called when the entity is attacked. */
     public boolean attackEntityFrom(DamageSource source, float damage)
     {
-        Entity e = source.getImmediateSource();// getImmediateSource
-        if (!getEntityWorld().isRemote && e != null && e instanceof EntityPlayer)
+        Entity e = source.getImmediateSource();
+        if (!getEntityWorld().isRemote && e instanceof EntityPlayer)
         {
             if (this.delayBeforeCanPickup > 0) { return false; }
 
@@ -140,6 +140,7 @@ public class EntityPokemobEgg extends EntityLiving
 
     public ItemStack getHeldItemMainhand()
     {
+        if (getEntityWorld().isRemote) return super.getHeldItemMainhand();
         if (eggCache == null) return eggCache = super.getHeldItemMainhand();
         return eggCache;
     }

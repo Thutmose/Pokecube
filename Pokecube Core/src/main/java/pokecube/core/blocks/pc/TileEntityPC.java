@@ -297,7 +297,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         return par1NBTTagCompound;
     }
 
-    // 1.11
+    @Override
     public boolean isEmpty()
     {
         return true;

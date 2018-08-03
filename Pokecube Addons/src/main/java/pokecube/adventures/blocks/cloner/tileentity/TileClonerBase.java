@@ -279,11 +279,11 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
         return !isItemValidForSlot(index, stack);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
         if (facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return (T) wrappers[facing.ordinal()];
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(wrappers[facing.ordinal()]);
         return super.getCapability(capability, facing);
     }
 

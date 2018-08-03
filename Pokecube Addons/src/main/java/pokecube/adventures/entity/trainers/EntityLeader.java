@@ -7,7 +7,6 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -84,17 +83,5 @@ public class EntityLeader extends EntityTrainer
             this.setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0).stack);
         }
         return super.processInteract(player, hand, stack);
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbt)
-    {
-        super.readEntityFromNBT(nbt);
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbt)
-    {
-        super.writeEntityToNBT(nbt);
     }
 }

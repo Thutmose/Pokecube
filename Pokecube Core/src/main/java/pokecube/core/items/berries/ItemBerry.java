@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -15,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -115,39 +113,11 @@ public class ItemBerry extends Item implements IMoveConstants, IPlantable
         }
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    /** returns a list of items with the same ID, but different meta (eg: dye
-     * returns 16 items) */
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
-    {
-        if (!this.isInCreativeTab(tab)) return;
-        // for (Integer i : BerryManager.berryNames.keySet())
-        {
-            subItems.add(new ItemStack(this, 1, 0));
-        }
-    }
-
-    /** Returns the unlocalized name of this item. This version accepts an
-     * ItemStack so different stacks can have different names based on their
-     * damage or NBT. */
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        return "item." + name + "Berry";
-    }
-
-    // 1.11
     public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
             EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        return onItemUse(playerIn.getHeldItem(hand), playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
-    }
-
-    // 1.10
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
-            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
+        ItemStack stack = playerIn.getHeldItem(hand);
         net.minecraft.block.state.IBlockState state = worldIn.getBlockState(pos);
         if (side == EnumFacing.UP && playerIn.canPlayerEdit(pos.offset(side), side, stack)
                 && state.getBlock().canSustainPlant(state, worldIn, pos, EnumFacing.UP, (IPlantable) Items.WHEAT_SEEDS)

@@ -126,8 +126,7 @@ public class Pokecube extends Item implements IPokecube
             }
 
             NBTTagCompound pokeTag = item.getTagCompound().getCompoundTag(TagNames.POKEMOB);
-            
-            
+
             float health = pokeTag.getFloat("Health");
             float maxHealth = pokemob.getStat(Stats.HP, false);
             int lvlexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel());
@@ -216,28 +215,11 @@ public class Pokecube extends Item implements IPokecube
         return 2000;
     }
 
-    // 1.11
+    @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
     {
-        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
-    }
-
-    // 1.10
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
-            EnumHand hand)
-    {
         player.setActiveHand(hand);
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
-    }
-
-    /** Called when the player finishes using this Item (E.g. finishes eating.).
-     * Not called when the player stops using the Item before the action is
-     * complete. */
-    @Override
-    @Nullable
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
-    {
-        return stack;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
     }
 
     @Override
@@ -303,12 +285,6 @@ public class Pokecube extends Item implements IPokecube
                 }
             }
         }
-    }
-
-    @Override
-    public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
-    {
-
     }
 
     // Pokeseal stuff

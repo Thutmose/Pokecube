@@ -27,29 +27,35 @@ public class RecipeBrewBerries implements IBrewingRecipe
     public boolean isInput(ItemStack input)
     {
         NBTTagCompound tag = input.getTagCompound();
-        if (tag != null && tag.hasKey("pokebloc")) return true;
+        if ((tag != null && tag.hasKey("pokebloc"))) return true;
         return input.getItem() == Items.GLASS_BOTTLE;
     }
 
     private ItemStack makeOutput(ItemStack input, ItemStack ingredient)
     {
+
         NBTTagCompound pokebloc = new NBTTagCompound();
-        int[] flav = BerryManager.berryFlavours.get(ingredient.getItemDamage());
-        int[] old = null;
-        if (input.hasTagCompound() && input.getTagCompound().hasKey("pokebloc"))
-            old = input.getTagCompound().getIntArray("pokebloc");
         ItemStack stack = PokecubeItems.getStack("revive");
-        if (flav != null)
+
+        if (ingredient.getItem() instanceof ItemBerry)
         {
-            flav = flav.clone();
-            if (old != null) for (int i = 0; i < (Math.min(old.length, flav.length)); i++)
+            ItemBerry berry = (ItemBerry) ingredient.getItem();
+            int[] flav = BerryManager.berryFlavours.get(berry.index);
+            int[] old = null;
+            if (input.hasTagCompound() && input.getTagCompound().hasKey("pokebloc"))
+                old = input.getTagCompound().getIntArray("pokebloc");
+            if (flav != null)
             {
-                flav[i] += old[i];
+                flav = flav.clone();
+                if (old != null) for (int i = 0; i < (Math.min(old.length, flav.length)); i++)
+                {
+                    flav[i] += old[i];
+                }
+                pokebloc.setIntArray("pokebloc", flav);
+                NBTTagCompound tag = input.hasTagCompound() ? input.getTagCompound().copy() : new NBTTagCompound();
+                tag.setTag("pokebloc", pokebloc);
+                stack.setTagCompound(tag);
             }
-            pokebloc.setIntArray("pokebloc", flav);
-            NBTTagCompound tag = input.hasTagCompound() ? input.getTagCompound().copy() : new NBTTagCompound();
-            tag.setTag("pokebloc", pokebloc);
-            stack.setTagCompound(tag);
         }
         return stack;
     }

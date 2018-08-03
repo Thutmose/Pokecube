@@ -316,6 +316,12 @@ public class ItemPokemobEgg extends Item
     {
         this.setCreativeTab(null);
     }
+    
+    @Override
+    public boolean getShareTag()
+    {
+        return true;
+    }
 
     /** allows items to add custom lines of information to the mouseover
      * description */
@@ -324,7 +330,7 @@ public class ItemPokemobEgg extends Item
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced)
     {
         PokedexEntry entry = getEntry(stack);
-        if (entry != null) tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));
+        if (entry != null) tooltip.add(1, I18n.format("pokemobeggnamed.name", I18n.format(entry.getUnlocalizedName())));
     }
 
     public boolean dropEgg(World world, ItemStack stack, Vector3 location, Entity placer)
@@ -339,13 +345,6 @@ public class ItemPokemobEgg extends Item
         MinecraftForge.EVENT_BUS.post(event);
         world.spawnEntity(entity);
         return true;
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        String s = "pokemobEgg";
-        return s;
     }
 
     /** This function should return a new entity to replace the dropped item.
@@ -390,16 +389,9 @@ public class ItemPokemobEgg extends Item
         return getEntry(stack) != null;
     }
 
-    // 1.11
+    @Override
     public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
             EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        return onItemUse(playerIn.getHeldItem(hand), playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
-    }
-
-    // 1.10
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
-            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (worldIn.isRemote) { return EnumActionResult.SUCCESS; }
         Block i = worldIn.getBlockState(pos).getBlock();
@@ -411,7 +403,7 @@ public class ItemPokemobEgg extends Item
             d = 0.5D;
         }
         Vector3 loc = Vector3.getNewVector().set(newPos).addTo(hitX, d, hitZ);
-
+        ItemStack stack = playerIn.getHeldItem(hand);
         if (dropEgg(worldIn, stack, loc, playerIn) && !playerIn.capabilities.isCreativeMode)
         {
             CompatWrapper.increment(stack, -1);

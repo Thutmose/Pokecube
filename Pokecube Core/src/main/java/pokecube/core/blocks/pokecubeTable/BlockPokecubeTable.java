@@ -14,7 +14,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.contributors.Contributor;
 import pokecube.core.contributors.ContributorManager;
@@ -29,10 +28,6 @@ import pokecube.core.utils.PokecubeSerializer;
 
 public class BlockPokecubeTable extends Block implements ITileEntityProvider
 {
-    // private ExtendedBlockState state = new ExtendedBlockState(this, new
-    // IProperty[0],
-    // new IUnlistedProperty[] { OBJModel.OBJProperty.INSTANCE });
-
     public BlockPokecubeTable()
     {
         super(Material.WOOD);
@@ -49,17 +44,6 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-    {
-        // TileEntityPokecubeTable tileEntity = (TileEntityPokecubeTable)
-        // world.getTileEntity(pos);
-        // OBJModel.OBJState retState = new OBJModel.OBJState(
-        // tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) :
-        // tileEntity.visible, true);
-        return super.getExtendedState(state, world, pos);
-    }
-
-    @Override
     public boolean isFullCube(IBlockState state)
     {
         return false;
@@ -71,29 +55,9 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
         return false;
     }
 
-    // 1.11
-    public boolean isVisuallyOpaque(IBlockState state)
-    {
-        return false;
-    }
-
-    // 1.10
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }
-
-    // 1.11
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        return onBlockActivated(worldIn, pos, state, playerIn, hand, playerIn.getHeldItem(hand), side, hitX, hitY,
-                hitZ);
-    }
-
-    // 1.10
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (!worldIn.isRemote)
         {

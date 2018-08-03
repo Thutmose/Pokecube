@@ -4,11 +4,10 @@
 package pokecube.core.items.berries;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.google.common.base.Optional;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.init.Blocks;
@@ -27,53 +26,53 @@ import pokecube.core.items.UsableItemEffects.BerryUsable.BerryEffect;
  * @author Manchou */
 public class BerryManager
 {
-    public static final IProperty<String> type          = new IProperty<String>()
-                                                        {
-                                                            @Override
-                                                            public Collection<String> getAllowedValues()
-                                                            {
-                                                                return BerryManager.berryNames.values();
-                                                            }
+    public static final IProperty<String>    type          = new IProperty<String>()
+                                                           {
+                                                               @Override
+                                                               public Collection<String> getAllowedValues()
+                                                               {
+                                                                   return BerryManager.berryNames.values();
+                                                               }
 
-                                                            @Override
-                                                            public String getName()
-                                                            {
-                                                                return "type";
-                                                            }
+                                                               @Override
+                                                               public String getName()
+                                                               {
+                                                                   return "type";
+                                                               }
 
-                                                            @Override
-                                                            public String getName(String value)
-                                                            {
-                                                                return value;
-                                                            }
+                                                               @Override
+                                                               public String getName(String value)
+                                                               {
+                                                                   return value;
+                                                               }
 
-                                                            @Override
-                                                            public Class<String> getValueClass()
-                                                            {
-                                                                return String.class;
-                                                            }
+                                                               @Override
+                                                               public Class<String> getValueClass()
+                                                               {
+                                                                   return String.class;
+                                                               }
 
-                                                            @Override
-                                                            public Optional<String> parseValue(String value)
-                                                            {
-                                                                return Optional.<String> fromNullable(value);
-                                                            }
-                                                        };
+                                                               @Override
+                                                               public Optional<String> parseValue(String value)
+                                                               {
+                                                                   return Optional.<String> fromNullable(value);
+                                                               }
+                                                           };
 
-    public static Block                   berryFruit;
-    public static Block                   berryCrop;
-    public static Block                   berryLeaf;
+    public static Block                      berryFruit;
+    public static Block                      berryCrop;
+    public static Block                      berryLeaf;
     /** Map of berry id -> block of crop */
-    public static Map<Integer, Block>     berryCrops    = new HashMap<Integer, Block>();
+    public static Int2ObjectArrayMap<Block>  berryCrops    = new Int2ObjectArrayMap<>();
     /** Map of berry id -> block of fruit */
-    public static Map<Integer, Block>     berryFruits   = new HashMap<Integer, Block>();
+    public static Int2ObjectArrayMap<Block>  berryFruits   = new Int2ObjectArrayMap<>();
     /** Map of berry id -> block of fruit */
-    public static Map<Integer, Item>      berryItems    = new HashMap<Integer, Item>();
+    public static Int2ObjectArrayMap<Item>   berryItems    = new Int2ObjectArrayMap<>();
     /** Map of berry id -> name of berry */
-    public static Map<Integer, String>    berryNames    = new HashMap<Integer, String>();
+    public static Int2ObjectArrayMap<String> berryNames    = new Int2ObjectArrayMap<>();
     /** Map of berry id -> flavours of berry, see {@link IMoveConstants.SPICY}
      * for the indecies of the array */
-    public static Map<Integer, int[]>     berryFlavours = new HashMap<Integer, int[]>();
+    public static Int2ObjectArrayMap<int[]>  berryFlavours = new Int2ObjectArrayMap<>();
 
     public static void addBerry(String name, int id, int spicy, int dry, int sweet, int bitter, int sour,
             BerryEffect effect)

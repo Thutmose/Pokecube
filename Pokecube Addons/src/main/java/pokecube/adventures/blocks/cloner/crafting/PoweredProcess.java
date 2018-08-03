@@ -104,11 +104,13 @@ public class PoweredProcess
     public NBTTagCompound save()
     {
         NBTTagCompound tag = new NBTTagCompound();
+        // TODO save things here
         return tag;
     }
 
     public static PoweredProcess load(NBTTagCompound tag, TileClonerBase tile)
     {
+        // TODO load what is saved in save()
         return null;
     }
 }

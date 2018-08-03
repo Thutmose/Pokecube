@@ -75,12 +75,7 @@ public class ModelPokemobEgg extends ModelBase
         GL11.glTranslated(0, 4.45, 0);
         PokedexEntry entry = ItemPokemobEgg.getEntry(((EntityPokemobEgg) entity).getHeldItemMainhand());
 
-        Color colour = new Color(PokeType.getType("normal").colour);
-        float red = colour.getRed() / 255f;
-        float green = colour.getGreen() / 255f;
-        float blue = colour.getBlue() / 255f;
-
-        GL11.glColor3f(red, green, blue);
+        Color colour = new Color(PokeType.unknown.colour);
 
         if (entry != null)
         {
@@ -88,9 +83,9 @@ public class ModelPokemobEgg extends ModelBase
             else colour = new Color(entry.getType1().colour);
         }
 
-        red = colour.getRed() / 255f;
-        green = colour.getGreen() / 255f;
-        blue = colour.getBlue() / 255f;
+        float red = colour.getRed() / 255f;
+        float green = colour.getGreen() / 255f;
+        float blue = colour.getBlue() / 255f;
 
         GL11.glColor3f(red, green, blue);
 

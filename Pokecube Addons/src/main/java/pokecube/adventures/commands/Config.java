@@ -297,7 +297,6 @@ public class Config extends ConfigBase
 
     public void postInit()
     {
-        processRanchables(ranchables);
         parseBiomes();
         String[] defaults = structureBiomes;
         for (String s : defaults)
@@ -317,37 +316,6 @@ public class Config extends ConfigBase
                 biomeMap.put(struct.name, BiomeType.getBiome(struct.biomeType).getType());
             }
         }
-    }
-
-    void processRanchables(String[] list)
-    {
-        // for(String s: list)
-        // {
-        // if(s!=null && !s.isEmpty())
-        // {
-        // String[] args = s.split(":");
-        // String name = args[0];
-        // PokedexEntry entry = Database.getEntry(name);
-        // if(entry==null)
-        // continue;
-        // //only item
-        // if(args.length==3)
-        // {
-        // String stack = args[1];
-        // int delay = Integer.parseInt(args[2].trim());
-        // MFRCompat.ranchables.add(Ranchables.makeRanchable(entry,
-        // parseItemStack(stack), null, delay));
-        // }
-        // else if(args.length==4)//has fluid
-        // {
-        // String stack = args[1];
-        // String fluid = args[2];
-        // int delay = Integer.parseInt(args[3].trim());
-        // MFRCompat.ranchables.add(Ranchables.makeRanchable(entry,
-        // parseItemStack(stack), getFluid(fluid), delay));
-        // }
-        // }
-        // }
     }
 
 }

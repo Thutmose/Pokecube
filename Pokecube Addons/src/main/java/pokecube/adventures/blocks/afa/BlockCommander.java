@@ -14,6 +14,8 @@ import thut.core.common.commands.CommandTools;
 
 public final class BlockCommander extends BlockBase
 {
+    // TODO add some methods here to respond to redstone changes to send
+    // commands to TE
 
     public BlockCommander()
     {
@@ -26,7 +28,7 @@ public final class BlockCommander extends BlockBase
         return new TileEntityCommander();
     }
 
-    // 1.11
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {

@@ -73,12 +73,6 @@ public class RenderTarget<T extends EntityLivingBase> extends RenderLivingBase<E
     }
 
     @Override
-    public void doRender(EntityLivingBase entity, double d, double d1, double d2, float f, float partialTick)
-    {
-        super.doRender(entity, d, d1, d2, f, partialTick);
-    }
-
-    @Override
     protected ResourceLocation getEntityTexture(EntityLivingBase entity)
     {
         return new ResourceLocation(PokecubeAdv.ID, "textures/hologram.png");

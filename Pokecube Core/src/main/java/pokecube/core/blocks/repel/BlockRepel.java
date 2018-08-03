@@ -1,7 +1,5 @@
 package pokecube.core.blocks.repel;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -46,19 +44,11 @@ public class BlockRepel extends Block implements ITileEntityProvider
         return true;
     }
 
-    // 1.11
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        return onBlockActivated(worldIn, pos, state, playerIn, hand, playerIn.getHeldItem(hand), side, hitX, hitY,
-                hitZ);
-    }
-
-    // 1.10
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-
+        ItemStack heldStack = playerIn.getHeldItem(hand);
         TileEntity te = worldIn.getTileEntity(pos);
         if (te instanceof TileEntityRepel && heldStack != null && heldStack.getItem() instanceof ItemBerry)
         {
@@ -76,15 +66,7 @@ public class BlockRepel extends Block implements ITileEntityProvider
             TileEntityRepel repel = (TileEntityRepel) te;
             playerIn.sendMessage(new TextComponentTranslation("repel.info.getrange", repel.distance));
         }
-
         return true;
-    }
-
-    /** Returns the quantity of items to drop on block destruction. */
-    @Override
-    public int quantityDropped(Random par1Random)
-    {
-        return 1;
     }
 
     /** Called when a neighboring block was changed and marks that this state

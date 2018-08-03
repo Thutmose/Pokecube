@@ -2,7 +2,6 @@ package pokecube.adventures.blocks.cloner.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
@@ -66,17 +65,6 @@ public abstract class ContainerBase extends Container
     {
         super.onContainerClosed(playerIn);
         tile.closeInventory(playerIn);
-    }
-
-    @Override
-    /** Handles slot click.
-     * 
-     * @param mode
-     *            0 = basic click, 1 = shift click, 2 = hotbar, 3 = pick block,
-     *            4 = drop, 5 = ?, 6 = double click */
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
-    {
-        return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

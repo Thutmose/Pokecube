@@ -556,7 +556,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         return nbt;
     }
 
-    // 1.11
+    @Override
     public boolean isEmpty()
     {
         return true;

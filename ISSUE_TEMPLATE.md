@@ -1,8 +1,8 @@
-## Delete this section - If this is in your bug report, it will be closed.
+## Read and then Delete this section - If this is in your bug report, it will be closed.
 Any issues which report bugs, must fill out this form, otherwise they will be immediately closed with no response.
 If your bug involves a crash, it *MUST* include a crash report. Failure to include the crash report without a good reason to not include it, will result in your issue being immediately closed.
 
-If you are making suggestions/requests, rather than a bug report, use the suggestion template instead.
+If you are making suggestions/requests, rather than a bug report, use the suggestion template instead, it can be found here: https://github.com/Thutmose/Pokecube/blob/1.12.x/SUGGESTION_TEMPLATE.md
 
 
 

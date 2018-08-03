@@ -127,11 +127,11 @@ public class UsableItemEffects
         @Override
         public ActionResult<ItemStack> onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
-            if (user != pokemob.getEntity() && user != pokemob.getOwner()
-                    || stack.getItemDamage() >= ItemVitamin.vitamins.size())
+            if (user != pokemob.getEntity() && user != pokemob.getOwner() && !(stack.getItem() instanceof ItemVitamin))
                 return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+            ItemVitamin vitamin = (ItemVitamin) stack.getItem();
             ActionResult<ItemStack> result = null;
-            VitaminEffect effect = effects.get(ItemVitamin.vitamins.get(stack.getItemDamage()));
+            VitaminEffect effect = effects.get(vitamin.type);
             if (effect != null) result = effect.onUse(pokemob, stack, user);
             else return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
             if (result.getType() == EnumActionResult.SUCCESS) stack.splitStack(1);
@@ -168,11 +168,14 @@ public class UsableItemEffects
         @Override
         public ActionResult<ItemStack> onTick(IPokemob pokemob, ItemStack stack)
         {
-            int berryId = stack.getItemDamage();
-            if (!BerryManager.berryNames.containsKey(berryId))
-                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-            BerryEffect effect = effects.get(berryId);
-            if (effect != null) return effect.onTick(pokemob, stack);
+            if (stack.getItem() instanceof ItemBerry)
+            {
+                int berryId = ((ItemBerry) stack.getItem()).index;
+                if (!BerryManager.berryNames.containsKey(berryId))
+                    return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+                BerryEffect effect = effects.get(berryId);
+                if (effect != null) return effect.onTick(pokemob, stack);
+            }
             return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
         }
 
@@ -187,11 +190,14 @@ public class UsableItemEffects
         @Override
         public ActionResult<ItemStack> onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
-            int berryId = stack.getItemDamage();
-            if (!BerryManager.berryNames.containsKey(berryId))
-                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-            BerryEffect effect = effects.get(berryId);
-            if (effect != null) return effect.onUse(pokemob, stack, user);
+            if (stack.getItem() instanceof ItemBerry)
+            {
+                int berryId = ((ItemBerry) stack.getItem()).index;
+                if (!BerryManager.berryNames.containsKey(berryId))
+                    return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+                BerryEffect effect = effects.get(berryId);
+                if (effect != null) return effect.onUse(pokemob, stack, user);
+            }
             return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
         }
 
@@ -201,11 +207,14 @@ public class UsableItemEffects
         @Override
         public ActionResult<ItemStack> onMoveTick(IPokemob pokemob, ItemStack stack, MovePacket moveuse)
         {
-            int berryId = stack.getItemDamage();
-            if (!BerryManager.berryNames.containsKey(berryId))
-                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-            BerryEffect effect = effects.get(berryId);
-            if (effect != null) return effect.onMoveTick(pokemob, stack, moveuse);
+            if (stack.getItem() instanceof ItemBerry)
+            {
+                int berryId = ((ItemBerry) stack.getItem()).index;
+                if (!BerryManager.berryNames.containsKey(berryId))
+                    return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+                BerryEffect effect = effects.get(berryId);
+                if (effect != null) return effect.onMoveTick(pokemob, stack, moveuse);
+            }
             return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
         }
 

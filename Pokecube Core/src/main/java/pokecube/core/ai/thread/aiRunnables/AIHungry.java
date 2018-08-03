@@ -94,6 +94,10 @@ public class AIHungry extends AIBase
         super.doMainThreadTick(world);
 
         int hungerTicks = 20;
+
+        // TODO condsider speed up ticks for checking own inventory for berries
+        // to eat.
+
         if (entity.ticksExisted % hungerTicks != 0) return;
 
         int hungerTime = pokemob.getHungerTime();

@@ -190,6 +190,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 double dist = e.getEntity().getDistanceSq(evt.getEntityLiving());
                 if (e.getEntity() == evt.getEntityLiving()) continue;
+                if (e.getEntity().isDead) continue;
                 if (dist < closest
                         && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING))
                         && e.isRoutineEnabled(AIRoutine.AGRESSIVE))
@@ -422,7 +423,6 @@ public class AIFindTarget extends AIBase implements IAICombat
 
         // Don't look for targets if you are sitting.
         boolean ret = target == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
-
         boolean tame = pokemob.getPokemonAIState(IMoveConstants.TAMED);
 
         if (target == null && entityTarget != null)

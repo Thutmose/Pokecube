@@ -126,6 +126,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         if (entity == null || remote) return;
         setPokemonAIState(SITTING, false);
         setTargetID(entity.getEntityId());
+        setPokemonAIState(IPokemob.ANGRY, true);
         if (entity != getEntity().getAttackTarget() && getAbility() != null && !entity.getEntityWorld().isRemote)
         {
             getAbility().onAgress(this, entity);

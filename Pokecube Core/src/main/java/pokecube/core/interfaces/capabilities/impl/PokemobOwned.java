@@ -39,6 +39,7 @@ import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
@@ -264,6 +265,25 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             }
 
             Entity owner = getPokemonOwner();
+            if (this.getPokemonAIState(ANGRY) && this.getEntity().getAttackTarget() != null)
+            {
+                if (owner instanceof EntityLivingBase)
+                {
+                    IPokemob targetMob = CapabilityPokemob.getPokemobFor(this.getEntity().getAttackTarget());
+                    if (targetMob != null)
+                    {
+                        this.getEntity().isDead = true;
+                        targetMob.getEntity().setAttackTarget(getPokemonOwner());
+                        targetMob.setPokemonAIState(ANGRY, true);
+                        this.getEntity().isDead = false;
+                    }
+                    else
+                    {
+                        this.getEntity().getAttackTarget().setRevengeTarget(getPokemonOwner());
+                    }
+                }
+            }
+
             this.setPokemonAIState(IMoveConstants.NOMOVESWAP, false);
             this.setPokemonAIState(IMoveConstants.ANGRY, false);
             getEntity().setAttackTarget(null);

@@ -92,7 +92,7 @@ public class AIAttack extends AIBase implements IAICombat
     public boolean continueExecuting()
     {
         entityTarget = attacker.getAttackTarget();
-        return entityTarget != null && !entityTarget.isDead;
+        return entityTarget != null && !entityTarget.isDead || !pokemob.getPokemonAIState(IPokemob.ANGRY);
     }
 
     @Override
@@ -164,12 +164,8 @@ public class AIAttack extends AIBase implements IAICombat
             if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning
                     && entityTarget instanceof EntityPlayerMP && !(entityTarget instanceof FakePlayer)
                     && !pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                    && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker// getRevengeTarget
-                                                                                   // in
-                                                                                   // 1.12
-                    && ((EntityPlayer) entityTarget).getLastAttackedEntity() != attacker)// getLastAttackedEntity
-                                                                                         // in
-                                                                                         // 1.12
+                    && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker
+                    && ((EntityPlayer) entityTarget).getLastAttackedEntity() != attacker)
             {
                 ITextComponent message = new TextComponentTranslation("pokemob.agress",
                         pokemob.getPokemonDisplayName().getFormattedText());

@@ -419,15 +419,32 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         if (e == null)
         {
             setPokemonOwner((UUID) null);
+            /*
+             * unset tame.
+             */
             this.setPokemonAIState(IMoveConstants.TAMED, false);
             return;
         }
+        /*
+         * Set it as tame.
+         */
         this.setPokemonAIState(IMoveConstants.TAMED, true);
+        /*
+         * Set not to wander around by default, they can choose to enable this
+         * later.
+         */
+        this.setRoutineState(AIRoutine.WANDER, false);
+        /*
+         * Set owner, and set original owner if none already exists.
+         */
         setPokemonOwner(e.getUniqueID());
         if (getOriginalOwnerUUID() == null)
         {
             setOriginalOwnerUUID(e.getUniqueID());
         }
+        /*
+         * Trigger vanilla event for taming a mob.
+         */
         if (e instanceof EntityPlayerMP && getEntity() instanceof EntityAnimal)
             CriteriaTriggers.TAME_ANIMAL.trigger((EntityPlayerMP) e, (EntityAnimal) getEntity());
     }
@@ -453,8 +470,15 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     public IPokemob specificSpawnInit()
     {
         IPokemob pokemob = this;
+
         int maxXP = getEntity().getEntityData().getInteger("spawnExp");
-        if (!getEntity().getEntityData().hasKey("spawnExp"))
+
+        /*
+         * Check to see if the mob has spawnExp defined in its data. If not, it
+         * will choose how much exp it spawns with based on the position that it
+         * spawns in worls with.
+         */
+        if (maxXP == 0)
         {
             if (!getEntity().getEntityData().getBoolean("initSpawn"))
             {
@@ -474,6 +498,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);
         }
         getEntity().getEntityData().removeTag("spawnExp");
+
         pokemob = pokemob.setForSpawn(maxXP);
         pokemob.setHeldItem(pokemob.wildHeldItem(getEntity()));
         if (pokemob instanceof PokemobOwned) ((PokemobOwned) pokemob).updateHealth();

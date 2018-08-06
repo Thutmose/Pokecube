@@ -104,6 +104,10 @@ public class AICapWrapper implements IAIMob, ICapabilitySerializable<NBTTagCompo
         }
         tag.setTag("ai", savedAI);
         tag.setTag("logic", savedLogic);
+        if (read != null && savedAI.hasNoTags() && savedLogic.hasNoTags())
+        {
+            tag = read;
+        }
         return tag;
     }
 

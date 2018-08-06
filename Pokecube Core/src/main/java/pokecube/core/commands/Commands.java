@@ -17,7 +17,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 import pokecube.core.database.Database;
 import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
@@ -30,6 +31,17 @@ import thut.core.common.commands.CommandTools;
 
 public class Commands extends CommandBase
 {
+    private static final String RESETREWARD = "pokecube.command.resetreward";
+    private static final String DENYSTARTER = "pokecube.command.denystarter";
+
+    static
+    {
+        PermissionAPI.registerNode(RESETREWARD, DefaultPermissionLevel.OP,
+                "Permission to reset individual pokewatch rewards.");
+        PermissionAPI.registerNode(DENYSTARTER, DefaultPermissionLevel.OP,
+                "Permission to set a player has having a starter.");
+    }
+
     private List<String> aliases;
 
     public Commands()
@@ -50,40 +62,15 @@ public class Commands extends CommandBase
         return super.compareTo(arg0);
     }
 
-    private boolean doDebug(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-    {
-//        if (args[0].equalsIgnoreCase("items"))
-//        {
-//            WorldServer world = (WorldServer) cSender.getEntityWorld();
-//            List<Entity> items = world.loadedEntityList;
-//            for (Entity e : items)
-//            {
-//                if (e instanceof EntityItem) e.setDead();
-//            }
-//            return true;
-//        }
-        return false;
-    }
-
-    private boolean doMeteor(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-    {
-        return false;
-    }
-
-    private boolean doRecall(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-            throws CommandException
-    {
-        if (args[0].equalsIgnoreCase("recall")) {
-
-        return true; }
-        return false;
-    }
-
-    private boolean doReset(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-            throws CommandException
+    private boolean doReset(ICommandSender cSender, String[] args, EntityPlayerMP[] targets) throws CommandException
     {
         if (args[0].equalsIgnoreCase("resetreward"))
         {
+            if (!CommandTools.isOp(cSender, RESETREWARD))
+            {
+                CommandTools.sendNoPermissions(cSender);
+                return false;
+            }
             if (args.length >= 3)
             {
                 EntityPlayer player = null;
@@ -99,34 +86,27 @@ public class Commands extends CommandBase
                 }
                 String reward = args[2];
                 boolean check = args.length == 3;
-                if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+
+                if (player != null)
                 {
-                    if (player != null)
+                    NBTTagCompound tag = PokecubePlayerDataHandler.getCustomDataTag(player);
+                    if (check)
                     {
-                        NBTTagCompound tag = PokecubePlayerDataHandler.getCustomDataTag(player);
-                        if (check)
-                        {
-                            boolean has = tag.getBoolean(reward);
-                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward",
-                                    "", player.getName(), reward, has));
-                        }
-                        else
-                        {
-                            tag.setBoolean(reward, false);
-                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward",
-                                    "", player.getName(), reward));
-                            PokecubePlayerDataHandler.saveCustomData(player);
-                        }
+                        boolean has = tag.getBoolean(reward);
+                        cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward", "",
+                                player.getName(), reward, has));
                     }
                     else
                     {
-                        throw new PlayerNotFoundException(args[1]);
+                        tag.setBoolean(reward, false);
+                        cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward", "",
+                                player.getName(), reward));
+                        PokecubePlayerDataHandler.saveCustomData(player);
                     }
                 }
                 else
                 {
-                    CommandTools.sendNoPermissions(cSender);
-                    return false;
+                    throw new PlayerNotFoundException(args[1]);
                 }
                 return true;
             }
@@ -134,14 +114,13 @@ public class Commands extends CommandBase
         return false;
     }
 
-    private boolean doFixAcievements(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-            throws CommandException
+    private boolean doSetHasStarter(ICommandSender cSender, String[] args, EntityPlayerMP[] targets)
     {
-        return false;
-    }
-
-    private boolean doSetHasStarter(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-    {
+        if (args[0].equalsIgnoreCase("denystarter") && !CommandTools.isOp(cSender, DENYSTARTER))
+        {
+            CommandTools.sendNoPermissions(cSender);
+            return false;
+        }
         if (args[0].equalsIgnoreCase("denystarter") && args.length == 2)
         {
             WorldServer world = (WorldServer) cSender.getEntityWorld();
@@ -162,25 +141,18 @@ public class Commands extends CommandBase
             }
 
             for (int i = 0; i < num; i++)
-                if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+            {
+                if (targets != null)
                 {
-                    if (targets != null)
-                    {
-                        player = targets[index];
-                    }
-                    if (player != null)
-                    {
-                        PokecubeSerializer.getInstance().setHasStarter(player, true);
-                        PacketDataSync.sendInitPacket(player, "pokecube-data");
-                        cSender.sendMessage(
-                                new TextComponentTranslation("pokecube.command.denystarter", player.getName()));
-                    }
+                    player = targets[index];
                 }
-                else
+                if (player != null)
                 {
-                    CommandTools.sendNoPermissions(cSender);
-                    return false;
+                    PokecubeSerializer.getInstance().setHasStarter(player, true);
+                    PacketDataSync.sendInitPacket(player, "pokecube-data");
+                    cSender.sendMessage(new TextComponentTranslation("pokecube.command.denystarter", player.getName()));
                 }
+            }
             return true;
         }
         return false;
@@ -230,16 +202,10 @@ public class Commands extends CommandBase
                 targets = targs.toArray(new EntityPlayerMP[0]);
             }
         }
-        boolean isOp = CommandTools.isOp(sender);
         boolean message = false;
 
-        if (doRecall(sender, args, isOp, targets)) { throw new CommandException("Use '/pokerecall'"); }
-
-        message |= doDebug(sender, args, isOp, targets);
-        message |= doReset(sender, args, isOp, targets);
-        message |= doMeteor(sender, args, isOp, targets);
-        message |= doSetHasStarter(sender, args, isOp, targets);
-        message |= doFixAcievements(sender, args, isOp, targets);
+        message |= doReset(sender, args, targets);
+        message |= doSetHasStarter(sender, args, targets);
         if (!message)
         {
             CommandTools.sendBadArgumentsTryTab(sender);
@@ -261,18 +227,14 @@ public class Commands extends CommandBase
     @Override
     public String getUsage(ICommandSender icommandsender)
     {
-        return "pokecube <text>";
+        return "pokecube <denystarter|resetreward|reloadAnims> <arguments>";
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
-            BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         List<String> ret = new ArrayList<String>();
-        if (args[0].isEmpty())
-        {
-            return ret;
-        }
+        if (args[0].isEmpty()) { return ret; }
         if (ret.isEmpty() && args.length == 1)
         {
             ret.add("reloadAnims moves animations");

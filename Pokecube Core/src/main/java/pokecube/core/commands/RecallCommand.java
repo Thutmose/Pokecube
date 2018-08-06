@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -21,6 +23,14 @@ import thut.core.common.commands.CommandTools;
 
 public class RecallCommand extends CommandBase
 {
+    private static final String ALLALL = "pokecube.command.pokerecall.all.all";
+
+    static
+    {
+        PermissionAPI.registerNode(ALLALL, DefaultPermissionLevel.OP,
+                "Permission to force recall all active tamed pokemobs.");
+    }
+
     @Override
     public int getRequiredPermissionLevel()
     {
@@ -51,7 +61,6 @@ public class RecallCommand extends CommandBase
     public void execute(MinecraftServer server, ICommandSender cSender, String[] args) throws CommandException
     {
         String sender = cSender.getName();
-        boolean isOp = CommandTools.isOp(cSender);
         boolean all = args.length > 0 && args[0].equalsIgnoreCase("all");
         boolean allall = args.length > 1 && args[1].equalsIgnoreCase("all");
         boolean cubes = args.length > 0 && args[0].equalsIgnoreCase("cubes");
@@ -65,7 +74,7 @@ public class RecallCommand extends CommandBase
         EntityPlayer player = cSender.getEntityWorld().getPlayerEntityByName(sender);
         if (allall && cSender.getEntityWorld().getPlayerEntityByName(sender) != null)
         {
-            allall = isOp;
+            allall = CommandTools.isOp(cSender, ALLALL);
             if (!allall)
             {
                 allall = false;

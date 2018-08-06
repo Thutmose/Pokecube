@@ -24,7 +24,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
@@ -56,101 +55,93 @@ public class MakeCommand extends CommandBase
         ITextComponent message;
         boolean deobfuscated = PokecubeMod.isDeobfuscated() || server.isDedicatedServer();
         boolean commandBlock = !(sender instanceof EntityPlayer);
-        boolean isOp = CommandTools.isOp(sender) || commandBlock;
         if (deobfuscated || commandBlock)
         {
             String name;
             if (args.length > 0)
             {
-                int num = 1;
                 int index = 1;
                 EntityPlayer player = null;
-                for (int i = 0; i < num; i++)
+                PokedexEntry entry = null;
+                try
                 {
-                    if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-                    {
-                        PokedexEntry entry = null;
-                        try
-                        {
-                            int id = Integer.parseInt(args[0]);
-                            entry = Database.getEntry(id);
-                            name = entry.getName();
-                        }
-                        catch (NumberFormatException e)
-                        {
-                            name = args[0];
-                            if (name.startsWith("\'"))
-                            {
-                                for (int j = 1; j < args.length; j++)
-                                {
-                                    name += " " + args[j];
-                                    if (args[j].contains("\'"))
-                                    {
-                                        index = j + 1;
-                                        break;
-                                    }
-                                }
-                            }
-                            ArrayList<PokedexEntry> entries = Lists.newArrayList(Database.getSortedFormes());
-                            Collections.shuffle(entries);
-                            Iterator<PokedexEntry> iterator = entries.iterator();
-                            if (name.equalsIgnoreCase("random"))
-                            {
-                                entry = iterator.next();
-                                while (entry.legendary || !entry.base)
-                                {
-                                    entry = iterator.next();
-                                }
-                            }
-                            else if (name.equalsIgnoreCase("randomall"))
-                            {
-                                entry = iterator.next();
-                                while (!entry.base)
-                                {
-                                    entry = iterator.next();
-                                }
-                            }
-                            else if (name.equalsIgnoreCase("randomlegend"))
-                            {
-                                entry = iterator.next();
-                                while (!entry.legendary || !entry.base)
-                                {
-                                    entry = iterator.next();
-                                }
-                            }
-                            else entry = Database.getEntry(name);
-                        }
-                        Entity mob = PokecubeMod.core.createPokemob(entry, sender.getEntityWorld());
-                        if (mob == null)
-                        {
-                            CommandTools.sendError(sender, "pokecube.command.makeinvalid");
-                            return;
-                        }
-                        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
-                        pokemob.specificSpawnInit();
-                        Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
-                        String ownerName = setToArgs(args, pokemob, index, offset);
-                        if (ownerName != null && !ownerName.isEmpty())
-                        {
-                            player = getPlayer(server, sender, ownerName);
-                        }
-                        Vector3 temp = Vector3.getNewVector();
-                        if (player != null)
-                        {
-                            offset = offset.add(temp.set(player.getLookVec()));
-                            pokemob.setPokemonOwner(player);
-                            pokemob.setPokemonAIState(IMoveConstants.TAMED, true);
-                        }
-                        temp.set(sender.getPosition()).addTo(offset);
-                        temp.moveEntity(mob);
-                        GeneticsManager.initMob(mob);
-                        mob.getEntityWorld().spawnEntity(mob);
-                        text = TextFormatting.GREEN + "Spawned " + pokemob.getPokemonDisplayName().getFormattedText();
-                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.sendMessage(message);
-                        return;
-                    }
+                    int id = Integer.parseInt(args[0]);
+                    entry = Database.getEntry(id);
+                    name = entry.getName();
                 }
+                catch (NumberFormatException e)
+                {
+                    name = args[0];
+                    if (name.startsWith("\'"))
+                    {
+                        for (int j = 1; j < args.length; j++)
+                        {
+                            name += " " + args[j];
+                            if (args[j].contains("\'"))
+                            {
+                                index = j + 1;
+                                break;
+                            }
+                        }
+                    }
+                    ArrayList<PokedexEntry> entries = Lists.newArrayList(Database.getSortedFormes());
+                    Collections.shuffle(entries);
+                    Iterator<PokedexEntry> iterator = entries.iterator();
+                    if (name.equalsIgnoreCase("random"))
+                    {
+                        entry = iterator.next();
+                        while (entry.legendary || !entry.base)
+                        {
+                            entry = iterator.next();
+                        }
+                    }
+                    else if (name.equalsIgnoreCase("randomall"))
+                    {
+                        entry = iterator.next();
+                        while (!entry.base)
+                        {
+                            entry = iterator.next();
+                        }
+                    }
+                    else if (name.equalsIgnoreCase("randomlegend"))
+                    {
+                        entry = iterator.next();
+                        while (!entry.legendary || !entry.base)
+                        {
+                            entry = iterator.next();
+                        }
+                    }
+                    else entry = Database.getEntry(name);
+                }
+                Entity mob = PokecubeMod.core.createPokemob(entry, sender.getEntityWorld());
+                if (mob == null)
+                {
+                    CommandTools.sendError(sender, "pokecube.command.makeinvalid");
+                    return;
+                }
+                IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+                pokemob.specificSpawnInit();
+                Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
+                String ownerName = setToArgs(args, pokemob, index, offset);
+                if (ownerName != null && !ownerName.isEmpty())
+                {
+                    player = getPlayer(server, sender, ownerName);
+                }
+                Vector3 temp = Vector3.getNewVector();
+                if (player != null)
+                {
+                    offset = offset.add(temp.set(player.getLookVec()));
+                    pokemob.setPokemonOwner(player);
+                    pokemob.setPokemonAIState(IMoveConstants.TAMED, true);
+                }
+                temp.set(sender.getPosition()).addTo(offset);
+                temp.moveEntity(mob);
+                GeneticsManager.initMob(mob);
+                mob.getEntityWorld().spawnEntity(mob);
+                text = TextFormatting.GREEN + "Spawned " + pokemob.getPokemonDisplayName().getFormattedText();
+                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                sender.sendMessage(message);
+                return;
             }
             CommandTools.sendError(sender, "pokecube.command.makeneedname");
             return;

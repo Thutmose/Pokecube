@@ -44,7 +44,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPlantable
         this.setMaxDamage(0);
         String id = Loader.instance().activeModContainer().getModId();
         this.setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setRegistryName(id, "berry_" + name);
-        this.setUnlocalizedName(id + ".berry_" + name);
+        this.setUnlocalizedName("berry_" + name);
         this.index = index;
         this.name = name;
         BerryManager.berryItems.put(index, this);
@@ -60,7 +60,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPlantable
         String info = "";
         tooltip.add(I18n.format("item.berry.desc"));
         String berryName = name;
-        info = I18n.format("item." + berryName + "Berry.desc");
+        info = I18n.format("item.berry_" + berryName + ".desc");
         if (info.startsWith("Format error: ")) info = info.replaceFirst("Format error: ", "");
         tooltip.add(info);
         if (TileEntityBerries.trees.containsKey(index))

@@ -110,8 +110,8 @@ pokemob.description.evolve.from=%1$s evolves from %2$s.
 
 item.pokewatch.name=PokéWatch
 
-item.nullBerry.name=Berry
-item.nullBerry.desc=Just a Berry, Pokémobs might eat it.
+item.berry_null.name=Berry
+item.berry_null.desc=Just a Berry, Pokémobs might eat it.
 
 pkmn.missingno.name=MissingNo.
 

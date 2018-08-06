@@ -12,6 +12,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.BlockNest;
 import pokecube.core.blocks.nests.TileEntityBasePortal;
@@ -25,6 +27,12 @@ import thut.core.common.commands.CommandTools;
 
 public class SecretBaseCommand extends CommandBase
 {
+    private static final String ENTERANY = "pokecube.command.pokebase.enterany";
+
+    static
+    {
+        PermissionAPI.registerNode(ENTERANY, DefaultPermissionLevel.OP, "Permission to TP to anyone's secret base.");
+    }
 
     public SecretBaseCommand()
     {
@@ -72,7 +80,7 @@ public class SecretBaseCommand extends CommandBase
                 }
                 else throw new CommandException("You must be in a secret base to do that.");
             }
-            else if (args[0].equals("tp") && CommandTools.isOp(sender))
+            else if (args[0].equals("tp") && CommandTools.isOp(sender, ENTERANY))
             {
                 String player2;
                 int dim = 0;

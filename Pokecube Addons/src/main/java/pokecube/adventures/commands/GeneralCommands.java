@@ -18,16 +18,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
+import pokecube.adventures.PokecubeAdv;
 import thut.core.common.commands.CommandTools;
 import thut.core.common.config.Configure;
 
 public class GeneralCommands extends CommandBase
 {
-    private static List<String> options = Lists.newArrayList();
+    private static final String KILLPERM = PokecubeAdv.ID + ".command.killtrainers";
+
+    private static List<String> options  = Lists.newArrayList();
 
     static
     {
         options.add("killtrainers");
+        PermissionAPI.registerNode(KILLPERM, DefaultPermissionLevel.OP,
+                "Can this player set all trainers to die via the command.");
     }
 
     public static boolean  TRAINERSDIE = false;
@@ -71,7 +78,6 @@ public class GeneralCommands extends CommandBase
             {
             }
         }
-        boolean isOp = CommandTools.isOp(sender);
         if (args[0].equalsIgnoreCase("killtrainers"))
         {
             if (args.length == 1) { return; }
@@ -82,7 +88,8 @@ public class GeneralCommands extends CommandBase
                 boolean off = temp.equalsIgnoreCase("false") || temp.equalsIgnoreCase("off");
                 if (off || on)
                 {
-                    if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+                    if (CommandTools.isOp(sender, KILLPERM)
+                            || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
                         TRAINERSDIE = on;
                         text = TextFormatting.GREEN + "Trainer all dieing set to " + on;
@@ -120,8 +127,7 @@ public class GeneralCommands extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
-            BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 2 && args[0].equalsIgnoreCase("settings"))
         {

@@ -330,7 +330,7 @@ public class ItemPokemobEgg extends Item
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced)
     {
         PokedexEntry entry = getEntry(stack);
-        if (entry != null) tooltip.add(1, I18n.format("pokemobeggnamed.name", I18n.format(entry.getUnlocalizedName())));
+        if (entry != null) tooltip.add(1, I18n.format("item.pokemobegg.named.name", I18n.format(entry.getUnlocalizedName())));
     }
 
     public boolean dropEgg(World world, ItemStack stack, Vector3 location, Entity placer)

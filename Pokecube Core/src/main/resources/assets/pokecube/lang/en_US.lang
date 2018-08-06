@@ -268,8 +268,8 @@ pokedex.inspect.rocksmashTM=§aCongratulations, you have recieved a Rock Smash T
 pokedex.inspect.mastercube=§aCongratulations, you have recieved a Mastercube from the inspection of your Pokédex.
 pokedex.inspect.shinycharm=§aCongratulations, you have recieved a Shiny Charm from the inspection of your Pokédex.
 
-pokemobEgg.name=Pokémob Egg
-pokemobEggnamed.name=Egg of %1$s
+item.pokemobegg.name=Pokémob Egg
+item.pokemobegg.named.name=Egg of %1$s
 
 item.berry.istree.desc=This grows into a tree.
 item.berry.favourite.desc=%1$s's Favourite.
@@ -284,11 +284,9 @@ item.berry.hate3.desc=%1$s hates this very much.
 item.pokedex.name=Pokédex
 tile.pokecenter.name=Pokécenter
 tile.pokecenter.heal=Heal
-tile.pokemobNest.name=Nest
+tile.pokemobnest.name=Nest
 
 tile.repel.name=Repel
-tile.pokemobSpawner.name=Pokémob spawner stone
-tile.pokemobSpawnerGrass.name=Pokémob spawner grass
 tile.pokecube_table.name=Pokécube Table
 tile.pc.next=Next
 tile.pc.previous=Previous

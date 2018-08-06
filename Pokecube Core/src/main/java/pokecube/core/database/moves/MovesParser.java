@@ -120,9 +120,12 @@ public class MovesParser
         move.type = parseType(entry.type);
         if (entry.defaultanimation != null) move.animDefault = entry.defaultanimation;
         if (entry.effectRate == null) entry.effectRate = "100";
-        if (entry.secondaryEffect != null) parseCrit(entry.secondaryEffect.toLowerCase(Locale.ENGLISH), move);
+        if (entry.secondaryEffect != null)
+        {
+            parseNoMove(entry.secondaryEffect, move);
+            parseCrit(entry.secondaryEffect.toLowerCase(Locale.ENGLISH), move);
+        }
         parseCategory(entry.category, move);
-        parseNoMove(entry.secondaryEffect, move);
         parseTarget(entry, move);
         parseStatusEffects(entry, move);
         parseStatModifiers(entry, move);

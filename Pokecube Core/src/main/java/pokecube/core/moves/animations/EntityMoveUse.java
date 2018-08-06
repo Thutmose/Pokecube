@@ -155,6 +155,11 @@ public class EntityMoveUse extends Entity
         return getDataManager().get(TICK);
     }
 
+    public void setAge(int age)
+    {
+        getDataManager().set(TICK, age);
+    }
+
     public int getApplicationTick()
     {
         return getDataManager().get(APPLYTICK);
@@ -173,7 +178,7 @@ public class EntityMoveUse extends Entity
         if (start > 0) return;
 
         int age = getAge() - 1;
-        getDataManager().set(TICK, age);
+        setAge(age);
 
         if (getMove() == null || this.isDead || age < 0)
         {

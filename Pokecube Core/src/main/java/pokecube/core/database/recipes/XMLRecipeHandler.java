@@ -39,6 +39,7 @@ public class XMLRecipeHandler
         public void manageRecipe(XMLRecipe recipe) throws NullPointerException
         {
             if (!PokecubeMod.debug) return;
+            if (PokecubeMod.debug) return;
             ItemStack output = getStack(recipe.output);
             List<Object> inputs = Lists.newArrayList();
             if (recipe.shapeless) for (XMLRecipeInput xml : recipe.inputs)
@@ -163,21 +164,11 @@ public class XMLRecipeHandler
         IRecipeParser parser = recipeParsers.get(recipe.handler);
         try
         {
+            if (PokecubeMod.debug)
+            {
+                PokecubeMod.log("Recipe Handler: " + recipe.handler + " Parser: " + parser);
+            }
             parser.manageRecipe(recipe);
-            if (PokecubeMod.debug) try
-            {
-                File dir = new File(Database.CONFIGLOC + "recipes");
-                dir.mkdirs();
-                File outputFile = new File(dir, File.separator + parser.fileName("autoloaded" + (num++) + ".json"));
-                String json = parser.serialize(recipe);
-                FileWriter writer = new FileWriter(outputFile);
-                writer.append(json);
-                writer.close();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
 
         }
         catch (NullPointerException e)

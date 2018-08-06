@@ -33,14 +33,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
+import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BlockBerryCrop;
 import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.database.PokedexEntryLoader.Drop;
@@ -48,6 +47,7 @@ import pokecube.core.database.recipes.IRecipeParser;
 import pokecube.core.database.recipes.XMLRecipeHandler;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipe;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipeInput;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
@@ -56,7 +56,7 @@ import thut.lib.CompatWrapper;
 public class IECompat
 {
     @Method(modid = "immersiveengineering")
-    @CompatClass(phase = Phase.INIT)
+    @CompatClass(phase = Phase.PRE)
     public static void ConstructIE()
     {
         XMLRecipeHandler.recipeParsers.put("ie_crusher", new CrusherParser());
@@ -102,18 +102,15 @@ public class IECompat
     {
         if (input.values.containsKey(OREDICT))
         {
-            NonNullList<ItemStack> ores = OreDictionary.getOres(input.values.get(OREDICT), false);
-            if (!ores.isEmpty())
+            ItemStack stack = PokecubeItems.getStack(input.values.get(OREDICT));
+            if (stack.isEmpty()) PokecubeMod.log("No Stack found for " + input.values.get(OREDICT));
+            Map<QName, String> values = input.values;
+            if (input.tag != null)
             {
-                ItemStack stack = ores.get(0).copy();
-                Map<QName, String> values = input.values;
-                if (input.tag != null)
-                {
-                    QName name = new QName("tag");
-                    values.put(name, input.tag);
-                }
-                return updateStack(values, stack);
+                QName name = new QName("tag");
+                values.put(name, input.tag);
             }
+            return updateStack(values, stack);
         }
         return updateStack(input.values, XMLRecipeHandler.getStack(input));
     }
@@ -173,6 +170,9 @@ public class IECompat
         public void manageRecipe(XMLRecipe recipe) throws NullPointerException
         {
             ItemStack output = parseItemStack(recipe.output);
+
+            if (PokecubeMod.debug) PokecubeMod.log(output + "");
+
             List<Object> inputs = Lists.newArrayList();
             for (XMLRecipeInput xml : recipe.inputs)
             {
@@ -205,7 +205,7 @@ public class IECompat
             // Put empty id if you want nullstack.
             ItemStack outputStack = outputFluid == null ? parseItemStack(recipe.output)
                     : parseItemStack(recipe.inputs.get(0));
-            if (outputFluid == null && outputStack == null)
+            if (outputFluid == null && outputStack.isEmpty())
                 throw new NullPointerException("No output Found for " + recipe.output);
             IngredientStack inputStack = parseStack(recipe.inputs.get(1));
             int energy;
@@ -227,6 +227,7 @@ public class IECompat
         public void manageRecipe(XMLRecipe recipe) throws NullPointerException
         {
             ItemStack output = parseItemStack(recipe.output);
+            if (PokecubeMod.debug) PokecubeMod.log(output + "");
             List<Object> inputs = Lists.newArrayList();
             for (XMLRecipeInput xml : recipe.inputs)
             {
@@ -251,6 +252,7 @@ public class IECompat
         public void manageRecipe(XMLRecipe recipe) throws NullPointerException
         {
             ItemStack output = parseItemStack(recipe.output);
+            if (PokecubeMod.debug) PokecubeMod.log(output + "");
             List<IngredientStack> inputs = Lists.newArrayList();
             IngredientStack input = parseStack(recipe.inputs.get(0));
             ItemStack slag = ItemStack.EMPTY;
@@ -363,6 +365,7 @@ public class IECompat
         public void manageRecipe(XMLRecipe recipe) throws NullPointerException
         {
             ItemStack output = parseItemStack(recipe.output);
+            if (PokecubeMod.debug) PokecubeMod.log(output + "");
             int energy;
             if (recipe.output.values.containsKey(ENERGY))
             {

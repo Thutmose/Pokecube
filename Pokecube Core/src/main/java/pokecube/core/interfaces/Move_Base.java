@@ -210,7 +210,7 @@ public abstract class Move_Base
      * @return */
     public float getPostDelayFactor(IPokemob attacker)
     {
-        return 1;
+        return move.delayAfter ? 4 : 1;
     }
 
     public Move_Base setAnimation(IMoveAnimation anim)

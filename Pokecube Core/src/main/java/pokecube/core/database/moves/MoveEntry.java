@@ -73,7 +73,7 @@ public class MoveEntry implements IMoveConstants
     public float                   attackerStatModProb      = 1;
     public int[]                   attackedStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };
     public float                   attackedStatModProb      = 1;
-    public float                   damageHeal          = 0;
+    public float                   damageHeal               = 0;
     public float                   selfHealRatio            = 0;
     private boolean                multiTarget;
     private boolean                notIntercepable;
@@ -90,6 +90,10 @@ public class MoveEntry implements IMoveConstants
     public int                     priority                 = 0;
     public boolean                 defrosts                 = false;
     public boolean                 mirrorcoated             = false;
+
+    /** Whether the move requires recharging after. If a move wants to have a
+     * delay beforehand, it should have that sorted in its animation. */
+    public boolean                 delayAfter               = false;
 
     /** Status, Special, Physical */
     public byte                    category                 = -1;

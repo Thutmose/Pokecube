@@ -10,30 +10,6 @@ import thut.api.maths.Vector3;
 
 public class TreeRemover
 {
-
-    static
-    {
-        // woodTypes.add(Blocks.LOG);
-        // woodTypes.add(Blocks.LOG2);
-        //
-        // plantTypes.add(Blocks.DOUBLE_PLANT);
-        // plantTypes.add(Blocks.TALLGRASS);
-        // plantTypes.add(Blocks.CARROTS);
-        // plantTypes.add(Blocks.COCOA);
-        // plantTypes.add(Blocks.WHEAT);
-        // plantTypes.add(Blocks.POTATOES);
-        // plantTypes.add(Blocks.REEDS);
-        // plantTypes.add(Blocks.LEAVES);
-        // plantTypes.add(Blocks.VINE);
-        // plantTypes.add(Blocks.CACTUS);
-        // plantTypes.add(Blocks.MELON_BLOCK);
-        // plantTypes.add(Blocks.RED_FLOWER);
-        // plantTypes.add(Blocks.YELLOW_FLOWER);
-        // plantTypes.add(Blocks.PUMPKIN);
-        //
-        // dirtTypes.add(Blocks.DIRT);
-    }
-
     World         world;
     Vector3       centre;
 

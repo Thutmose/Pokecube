@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -50,22 +48,9 @@ import thut.core.common.commands.CommandTools;
 
 public class MovesUtils implements IMoveConstants
 {
-    public static Random                     rand          = new Random();
+    public static Random                     rand  = new Random();
 
-    public static HashMap<String, Move_Base> moves         = Maps.newHashMap();
-    public static Set<String>                rechargeMoves = Sets.newHashSet();
-
-    static
-    {
-        rechargeMoves.add("hyperbeam");
-        rechargeMoves.add("gigaimpact");
-        rechargeMoves.add("solarbeam");
-        rechargeMoves.add("rockwrecker");
-        rechargeMoves.add("blastburn");
-        rechargeMoves.add("frenzyplant");
-        rechargeMoves.add("hydrocannon");
-        rechargeMoves.add("roaroftime");
-    }
+    public static HashMap<String, Move_Base> moves = Maps.newHashMap();
 
     public static void addChange(Entity target, IPokemob attacker, byte change)
     {
@@ -428,7 +413,6 @@ public class MovesUtils implements IMoveConstants
     {
         float statusMultiplier = PokecubeMod.core.getConfig().attackCooldown / 20F;
         if (attacker.getStatus() == STATUS_PAR) statusMultiplier *= 4F;
-        if (rechargeMoves.contains(moveName)) statusMultiplier *= 4f;
         Move_Base move = getMoveFromName(moveName);
         if (move == null) return 1;
         statusMultiplier *= move.getPostDelayFactor(attacker);

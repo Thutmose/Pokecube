@@ -12,8 +12,8 @@ import pokecube.core.entity.pokemobs.GenericPokemob;
 import pokecube.core.events.ClassGenEvent;
 
 /** This class generates the pokemob classes for each pokemob. It works by
- * copying the byte array from GenericPokemob.class, then modifiying it
- * accordingly for each pokemob class it makes.
+ * copying the byte array from GenericPokemob.class, then modifying it
+ * accordingly for each class it makes.
  * 
  * @author Thutmose */
 public class ByteClassLoader extends ClassLoader
@@ -42,6 +42,7 @@ public class ByteClassLoader extends ClassLoader
             e.printStackTrace();
         }
 
+        // Clone default generic class, then put into a class reader.
         ClassReader reader = new ClassReader(genericMobBytes);
         ClassWriter writer;
         byte[] genericMob = reader.b.clone();
@@ -49,23 +50,26 @@ public class ByteClassLoader extends ClassLoader
         ClassNode changer = new ClassNode();
         reader.accept(changer, 0);
 
+        // Change the name of the class to include pokemob's name.
+        // This is all of the change that we actually need.
         changer.sourceFile = changer.sourceFile.replace(".java", "") + name + "_" + ".java";
         changer.name = changer.name + "_" + name;
 
         writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-
         changer.accept(writer);
 
+        // Send event for various addons to edit the class as well.
         ClassGenEvent evt = new ClassGenEvent(writer, changer, entry);
         MinecraftForge.EVENT_BUS.post(evt);
         writer.visitEnd();
         genericMob = writer.toByteArray();
 
+        // Apply the changes made by addons
         ClassReader cr = new ClassReader(genericMob);
         ClassNode classNode = new ClassNode();
-
         cr.accept(classNode, 0);
 
+        // Load class from edited byte array.
         Class<?> c = loadClass(classNode.name, genericMob, true);
         return c;
 

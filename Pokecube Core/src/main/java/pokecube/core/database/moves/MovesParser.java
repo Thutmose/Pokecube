@@ -122,6 +122,7 @@ public class MovesParser
         if (entry.effectRate == null) entry.effectRate = "100";
         if (entry.secondaryEffect != null) parseCrit(entry.secondaryEffect.toLowerCase(Locale.ENGLISH), move);
         parseCategory(entry.category, move);
+        parseNoMove(entry.secondaryEffect, move);
         parseTarget(entry, move);
         parseStatusEffects(entry, move);
         parseStatModifiers(entry, move);
@@ -129,6 +130,15 @@ public class MovesParser
         parseHealing(entry, move);
         parseSelfDamage(entry, move);
         parsePreset(entry);
+    }
+
+    static void parseNoMove(String secondaryEffect, MoveEntry move)
+    {
+        if (secondaryEffect.equals("User cannot Attack on the next turn."))
+        {
+            move.delayAfter = true;
+            if (PokecubeMod.debug) PokecubeMod.log(move.name + " set as long cooldown move.");
+        }
     }
 
     static void parseCategory(String category, MoveEntry move)

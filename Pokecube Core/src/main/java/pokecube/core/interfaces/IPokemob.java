@@ -110,7 +110,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
         /** Priority of application of these stats modifiers, higher numbers go
          * later, the default modifiers (such as from growl) will be given
-         * priority of 100, so set your accordingly.
+         * priority of 100, so set yours accordingly.
          * 
          * @return */
         int getPriority();
@@ -442,10 +442,12 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
         public Entity       infatuateTarget;
 
+        // Timers used for various move types.
         public int          TOXIC_COUNTER              = 0;
         public int          ROLLOUTCOUNTER             = 0;
         public int          FURYCUTTERCOUNTER          = 0;
         public int          DEFENSECURLCOUNTER         = 0;
+
         public boolean      Exploding                  = false;
         public int          boomState                  = -1;
 
@@ -550,6 +552,10 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
     void eat(Entity eaten);
 
+    /** See IMultiplePassengerEntity.getPitch() TODO remove this infavour of the
+     * IMultiplePassengerentity implementation
+     * 
+     * @return */
     float getDirectionPitch();
 
     /** The evolution tick will be set when the mob evolves and then is
@@ -558,6 +564,8 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
      * @return the evolutionTicks */
     int getEvolutionTicks();
 
+    /** 1 for about to explode, -1 for not exploding, this should probably be
+     * changed to a boolean. */
     int getExplosionState();
 
     /** @return how happy is the pokemob, see {@link HappinessType} */
@@ -659,6 +667,9 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
     IPokemob setForSpawn(int exp, boolean evolve);
 
+    /** 1 for about to explode, -1 for reset.
+     * 
+     * @param i */
     void setExplosionState(int i);
 
     default void setHeldItem(ItemStack stack)
@@ -671,6 +682,13 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
         return getEntity().getHeldItemMainhand();
     }
 
+    /** Sets the default home location and roam distance. This is probably
+     * better managed via the IGuardAICapability.
+     * 
+     * @param x
+     * @param y
+     * @param z
+     * @param distance */
     void setHome(int x, int y, int z, int distance);
 
     /** {@link #MALE} or {@link #FEMALE} or {@link #NOSEXE}
@@ -706,7 +724,7 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
      * @return */
     int getRNGValue();
 
-    /** @param value */
+    /** sets the personality value for the pokemob, see getRNGValue() */
     void setRNGValue(int value);
 
     default void setSubParts(EntityPokemobPart[] subParts)
@@ -730,10 +748,13 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
     NBTTagCompound writePokemobData();
 
+    /** If this is larger than 0, the pokemob shouldn't be allowed to attack. */
     int getAttackCooldown();
 
+    /** Sets the value obtained by getAttackCooldown() */
     void setAttackCooldown(int timer);
 
+    /** Last attack used by this pokemob; */
     String getLastMoveUsed();
 
     default boolean moveToShoulder(EntityPlayer player)

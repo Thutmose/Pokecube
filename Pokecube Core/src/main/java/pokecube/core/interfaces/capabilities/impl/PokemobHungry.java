@@ -93,6 +93,7 @@ public abstract class PokemobHungry extends PokemobMoves
         return getPokedexEntry().foods[6];
     }
 
+    // TODO also include effects from external float reasons here
     @Override
     public boolean floats()
     {

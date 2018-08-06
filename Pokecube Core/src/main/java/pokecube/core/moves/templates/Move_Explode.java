@@ -93,6 +93,7 @@ public class Move_Explode extends Move_Basic
         if (pokemob.getMoveStats().timeSinceIgnited-- <= 0)
         {
             mob.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
+            pokemob.setExplosionState(1);
             pokemob.getMoveStats().timeSinceIgnited = 10;
         }
         if (attacker.getStatus() == STATUS_SLP)

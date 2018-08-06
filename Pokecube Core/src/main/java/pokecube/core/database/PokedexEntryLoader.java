@@ -39,11 +39,9 @@ import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
-import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
@@ -131,7 +129,7 @@ public class PokedexEntryLoader
             }
             if (CompatWrapper.isValid(stack))
             {
-                rightStack = OreDictionary.containsMatch(false, NonNullList.withSize(1, stack), mobIn.getHeldItem());
+                rightStack = Tools.isSameStack(stack, mobIn.getHeldItem(), true);
                 rule = true;
             }
             if (moveName != null && !moveName.isEmpty())

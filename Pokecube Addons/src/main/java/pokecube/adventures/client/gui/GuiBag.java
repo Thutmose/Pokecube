@@ -15,7 +15,6 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.adventures.items.bags.InventoryBag;
-import thut.api.maths.Vector3;
 
 public class GuiBag extends GuiContainer
 {
@@ -28,11 +27,10 @@ public class GuiBag extends GuiContainer
 
     private String  boxName  = "1";
     private boolean toRename = false;
-    Vector3         loc;
 
     private Slot    theSlot;
 
-    public GuiBag(ContainerBag cont, Vector3 pcLoc)
+    public GuiBag(ContainerBag cont)
     {
         super(cont);
         this.cont = cont;
@@ -40,7 +38,6 @@ public class GuiBag extends GuiContainer
         this.ySize = 229;
         page = cont.getPageNb();
         boxName = cont.getPage();
-        loc = pcLoc;
     }
 
     @Override
@@ -207,11 +204,6 @@ public class GuiBag extends GuiContainer
         }
     }
 
-    // public boolean getReleaseState(){
-
-    /// return release;
-    // }
-
     /** Fired when a key is typed. This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). */
     protected void keyTyped2(char par1, int par2)
@@ -240,16 +232,4 @@ public class GuiBag extends GuiContainer
         if (toRename) textFieldBoxName.mouseClicked(par1, par2, par3);
 
     }
-
-    /** Called when the screen is unloaded. Used to disable keyboard repeat
-     * events */
-    @Override
-    public void onGuiClosed()
-    {
-        if (this.mc.player != null)
-        {
-            this.inventorySlots.onContainerClosed(this.mc.player);
-        }
-    }
-
 }

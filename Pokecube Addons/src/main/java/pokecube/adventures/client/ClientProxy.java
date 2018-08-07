@@ -49,7 +49,6 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.bags.ContainerBag;
-import thut.api.maths.Vector3;
 
 public class ClientProxy extends CommonProxy
 {
@@ -62,7 +61,7 @@ public class ClientProxy extends CommonProxy
         {
             ContainerBag cont = new ContainerBag(player.inventory);
             cont.gotoInventoryPage(x);
-            return new GuiBag(cont, Vector3.getNewVector().set(x, y, z));
+            return new GuiBag(cont);
         }
         if (guiID == PokecubeAdv.GUICLONER_ID) { return new GuiCloner(player.inventory,
                 (TileEntityCloner) world.getTileEntity(pos)); }

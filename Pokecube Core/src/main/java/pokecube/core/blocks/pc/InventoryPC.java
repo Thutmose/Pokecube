@@ -120,7 +120,6 @@ public class InventoryPC implements IInventory
         tags:
         for (i = 0; i < nbt.tagCount(); i++)
         {
-
             NBTTagCompound items = nbt.getCompoundTagAt(i);
             NBTTagCompound boxes = items.getCompoundTag("boxes");
             String player = boxes.getString("username");
@@ -143,7 +142,6 @@ public class InventoryPC implements IInventory
                 if (k == 0)
                 {
                     load = replace ? new InventoryPC(uuid) : getPC(uuid);
-
                     if (load == null) continue tags;
                     load.autoToPC = boxes.getBoolean("autoSend");
                     load.seenOwner = boxes.getBoolean("seenOwner");
@@ -215,7 +213,7 @@ public class InventoryPC implements IInventory
                 ItemStack itemstack = map.get(uuid).getStackInSlot(i);
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
 
-                if (itemstack != CompatWrapper.nullStack)
+                if (!itemstack.isEmpty())
                 {
                     nbttagcompound.setShort("Slot", (short) i);
                     itemstack.writeToNBT(nbttagcompound);

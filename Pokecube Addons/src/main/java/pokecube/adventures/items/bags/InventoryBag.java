@@ -150,6 +150,7 @@ public class InventoryBag implements IInventory
             {
                 continue;
             }
+            if (uuid.equals(blankID)) continue;
 
             InventoryBag load = null;
             for (int k = 0; k < PAGECOUNT; k++)
@@ -195,7 +196,7 @@ public class InventoryBag implements IInventory
 
         for (UUID player : map.keySet())
         {
-            if (map.get(player) == null || uuid.equals(player))
+            if (map.get(player) == null || player == blankID)
             {
                 continue;
             }
@@ -214,7 +215,7 @@ public class InventoryBag implements IInventory
                 ItemStack itemstack = map.get(player).getStackInSlot(i);
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
 
-                if (itemstack != null)
+                if (!itemstack.isEmpty())
                 {
                     nbttagcompound.setShort("Slot", (short) i);
                     itemstack.writeToNBT(nbttagcompound);
@@ -224,7 +225,6 @@ public class InventoryBag implements IInventory
             items.setTag("boxes", boxes);
             nbttag.appendTag(items);
         }
-
         return nbttag;
     }
 

@@ -58,6 +58,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPlantable
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced)
     {
         String info = "";
+        if (advanced.isAdvanced()) tooltip.add("ID: " + index);
         tooltip.add(I18n.format("item.berry.desc"));
         String berryName = name;
         info = I18n.format("item.berry_" + berryName + ".desc");

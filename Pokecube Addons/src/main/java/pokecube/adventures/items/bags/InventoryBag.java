@@ -1,5 +1,9 @@
 package pokecube.adventures.items.bags;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
@@ -9,20 +13,92 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
-import pokecube.adventures.handlers.PASaveHandler;
-import pokecube.core.PokecubeCore;
-import pokecube.core.interfaces.PokecubeMod;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import thut.core.common.handlers.PlayerDataHandler;
 import thut.lib.CompatWrapper;
 
 public class InventoryBag implements IInventory
 {
-    public static HashMap<String, InventoryBag> map       = new HashMap<String, InventoryBag>();
-    public static int                           PAGECOUNT = 32;
+    private static final String               FILEID    = "BagInventory";
+    public static HashMap<UUID, InventoryBag> map       = new HashMap<UUID, InventoryBag>();
+    public static UUID                        defaultID = new UUID(12345678910l, 12345678910l);
+    public static UUID                        blankID   = new UUID(0, 0);
+    public static int                         PAGECOUNT = 32;
     // blank bag for client use.
-    public static InventoryBag                  blank;
+    public static InventoryBag                blank;
+
+    public static void loadBag(UUID uuid)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
+        try
+        {
+            File file = PlayerDataHandler.getFileForUUID(uuid.toString(), FILEID);
+            if (file != null && file.exists())
+            {
+                FileInputStream fileinputstream = new FileInputStream(file);
+                NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
+                fileinputstream.close();
+                readBagFromNBT(nbttagcompound.getCompoundTag("Data"));
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+        }
+        catch (Exception e)
+        {
+        }
+    }
+
+    public static void readBagFromNBT(NBTTagCompound nbt)
+    {
+        // Read PC Data from NBT
+        NBTBase temp = nbt.getTag("PC");
+        if (temp instanceof NBTTagList)
+        {
+            NBTTagList tagListPC = (NBTTagList) temp;
+            InventoryBag.loadFromNBT(tagListPC);
+        }
+    }
+
+    public static void saveBag(String uuid)
+    {
+
+        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
+        try
+        {
+            File file = PlayerDataHandler.getFileForUUID(uuid, FILEID);
+            if (file != null)
+            {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                writeBagToNBT(nbttagcompound, uuid);
+                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                nbttagcompound1.setTag("Data", nbttagcompound);
+                FileOutputStream fileoutputstream = new FileOutputStream(file);
+                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+                fileoutputstream.close();
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeBagToNBT(NBTTagCompound nbt, String uuid)
+    {
+        NBTTagList tagsPC = InventoryBag.saveToNBT(uuid);
+        nbt.setTag("PC", tagsPC);
+    }
 
     public static void clearInventory()
     {
@@ -31,40 +107,23 @@ public class InventoryBag implements IInventory
 
     public static InventoryBag getBag(Entity player)
     {// TODO Sync box names to blank
-        if (player.getEntityWorld().isRemote) return blank == null ? blank = new InventoryBag("blank") : blank;
-        return getBag(player.getCachedUniqueIdString());
+        if (player.getEntityWorld().isRemote) return blank == null ? blank = new InventoryBag(blankID) : blank;
+        return getBag(player.getUniqueID());
     }
 
-    public static InventoryBag getBag(String uuid)
+    public static InventoryBag getBag(UUID uuid)
     {
         if (uuid != null)
         {
-            if (!map.containsKey(uuid))
-            {
-                PASaveHandler.getInstance().loadBag(uuid);
-            }
             if (map.containsKey(uuid))
             {
-                if (PokecubeCore.proxy.getPlayer(uuid) != null)
-                {
-                    String username = PokecubeCore.proxy.getPlayer(uuid).getName();
-                    map.remove(username);
-                }
                 return map.get(uuid);
             }
-            boolean isUid = true;
-            try
-            {
-                UUID.fromString(uuid);
-            }
-            catch (Exception e)
-            {
-                isUid = false;
-            }
-            if (!isUid) return getBag(PokecubeMod.getFakePlayer().getCachedUniqueIdString());
+            else loadBag(uuid);
+            if (map.containsKey(uuid)) { return map.get(uuid); }
             return new InventoryBag(uuid);
         }
-        return null;
+        return getBag(defaultID);
     }
 
     public static void loadFromNBT(NBTTagList nbt)
@@ -81,17 +140,15 @@ public class InventoryBag implements IInventory
 
             NBTTagCompound items = nbt.getCompoundTagAt(i);
             NBTTagCompound boxes = items.getCompoundTag("boxes");
-            String player = boxes.getString("username");
 
-            String uuid = boxes.getString("UUID");
-
-            if ((uuid == "" || uuid == null) && (player == "" || player == null))
+            UUID uuid;
+            try
+            {
+                uuid = UUID.fromString(boxes.getString("UUID"));
+            }
+            catch (Exception e)
             {
                 continue;
-            }
-            if (uuid == "" || uuid == null)
-            {
-                uuid = player;
             }
 
             InventoryBag load = null;
@@ -102,9 +159,6 @@ public class InventoryBag implements IInventory
                     load = replace ? new InventoryBag(uuid) : getBag(uuid);
 
                     if (load == null) continue tags;
-                    load.autoToPC = boxes.getBoolean("autoSend");
-                    load.seenOwner = boxes.getBoolean("seenOwner");
-                    // System.out.println(map.get(uuid).seenOwner);
                     load.setPage(boxes.getInteger("page"));
                 }
                 if (boxes.getString("name" + k) != null)
@@ -130,63 +184,6 @@ public class InventoryBag implements IInventory
         }
     }
 
-    public static NBTTagList saveToNBT()
-    {
-        NBTTagList nbttag = new NBTTagList();
-
-        HashSet<String> keys = new HashSet<String>();
-        for (String s : map.keySet())
-            keys.add(s);
-
-        for (String uuid : keys)
-        {
-            if (map.get(uuid) == null || uuid.equals(""))
-            {
-                continue;
-            }
-
-            boolean isUid = true;
-            try
-            {
-                UUID.fromString(uuid);
-            }
-            catch (Exception e)
-            {
-                isUid = false;
-            }
-            if (!isUid) continue;
-
-            NBTTagCompound items = new NBTTagCompound();
-            NBTTagCompound boxes = new NBTTagCompound();
-            boxes.setString("UUID", uuid);
-            boxes.setBoolean("seenOwner", map.get(uuid).seenOwner);
-            boxes.setBoolean("autoSend", map.get(uuid).autoToPC);
-            boxes.setInteger("page", map.get(uuid).page);
-
-            for (int i = 0; i < PAGECOUNT; i++)
-            {
-                boxes.setString("name" + i, map.get(uuid).boxes[i]);
-            }
-            items.setInteger("page", map.get(uuid).getPage());
-            for (int i = 0; i < map.get(uuid).getSizeInventory(); i++)
-            {
-                ItemStack itemstack = map.get(uuid).getStackInSlot(i);
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-                if (itemstack != null)
-                {
-                    nbttagcompound.setShort("Slot", (short) i);
-                    itemstack.writeToNBT(nbttagcompound);
-                    items.setTag("item" + i, nbttagcompound);
-                }
-            }
-            items.setTag("boxes", boxes);
-            nbttag.appendTag(items);
-        }
-
-        return nbttag;
-    }
-
     public static NBTTagList saveToNBT(Entity owner)
     {
         return saveToNBT(owner.getCachedUniqueIdString());
@@ -196,20 +193,15 @@ public class InventoryBag implements IInventory
     {
         NBTTagList nbttag = new NBTTagList();
 
-        String name = "";
-
-        for (String player : map.keySet())
+        for (UUID player : map.keySet())
         {
-            if (map.get(player) == null || player.equals("") || !(name.equalsIgnoreCase(player) || uuid.equals(player)))
+            if (map.get(player) == null || uuid.equals(player))
             {
                 continue;
             }
             NBTTagCompound items = new NBTTagCompound();
             NBTTagCompound boxes = new NBTTagCompound();
-            boxes.setString("UUID", player);
-            boxes.setBoolean("seenOwner", map.get(player).seenOwner);
-            // System.out.println(map.get(player).seenOwner);
-            boxes.setBoolean("autoSend", map.get(player).autoToPC);
+            boxes.setString("UUID", player.toString());
             boxes.setInteger("page", map.get(player).page);
 
             for (int i = 0; i < PAGECOUNT; i++)
@@ -236,21 +228,19 @@ public class InventoryBag implements IInventory
         return nbttag;
     }
 
-    private int                              page      = 0;
-    public boolean                           autoToPC  = false;
-    public boolean[]                         opened    = new boolean[PAGECOUNT];
-    public String[]                          boxes     = new String[PAGECOUNT];
-    private Int2ObjectOpenHashMap<ItemStack> contents  = new Int2ObjectOpenHashMap<>();
-    public final String                      owner;
-    public boolean                           seenOwner = false;
-    boolean                                  dirty     = false;
+    private int                              page     = 0;
+    public boolean[]                         opened   = new boolean[PAGECOUNT];
+    public String[]                          boxes    = new String[PAGECOUNT];
+    private Int2ObjectOpenHashMap<ItemStack> contents = new Int2ObjectOpenHashMap<>();
+    public final UUID                        owner;
+    boolean                                  dirty    = false;
 
-    public InventoryBag(String player)
+    public InventoryBag(UUID uuid)
     {
-        if (!player.equals("")) map.put(player, this);
+        if (uuid != null) map.put(uuid, this);
         opened = new boolean[PAGECOUNT];
         boxes = new String[PAGECOUNT];
-        owner = player;
+        owner = uuid;
         for (int i = 0; i < PAGECOUNT; i++)
         {
             boxes[i] = "Box " + String.valueOf(i + 1);
@@ -286,7 +276,7 @@ public class InventoryBag implements IInventory
     @Override
     public void closeInventory(EntityPlayer player)
     {
-        PASaveHandler.getInstance().saveBag(player.getCachedUniqueIdString());
+        saveBag(player.getCachedUniqueIdString());
     }
 
     @Override
@@ -317,7 +307,6 @@ public class InventoryBag implements IInventory
     @Override
     public ITextComponent getDisplayName()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -336,7 +325,7 @@ public class InventoryBag implements IInventory
     @Override
     public int getInventoryStackLimit()
     {
-        return ContainerBag.STACKLIMIT;
+        return 64;
     }
 
     @Override
@@ -415,28 +404,6 @@ public class InventoryBag implements IInventory
     public void setPage(int page)
     {
         this.page = page;
-    }
-
-    @Override
-    public String toString()
-    {
-        String ret = "Owner: " + owner + ", Current Page, " + (getPage() + 1) + ": Auto Move, " + autoToPC + ": ";
-        String eol = System.getProperty("line.separator");
-        ret += eol;
-        for (int i : contents.keySet())
-        {
-            if (CompatWrapper.isValid(this.getStackInSlot(i)))
-            {
-                ret += "Slot " + i + ", " + this.getStackInSlot(i).getDisplayName() + "; ";
-            }
-        }
-        ret += eol;
-        for (int i = 0; i < boxes.length; i++)
-        {
-            ret += "Box " + (i + 1) + ", " + boxes[i] + "; ";
-        }
-        ret += eol;
-        return ret;
     }
 
     @Override

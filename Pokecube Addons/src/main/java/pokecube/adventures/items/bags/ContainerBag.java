@@ -22,7 +22,6 @@ import thut.lib.CompatWrapper;
 public class ContainerBag extends Container
 {
     public static boolean HOLDALL    = false;
-    public static int     STACKLIMIT = 64;
     public static int     yOffset;
     public static int     xOffset;
 

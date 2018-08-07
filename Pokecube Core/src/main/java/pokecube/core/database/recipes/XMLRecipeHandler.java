@@ -1,7 +1,5 @@
 package pokecube.core.database.recipes;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +16,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.item.ItemStack;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
@@ -26,8 +23,6 @@ import thut.lib.CompatWrapper;
 
 public class XMLRecipeHandler
 {
-
-    private static int                       num           = 0;
     public static Set<String>                recipeFiles   = Sets.newHashSet();
     public static Map<String, IRecipeParser> recipeParsers = Maps.newHashMap();
 

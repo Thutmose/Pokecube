@@ -78,18 +78,6 @@ public class ContainerPC extends Container
         bindInventories();
     }
 
-    /**
-     * 
-     */
-    @Override
-    protected Slot addSlotToContainer(Slot par1Slot)
-    {
-        par1Slot.slotNumber = this.inventorySlots.size();
-        this.inventorySlots.add(par1Slot);
-        this.inventoryItemStacks.add(inv.getStackInSlot(par1Slot.getSlotIndex()));
-        return par1Slot;
-    }
-
     protected void bindInventories()
     {
         // System.out.println("bind");
@@ -200,13 +188,6 @@ public class ContainerPC extends Container
     {
         super.onContainerClosed(player);
         inv.closeInventory(player);
-    }
-
-    /** args: slotID, itemStack to put in slot */
-    @Override
-    public void putStackInSlot(int par1, ItemStack par2ItemStack)
-    {
-        this.getSlot(par1).putStack(par2ItemStack);
     }
 
     public void toggleAuto()

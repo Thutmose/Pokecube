@@ -345,11 +345,6 @@ public class GuiPC extends GuiContainer
 
     }
 
-    // public boolean getReleaseState(){
-
-    // /return release;
-    // }
-
     /** Fired when a key is typed. This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). */
     protected void keyTyped2(char par1, int par2)

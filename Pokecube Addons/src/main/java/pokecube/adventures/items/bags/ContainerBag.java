@@ -21,7 +21,7 @@ import thut.lib.CompatWrapper;
 @ChestContainer(isLargeChest = true, showButtons = false)
 public class ContainerBag extends Container
 {
-    public static boolean HOLDALL    = false;
+    public static boolean HOLDALL = false;
     public static int     yOffset;
     public static int     xOffset;
 
@@ -32,7 +32,7 @@ public class ContainerBag extends Container
      * @return true if the id is a filled pokecube one, false otherwise */
     public static boolean isItemValid(ItemStack itemstack)
     {
-        if (HOLDALL) return true;
+        if (HOLDALL) return !(itemstack.getItem() instanceof ItemBag);
         boolean valid = PokecubeItems.isValidHeldItem(itemstack) || IPokemobUseable.getUsableFor(itemstack) != null;
         valid |= PokecubeItems.getFossilEntry(itemstack) != null;
         boolean cube = PokecubeItems.getEmptyCube(itemstack) == itemstack.getItem()

@@ -20,6 +20,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
+import thut.lib.ItemStackTools;
 
 public abstract class PokemobHungry extends PokemobMoves
 {
@@ -35,7 +36,10 @@ public abstract class PokemobHungry extends PokemobMoves
             if (usable != null)
             {
                 ActionResult<ItemStack> result = usable.onUse(this, item, getEntity());
-                if (result.getType() == EnumActionResult.SUCCESS) this.setHeldItem(result.getResult());
+                if (result.getType() == EnumActionResult.SUCCESS)
+                {
+                    ItemStackTools.addItemStackToInventory(result.getResult(), this.getPokemobInventory(), 1);
+                }
             }
             if (Tools.isStack(item, "leppaberry"))
             {

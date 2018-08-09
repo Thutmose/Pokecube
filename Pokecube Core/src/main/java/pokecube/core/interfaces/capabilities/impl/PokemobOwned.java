@@ -18,7 +18,6 @@ import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -389,7 +388,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             // Should not happen anymore
             e.printStackTrace();
         }
-        getEntity().setHeldItem(EnumHand.MAIN_HAND, itemStack);
+        super.setHeldItem(itemStack);
     }
 
     @Override

@@ -377,7 +377,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 // change to new forme.
                 IPokemob evo = this.megaEvolve(((EvolveEvent.Pre) evt).forme);
                 // Remove held item if it had one.
-                if (neededItem)
+                if (neededItem && stack == thisMob.getHeldItem())
                 {
                     evo.setHeldItem(CompatWrapper.nullStack);
                 }

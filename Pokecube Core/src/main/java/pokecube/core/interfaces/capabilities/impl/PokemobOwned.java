@@ -246,7 +246,9 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             if (getPokemonAIState(MEGAFORME) || getPokedexEntry().isMega)
             {
                 this.setPokemonAIState(MEGAFORME, false);
+                float hp = getEntity().getHealth();
                 IPokemob base = megaEvolve(getPokedexEntry().getBaseForme());
+                base.getEntity().setHealth(hp);
                 if (base == this) returning = false;
                 if (getEntity().getEntityData().hasKey(TagNames.ABILITY))
                     base.setAbility(AbilityManager.getAbility(getEntity().getEntityData().getString(TagNames.ABILITY)));

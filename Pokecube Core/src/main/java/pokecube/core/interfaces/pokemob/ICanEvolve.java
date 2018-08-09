@@ -119,8 +119,9 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME) && pokemob.getOwner() instanceof EntityPlayerMP)
                     Triggers.MEGAEVOLVEPOKEMOB.trigger((EntityPlayerMP) pokemob.getOwner(), pokemob);
                 int evoTicks = pokemob.getEvolutionTicks();
+                float hp = pokemob.getEntity().getHealth();
                 pokemob = pokemob.megaEvolve(mega);
-
+                pokemob.getEntity().setHealth(hp);
                 /** Flag the new mob as evolving to continue the animation
                  * effects. */
                 pokemob.setPokemonAIState(EVOLVING, true);

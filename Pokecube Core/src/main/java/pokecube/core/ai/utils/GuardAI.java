@@ -26,10 +26,20 @@ import pokecube.core.utils.TimePeriod;
 */
 public class GuardAI extends EntityAIBase
 {
+    public static interface ShouldRun
+    {
+        default boolean shouldRun()
+        {
+            return true;
+        }
+    }
 
     public final IGuardAICapability capability;
     private final EntityLiving      entity;
     public int                      cooldownTicks;
+    public ShouldRun                shouldRun = new ShouldRun()
+                                              {
+                                              };
 
     public GuardAI(EntityLiving entity, IGuardAICapability capability)
     {
@@ -40,6 +50,7 @@ public class GuardAI extends EntityAIBase
     @Override
     public boolean shouldContinueExecuting()
     {
+        if (!shouldRun.shouldRun()) return false;
         if (!capability.hasActiveTask(entity.getEntityWorld().getWorldTime(), 24000)) return false;
         capability.getActiveTask().continueTask(entity);
         switch (capability.getState())

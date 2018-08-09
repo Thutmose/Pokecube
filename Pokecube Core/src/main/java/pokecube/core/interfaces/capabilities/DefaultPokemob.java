@@ -27,6 +27,7 @@ import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
 import pokecube.core.ai.utils.GuardAI;
+import pokecube.core.ai.utils.GuardAI.ShouldRun;
 import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.ai.utils.pathing.PokemobNavigator;
 import pokecube.core.database.PokedexEntry;
@@ -215,9 +216,19 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         this.navi = new PokemobNavigator(this, entity.getEntityWorld());
         this.mover = new PokemobMoveHelper(entity);
 
+        GuardAI guardAI = new GuardAI(entity, this.guardCap = entity.getCapability(EventsHandler.GUARDAI_CAP, null));
+        guardAI.shouldRun = new ShouldRun()
+        {
+            @Override
+            public boolean shouldRun()
+            {
+                if (!getPokemonAIState(IPokemob.TAMED)) return true;
+                return getPokemonAIState(IPokemob.STAYING);
+            }
+        };
         // Add in some vanilla-like AI classes
-        entity.tasks.addTask(5,
-                new GuardAI(entity, this.guardCap = entity.getCapability(EventsHandler.GUARDAI_CAP, null)));
+        entity.tasks.addTask(5, guardAI);
+
         entity.tasks.addTask(5, this.utilMoveAI = new PokemobAIUtilityMove(this));
         if (entity instanceof EntityCreature) entity.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
 

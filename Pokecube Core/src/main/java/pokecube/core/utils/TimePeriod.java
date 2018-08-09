@@ -12,6 +12,8 @@ public final class TimePeriod
 {
     public final static TimePeriod fullDay = new TimePeriod(0, 24000);
 
+    public final static TimePeriod never   = new TimePeriod(0, 0);
+
     public final int               startTick;
     public final int               endTick;
     public final double            startTime;

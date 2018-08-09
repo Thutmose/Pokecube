@@ -52,7 +52,7 @@ public class StanceHandler implements IMobCommandHandler
             }
             else
             {
-                if (guard != null) guard.getPrimaryTask().setActiveTime(TimePeriod.fullDay);
+                if (guard != null) guard.getPrimaryTask().setActiveTime(TimePeriod.never);
             }
         }
         else if (key == BUTTONTOGGLESIT)

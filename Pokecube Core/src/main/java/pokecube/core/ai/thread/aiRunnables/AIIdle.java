@@ -20,6 +20,8 @@ import thut.api.maths.Vector3;
  * better to do. */
 public class AIIdle extends AIBase
 {
+    public static int          IDLETIMER = 20;
+
     final private EntityLiving entity;
     final IPokemob             mob;
     final PokedexEntry         entry;
@@ -171,13 +173,14 @@ public class AIIdle extends AIBase
         if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)
                 && !mob.getPokemonAIState(IMoveConstants.STAYING))
             return false;
-        int idleTimer = 5;
+        int idleTimer = IDLETIMER;
         if (mob.getPokemonAIState(IPokemob.SLEEPING) || (mob.getStatus() & IPokemob.STATUS_SLP) > 0) return false;
         else if (mob.getPokemonAIState(IMoveConstants.CONTROLLED) || current != null)
         {
             return false;
         }
-        else if (entity.ticksExisted % (idleTimer + new Random(mob.getRNGValue()).nextInt(idleTimer)) == 0)
+        else if ((entity.ticksExisted + new Random(mob.getRNGValue()).nextInt(idleTimer))
+                % (idleTimer) == new Random(mob.getRNGValue()).nextInt(idleTimer))
         {
             boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED)
                     && !mob.getPokemonAIState(IMoveConstants.STAYING);

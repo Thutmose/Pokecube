@@ -179,6 +179,7 @@ public class TrainerSpawnHandler
             {
                 addTrainerCoord(t);
                 w.spawnEntity(t);
+                t.aiStates.setAIState(IHasNPCAIStates.TRADES, true);
             }
             else t.setDead();
         }

@@ -379,15 +379,13 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public void setActiveMove(EntityMoveUse move)
     {
-        // TODO Auto-generated method stub
-
+        this.activeMove = move;
     }
 
     @Override
     public EntityMoveUse getActiveMove()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.activeMove;
     }
 
 }

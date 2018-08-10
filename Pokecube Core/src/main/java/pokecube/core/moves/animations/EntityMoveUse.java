@@ -170,6 +170,11 @@ public class EntityMoveUse extends Entity
         getDataManager().set(APPLYTICK, tick);
     }
 
+    public boolean isDone()
+    {
+        return this.applied || this.isDead;
+    }
+
     @Override
     public void onUpdate()
     {

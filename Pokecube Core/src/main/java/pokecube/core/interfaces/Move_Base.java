@@ -304,6 +304,7 @@ public abstract class Move_Base
         }
         EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
         moveUse.setUser(user).setMove(this).setTarget(target).setStart(start).setEnd(end);
+        pokemob.setActiveMove(moveUse);
         PokecubeCore.moveQueues.queueMove(moveUse);
     }
 

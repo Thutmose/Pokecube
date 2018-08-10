@@ -21,6 +21,7 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.network.pokemobs.PacketSyncMoveUse;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -373,6 +374,20 @@ public abstract class PokemobMoves extends PokemobSexed
     public int getDisableTimer(int index)
     {
         return this.getDataManager().get(params.DISABLE[index]);
+    }
+
+    @Override
+    public void setActiveMove(EntityMoveUse move)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public EntityMoveUse getActiveMove()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

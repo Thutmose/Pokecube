@@ -146,6 +146,7 @@ pokemob.evolution.start=§aWhat? %1$s §ais evolving!
 pokemob.evolution.cancel=§cHuh? %1$s §cstopped evolving.
 
 pokemob.agress=A wild %1$s has appeared
+pokemob.deagress.timeout=The %1$s has lost interest in the battle.
 
 pokemob.hungry.slow=Your Pokémob is too hungry to move quickly
 pokemob.hungry.hurt=%1$s §cis starving!

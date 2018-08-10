@@ -62,6 +62,10 @@ public class Move_MultiHit extends Move_Basic
             EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
             moveUse.setUser(user).setMove(this, i * duration).setTarget(target).setStart(start).setEnd(end);
             PokecubeCore.moveQueues.queueMove(moveUse);
+            // Setting this way results in the last one fired being the "active"
+            // move, hopefully this doesn't cause any problems, if it does, see
+            // about changing to addActiveMove instead of setActiveMove?
+            pokemob.setActiveMove(moveUse);
         }
     }
 }

@@ -171,7 +171,7 @@ public class AIAttack extends AIBase implements IAICombat
                         pokemob.getPokemonDisplayName().getFormattedText());
                 try
                 {
-                    entityTarget.sendMessage(message);// sendMessage in 1.12
+                    entityTarget.sendMessage(message);
                 }
                 catch (Exception e)
                 {
@@ -204,6 +204,18 @@ public class AIAttack extends AIBase implements IAICombat
             {
                 PokecubeMod.log(Level.INFO, "Too Long Chase, Forgetting Target: " + attacker + " " + entityTarget);
             }
+            // Send deagress message and put mob on cooldown.
+            ITextComponent message = new TextComponentTranslation("pokemob.deagress.timeout",
+                    pokemob.getPokemonDisplayName().getFormattedText());
+            try
+            {
+                entityTarget.sendMessage(message);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.WARNING, "Error with message for " + entityTarget, e);
+            }
+            pokemob.setAttackCooldown(PokecubeMod.core.getConfig().pokemobagressticks);
             return;
         }
 
@@ -333,14 +345,6 @@ public class AIAttack extends AIBase implements IAICombat
             inRange = true;
             targetLoc.set(attacker);
         }
-        if (shouldPath && !(distanced || self) && !pokemob.getPokemonAIState(IMoveConstants.LEAPING))
-        {
-            setPokemobAIState(pokemob, IMoveConstants.LEAPING, true);
-            if (PokecubeCore.debug)
-            {
-                PokecubeMod.log(Level.INFO, "Set To Leap: " + attacker);
-            }
-        }
 
         // If can't see, increment the timer for giving up later.
         if (!canSee)
@@ -366,6 +370,11 @@ public class AIAttack extends AIBase implements IAICombat
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }
         }
+        // Check if the pokemob has an active move being used, if it is done,
+        // remove it, otherwise return early.
+        if (pokemob.getActiveMove() != null && pokemob.getActiveMove().isDone()) pokemob.setActiveMove(null);
+        if (pokemob.getActiveMove() != null) return;
+
         boolean delay = false;
         // Check if the attack should, applying a new delay if this is the
         // case..
@@ -416,14 +425,27 @@ public class AIAttack extends AIBase implements IAICombat
             }
             // Apply the move.
             float f = (float) targetLoc.distToEntity(attacker);
-            Vector3 loc = targetLoc.copy();
             if (attacker.addedToChunk)
             {
-                addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension, loc, f);
-                shouldPath = false;
+                if (!entityTarget.isDead)
+                {
+                    addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension,
+                            targetLoc.copy(), f);
+                }
                 setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
                 targetLoc.clear();
+                shouldPath = false;
                 delayTime = pokemob.getAttackCooldown();
+            }
+        }
+        // If the conditions that failed were due to distance, try to start
+        // leaping to close distance.
+        else if (shouldPath && !(distanced || self) && !pokemob.getPokemonAIState(IMoveConstants.LEAPING))
+        {
+            setPokemobAIState(pokemob, IMoveConstants.LEAPING, true);
+            if (PokecubeCore.debug)
+            {
+                PokecubeMod.log(Level.INFO, "Set To Leap: " + attacker);
             }
         }
         // If there is a target location, and it should path to it, queue a path

@@ -32,6 +32,7 @@ import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.moves.animations.EntityMoveUse;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.ai.AIThreadManager.AIStuff;
 import thut.api.entity.genetics.Alleles;
@@ -202,6 +203,10 @@ public abstract class PokemobBase implements IPokemob
     protected ItemStack            pokecube         = CompatWrapper.nullStack;
     /** Tracker for things related to moves. */
     protected PokemobMoveStats     moveInfo         = new PokemobMoveStats();
+    /** The current move being used, this is used to track whether the mob can
+     * launch a new move, only allows sending a new move if this returns true
+     * for isDone() */
+    protected EntityMoveUse        activeMove;
     /** Used for size when pathing */
     protected Vector3              sizes            = Vector3.getNewVector();
     protected int                  moveIndexCounter = 0;

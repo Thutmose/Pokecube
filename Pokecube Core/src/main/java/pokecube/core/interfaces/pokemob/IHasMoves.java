@@ -21,6 +21,7 @@ import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect.Effect;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
 import pokecube.core.interfaces.pokemob.commandhandlers.SwapMovesHandler;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.network.pokemobs.PacketCommand;
 import pokecube.core.network.pokemobs.PacketSyncNewMoves;
 import thut.api.maths.Vector3;
@@ -115,6 +116,10 @@ public interface IHasMoves extends IHasStats
     int getTargetID();
 
     void setTargetID(int id);
+
+    void setActiveMove(EntityMoveUse move);
+
+    EntityMoveUse getActiveMove();
 
     /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example.
      *

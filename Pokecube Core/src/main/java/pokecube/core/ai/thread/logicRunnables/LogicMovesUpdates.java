@@ -18,8 +18,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
-import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.MovesUtils.AbleStatus;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -75,15 +73,10 @@ public class LogicMovesUpdates extends LogicBase
         // Run tasks that only should go on server side.
         if (!world.isRemote)
         {
-            if (MovesUtils.isAbleToUseMoves(pokemob) == AbleStatus.ABLE)
-            {
-                int num = pokemob.getAttackCooldown();
-                if (num > 0) pokemob.setAttackCooldown(num - 1);
-            }
-            else if (pokemob.getLastMoveUsed() != null)
-            {
-                pokemob.setAttackCooldown(MovesUtils.getAttackDelay(pokemob, pokemob.getLastMoveUsed(), false, false));
-            }
+            int num = pokemob.getAttackCooldown();
+            // Only reduce cooldown if the pokemob does not currently have a
+            // move being fired.
+            if (num > 0 && pokemob.getActiveMove() == null) pokemob.setAttackCooldown(num - 1);
 
             for (int i = 0; i < 4; i++)
             {
@@ -115,10 +108,13 @@ public class LogicMovesUpdates extends LogicBase
         // Run tasks that can be on server or client.
         if (pokemob.getTransformedTo() != null && entity.getAttackTarget() == null
                 && !(pokemob.getPokemonAIState(IMoveConstants.MATING) || pokemob.getLover() != null))
+
         {
             pokemob.setTransformedTo(null);
         }
-        if (pokemob.getTransformedTo() == null && pokemob.getLover() != null && hasMove(IMoveNames.MOVE_TRANSFORM))
+        if (pokemob.getTransformedTo() == null && pokemob.getLover() != null &&
+
+                hasMove(IMoveNames.MOVE_TRANSFORM))
         {
             pokemob.setTransformedTo(pokemob.getLover());
         }

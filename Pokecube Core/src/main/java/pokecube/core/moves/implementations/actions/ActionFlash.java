@@ -20,12 +20,13 @@ public class ActionFlash implements IMoveAction
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
         if (user.getPokemonAIState(IMoveConstants.ANGRY)) return false;
+        EntityLivingBase owner = user.getPokemonOwner();
+        if (owner == null) return false;
         IHungrymob mob = (IHungrymob) user;
         int count = 1;
         int level = user.getLevel();
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 16;
         count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3))) * hungerValue;
-        EntityLivingBase owner = user.getPokemonOwner();
         PotionEffect effect = new PotionEffect(Potion.getPotionFromResourceLocation("night_vision"), 5000);
         owner.addPotionEffect(effect);
         mob.setHungerTime(mob.getHungerTime() + count);

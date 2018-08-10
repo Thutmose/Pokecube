@@ -288,7 +288,7 @@ public abstract class PokemobMoves extends PokemobSexed
             // Check if we actually have a status, if we do not, then we can
             // apply one.
             IOngoingAffected affected = CapabilityAffected.getAffected(getEntity());
-            if (affected.getEffects(PersistantStatusEffect.ID) == null) break non;
+            if (affected != null) if (affected.getEffects(PersistantStatusEffect.ID) == null) break non;
             return false;
         }
         else if (status == STATUS_NON)

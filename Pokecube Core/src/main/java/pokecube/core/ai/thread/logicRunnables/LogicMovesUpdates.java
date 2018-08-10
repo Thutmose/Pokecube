@@ -112,7 +112,7 @@ public class LogicMovesUpdates extends LogicBase
             }
         }
 
-        //Run tasks that can be on server or client.
+        // Run tasks that can be on server or client.
         if (pokemob.getTransformedTo() != null && entity.getAttackTarget() == null
                 && !(pokemob.getPokemonAIState(IMoveConstants.MATING) || pokemob.getLover() != null))
         {
@@ -164,6 +164,7 @@ public class LogicMovesUpdates extends LogicBase
             /** Heals the status effects if the capability is soemhow removed,
              * yet it still thinks it has a status. */
             IOngoingAffected affected = CapabilityAffected.getAffected(pokemob.getEntity());
+            if (affected == null) return;
             Collection<?> set = affected.getEffects(PersistantStatusEffect.ID);
             if (set.isEmpty() && statusTick++ > 20)
             {

@@ -999,7 +999,7 @@ public class EventsHandler
         if (evt.getEntityLiving().ticksExisted % tick == 0)
         {
             IOngoingAffected affected = CapabilityAffected.getAffected(evt.getEntityLiving());
-            affected.tick();
+            if (affected != null) affected.tick();
         }
 
         if (evt.getEntityLiving() instanceof EntityPlayer)

@@ -153,6 +153,9 @@ public class LogicMountedControl extends LogicBase
             float f = -moveSpeed / 4;
             if (shouldControl)
             {
+                if (airSpeed) f *= config.flySpeedFactor;
+                else if (waterSpeed) f *= config.surfSpeedFactor;
+                else f *= config.groundSpeedFactor;
                 entity.motionX += MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f;
                 entity.motionZ += MathHelper.cos(entity.rotationYaw * 0.017453292F) * f;
             }

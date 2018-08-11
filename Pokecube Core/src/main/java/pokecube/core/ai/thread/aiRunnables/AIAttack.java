@@ -370,9 +370,7 @@ public class AIAttack extends AIBase implements IAICombat
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }
         }
-        // Check if the pokemob has an active move being used, if it is done,
-        // remove it, otherwise return early.
-        if (pokemob.getActiveMove() != null && pokemob.getActiveMove().isDone()) pokemob.setActiveMove(null);
+        // Check if the pokemob has an active move being used, if so return
         if (pokemob.getActiveMove() != null) return;
 
         boolean delay = false;

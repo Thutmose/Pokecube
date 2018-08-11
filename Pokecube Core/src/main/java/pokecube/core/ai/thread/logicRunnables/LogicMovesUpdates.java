@@ -74,6 +74,10 @@ public class LogicMovesUpdates extends LogicBase
         if (!world.isRemote)
         {
             int num = pokemob.getAttackCooldown();
+
+            // Check if active move is done, if so, clear it.
+            if (pokemob.getActiveMove() != null && pokemob.getActiveMove().isDone()) pokemob.setActiveMove(null);
+
             // Only reduce cooldown if the pokemob does not currently have a
             // move being fired.
             if (num > 0 && pokemob.getActiveMove() == null) pokemob.setAttackCooldown(num - 1);

@@ -118,9 +118,8 @@ public abstract class PokemobAI extends PokemobEvolves
             String path = getPokedexEntry().texturePath + texture.getResourcePath();
             if (path.endsWith(".png")) path = path.substring(0, path.length() - 4);
             int index = getSexe() == IPokemob.FEMALE && entry.textureDetails[1] != null ? 1 : 0;
-            boolean shiny = isShiny();
             int effects = entry.textureDetails[index].length;
-            int texIndex = ((getEntity().ticksExisted % effects * 3) / effects) + (shiny ? effects : 0);
+            int texIndex = ((getEntity().ticksExisted % effects * 3) / effects);
             path = path + entry.textureDetails[index][texIndex] + ".png";
             texture = new ResourceLocation(texture.getResourceDomain(), path);
         }

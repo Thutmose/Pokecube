@@ -88,14 +88,22 @@ public class ActionNaturePower implements IMoveAction
             PlayerChunkMapEntry entry = chunkMap.getEntry(chunk.x, chunk.z);
             if (entry != null)
             {
+                // Reflection is fine here, as not too many chunks should be
+                // affected by a single use of naturepower.
                 ReflectionHelper.setPrivateValue(PlayerChunkMapEntry.class, entry, false, "sentToPlayers",
                         "field_187290_j", "j");
                 entry.sendToPlayers();
                 ClassInheritanceMultiMap<Entity>[] entityLists = chunk.getEntityLists();
+                // Ensure range is correct.
                 minY = Math.max(0, minY);
-                maxY = Math.max(entityLists.length, maxY);
+                maxY = Math.min(entityLists.length - 1, maxY);
                 for (int y = minY; y <= maxY; y++)
                 {
+                    // Iterate over the mobs here, and send updates to clients.
+                    // This is needed, as somehow the entry.sendToPlayers();
+                    // above removes the entities from the client side mob
+                    // lists. This is the simplest way I found to re-add them to
+                    // those lists.
                     ClassInheritanceMultiMap<Entity> e = entityLists[y];
                     Iterator<Entity> iter = e.iterator();
                     while (iter.hasNext())
@@ -108,10 +116,14 @@ public class ActionNaturePower implements IMoveAction
         }
     }
 
+    /** Very basic tree finder, it finds all connected blocks that match the
+     * validCheck predicate. */
     public static class PointChecker
     {
         World                     world;
         Vector3                   centre;
+        // we use lists here for faster iteration, sets are faster lookups for
+        // contains, but lists iterate more GC friendly.
         List<Vector3>             blocks  = new LinkedList<Vector3>();
         List<Vector3>             checked = new LinkedList<Vector3>();
         List<IBlockState>         states  = Lists.newArrayList();
@@ -141,9 +153,14 @@ public class ActionNaturePower implements IMoveAction
         {
             boolean ret = false;
             Vector3 temp = Vector3.getNewVector();
+            // Check the connected blocks, see if they match predicate, if they
+            // do, add them to the list. This also checks diagonally connected
+            // blocks.
             for (int i = -1; i <= 1; i++)
                 for (int j = -1; j <= 1; j++)
                 {
+                    // If yaxis, also check vertical connections, for
+                    // naturepower, we usually only care about horizontal.
                     if (yaxis)
                     {
                         for (int k = -1; k <= 1; k++)
@@ -161,6 +178,7 @@ public class ActionNaturePower implements IMoveAction
                         }
 
                     }
+                    // Otherwise just check horizontal connections.
                     else
                     {
                         temp.set(prev).addTo(i, 0, j);
@@ -181,10 +199,14 @@ public class ActionNaturePower implements IMoveAction
 
         private void populateList(Vector3 base)
         {
+            // Add the initial block.
             blocks.add(base);
+            // Loop untill no new blocks have been added.
             while (checked.size() < blocks.size())
             {
                 List<Vector3> toAdd = new ArrayList<Vector3>();
+                // Add all connecting blocks that match, unless they have
+                // already been checked.
                 for (Vector3 v : blocks)
                 {
                     if (!checked.contains(v))
@@ -192,6 +214,7 @@ public class ActionNaturePower implements IMoveAction
                         nextPoint(v, toAdd);
                     }
                 }
+                // Add any blocks that are new to the list.
                 for (Vector3 v : toAdd)
                 {
                     if (!blocks.contains(v)) blocks.add(v);

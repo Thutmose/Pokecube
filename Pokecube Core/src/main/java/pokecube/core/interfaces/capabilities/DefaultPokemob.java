@@ -49,12 +49,6 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
     }
 
     @Override
-    public void setEntity(EntityLiving entityIn)
-    {
-        super.setEntity(entityIn);
-    }
-
-    @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing)
     {
         return capability == POKEMOB_CAP;

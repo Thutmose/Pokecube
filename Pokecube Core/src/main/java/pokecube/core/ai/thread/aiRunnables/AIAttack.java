@@ -138,6 +138,9 @@ public class AIAttack extends AIBase implements IAICombat
         Path path;
         if (!running)
         {
+            // Check if the pokemob has an active move being used, if so return
+            if (pokemob.getActiveMove() != null) { return; }
+
             if (!(attack == null || ((attack.getAttackCategory() & IMoveConstants.CATEGORY_SELF) != 0))
                     && !pokemob.getPokemonAIState(IMoveConstants.CONTROLLED))
             {
@@ -370,8 +373,6 @@ public class AIAttack extends AIBase implements IAICombat
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }
         }
-        // Check if the pokemob has an active move being used, if so return
-        if (pokemob.getActiveMove() != null) return;
 
         boolean delay = false;
         // Check if the attack should, applying a new delay if this is the
@@ -461,6 +462,7 @@ public class AIAttack extends AIBase implements IAICombat
         world = TickHandler.getInstance().getWorldCache(attacker.dimension);
         if (world == null) return false;
         EntityLivingBase var1 = attacker.getAttackTarget();
+        // No target, we can't do anything, so return false
         if (var1 == null)
         {
             if (attacker.getNavigator().noPath() && pokemob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
@@ -469,16 +471,17 @@ public class AIAttack extends AIBase implements IAICombat
             }
             return false;
         }
-        else if (var1.isDead)
-        {
-            return false;
-        }
-        else
-        {
-            attack = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
-            entityTarget = var1;
-            if (attack == null) attack = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
-            return true;
-        }
+        // If either us, or target is dead, or about to be so (0 health) return
+        // false
+        if (var1.isDead || var1.getHealth() <= 0 || attacker.getHealth() <= 0 || attacker.isDead) { return false; }
+
+        // If we do have the target, but are not angry, return false.
+        if (!pokemob.getPokemonAIState(IPokemob.ANGRY)) return false;
+
+        // Set target, set attack, return true
+        attack = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
+        entityTarget = var1;
+        if (attack == null) attack = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
+        return true;
     }
 }

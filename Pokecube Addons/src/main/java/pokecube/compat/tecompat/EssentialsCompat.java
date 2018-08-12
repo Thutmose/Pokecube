@@ -39,6 +39,17 @@ public class EssentialsCompat
         }
 
         @Override
+        public boolean areAllied(String team, Entity target)
+        {
+            LandTeam teamA = LandManager.getInstance().getTeam(team, false);
+            LandTeam teamB = LandManager.getInstance().getTeam(getTeam(target), false);
+            // Both teams need to consider each other allies.
+            if (teamA != null && teamB != null) { return teamA.isAlly(teamB) && teamB.isAlly(teamA); }
+            return ITeamProvider.super.areAllied(team, target);
+
+        }
+
+        @Override
         public String getTeam(Entity entityIn)
         {
             if (entityIn.world.isRemote) return defaults.getTeam(entityIn);
@@ -52,6 +63,11 @@ public class EssentialsCompat
             {
                 IEntityOwnable mob = (IEntityOwnable) entityIn;
                 Entity owner = mob.getOwner();
+                if (mob.getOwnerId() != null)
+                {
+                    LandTeam team = LandManager.getTeam(mob.getOwnerId());
+                    return team.teamName;
+                }
                 if (owner != null && !(owner instanceof IEntityOwnable)) return getTeam(mob.getOwner());
             }
             else if ((pokemob = CapabilityPokemob.getPokemobFor(entityIn)) != null)

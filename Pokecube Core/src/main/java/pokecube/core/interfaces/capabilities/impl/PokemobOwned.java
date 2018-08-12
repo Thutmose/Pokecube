@@ -419,6 +419,9 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     {
         if (e == null)
         {
+            // Clear team
+            this.setPokemobTeam("");
+            // Clear uuid
             setPokemonOwner((UUID) null);
             /*
              * unset tame.
@@ -454,7 +457,9 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     public void setPokemonOwner(UUID owner)
     {
         ownerID = owner;
-        this.team = TeamManager.getTeam(getEntity());
+        // Clear team, it will refresh it whenever it is actually checked.
+        this.setPokemobTeam("");
+
         if (getEntity() instanceof EntityTameable)
         {
             ((EntityTameable) getEntity()).setOwnerId(owner);
@@ -471,7 +476,6 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     public IPokemob specificSpawnInit()
     {
         IPokemob pokemob = this;
-
         int maxXP = getEntity().getEntityData().getInteger("spawnExp");
 
         /*
@@ -500,10 +504,17 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         }
         getEntity().getEntityData().removeTag("spawnExp");
 
+        // Set exp and held items.
         pokemob = pokemob.setForSpawn(maxXP);
         pokemob.setHeldItem(pokemob.wildHeldItem(getEntity()));
+
+        // Make sure heath is valid numbers.
         if (pokemob instanceof PokemobOwned) ((PokemobOwned) pokemob).updateHealth();
         pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
+
+        // Reset love status to prevent immediate eggs
+        this.resetLoveStatus();
+
         return pokemob;
     }
 

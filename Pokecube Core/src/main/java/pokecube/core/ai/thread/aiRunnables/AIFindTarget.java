@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -450,13 +451,21 @@ public class AIFindTarget extends AIBase implements IAICombat
         // If we have a target, we don't need to look for another.
         if (target != null)
         {
+            if (entityTarget != null && entityTarget != target)
+            {
+                System.out.println(target.getHealth() + " " + entityTarget.getHealth() + " "
+                        + ((IEntityOwnable) entityTarget).getOwner());
+
+            }
+
             entityTarget = target;
             // If our target is dead, we can forget it, so long as it isn't
             // owned
-            if (target.isDead)
+            if (target.isDead || target.getHealth() <= 0)
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
+                return false;
             }
 
             // If our target is us, we should forget it.
@@ -464,6 +473,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
+                return false;
             }
 
             // If we are not angry, we should forget target.
@@ -471,6 +481,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
+                return false;
             }
 
             // If our target is owner, we should forget it.
@@ -478,6 +489,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
+                return false;
             }
 
             // If your owner is too far away, shouldn't have a target, should be
@@ -492,6 +504,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                 {
                     addTargetInfo(entity, null);
                     entityTarget = null;
+                    return false;
                 }
             }
             return false;

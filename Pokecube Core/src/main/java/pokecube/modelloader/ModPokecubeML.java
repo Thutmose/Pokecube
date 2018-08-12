@@ -40,15 +40,17 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
+import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntryLoader;
-import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.PokedexEntryLoader.XMLDatabase;
 import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
+import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.events.onload.InitDatabase;
 import pokecube.core.events.onload.RegisterPokemobsEvent;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
+import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.moves.implementations.MovesAdder;
@@ -326,6 +328,10 @@ public class ModPokecubeML implements IMobProvider
     {
         MoveAnimationHelper.Instance();
         proxy.postInit();
+        for (IMoveAction action : MoveEventsHandler.getInstance().actionMap.values())
+        {
+            action.init();
+        }
     }
 
     /** This function is called by Forge at initialization.

@@ -239,7 +239,7 @@ public class PersistantStatusEffect extends BaseEffect
         this.status = Status.getStatus(status);
         if (this.status == null)
         {
-            PokecubeMod.log(Level.WARNING, "Error setting of status.", new IllegalArgumentException());
+            PokecubeMod.log(Level.WARNING, "Error setting of status. " + status, new IllegalArgumentException());
         }
         this.setDuration(timer);
     }

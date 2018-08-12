@@ -161,6 +161,13 @@ public class PokemobMoveRecipeParser implements IRecipeParser
             return parent.getMoveName();
         }
 
+        @Override
+        public void init()
+        {
+            parent.init();
+            other.init();
+        }
+
     }
 
     public static class RecipeMove implements IMoveAction

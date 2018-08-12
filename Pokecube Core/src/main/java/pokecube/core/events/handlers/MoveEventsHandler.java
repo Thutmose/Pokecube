@@ -374,6 +374,13 @@ public class MoveEventsHandler
         {
             return wrapped.getMoveName();
         }
+
+        @Override
+        public void init()
+        {
+            wrapped.init();
+            if (custom != null) custom.init();
+        }
     }
 
     public static final Map<String, IMoveAction> customActions = Maps.newHashMap();
@@ -394,7 +401,7 @@ public class MoveEventsHandler
         getInstance().actionMap.put(move.getMoveName(), move);
     }
 
-    Map<String, IMoveAction> actionMap = Maps.newHashMap();
+    public Map<String, IMoveAction> actionMap = Maps.newHashMap();
 
     private MoveEventsHandler()
     {
@@ -416,6 +423,7 @@ public class MoveEventsHandler
         if (action == null)
         {
             register(action = new DefaultAction(move));
+            action.init();
         }
         if (PokecubeCore.core.getConfig().permsMoveAction && attacker.getOwner() instanceof EntityPlayer)
         {

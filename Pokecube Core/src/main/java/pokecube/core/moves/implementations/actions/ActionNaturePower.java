@@ -41,7 +41,7 @@ public class ActionNaturePower implements IMoveAction
 {
     /** Implementers of this interface must have a public constructor that takes
      * no arguments. */
-    public abstract interface BiomeChanger
+    public abstract interface IBiomeChanger
     {
         /** This method should check whether it should apply a biome change, and
          * if it should, it should do so, then return true. It should return
@@ -51,7 +51,7 @@ public class ActionNaturePower implements IMoveAction
         public boolean apply(BlockPos pos, World world);
     }
 
-    public static final List<Class<? extends BiomeChanger>> changer_classes = Lists.newArrayList();
+    public static final List<Class<? extends IBiomeChanger>> changer_classes = Lists.newArrayList();
 
     public static boolean applyChecker(PointChecker checker, World world, Biome biome)
     {
@@ -63,7 +63,6 @@ public class ActionNaturePower implements IMoveAction
             PlayerChunkMap chunkMap = sWorld.getPlayerChunkMap();
             int minY = Integer.MAX_VALUE;
             int maxY = Integer.MIN_VALUE;
-
             // Apply the biome to all the locations.
             for (Vector3 loc : checker.blocks)
             {
@@ -73,34 +72,40 @@ public class ActionNaturePower implements IMoveAction
                 minY = Math.min(minY, loc.intY() / 16);
                 maxY = Math.max(maxY, loc.intY() / 16);
             }
-
-            // Send updates about the chunk having changed. If this is not done,
-            // the player will need to leave area and return to see the changes
-            // on their end.
-            for (Chunk chunk : affected)
-            {
-                PlayerChunkMapEntry entry = chunkMap.getEntry(chunk.x, chunk.z);
-                if (entry != null)
-                {
-                    ReflectionHelper.setPrivateValue(PlayerChunkMapEntry.class, entry, false, "sentToPlayers",
-                            "field_187290_j", "j");
-                    entry.sendToPlayers();
-                    for (int y = minY; y <= maxY; y++)
-                    {
-                        ClassInheritanceMultiMap<Entity> e = chunk.getEntityLists()[y];
-                        Iterator<Entity> iter = e.iterator();
-                        while (iter.hasNext())
-                        {
-                            Entity mob = iter.next();
-                            PacketHandler.sendEntityUpdate(mob);
-                        }
-                    }
-
-                }
-            }
+            updateChunks(chunkMap, affected, minY, maxY);
             return true;
         }
         return false;
+    }
+
+    public static void updateChunks(PlayerChunkMap chunkMap, Set<Chunk> affected, int minY, int maxY)
+    {
+        // Send updates about the chunk having changed. If this is not done,
+        // the player will need to leave area and return to see the changes
+        // on their end.
+        for (Chunk chunk : affected)
+        {
+            PlayerChunkMapEntry entry = chunkMap.getEntry(chunk.x, chunk.z);
+            if (entry != null)
+            {
+                ReflectionHelper.setPrivateValue(PlayerChunkMapEntry.class, entry, false, "sentToPlayers",
+                        "field_187290_j", "j");
+                entry.sendToPlayers();
+                ClassInheritanceMultiMap<Entity>[] entityLists = chunk.getEntityLists();
+                minY = Math.max(0, minY);
+                maxY = Math.max(entityLists.length, maxY);
+                for (int y = minY; y <= maxY; y++)
+                {
+                    ClassInheritanceMultiMap<Entity> e = entityLists[y];
+                    Iterator<Entity> iter = e.iterator();
+                    while (iter.hasNext())
+                    {
+                        Entity mob = iter.next();
+                        PacketHandler.sendEntityUpdate(mob);
+                    }
+                }
+            }
+        }
     }
 
     public static class PointChecker
@@ -195,7 +200,7 @@ public class ActionNaturePower implements IMoveAction
         }
     }
 
-    public static class ForestChanger implements BiomeChanger
+    public static class ForestChanger implements IBiomeChanger
     {
         static final Biome FOREST = Biomes.FOREST;
 
@@ -247,7 +252,7 @@ public class ActionNaturePower implements IMoveAction
         }
     }
 
-    public static class PlainsChanger implements BiomeChanger
+    public static class PlainsChanger implements IBiomeChanger
     {
         static final Biome PLAINS = Biomes.PLAINS;
 
@@ -295,7 +300,7 @@ public class ActionNaturePower implements IMoveAction
         }
     }
 
-    public static class DesertChanger implements BiomeChanger
+    public static class DesertChanger implements IBiomeChanger
     {
         static final Biome DESERT = Biomes.DESERT;
 
@@ -351,7 +356,7 @@ public class ActionNaturePower implements IMoveAction
         }
     }
 
-    public static class HillsChanger implements BiomeChanger
+    public static class HillsChanger implements IBiomeChanger
     {
         final Biome HILLS = Biomes.EXTREME_HILLS;
 
@@ -396,6 +401,43 @@ public class ActionNaturePower implements IMoveAction
             }
             return false;
         }
+    }
+
+    /** This class will reset the biomes back to whatever worldgen says they
+     * should be, it goes out 8 blocks, and checks what the biome is, what it
+     * should be, and sets it back. It must be used on a diamond block. */
+    public static class ResetChanger implements IBiomeChanger
+    {
+        public ResetChanger()
+        {
+        }
+
+        @Override
+        public boolean apply(BlockPos pos, World world)
+        {
+            if (world.getBlockState(pos).getBlock() != Blocks.DIAMOND_BLOCK) return false;
+            boolean mod = false;
+            Set<Chunk> affected = Sets.newHashSet();
+            for (int i = -8; i <= 8; i++)
+            {
+                for (int j = -8; j <= 8; j++)
+                {
+                    BlockPos temp = pos.add(i, 0, j);
+                    Biome here = world.getBiome(temp);
+                    Biome natural = world.getBiomeProvider().getBiome(temp);
+                    if (natural != here)
+                    {
+                        Vector3.getNewVector().set(temp).setBiome(natural, world);
+                        affected.add(world.getChunkFromBlockCoords(temp));
+                        mod = true;
+                    }
+                }
+            }
+            WorldServer sWorld = (WorldServer) world;
+            PlayerChunkMap chunkMap = sWorld.getPlayerChunkMap();
+            updateChunks(chunkMap, affected, 0, 16);
+            return mod;
+        }
 
     }
 
@@ -405,12 +447,13 @@ public class ActionNaturePower implements IMoveAction
         changer_classes.add(PlainsChanger.class);
         changer_classes.add(DesertChanger.class);
         changer_classes.add(HillsChanger.class);
+        changer_classes.add(ResetChanger.class);
     }
 
     /** This is filled with new instances of whatever is in changer_classes. It
      * will have same ordering as changer_classes, and the first of these to
      * return true for a location is the only one that will be used. */
-    private final List<BiomeChanger> changers = Lists.newArrayList();
+    private final List<IBiomeChanger> changers = Lists.newArrayList();
 
     public ActionNaturePower()
     {
@@ -426,7 +469,7 @@ public class ActionNaturePower implements IMoveAction
         if (time + (20 * 3) > attacker.getEntity().getEntityWorld().getTotalWorldTime()) return false;
         BlockPos pos = location.getPos();
         World world = attacker.getEntity().getEntityWorld();
-        for (BiomeChanger changer : changers)
+        for (IBiomeChanger changer : changers)
         {
             if (changer.apply(pos, world)) return true;
         }
@@ -442,7 +485,7 @@ public class ActionNaturePower implements IMoveAction
     @Override
     public void init()
     {
-        for (Class<? extends BiomeChanger> clazz : changer_classes)
+        for (Class<? extends IBiomeChanger> clazz : changer_classes)
         {
             try
             {

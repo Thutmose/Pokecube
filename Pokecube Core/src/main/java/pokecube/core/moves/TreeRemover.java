@@ -30,7 +30,7 @@ public class TreeRemover
 
     public int cut(boolean count)
     {
-        cutGrass();
+        if (!count && cutTree(true) == 0) cutGrass();
         return cutTree(count);
     }
 

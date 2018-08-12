@@ -127,20 +127,24 @@ public class RenderHealth
             WorldClient client = mc.world;
             List<Entity> entities = client.loadedEntityList;
             for (Entity entity : entities)
+            {
                 if (entity != null && entity instanceof EntityLivingBase && entity != mc.player
                         && entity.isInRangeToRender3d(renderingVector.getX(), renderingVector.getY(),
                                 renderingVector.getZ())
                         && (entity.ignoreFrustumCheck || frustum.isBoundingBoxInFrustum(entity.getEntityBoundingBox()))
                         && entity.isEntityAlive() && entity.getRecursivePassengers().isEmpty())
+                {
                     try
                     {
-                    renderHealthBar((EntityLivingBase) entity, partialTicks, cameraEntity);
+                        renderHealthBar((EntityLivingBase) entity, partialTicks, cameraEntity);
                     }
                     catch (Exception e)
                     {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
+                }
+            }
         }
     }
 

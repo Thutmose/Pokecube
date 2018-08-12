@@ -26,6 +26,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.items.pokecubes.EntityPokecube;
+import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.utils.Permissions;
 
 public class StatsHandler
@@ -36,10 +37,8 @@ public class StatsHandler
         PokedexEntry entry = evt.caught.getPokedexEntry();
         if (evt.caught.getPokemonAIState(IMoveConstants.TAMED)) evt.setResult(Result.DENY);
         if (evt.caught.getPokemonAIState(IMoveConstants.DENYCAPTURE)) evt.setResult(Result.DENY);
-
-        long lastAttempt = evt.caught.getEntity().getEntityData().getLong("lastCubeTime");
         Entity catcher = ((EntityPokecube) evt.pokecube).shootingEntity;
-        if (lastAttempt > evt.pokecube.getEntityWorld().getTotalWorldTime())
+        if (!EntityPokecubeBase.canCaptureBasedOnConfigs(evt.caught))
         {
             evt.setCanceled(true);
             if (catcher instanceof EntityPlayer)

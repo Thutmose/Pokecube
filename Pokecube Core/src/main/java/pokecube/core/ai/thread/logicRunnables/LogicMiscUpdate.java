@@ -48,6 +48,9 @@ public class LogicMiscUpdate extends LogicBase
     public LogicMiscUpdate(IPokemob entity)
     {
         super(entity);
+        // Initialize this at 20 ticks to prevent resetting any states set by
+        // say exiting pokecubes.
+        this.lastHadTargetTime = 20;
     }
 
     @Override
@@ -322,7 +325,7 @@ public class LogicMiscUpdate extends LogicBase
             lastHadTargetTime = 100;
             reset = false;
         }
-        else if(!angry && reset)
+        else if (!angry && reset)
         {
             lastHadTargetTime = 100;
             reset = false;

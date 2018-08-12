@@ -72,7 +72,7 @@ public class ActionNaturePower implements IMoveAction
                 minY = Math.min(minY, loc.intY() / 16);
                 maxY = Math.max(maxY, loc.intY() / 16);
             }
-            updateChunks(chunkMap, affected, minY, maxY);
+            updateChunks(chunkMap, affected, minY - 1, maxY + 1);
             return true;
         }
         return false;
@@ -492,9 +492,15 @@ public class ActionNaturePower implements IMoveAction
         if (time + (20 * 3) > attacker.getEntity().getEntityWorld().getTotalWorldTime()) return false;
         BlockPos pos = location.getPos();
         World world = attacker.getEntity().getEntityWorld();
+        // Check the changers in order, and apply the first one that returns
+        // true.
         for (IBiomeChanger changer : changers)
         {
-            if (changer.apply(pos, world)) return true;
+            if (changer.apply(pos, world))
+            {
+                // TODO apply a potentially massive hunger cost here.
+                return true;
+            }
         }
         return false;
     }

@@ -1,6 +1,7 @@
 package pokecube.core.items.pokecubes;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -55,6 +56,28 @@ import thut.lib.CompatWrapper;
 
 public class EntityPokecubeBase extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
 {
+    public static final String CUBETIMETAG = "lastCubeTime";
+
+    public static boolean canCaptureBasedOnConfigs(IPokemob pokemob)
+    {
+        if (PokecubeCore.core
+                .getConfig().captureDelayTillAttack) { return !pokemob.getPokemonAIState(IMoveConstants.NOITEMUSE); }
+        long lastAttempt = pokemob.getEntity().getEntityData().getLong(CUBETIMETAG);
+        boolean capture = lastAttempt <= pokemob.getEntity().getEntityWorld().getTotalWorldTime();
+        if (capture) pokemob.getEntity().getEntityData().removeTag(CUBETIMETAG);
+        return capture;
+    }
+
+    public static void setNoCaptureBasedOnConfigs(IPokemob pokemob)
+    {
+
+        if (PokecubeCore.core.getConfig().captureDelayTillAttack)
+            pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
+        else pokemob.getEntity().getEntityData().setLong(CUBETIMETAG,
+                pokemob.getEntity().getEntityWorld().getTotalWorldTime()
+                        + PokecubeMod.core.getConfig().captureDelayTicks);
+    }
+
     public static SoundEvent                      POKECUBESOUND;
     static final DataParameter<Integer>           ENTITYID       = EntityDataManager
             .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
@@ -234,24 +257,20 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     protected void captureFailed()
     {
         IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), getEntityWorld());
-
         if (entity1 != null)
         {
             entity1.getEntity().setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
             boolean ret = getEntityWorld().spawnEntity(entity1.getEntity());
-
             if (ret == false)
             {
-                System.err.println(String.format("The pokemob %1$s spawn from pokecube has failed. ",
+                PokecubeMod.log(Level.SEVERE, String.format("The pokemob %1$s spawn from pokecube has failed. ",
                         entity1.getPokemonDisplayName().getFormattedText()));
             }
-            entity1.getEntity().getEntityData().setLong("lastCubeTime",
-                    getEntityWorld().getTotalWorldTime() + PokecubeMod.core.getConfig().captureDelayTicks);
+            setNoCaptureBasedOnConfigs(entity1);
             entity1.setPokemonAIState(IMoveConstants.ANGRY, true);
             entity1.setPokemonAIState(IMoveConstants.SITTING, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, false);
             entity1.setPokemonOwner((UUID) null);
-
             if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
             {
                 ITextComponent mess = new TextComponentTranslation("pokecube.missed", entity1.getPokemonDisplayName());
@@ -474,7 +493,6 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 NBTTagCompound mobTag = tag.getCompoundTag(TagNames.OTHERMOB);
                 ResourceLocation id = new ResourceLocation(tag.getString(TagNames.MOBID));
                 Entity newMob = EntityList.createEntityByIDFromName(id, getEntityWorld());
-                System.out.println(newMob + " " + id);
                 if (newMob != null && newMob instanceof EntityLivingBase)
                 {
                     newMob.readFromNBT(mobTag);

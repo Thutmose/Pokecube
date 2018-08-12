@@ -515,7 +515,6 @@ public class MoveEventsHandler
         if (!user)
         {
             applied.getEntity().getEntityData().setString("lastMoveHitBy", move.attack);
-            applied.setPokemonAIState(IMoveConstants.NOITEMUSE, false);
         }
         if (MoveEntry.oneHitKos.contains(attack.name) && target != null && target.getLevel() < attacker.getLevel())
         {

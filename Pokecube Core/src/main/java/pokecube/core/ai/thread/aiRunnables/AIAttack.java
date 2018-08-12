@@ -22,6 +22,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.TickHandler;
@@ -165,15 +166,7 @@ public class AIAttack extends AIBase implements IAICombat
             running = true;
             /** Don't want to notify if the pokemob just broke out of a
              * pokecube. */
-            boolean previousCaptureAttempt = attacker.getEntityData().hasKey("lastCubeTime");
-            if (previousCaptureAttempt)
-            {
-                long time = attacker.getEntityData().getLong("lastCubeTime");
-                if (attacker.getEntityWorld().getTotalWorldTime() - time > 20 * 60 * 2)
-                {
-                    previousCaptureAttempt = false;
-                }
-            }
+            boolean previousCaptureAttempt = !EntityPokecubeBase.canCaptureBasedOnConfigs(pokemob);
 
             /** Check if it should notify the player of agression, and do so if
              * it should. */
@@ -444,7 +437,10 @@ public class AIAttack extends AIBase implements IAICombat
                     addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension,
                             targetLoc.copy(), f);
                 }
+                // Reset executing move and no item use status now that we have
+                // used a move.
                 setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
+                setPokemobAIState(pokemob, IMoveConstants.NOITEMUSE, false);
                 targetLoc.clear();
                 shouldPath = false;
                 delayTime = pokemob.getAttackCooldown();

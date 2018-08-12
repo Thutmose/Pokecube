@@ -476,6 +476,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
+                if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Target is dead!");
                 return false;
             }
 
@@ -484,6 +485,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
+                if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Cannot target self.");
                 return false;
             }
 
@@ -492,6 +494,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
+                if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Not Angry. losing target now.");
                 return false;
             }
 
@@ -500,6 +503,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
+                if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Cannot target owner.");
                 return false;
             }
 

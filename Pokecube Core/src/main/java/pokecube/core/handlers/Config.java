@@ -110,8 +110,6 @@ public class Config extends ConfigBase
     @Configure(category = misc)
     public boolean                       pcOnDrop                     = true;
     @Configure(category = misc)
-    public int                           captureDelayTicks            = 50;
-    @Configure(category = misc)
     public float                         expScaleFactor               = 1;
     @Configure(category = misc)
     @SyncConfig
@@ -330,6 +328,10 @@ public class Config extends ConfigBase
     public float                         swimPathingSpeedFactor       = 1.25f;
     @Configure(category = mobAI)
     public boolean                       pokemobCollisions            = true;
+    @Configure(category = mobAI)
+    public int                           captureDelayTicks            = 0;
+    @Configure(category = mobAI)
+    public boolean                       captureDelayTillAttack       = true;
 
     public SoundEvent[]                  dodges                       = {};
     public SoundEvent[]                  leaps                        = {};

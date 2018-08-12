@@ -179,7 +179,6 @@ public class TrainerSpawnHandler
             {
                 addTrainerCoord(t);
                 w.spawnEntity(t);
-                t.aiStates.setAIState(IHasNPCAIStates.TRADES, true);
             }
             else t.setDead();
         }
@@ -227,6 +226,7 @@ public class TrainerSpawnHandler
         int level = SpawnHandler.getSpawnLevel(w, v, Database.getEntry(1));
         EntityTrainer trainer = new EntityTrainer(w, ttype, level);
         trainer.aiStates.setAIState(IHasNPCAIStates.MATES, true);
+        trainer.aiStates.setAIState(IHasNPCAIStates.TRADES, true);
         return trainer;
     }
 }

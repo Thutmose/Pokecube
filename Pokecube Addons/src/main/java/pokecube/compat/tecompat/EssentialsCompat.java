@@ -45,8 +45,7 @@ public class EssentialsCompat
             LandTeam teamB = LandManager.getInstance().getTeam(getTeam(target), false);
             // Both teams need to consider each other allies.
             if (teamA != null && teamB != null) { return teamA.isAlly(teamB) && teamB.isAlly(teamA); }
-            return ITeamProvider.super.areAllied(team, target);
-
+            return false;
         }
 
         @Override

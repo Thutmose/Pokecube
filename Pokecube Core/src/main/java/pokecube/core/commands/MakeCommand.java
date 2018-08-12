@@ -7,15 +7,19 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSenderWrapper;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -61,7 +65,6 @@ public class MakeCommand extends CommandBase
             if (args.length > 0)
             {
                 int index = 1;
-                EntityPlayer player = null;
                 PokedexEntry entry = null;
                 try
                 {
@@ -123,15 +126,21 @@ public class MakeCommand extends CommandBase
                 pokemob.specificSpawnInit();
                 Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
                 String ownerName = setToArgs(args, pokemob, index, offset);
+                GameProfile profile = null;
                 if (ownerName != null && !ownerName.isEmpty())
                 {
-                    player = getPlayer(server, sender, ownerName);
+                    profile = getProfile(server, ownerName);
+                }
+                if (profile == null && ownerName != null && !ownerName.isEmpty())
+                {
+                    EntityPlayer player = getPlayer(server, sender, ownerName);
+                    profile = player.getGameProfile();
                 }
                 Vector3 temp = Vector3.getNewVector();
-                if (player != null)
+                if (profile != null)
                 {
-                    offset = offset.add(temp.set(player.getLookVec()));
-                    pokemob.setPokemonOwner(player);
+                    PokecubeMod.log(Level.INFO, "Creating " + pokemob.getPokedexEntry() + " for " + profile.getName());
+                    pokemob.setPokemonOwner(profile.getId());
                     pokemob.setPokemonAIState(IMoveConstants.TAMED, true);
                 }
                 temp.set(sender.getPosition()).addTo(offset);
@@ -457,4 +466,59 @@ public class MakeCommand extends CommandBase
         return ownerName;
     }
 
+    public static EntityPlayerMP getPlayerBySender(ICommandSender sender) throws CommandException
+    {
+        if (sender instanceof EntityPlayerMP)
+        {
+            return (EntityPlayerMP) sender;
+        }
+        else if (sender instanceof CommandSenderWrapper)// if the command is
+                                                        // sent by /execute
+        {
+            return (EntityPlayerMP) CommandBase.getPlayer(sender.getServer(), sender, sender.getName());
+        }
+        else
+        {
+            throw new CommandException("No Player Found");
+        }
+    }
+
+    public static GameProfile getProfile(MinecraftServer server, UUID id)
+    {
+        GameProfile profile = null;
+        // First check profile cache.
+        if (id != null) profile = server.getPlayerProfileCache().getProfileByUUID(id);
+        if (profile == null) profile = new GameProfile(id, null);
+
+        // Try to fill profile via secure method.
+        profile = server.getMinecraftSessionService().fillProfileProperties(profile, true);
+        return profile;
+    }
+
+    public static GameProfile getProfile(MinecraftServer server, String arg)
+    {
+        UUID id = null;
+        String name = null;
+
+        // First check if arg is a UUID
+        try
+        {
+            id = UUID.fromString(arg);
+        }
+        catch (Exception e)
+        {
+            // If not a UUID, arg is the name.
+            name = arg;
+        }
+
+        GameProfile profile = null;
+
+        // First check profile cache.
+        if (id != null) profile = server.getPlayerProfileCache().getProfileByUUID(id);
+        if (profile == null) profile = new GameProfile(id, name);
+
+        // Try to fill profile via secure method.
+        profile = server.getMinecraftSessionService().fillProfileProperties(profile, true);
+        return profile;
+    }
 }

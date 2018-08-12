@@ -180,14 +180,6 @@ public class AICombatMovement extends AIBase
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.LEAPING)) return;
 
-        IPokemob targ = CapabilityPokemob.getPokemobFor(target);
-        if (targ != null)
-        {
-            if (targ.getEntity().getAttackTarget() != attacker)
-            {
-                addTargetInfo(targ.getEntity(), attacker);
-            }
-        }
         // Use horizontal distance to allow floating things to leap downwards.
         double d0 = this.attacker.posX - this.target.posX;
         double d2 = this.attacker.posZ - this.target.posZ;

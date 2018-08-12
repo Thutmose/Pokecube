@@ -41,22 +41,33 @@ public class AIAttack extends AIBase implements IAICombat
 {
     public final EntityLiving attacker;
     public final IPokemob     pokemob;
+    /** The target being attacked. */
     EntityLivingBase          entityTarget;
+    /** IPokemob version of entityTarget. */
     IPokemob                  pokemobTarget;
+    /** Used to check whether we need to try swapping target, only check this
+     * once per second or so. */
+    int                       targetTestTime;
+    /** Where the target is/was for attack. */
     Vector3                   targetLoc   = Vector3.getNewVector();
+    /** Move we are using */
     Move_Base                 attack;
     Matrix3                   targetBox   = new Matrix3();
     Matrix3                   attackerBox = new Matrix3();
 
+    /** Temp vectors for checking things. */
     Vector3                   v           = Vector3.getNewVector();
     Vector3                   v1          = Vector3.getNewVector();
     Vector3                   v2          = Vector3.getNewVector();
+    /** Speed for pathing. */
     double                    movementSpeed;
 
+    /** Used to determine when to give up attacking. */
     protected int             chaseTime;
-    protected int             delayTime   = -1;
+    /** Also used to determine when to give up attacking. */
     protected boolean         canSee      = false;
-
+    /** Used for when to execute attacks. */
+    protected int             delayTime   = -1;
     boolean                   running     = false;
 
     public AIAttack(IPokemob entity)
@@ -109,9 +120,11 @@ public class AIAttack extends AIBase implements IAICombat
                         this.entityTarget.posZ);
                 canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
 
-                if (CapabilityPokemob.getPokemobFor(entityTarget) == null && pokemob.getPokemonAIState(IPokemob.ANGRY))
+                if (CapabilityPokemob.getPokemobFor(entityTarget) == null && attacker.ticksExisted > targetTestTime
+                        && pokemob.getPokemonAIState(IPokemob.ANGRY))
                 {
                     ForgeHooks.onLivingSetAttackTarget(attacker, entityTarget);
+                    targetTestTime = attacker.ticksExisted + 20;
                 }
             }
         }
@@ -136,10 +149,10 @@ public class AIAttack extends AIBase implements IAICombat
             return;
         }
         Path path;
+        // Check if the pokemob has an active move being used, if so return
+        if (pokemob.getActiveMove() != null) { return; }
         if (!running)
         {
-            // Check if the pokemob has an active move being used, if so return
-            if (pokemob.getActiveMove() != null) { return; }
 
             if (!(attack == null || ((attack.getAttackCategory() & IMoveConstants.CATEGORY_SELF) != 0))
                     && !pokemob.getPokemonAIState(IMoveConstants.CONTROLLED))

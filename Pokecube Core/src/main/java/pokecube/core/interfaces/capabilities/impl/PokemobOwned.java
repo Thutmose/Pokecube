@@ -266,7 +266,10 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             }
 
             Entity owner = getPokemonOwner();
-            if (this.getPokemonAIState(ANGRY) && this.getEntity().getAttackTarget() != null)
+            /** If we have a target, and we were recalled with health, assign
+             * the target to our owner instead. */
+            if (this.getPokemonAIState(ANGRY) && this.getEntity().getAttackTarget() != null
+                    && this.getEntity().getHealth() > 0)
             {
                 if (owner instanceof EntityLivingBase)
                 {
@@ -277,6 +280,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                         targetMob.getEntity().setAttackTarget(getPokemonOwner());
                         targetMob.setPokemonAIState(ANGRY, true);
                         this.getEntity().isDead = false;
+                        if (PokecubeMod.debug) PokecubeMod.log("Swapping agro to cowardly owner!");
                     }
                     else
                     {

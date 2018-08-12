@@ -317,7 +317,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         if (entity.getAttackTarget() != null)
         {
             // If target is dead, lets forget about it.
-            if (entity.getAttackTarget().isDead)
+            if (entity.getAttackTarget().isDead || entity.getAttackTarget().getHealth() <= 0)
             {
                 addTargetInfo(this.entity, null);
             }
@@ -443,6 +443,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                 }
                 else
                 {
+                    if (PokecubeMod.debug)
+                        PokecubeMod.log(Level.INFO, "Somehow lost target? Well, found it back again!");
                     addTargetInfo(entity, entityTarget);
                 }
             }
@@ -451,11 +453,20 @@ public class AIFindTarget extends AIBase implements IAICombat
         // If we have a target, we don't need to look for another.
         if (target != null)
         {
-            if (entityTarget != null && entityTarget != target)
+            // Prevents swapping to owner as target if we are owned and we just
+            // defeated someone, only applies to tame mobs, wild mobs will still
+            // try to kill the owner if they run away.
+            if (entityTarget != null && entityTarget != target && entityTarget instanceof IEntityOwnable
+                    && ((IEntityOwnable) entityTarget).getOwner() == target
+                    && pokemob.getPokemonAIState(IMoveConstants.TAMED) && (entityTarget.getHealth() <= 0))
             {
-                System.out.println(target.getHealth() + " " + entityTarget.getHealth() + " "
-                        + ((IEntityOwnable) entityTarget).getOwner());
-
+                PokecubeMod.log(Level.INFO, "Battle over, forgetting target. " + this.entity.ticksExisted);
+                addTargetInfo(entity, null);
+                setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
+                entityTarget = null;
+                target = null;
+                agroTimer = -1;
+                return false;
             }
 
             entityTarget = target;
@@ -528,6 +539,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                 setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
                 addTargetInfo(entity, player);
                 entityTarget = player;
+                if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Found player to be angry with, agressing.");
                 return false;
             }
         }

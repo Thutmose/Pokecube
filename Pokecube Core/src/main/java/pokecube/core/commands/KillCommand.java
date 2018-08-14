@@ -11,9 +11,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 
 public class KillCommand extends CommandBase
@@ -62,7 +62,7 @@ public class KillCommand extends CommandBase
             IPokemob e = CapabilityPokemob.getPokemobFor(o);
             if (e != null)
             {
-                if (id == -1 && !e.getPokemonAIState(IMoveConstants.TAMED) || all)
+                if (id == -1 && !e.getGeneralState(GeneralStates.TAMED) || all)
                 {
                     e.returnToPokecube();
                     o.setDead();

@@ -21,8 +21,8 @@ import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 

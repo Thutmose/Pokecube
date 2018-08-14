@@ -25,11 +25,12 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.EvolveEvent;
 import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketSyncNewMoves;
@@ -98,8 +99,8 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             this.pokemob = evolver;
 
             // Flag as evolving
-            pokemob.setPokemonAIState(EVOLVING, true);
-            pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+            pokemob.setGeneralState(GeneralStates.EVOLVING, true);
+            pokemob.setGeneralState(GeneralStates.EXITINGCUBE, false);
             pokemob.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
 
             MinecraftForge.EVENT_BUS.register(this);
@@ -116,7 +117,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             }
             if (evt.world.getTotalWorldTime() >= evoTime)
             {
-                if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME) && pokemob.getOwner() instanceof EntityPlayerMP)
+                if (pokemob.getCombatState(CombatStates.MEGAFORME) && pokemob.getOwner() instanceof EntityPlayerMP)
                     Triggers.MEGAEVOLVEPOKEMOB.trigger((EntityPlayerMP) pokemob.getOwner(), pokemob);
                 int evoTicks = pokemob.getEvolutionTicks();
                 float hp = pokemob.getEntity().getHealth();
@@ -124,8 +125,8 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 pokemob.getEntity().setHealth(hp);
                 /** Flag the new mob as evolving to continue the animation
                  * effects. */
-                pokemob.setPokemonAIState(EVOLVING, true);
-                pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+                pokemob.setGeneralState(GeneralStates.EVOLVING, true);
+                pokemob.setGeneralState(GeneralStates.EXITINGCUBE, false);
                 pokemob.setEvolutionTicks(evoTicks);
 
                 if (message != null)
@@ -153,7 +154,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             return;
         }
         setEvolutionTicks(-1);
-        this.setPokemonAIState(EVOLVING, false);
+        this.setGeneralState(GeneralStates.EVOLVING, false);
         this.displayMessageToOwner(new TextComponentTranslation("pokemob.evolution.cancel",
                 CapabilityPokemob.getPokemobFor(entity).getPokemonDisplayName()));
     }
@@ -178,7 +179,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
 
     default boolean isEvolving()
     {
-        return this.getPokemonAIState(EVOLVING);
+        return this.getGeneralState(GeneralStates.EVOLVING);
     }
 
     /** Called when the level is up. Should be overridden to handle level up
@@ -201,7 +202,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         HappinessType.applyHappiness(theMob, HappinessType.LEVEL);
         if (moves != null)
         {
-            if (theMob.getPokemonAIState(IMoveConstants.TAMED))
+            if (theMob.getGeneralState(GeneralStates.TAMED))
             {
                 String[] current = theMob.getMoves();
                 if (current[3] != null)
@@ -251,7 +252,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         PokedexEntry oldEntry = getPokedexEntry();
         if (newEntry != null && newEntry != oldEntry)
         {
-            setPokemonAIState(EVOLVING, true);
+            setGeneralState(GeneralStates.EVOLVING, true);
 
             evolution = PokecubeMod.core.createPokemob(newEntry, thisEntity.getEntityWorld());
             if (evolution == null)
@@ -261,7 +262,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             }
             evoMob = CapabilityPokemob.getPokemobFor(evolution);
             // Flag the mob as evolving.
-            evoMob.setPokemonAIState(EVOLVING, true);
+            evoMob.setGeneralState(GeneralStates.EVOLVING, true);
 
             // Sync health and nickname
             ((EntityLivingBase) evolution).setHealth(thisEntity.getHealth());
@@ -291,7 +292,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             evolution.copyLocationAndAnglesFrom(thisEntity);
 
             // Sync ability back, or store old ability.
-            if (getPokemonAIState(IMoveConstants.MEGAFORME))
+            if (getCombatState(CombatStates.MEGAFORME))
             {
                 if (thisMob.getAbility() != null)
                     evolution.getEntityData().setString("Ability", thisMob.getAbility().toString());
@@ -431,7 +432,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     if (stack != CompatWrapper.nullStack) setEvolutionStack(stack.copy());
                     this.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
                     this.setEvolvingEffects(evol);
-                    this.setPokemonAIState(EVOLVING, true);
+                    this.setGeneralState(GeneralStates.EVOLVING, true);
                     // Send the message about evolving, to let user cancel.
                     this.displayMessageToOwner(
                             new TextComponentTranslation("pokemob.evolution.start", thisMob.getPokemonDisplayName()));
@@ -457,7 +458,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     // Don't immediately try evolving again, only wild ones
                     // should do that.
                     evo.setEvolutionTicks(-1);
-                    evo.setPokemonAIState(EVOLVING, false);
+                    evo.setGeneralState(GeneralStates.EVOLVING, false);
 
                     // Learn evolution moves and update ability.
                     for (String s : evo.getPokedexEntry().getEvolutionMoves())

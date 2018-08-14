@@ -67,7 +67,9 @@ public abstract class PokemobBase implements IPokemob
         {
             params.DISABLE[i] = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         }
-        params.AIACTIONSTATESDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
+        params.GENERALSTATESDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
+        params.LOGICSTATESDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
+        params.COMBATSTATESDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.ATTACKTARGETIDDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.HUNGERDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.STATUSDW = EntityDataManager.<Byte> createKey(clazz, DataSerializers.BYTE);
@@ -101,7 +103,9 @@ public abstract class PokemobBase implements IPokemob
         public DataParameter<Float>           DIRECTIONPITCHDW;
         public DataParameter<Float>           HEADINGDW;
         public DataParameter<Integer>         TRANSFORMEDTODW;
-        public DataParameter<Integer>         AIACTIONSTATESDW;
+        public DataParameter<Integer>         GENERALSTATESDW;
+        public DataParameter<Integer>         LOGICSTATESDW;
+        public DataParameter<Integer>         COMBATSTATESDW;
         public DataParameter<Integer>         ATTACKTARGETIDDW;
         public DataParameter<Integer>         HUNGERDW;
         public DataParameter<Byte>            STATUSDW;
@@ -125,7 +129,9 @@ public abstract class PokemobBase implements IPokemob
             dataManager.register(DIRECTIONPITCHDW, Float.valueOf(0));
             dataManager.register(HEADINGDW, Float.valueOf(0));
             dataManager.register(ATTACKTARGETIDDW, Integer.valueOf(-1));
-            dataManager.register(AIACTIONSTATESDW, Integer.valueOf(0));
+            dataManager.register(GENERALSTATESDW, Integer.valueOf(0));
+            dataManager.register(LOGICSTATESDW, Integer.valueOf(0));
+            dataManager.register(COMBATSTATESDW, Integer.valueOf(0));
 
             // from EntityEvolvablePokemob
             dataManager.register(EVOLTICKDW, new Integer(0));// evolution tick

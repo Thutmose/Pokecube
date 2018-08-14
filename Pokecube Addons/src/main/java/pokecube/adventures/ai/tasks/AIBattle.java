@@ -18,6 +18,7 @@ import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
@@ -53,8 +54,8 @@ public class AIBattle extends AITrainerBase
     {
         Entity mobTarget = trainer.getOutMob().getEntity().getAttackTarget();
         IPokemob target = CapabilityPokemob.getPokemobFor(mobTarget);
-        if (!trainer.getOutMob().getPokemonAIState(IPokemob.ANGRY))
-            trainer.getOutMob().setPokemonAIState(IPokemob.ANGRY, true);
+        if (!trainer.getOutMob().getCombatState(CombatStates.ANGRY))
+            trainer.getOutMob().setCombatState(CombatStates.ANGRY, true);
         // check if pokemob's target is same as trainers.
         if (mobTarget != trainer.getTarget() && target == null)
         {

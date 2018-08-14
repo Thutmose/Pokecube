@@ -22,6 +22,8 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
@@ -81,22 +83,22 @@ public class AIAttack extends AIBase implements IAICombat
 
     private void checkMateFight(IPokemob pokemob)
     {
-        if (pokemob.getPokemonAIState(IMoveConstants.MATEFIGHT))
+        if (pokemob.getCombatState(CombatStates.MATEFIGHT))
         {
             if (pokemobTarget != null)
             {
                 if (pokemobTarget.getEntity().getHealth() < pokemobTarget.getEntity().getMaxHealth() / 1.5f)
                 {
-                    setPokemobAIState(this.pokemob, IMoveConstants.MATEFIGHT, false);
-                    setPokemobAIState(pokemobTarget, IMoveConstants.MATEFIGHT, false);
-                    setPokemobAIState(this.pokemob, IMoveConstants.ANGRY, false);
-                    setPokemobAIState(pokemobTarget, IMoveConstants.ANGRY, false);
+                    setCombatState(this.pokemob, CombatStates.MATEFIGHT, false);
+                    setCombatState(pokemobTarget, CombatStates.MATEFIGHT, false);
+                    setCombatState(this.pokemob, CombatStates.ANGRY, false);
+                    setCombatState(pokemobTarget, CombatStates.ANGRY, false);
                     pokemobTarget.getEntity().setAttackTarget(null);
                 }
             }
             else
             {
-                setPokemobAIState(this.pokemob, IMoveConstants.MATEFIGHT, false);
+                setCombatState(this.pokemob, CombatStates.MATEFIGHT, false);
             }
         }
     }
@@ -104,7 +106,7 @@ public class AIAttack extends AIBase implements IAICombat
     public boolean continueExecuting()
     {
         entityTarget = attacker.getAttackTarget();
-        return entityTarget != null && !entityTarget.isDead || !pokemob.getPokemonAIState(IPokemob.ANGRY);
+        return entityTarget != null && !entityTarget.isDead || !pokemob.getCombatState(CombatStates.ANGRY);
     }
 
     @Override
@@ -122,7 +124,7 @@ public class AIAttack extends AIBase implements IAICombat
                 canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
 
                 if (CapabilityPokemob.getPokemobFor(entityTarget) == null && attacker.ticksExisted > targetTestTime
-                        && pokemob.getPokemonAIState(IPokemob.ANGRY))
+                        && pokemob.getCombatState(CombatStates.ANGRY))
                 {
                     ForgeHooks.onLivingSetAttackTarget(attacker, entityTarget);
                     targetTestTime = attacker.ticksExisted + 20;
@@ -156,7 +158,7 @@ public class AIAttack extends AIBase implements IAICombat
         {
 
             if (!(attack == null || ((attack.getAttackCategory() & IMoveConstants.CATEGORY_SELF) != 0))
-                    && !pokemob.getPokemonAIState(IMoveConstants.CONTROLLED))
+                    && !pokemob.getGeneralState(GeneralStates.CONTROLLED))
             {
                 path = this.attacker.getNavigator().getPathToEntityLiving(entityTarget);
                 addEntityPath(attacker, path, movementSpeed);
@@ -172,7 +174,7 @@ public class AIAttack extends AIBase implements IAICombat
              * it should. */
             if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning
                     && entityTarget instanceof EntityPlayerMP && !(entityTarget instanceof FakePlayer)
-                    && !pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                    && !pokemob.getGeneralState(GeneralStates.TAMED)
                     && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker
                     && ((EntityPlayer) entityTarget).getLastAttackedEntity() != attacker)
             {
@@ -198,15 +200,15 @@ public class AIAttack extends AIBase implements IAICombat
         checkMateFight(pokemob);
 
         // No executing move state with no target location.
-        if (pokemob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE) && targetLoc.isEmpty())
+        if (pokemob.getCombatState(CombatStates.EXECUTINGMOVE) && targetLoc.isEmpty())
         {
-            setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
+            setCombatState(pokemob, CombatStates.EXECUTINGMOVE, false);
         }
 
         // If it has been too long since last seen the target, give up.
         if (chaseTime > 200)
         {
-            setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
+            setCombatState(pokemob, CombatStates.ANGRY, false);
             addEntityPath(attacker, null, movementSpeed);
             chaseTime = 0;
             if (PokecubeCore.debug)
@@ -240,8 +242,8 @@ public class AIAttack extends AIBase implements IAICombat
         // If the mob is hunting or guarding, select most damaging attack
         // against the
         // target.
-        if ((pokemob.getPokemonAIState(IMoveConstants.HUNTING) && !pokemob.getPokemonAIState(IMoveConstants.TAMED))
-                || pokemob.getPokemonAIState(IMoveConstants.GUARDING))
+        if ((pokemob.getCombatState(CombatStates.HUNTING) && !pokemob.getGeneralState(GeneralStates.TAMED))
+                || pokemob.getCombatState(CombatStates.GUARDING))
         {
             int index = pokemob.getMoveIndex();
             int max = 0;
@@ -359,7 +361,7 @@ public class AIAttack extends AIBase implements IAICombat
         if (!canSee)
         {
             chaseTime++;
-            if (!pokemob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
+            if (!pokemob.getCombatState(CombatStates.EXECUTINGMOVE))
             {
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }
@@ -374,7 +376,7 @@ public class AIAttack extends AIBase implements IAICombat
             // the move is fired, it is fired at the location, not the target,
             // giving option to dodge.
             chaseTime = 0;
-            if (!pokemob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
+            if (!pokemob.getCombatState(CombatStates.EXECUTINGMOVE))
             {
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }
@@ -393,12 +395,12 @@ public class AIAttack extends AIBase implements IAICombat
                     delay = canUseMove;
                 }
                 shouldPath = false;
-                setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, true);
+                setCombatState(pokemob, CombatStates.EXECUTINGMOVE, true);
             }
         }
         else
         {
-            setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
+            setCombatState(pokemob, CombatStates.EXECUTINGMOVE, false);
         }
 
         // If all the conditions match, queue up an attack.
@@ -409,7 +411,7 @@ public class AIAttack extends AIBase implements IAICombat
             // set target location to where the target is now. This is so that
             // it can use the older postion set above, lowering the accuracy of
             // move use, allowing easier dodging.
-            if ((pokemobTarget != null && !pokemobTarget.getPokemonAIState(IMoveConstants.DODGING))
+            if ((pokemobTarget != null && !pokemobTarget.getCombatState(CombatStates.DODGING))
                     || !(pokemobTarget != null) || attack.move.isNotIntercepable())
             {
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
@@ -421,7 +423,7 @@ public class AIAttack extends AIBase implements IAICombat
             // Tell the target no need to try to dodge anymore, move is fired.
             if (pokemobTarget != null)
             {
-                setPokemobAIState(pokemobTarget, IMoveConstants.DODGING, false);
+                setCombatState(pokemobTarget, CombatStates.DODGING, false);
             }
             // Swing arm for effect.
             if (this.attacker.getHeldItemMainhand() != null)
@@ -439,8 +441,8 @@ public class AIAttack extends AIBase implements IAICombat
                 }
                 // Reset executing move and no item use status now that we have
                 // used a move.
-                setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
-                setPokemobAIState(pokemob, IMoveConstants.NOITEMUSE, false);
+                setCombatState(pokemob, CombatStates.EXECUTINGMOVE, false);
+                setCombatState(pokemob, CombatStates.NOITEMUSE, false);
                 targetLoc.clear();
                 shouldPath = false;
                 delayTime = pokemob.getAttackCooldown();
@@ -448,9 +450,9 @@ public class AIAttack extends AIBase implements IAICombat
         }
         // If the conditions that failed were due to distance, try to start
         // leaping to close distance.
-        else if (shouldPath && !(distanced || self) && !pokemob.getPokemonAIState(IMoveConstants.LEAPING))
+        else if (shouldPath && !(distanced || self) && !pokemob.getCombatState(CombatStates.LEAPING))
         {
-            setPokemobAIState(pokemob, IMoveConstants.LEAPING, true);
+            setCombatState(pokemob, CombatStates.LEAPING, true);
             if (PokecubeCore.debug)
             {
                 PokecubeMod.log(Level.INFO, "Set To Leap: " + attacker);
@@ -474,9 +476,9 @@ public class AIAttack extends AIBase implements IAICombat
         // No target, we can't do anything, so return false
         if (var1 == null)
         {
-            if (attacker.getNavigator().noPath() && pokemob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
+            if (attacker.getNavigator().noPath() && pokemob.getCombatState(CombatStates.EXECUTINGMOVE))
             {
-                setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
+                setCombatState(pokemob, CombatStates.EXECUTINGMOVE, false);
             }
             return false;
         }
@@ -485,7 +487,7 @@ public class AIAttack extends AIBase implements IAICombat
         if (var1.isDead || var1.getHealth() <= 0 || attacker.getHealth() <= 0 || attacker.isDead) { return false; }
 
         // If we do have the target, but are not angry, return false.
-        if (!pokemob.getPokemonAIState(IPokemob.ANGRY)) return false;
+        if (!pokemob.getCombatState(CombatStates.ANGRY)) return false;
 
         // Set target, set attack, return true
         attack = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));

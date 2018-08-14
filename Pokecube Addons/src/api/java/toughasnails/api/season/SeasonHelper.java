@@ -10,7 +10,6 @@ package toughasnails.api.season;
 import net.minecraft.world.World;
 import toughasnails.api.config.SeasonsOption;
 import toughasnails.api.config.SyncedConfig;
-import toughasnails.api.config.GameplayOption;
 
 public class SeasonHelper 
 {

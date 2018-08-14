@@ -41,10 +41,10 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.utils.Tools;
 import thut.lib.CompatWrapper;
 
@@ -226,7 +226,7 @@ public class RenderHealth
                 b = color.getBlue();
                 GlStateManager.translate(0F, pastTranslate, 0F);
                 ITextComponent nameComp = pokemob.getPokemonDisplayName();
-                boolean nametag = pokemob.getPokemonAIState(IMoveConstants.TAMED);
+                boolean nametag = pokemob.getGeneralState(GeneralStates.TAMED);
                 PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance()
                         .getPlayerData(Minecraft.getMinecraft().player).getData(PokecubePlayerStats.class);
                 boolean captureOrHatch = StatsCollector.getCaptured(pokemob.getPokedexEntry(),
@@ -284,7 +284,7 @@ public class RenderHealth
                 float maxExp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() + 1)
                         - Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel());
                 if (pokemob.getLevel() == 100) maxExp = exp = 1;
-                if (exp < 0 || !pokemob.getPokemonAIState(IMoveConstants.TAMED))
+                if (exp < 0 || !pokemob.getGeneralState(GeneralStates.TAMED))
                 {
                     exp = 0;
                 }

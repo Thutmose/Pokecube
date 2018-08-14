@@ -13,10 +13,10 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.core.common.commands.CommandTools;
@@ -95,8 +95,8 @@ public class RecallCommand extends CommandBase
             IPokemob mob = CapabilityPokemob.getPokemobFor(o);
             if (!cubes && mob != null)
             {
-                boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
-                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
+                boolean isStaying = mob.getGeneralState(GeneralStates.STAYING);
+                if (mob.getGeneralState(GeneralStates.TAMED) && (mob.getPokemonOwner() == player || allall)
                         && (named || all || (stay == isStaying)) && (named == specificName
                                 .equalsIgnoreCase(mob.getPokemonDisplayName().getUnformattedComponentText())))
                 {

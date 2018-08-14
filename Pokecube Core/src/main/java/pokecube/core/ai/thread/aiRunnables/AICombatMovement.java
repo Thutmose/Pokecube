@@ -16,6 +16,8 @@ import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
@@ -40,12 +42,16 @@ public class AICombatMovement extends AIBase
         this.setMutex(0);
     }
 
+    /** Gets a random sound to play on dodging, selects from the options in
+     * config. */
     private SoundEvent getDodgeSound()
     {
         if (PokecubeCore.core.getConfig().dodges.length == 1) return PokecubeCore.core.getConfig().dodges[0];
         return PokecubeCore.core.getConfig().dodges[new Random().nextInt(PokecubeCore.core.getConfig().dodges.length)];
     }
 
+    /** Gets a random sound to play on leaping, selects from the options in
+     * config. */
     private SoundEvent getLeapSound()
     {
         if (PokecubeCore.core.getConfig().leaps.length == 1) return PokecubeCore.core.getConfig().leaps[0];
@@ -61,7 +67,7 @@ public class AICombatMovement extends AIBase
     @Override
     public void run()
     {
-        if (pokemob.getPokemonAIState(IPokemob.SLEEPING)
+        if (pokemob.getLogicState(LogicStates.SLEEPING)
                 || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0)
             return;
         if (centre == null)
@@ -98,7 +104,7 @@ public class AICombatMovement extends AIBase
         // circling the middle, and reversing direction every 10 seconds or so.
         if (diff.magSq() > combatDistanceSq)
         {
-            pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
+            pokemob.setCombatState(CombatStates.LEAPING, false);
             Path path = attacker.getNavigator().getPathToPos(centre.getPos());
             addEntityPath(attacker, path, movementSpeed);
         }
@@ -126,21 +132,36 @@ public class AICombatMovement extends AIBase
         {
             PokecubeMod.log(Level.INFO, "Dodge: " + attacker);
         }
+        /*
+         * Compute a random perpendicular direction.
+         */
         Vector3 loc = Vector3.getNewVector().set(attacker);
         Vector3 target = Vector3.getNewVector().set(attacker.getAttackTarget());
         Vector3 temp = Vector3.getNewVector();
         Vector3 perp = target.subtractFrom(loc).rotateAboutLine(Vector3.secondAxis, Math.PI / 2, temp);
         if (Math.random() > 0.5) perp = perp.scalarMultBy(-1);
-        pokemob.setPokemonAIState(IMoveConstants.DODGING, true);
+        /*
+         * Set dodging state to notify attack AI that target is dodging.
+         */
+        pokemob.setCombatState(CombatStates.DODGING, true);
         perp = perp.normalize();
         if (perp.isNaN())
         {
             new Exception().printStackTrace();
             perp.clear();
         }
+        /*
+         * Scale dodge by pokemob's size
+         */
         perp.scalarMultBy(pokemob.getPokedexEntry().width * pokemob.getSize());
         if (perp.magSq() > 0.3) perp.norm().scalarMultBy(0.3);
+        /*
+         * Only flying or floating things can dodge properly in the air.
+         */
         if (!(pokemob.flys() || pokemob.floats()) && !attacker.onGround) perp.scalarMultBy(0.2);
+        /*
+         * Apply the dodge
+         */
         perp.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getDodgeSound(),
                 SoundCategory.HOSTILE, 1, 1));
@@ -158,9 +179,13 @@ public class AICombatMovement extends AIBase
         IPokemob target = CapabilityPokemob.getPokemobFor(attacker.getAttackTarget());
         if (target != null)
         {
-            boolean shouldDodgeMove = target.getPokemonAIState(IMoveConstants.EXECUTINGMOVE);
+            boolean shouldDodgeMove = target.getCombatState(CombatStates.EXECUTINGMOVE);
             if (shouldDodgeMove)
             {
+                /*
+                 * Check if the enemy is using a self move, if so, no point in
+                 * trying to dodge this.
+                 */
                 Move_Base move = MovesUtils.getMoveFromName(target.getMove(target.getMoveIndex()));
                 if (move == null || ((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0))
                 {
@@ -169,6 +194,9 @@ public class AICombatMovement extends AIBase
             }
             if (!shouldDodgeMove) return shouldDodgeMove;
         }
+        /*
+         * Scale amount jumped by evasion stat.
+         */
         double evasionMod = pokemob.getFloatStat(Stats.EVASION, true) / 30d;
         dodge = Math.random() > (1 - evasionMod);
         return dodge;
@@ -178,27 +206,29 @@ public class AICombatMovement extends AIBase
      * leaps. */
     public void tryLeap()
     {
-        if (!pokemob.getPokemonAIState(IMoveConstants.LEAPING)) return;
+        if (!pokemob.getCombatState(CombatStates.LEAPING)) return;
 
         // Use horizontal distance to allow floating things to leap downwards.
         double d0 = this.attacker.posX - this.target.posX;
         double d2 = this.attacker.posZ - this.target.posZ;
 
         double d3 = this.attacker.posY - this.target.posY;
-        /** Don't leap up if too far. */
+        /* Don't leap up if too far. */
         if (d3 < -5) return;
 
         double dist = d0 * d0 + d2 * d2;
         float diff = attacker.width + target.width;
         diff = diff * diff;
         if (!(dist >= diff && dist <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false)) { return; }
-        pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
+        pokemob.setCombatState(CombatStates.LEAPING, false);
         Vector3 targetLoc = Vector3.getNewVector().set(target);
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);
         Vector3 dir = targetLoc.subtract(leaperLoc);
-        /** Scale by 0.2 to make it take roughly half a second for leap to reach
+        /*
+         * Scale by 0.2 to make it take roughly half a second for leap to reach
          * target. Note that this doesn't factor in gravity, so leaps up take a
-         * bit longer than that. */
+         * bit longer than that.
+         */
         double d = dir.mag() * 0.2;
         dir.norm();
         if (d > 5) dir.scalarMultBy(d * 0.2f);
@@ -213,7 +243,13 @@ public class AICombatMovement extends AIBase
             PokecubeMod.log(Level.INFO, "Leap: " + attacker + " " + dir);
         }
         double dy = Math.abs(dir.y);
+        /*
+         * Make adjustments so mobs can hit flying things more easily.
+         */
         if (!attacker.onGround && dy > pokemob.getSize() * pokemob.getPokedexEntry().height && dy < 3) dir.y *= 2;
+        /*
+         * Apply the leap
+         */
         dir.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getLeapSound(),
                 SoundCategory.HOSTILE, 1, 1));
@@ -222,9 +258,9 @@ public class AICombatMovement extends AIBase
     @Override
     public boolean shouldRun()
     {
-        if (pokemob.getPokemonAIState(IPokemob.SLEEPING)
+        if (pokemob.getLogicState(LogicStates.SLEEPING)
                 || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0)
             return false;
-        return (target = attacker.getAttackTarget()) != null && pokemob.getPokemonAIState(IMoveConstants.ANGRY);
+        return (target = attacker.getAttackTarget()) != null && pokemob.getCombatState(CombatStates.ANGRY);
     }
 }

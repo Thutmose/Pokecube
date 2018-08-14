@@ -18,8 +18,8 @@ import net.minecraftforge.server.permission.context.PlayerContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.Config;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.utils.Permissions;
 
 /** This manages the ridden controls of the pokemob. The booleans are set on the
@@ -46,7 +46,7 @@ public class LogicMountedControl extends LogicBase
     {
         super.doServerTick(world);
         Entity rider = entity.getControllingPassenger();
-        pokemob.setPokemonAIState(IMoveConstants.CONTROLLED, rider != null);
+        pokemob.setGeneralState(GeneralStates.CONTROLLED, rider != null);
         if (rider == null) return;
         Config config = PokecubeCore.instance.getConfig();
         boolean move = false;

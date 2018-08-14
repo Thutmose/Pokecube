@@ -4,9 +4,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import pokecube.core.interfaces.IMoveAction;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
@@ -19,7 +19,7 @@ public class ActionFlash implements IMoveAction
     @Override
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
-        if (user.getPokemonAIState(IMoveConstants.ANGRY)) return false;
+        if (user.getCombatState(CombatStates.ANGRY)) return false;
         EntityLivingBase owner = user.getPokemonOwner();
         if (owner == null) return false;
         IHungrymob mob = (IHungrymob) user;

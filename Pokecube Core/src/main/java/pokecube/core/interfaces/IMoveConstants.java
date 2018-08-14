@@ -99,85 +99,129 @@ public interface IMoveConstants extends IMoveNames
     byte             SOUR                 = 4;                           // yellow
 
     /** Is the pokemob currently sitting */
+    @Deprecated
+    @OldAI
     static final int SITTING              = 1 << 0;
     /** Is the pokemob angry at something */
+    @Deprecated
+    @OldAI
     static final int ANGRY                = 1 << 1;
     /** Does the pokemob have an owner */
+    @Deprecated
+    @OldAI
     static final int TAMED                = 1 << 2;
     /** A Guarding pokemon will attack any strangers nearby */
+    @Deprecated
+    @OldAI
     static final int GUARDING             = 1 << 3;
     /** A Hunting pokemon will look for food to eat, Either prey or berries. */
+    @Deprecated
+    @OldAI
     static final int HUNTING              = 1 << 4;
     /** A Staying pokemon will act like a wild pokemon. */
+    @Deprecated
+    @OldAI
     static final int STAYING              = 1 << 5;
     /** A sleeping pokemon will try to sit at its home location */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int SLEEPING             = 1 << 6;
     /** Indicates that the pokemon is going to execute a move. */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int EXECUTINGMOVE        = 1 << 7;
     /** Indeicates that there is a new move to use. */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int NEWEXECUTEMOVE       = 1 << 8;
     /** Pokemon cannot have item used on it */
+    @Deprecated
+    @OldAI
     static final int NOITEMUSE            = 1 << 9;
-    @NonPersistantAI
     /** Pokemon is forbidden from swapping move */
+    @Deprecated
+    @OldAI
     static final int NOMOVESWAP           = 1 << 10;
     /** Pokemon is idle. */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int IDLE                 = 1 << 11;
     /** Has the Pokemon been traded */
+    @Deprecated
+    @OldAI
     static final int TRADED               = 1 << 12;
     /** is the pokemob prevented from moving (ie from ingrain, etc) */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int NOPATHING            = 1 << 13;
     /** is the pokemon leaping, used for the leap AI */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int LEAPING              = 1 << 14;
     /** in the process of dodging, used to determine if to use the old attack
      * location, or new */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int DODGING              = 1 << 15;
     /** Pokemon is fighting over mate, should stop when hp hits 50%. */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int MATEFIGHT            = 1 << 16;
     /** Is the pokemon just exiting the pokecube */
+    @Deprecated
+    @OldAI
     static final int EXITINGCUBE          = 1 << 17;
     /** Is the pokemob currently trying to mate */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int MATING               = 1 << 18;
     /** Prevented from flying or floating. */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int GROUNDED             = 1 << 19;
     // /** is the pokemob currently pathing somewhere */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int PATHING              = 1 << 20;
     /** is the pokemob jumping */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int JUMPING              = 1 << 21;
     /** is the pokemob in lava */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int INLAVA               = 1 << 22;
     /** is the pokemob in water */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int INWATER              = 1 << 23;
     /** is the pokemob tired */
+    @Deprecated
+    @OldAI
     static final int TIRED                = 1 << 24;
     /** is the pokemob evolving */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int EVOLVING             = 1 << 25;
     /** is the pokemob sheared */
+    @Deprecated
+    @OldAI
     static final int SHEARED              = 1 << 26;
     /** is the pokemob megaevolved */
+    @Deprecated
+    @OldAI
     static final int MEGAFORME            = 1 << 27;
     /** has the pokemob used a zmove this "battle" */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int USEDZMOVE            = 1 << 28;
     /** should capture be denied for this pokemob. */
+    @Deprecated
+    @OldAI
     static final int DENYCAPTURE          = 1 << 29;
     /** is the pokemob's movement being controlled. */
-    @NonPersistantAI
+    @Deprecated
+    @OldAI
     static final int CONTROLLED           = 1 << 30;
 
     public static enum AIRoutine

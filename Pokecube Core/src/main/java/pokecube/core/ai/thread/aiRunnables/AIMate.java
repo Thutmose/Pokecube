@@ -11,13 +11,15 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.IHasMobAIStates;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
@@ -48,10 +50,10 @@ public class AIMate extends AIBase
             pokemob.setLoveTimer(pokemob.getLoveTimer() + diff);
         }
         IPokemob loverMob = CapabilityPokemob.getPokemobFor(pokemob.getLover());
-        if (pokemob.getPokemonAIState(IMoveConstants.MATING)
+        if (pokemob.getGeneralState(GeneralStates.MATING)
                 && (pokemob.getLover() == null || pokemob.getLover().isDead || loverMob != pokemob))
         {
-            pokemob.setPokemonAIState(IMoveConstants.MATING, false);
+            pokemob.setGeneralState(GeneralStates.MATING, false);
         }
         if (cooldown-- > 0) { return; }
         super.doMainThreadTick(world);
@@ -122,8 +124,8 @@ public class AIMate extends AIBase
                     IPokemob mob1 = (IPokemob) loverMob.getMalesForBreeding().get(1);
                     mob0.resetLoveStatus();
                     mob1.resetLoveStatus();
-                    mob0.setPokemonAIState(IMoveConstants.MATEFIGHT, true);
-                    mob1.setPokemonAIState(IMoveConstants.MATEFIGHT, true);
+                    mob0.setCombatState(CombatStates.MATEFIGHT, true);
+                    mob1.setCombatState(CombatStates.MATEFIGHT, true);
                     mob0.getEntity().setAttackTarget(mob1.getEntity());
                 }
             }
@@ -152,7 +154,7 @@ public class AIMate extends AIBase
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
         }
         if (!pokemob.getPokedexEntry().breeds && !transforms) return null;
-        if (pokemob.isType(PokeType.getType("ghost")) && !pokemob.getPokemonAIState(IMoveConstants.TAMED)) return null;
+        if (pokemob.isType(PokeType.getType("ghost")) && !pokemob.getGeneralState(GeneralStates.TAMED)) return null;
         if ((pokemob.getSexe() == IPokemob.MALE && !transforms)
                 || pokemob.getMalesForBreeding().size() > 0) { return null; }
 
@@ -191,8 +193,8 @@ public class AIMate extends AIBase
             IPokemob otherPokemob = CapabilityPokemob.getPokemobFor(targetMates.get(i));
             EntityAnimal animal = (EntityAnimal) targetMates.get(i);
             if (gendered && !transforms && otherPokemob.getSexe() == pokemob.getSexe()) continue;
-            if (otherPokemob == this.pokemob || otherPokemob.getPokemonAIState(IMoveConstants.TAMED) != pokemob
-                    .getPokemonAIState(IMoveConstants.TAMED) || !otherPokemob.getPokedexEntry().breeds)
+            if (otherPokemob == this.pokemob || otherPokemob.getGeneralState(GeneralStates.TAMED) != pokemob
+                    .getGeneralState(GeneralStates.TAMED) || !otherPokemob.getPokedexEntry().breeds)
                 continue;
             boolean otherTransforms = false;
             for (String s : otherPokemob.getMoves())
@@ -203,11 +205,10 @@ public class AIMate extends AIBase
             if (transforms && otherTransforms || !(otherPokemob.getEntity() instanceof EntityAnimal)) continue;
 
             boolean validMate = pokemob.canMate((EntityAnimal) otherPokemob.getEntity());
-            if (!validMate
-                    || entity.getDistanceSq(otherPokemob.getEntity()) > searchingLoveDist * searchingLoveDist)
+            if (!validMate || entity.getDistanceSq(otherPokemob.getEntity()) > searchingLoveDist * searchingLoveDist)
                 continue;
             if (!Vector3.isVisibleEntityFromEntity(entity, otherPokemob.getEntity())
-                    || otherPokemob.getPokemonAIState(IMoveConstants.ANGRY))
+                    || otherPokemob.getCombatState(CombatStates.ANGRY))
                 continue;
 
             if (otherPokemob != this && animal.getHealth() > animal.getMaxHealth() / 1.5f)
@@ -242,34 +243,34 @@ public class AIMate extends AIBase
         if (!pokemob.isRoutineEnabled(AIRoutine.MATE)) return false;
         if (cooldown > 0) { return false; }
         if (pokemob.getLover() != null) if (pokemob.tryToBreed() && !pokemob.getLover().isDead) return true;
-        if (pokemob.getPokemonAIState(IMoveConstants.MATING)) return true;
+        if (pokemob.getGeneralState(GeneralStates.MATING)) return true;
         if (pokemob.getLover() != null) { return true; }
         if (pokemob.getSexe() == IPokemob.MALE || !pokemob.tryToBreed()) return false;
-        if (pokemob.getPokemonAIState(IMoveConstants.ANGRY) || entity.getAttackTarget() != null) return false;
+        if (pokemob.getCombatState(CombatStates.ANGRY) || entity.getAttackTarget() != null) return false;
         return true;
     }
 
     public void tryFindMate()
     {
         if (pokemob.getLover() == null) return;
-        if (pokemob.getPokemonAIState(IMoveConstants.SITTING)) pokemob.setPokemonAIState(IMoveConstants.SITTING, false);
+        if (pokemob.getLogicState(LogicStates.SITTING)) pokemob.setLogicState(LogicStates.SITTING, false);
 
         double dist = entity.width * entity.width + pokemob.getLover().width * pokemob.getLover().width;
         dist = Math.max(dist, 1);
         entity.getNavigator().tryMoveToEntityLiving(pokemob.getLover(), pokemob.getMovementSpeed());
         spawnBabyDelay++;
-        pokemob.setPokemonAIState(IMoveConstants.MATING, true);
+        pokemob.setGeneralState(GeneralStates.MATING, true);
         IPokemob loverMob = CapabilityPokemob.getPokemobFor(pokemob.getLover());
         if (loverMob != null)
         {
-            loverMob.setPokemonAIState(IMoveConstants.MATING, true);
+            loverMob.setGeneralState(GeneralStates.MATING, true);
             loverMob.setLover(entity);
             if (this.spawnBabyDelay >= 50)
             {
                 if (pokemob.getLover() instanceof IHasMobAIStates)
-                    ((IHasMobAIStates) pokemob.getLover()).setPokemonAIState(IMoveConstants.MATING, false);
+                    ((IHasMobAIStates) pokemob.getLover()).setGeneralState(GeneralStates.MATING, false);
                 pokemob.mateWith(loverMob);
-                pokemob.setPokemonAIState(IMoveConstants.MATING, false);
+                pokemob.setGeneralState(GeneralStates.MATING, false);
                 this.spawnBabyDelay = 0;
                 pokemob.resetLoveStatus();
                 loverMob.resetLoveStatus();

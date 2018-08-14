@@ -10,10 +10,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IModel;
@@ -97,7 +97,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
         if (mob != null)
         {
             s = (mob.getSize());
-            if (partialTick <= 1 && mob.getPokemonAIState(IMoveConstants.EXITINGCUBE))
+            if (partialTick <= 1 && mob.getGeneralState(GeneralStates.EXITINGCUBE))
             {
                 int ticks = -mob.getEvolutionTicks() + 50 + LogicMiscUpdate.EXITCUBEDURATION;
                 if (ticks <= LogicMiscUpdate.EXITCUBEDURATION / 2)

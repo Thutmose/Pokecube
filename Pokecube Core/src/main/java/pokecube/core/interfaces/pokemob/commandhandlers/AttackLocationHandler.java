@@ -6,10 +6,10 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.events.CommandAttackEvent;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
@@ -53,7 +53,7 @@ public class AttackLocationHandler implements IMobCommandHandler
             // Otherwise execute the move.
             if (pokemob.getUtilityMoveAI() != null)
             {
-                pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
+                pokemob.setCombatState(CombatStates.NEWEXECUTEMOVE, true);
                 ((PokemobAIUtilityMove) pokemob.getUtilityMoveAI()).destination = location;
             }
             else pokemob.executeMove(null, location, 0);

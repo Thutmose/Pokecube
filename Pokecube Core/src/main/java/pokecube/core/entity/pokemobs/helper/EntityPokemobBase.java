@@ -36,8 +36,10 @@ import pokecube.core.database.PokemobBodies;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.SpawnEvent;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
@@ -104,9 +106,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     protected boolean canDespawn()
     {
         boolean canDespawn = pokemobCap.getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
-        boolean checks = pokemobCap.getPokemonAIState(IMoveConstants.TAMED) || pokemobCap.getPokemonOwner() != null
-                || pokemobCap.getPokemonAIState(IMoveConstants.ANGRY) || getAttackTarget() != null
-                || this.hasCustomName() || isNoDespawnRequired();
+        boolean checks = pokemobCap.getGeneralState(GeneralStates.TAMED) || pokemobCap.getPokemonOwner() != null
+                || pokemobCap.getCombatState(CombatStates.ANGRY) || getAttackTarget() != null || this.hasCustomName()
+                || isNoDespawnRequired();
         if (checks) return false;
 
         return canDespawn || cullCheck();
@@ -207,7 +209,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public int getVerticalFaceSpeed()
     {
-        if (pokemobCap.getPokemonAIState(IMoveConstants.SITTING)) { return 20; }
+        if (pokemobCap.getLogicState(LogicStates.SITTING)) { return 20; }
         return super.getVerticalFaceSpeed();
     }
 
@@ -236,7 +238,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public boolean isInLava()
     {
-        return pokemobCap.getPokemonAIState(IMoveConstants.INLAVA);
+        return pokemobCap.getLogicState(LogicStates.INLAVA);
     }
 
     List<AxisAlignedBB> aabbs = null;
@@ -486,9 +488,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         BlockPos pos = new BlockPos(posX, 1, posZ);
         boolean loaded = getEntityWorld().isAreaLoaded(pos, 8);
         if (loaded && PokecubeMod.core.getConfig().aiDisableDistance > 0
-                && !(pokemobCap.getPokemonAIState(IMoveConstants.STAYING)
-                        || pokemobCap.getPokemonAIState(IMoveConstants.GUARDING)
-                        || pokemobCap.getPokemonAIState(IMoveConstants.ANGRY) || getAttackTarget() != null))
+                && !(pokemobCap.getGeneralState(GeneralStates.STAYING)
+                        || pokemobCap.getCombatState(CombatStates.GUARDING)
+                        || pokemobCap.getCombatState(CombatStates.ANGRY) || getAttackTarget() != null))
         {
             loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().aiDisableDistance, 512, this);
         }

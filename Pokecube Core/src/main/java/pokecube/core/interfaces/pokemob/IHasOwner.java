@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 
 public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
 {
@@ -83,7 +84,7 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
 
     default void setTraded(boolean trade)
     {
-        setPokemonAIState(TRADED, trade);
+        setGeneralState(GeneralStates.TRADED, trade);
     }
 
     /** Has pokemob been traded
@@ -91,7 +92,7 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
      * @return */
     default boolean traded()
     {
-        return getPokemonAIState(TRADED);
+        return getGeneralState(GeneralStates.TRADED);
     }
 
     default LogicMountedControl getController()
@@ -105,6 +106,6 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
 
     /** @return The direction this mob is going, only relevant when ridden. */
     float getHeading();
-    
+
     NBTTagCompound getExtraData();
 }

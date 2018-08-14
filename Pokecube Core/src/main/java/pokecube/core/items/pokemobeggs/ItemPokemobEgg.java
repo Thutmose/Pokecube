@@ -45,11 +45,11 @@ import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.events.EggEvent;
 import pokecube.core.handlers.Config;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.utils.Permissions;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
@@ -195,7 +195,7 @@ public class ItemPokemobEgg extends Item
         if (owner != null)
         {
             mob.setPokemonOwner(owner);
-            mob.setPokemonAIState(IMoveConstants.TAMED, true);
+            mob.setGeneralState(GeneralStates.TAMED, true);
             mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
             mob.setHeldItem(CompatWrapper.nullStack);
         }
@@ -272,7 +272,7 @@ public class ItemPokemobEgg extends Item
         if (entity != null)
         {
             IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
-            mob.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
+            mob.setGeneralState(GeneralStates.EXITINGCUBE, true);
             entity.setHealth(entity.getMaxHealth());
             int exp = Tools.levelToXp(mob.getExperienceMode(), 1);
             exp = Math.max(1, exp);
@@ -284,7 +284,7 @@ public class ItemPokemobEgg extends Item
                 {
                     int[] nest = stack.getTagCompound().getIntArray("nestLocation");
                     mob.setHome(nest[0], nest[1], nest[2], 16);
-                    mob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+                    mob.setGeneralState(GeneralStates.EXITINGCUBE, false);
                 }
                 else
                 {

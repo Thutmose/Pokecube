@@ -16,9 +16,9 @@ import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
 
 /** This AI is what the pokemon does when attacked. It will sometimes result in
  * nearby pokemon of the same species trying to protect the pokemon, resulting
@@ -221,7 +221,7 @@ public class PokemobAIHurt extends EntityAIBase
                         && mob.getPokedexEntry().areRelated(pokemob.getPokedexEntry()))
                 {
                     mob.getEntity().setAttackTarget(this.taskOwner.getAttackTarget());
-                    mob.setPokemonAIState(IMoveConstants.ANGRY, true);
+                    mob.setCombatState(CombatStates.ANGRY, true);
                 }
             }
         }

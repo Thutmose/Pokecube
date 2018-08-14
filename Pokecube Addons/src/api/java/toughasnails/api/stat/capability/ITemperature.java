@@ -12,14 +12,8 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import toughasnails.api.stat.IPlayerStat;
 import toughasnails.api.temperature.Temperature;
-import toughasnails.api.temperature.TemperatureScale;
-import toughasnails.temperature.TemperatureDebugger;
-import toughasnails.temperature.modifier.TemperatureModifier;
 import toughasnails.temperature.modifier.TemperatureModifier.ExternalModifier;
 
 //TODO: Switch over to using capabilities entirely. In some places it is still assumed that

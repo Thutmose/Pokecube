@@ -42,11 +42,13 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.handlers.Config;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.Permissions;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
@@ -61,7 +63,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     public static boolean canCaptureBasedOnConfigs(IPokemob pokemob)
     {
         if (PokecubeCore.core
-                .getConfig().captureDelayTillAttack) { return !pokemob.getPokemonAIState(IMoveConstants.NOITEMUSE); }
+                .getConfig().captureDelayTillAttack) { return !pokemob.getCombatState(CombatStates.NOITEMUSE); }
         long lastAttempt = pokemob.getEntity().getEntityData().getLong(CUBETIMETAG);
         boolean capture = lastAttempt <= pokemob.getEntity().getEntityWorld().getTotalWorldTime();
         if (capture) pokemob.getEntity().getEntityData().removeTag(CUBETIMETAG);
@@ -72,7 +74,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     {
 
         if (PokecubeCore.core.getConfig().captureDelayTillAttack)
-            pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
+            pokemob.setCombatState(CombatStates.NOITEMUSE, true);
         else pokemob.getEntity().getEntityData().setLong(CUBETIMETAG,
                 pokemob.getEntity().getEntityWorld().getTotalWorldTime()
                         + PokecubeMod.core.getConfig().captureDelayTicks);
@@ -267,9 +269,9 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                         entity1.getPokemonDisplayName().getFormattedText()));
             }
             setNoCaptureBasedOnConfigs(entity1);
-            entity1.setPokemonAIState(IMoveConstants.ANGRY, true);
-            entity1.setPokemonAIState(IMoveConstants.SITTING, false);
-            entity1.setPokemonAIState(IMoveConstants.TAMED, false);
+            entity1.setCombatState(CombatStates.ANGRY, true);
+            entity1.setLogicState(LogicStates.SITTING, false);
+            entity1.setGeneralState(GeneralStates.TAMED, false);
             entity1.setPokemonOwner((UUID) null);
             if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
             {
@@ -322,11 +324,10 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             return false;
         }
         HappinessType.applyHappiness(mob, HappinessType.TRADE);
-        if (shootingEntity != null && !mob.getPokemonAIState(IMoveConstants.TAMED))
-            mob.setPokemonOwner((shootingEntity));
-        if (mob.getPokemonAIState(IMoveConstants.MEGAFORME) || mob.getPokedexEntry().isMega)
+        if (shootingEntity != null && !mob.getGeneralState(GeneralStates.TAMED)) mob.setPokemonOwner((shootingEntity));
+        if (mob.getCombatState(CombatStates.MEGAFORME) || mob.getPokedexEntry().isMega)
         {
-            mob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
+            mob.setCombatState(CombatStates.MEGAFORME, false);
             IPokemob revert = mob.megaEvolve(mob.getPokedexEntry().getBaseForme());
             if (revert != null) mob = revert;
             if (mob.getEntity().getEntityData().hasKey(TagNames.ABILITY))
@@ -461,8 +462,8 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
             getEntityWorld().spawnEntity(entity);
             entity1.popFromPokecube();
-            entity1.setPokemonAIState(IMoveConstants.TAMED, true);
-            entity1.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
+            entity1.setGeneralState(GeneralStates.TAMED, true);
+            entity1.setGeneralState(GeneralStates.EXITINGCUBE, true);
             entity1.setEvolutionTicks(50 + LogicMiscUpdate.EXITCUBEDURATION);
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)

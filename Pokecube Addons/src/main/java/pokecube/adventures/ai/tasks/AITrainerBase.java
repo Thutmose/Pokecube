@@ -3,10 +3,10 @@ package pokecube.adventures.ai.tasks;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.core.ai.thread.aiRunnables.AIBase;
 

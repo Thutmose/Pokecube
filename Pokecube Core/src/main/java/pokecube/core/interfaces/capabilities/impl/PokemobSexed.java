@@ -13,6 +13,7 @@ import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
@@ -174,7 +175,7 @@ public abstract class PokemobSexed extends PokemobStats
     {
         setLoveTimer(rand.nextInt(600) - getBreedingDelay(null));
         setLover(null);
-        setPokemonAIState(MATING, false);
+        setGeneralState(GeneralStates.MATING, false);
         if (males != null) males.clear();
     }
 

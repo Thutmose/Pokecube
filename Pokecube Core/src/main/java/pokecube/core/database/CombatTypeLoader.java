@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -11,6 +12,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import net.minecraftforge.common.util.EnumHelper;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 
 public class CombatTypeLoader
@@ -91,8 +93,7 @@ public class CombatTypeLoader
         }
         catch (JsonSyntaxException | JsonIOException | IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            PokecubeMod.log(Level.SEVERE, "Error loading types.json", e);
         }
     }
 }

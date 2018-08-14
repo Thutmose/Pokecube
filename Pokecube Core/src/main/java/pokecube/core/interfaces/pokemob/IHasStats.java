@@ -9,6 +9,7 @@ import pokecube.core.interfaces.IPokemob.StatModifiers;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 
@@ -90,7 +91,7 @@ public interface IHasStats extends IHasEntry
     default int getCatchRate()
     {
         return getPokedexEntry().isShadowForme ? 0
-                : getPokemonAIState(DENYCAPTURE) ? 0
+                : getGeneralState(GeneralStates.DENYCAPTURE) ? 0
                         : getEntity() instanceof IEntityOwnable ? getPokedexEntry().getCatchRate() : 0;
     }
 

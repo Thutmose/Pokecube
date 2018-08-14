@@ -1,8 +1,8 @@
 package powercrystals.minefactoryreloaded.api.rednet.connectivity;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 
 /**
  * Defines a Block that can connect to RedNet cables. This must be implemented on your Block class.

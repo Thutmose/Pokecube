@@ -2,8 +2,8 @@ package pokecube.core.ai.thread.logicRunnables;
 
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.moves.TerrainDamageSource;
 import pokecube.core.moves.TerrainDamageSource.TerrainType;
 import thut.api.maths.Vector3;
@@ -31,7 +31,7 @@ public class LogicInMaterials extends LogicBase
             {
                 float value = 0.5f;
                 if (entity.getEntityWorld().isDaytime() && !entity.getEntityWorld().isRemote
-                        && !pokemob.getPokemonAIState(IMoveConstants.TAMED))
+                        && !pokemob.getGeneralState(GeneralStates.TAMED))
                 {
 
                     value = Float.parseFloat(pokemob.getPokedexEntry().hatedMaterial[1]);

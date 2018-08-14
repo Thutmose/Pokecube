@@ -1,8 +1,8 @@
 package toughasnails.temperature;
 
-import net.minecraft.block.state.IBlockState;
-
 import javax.annotation.Nonnull;
+
+import net.minecraft.block.state.IBlockState;
 
 public class BlockTemperatureData {
 

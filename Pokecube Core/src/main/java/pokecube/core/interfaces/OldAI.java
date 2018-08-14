@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * saved/loaded. */
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface NonPersistantAI
+public @interface OldAI
 {
 
 }

@@ -30,9 +30,9 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
@@ -485,7 +485,7 @@ public class ActionNaturePower implements IMoveAction
     @Override
     public boolean applyEffect(IPokemob attacker, Vector3 location)
     {
-        if (attacker.getPokemonAIState(IMoveConstants.ANGRY)) return false;
+        if (attacker.getCombatState(CombatStates.ANGRY)) return false;
         if (!(attacker.getPokemonOwner() instanceof EntityPlayerMP)) return false;
         if (!MoveEventsHandler.canEffectBlock(attacker, location)) return false;
         long time = attacker.getEntity().getEntityData().getLong("lastAttackTick");

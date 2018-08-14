@@ -19,6 +19,7 @@ import pokecube.core.interfaces.entity.IOngoingAffected.IOngoingEffect;
 import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect;
 import pokecube.core.interfaces.entity.impl.NonPersistantStatusEffect.Effect;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.interfaces.pokemob.commandhandlers.SwapMovesHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.animations.EntityMoveUse;
@@ -51,7 +52,7 @@ public interface IHasMoves extends IHasStats
      *            index of 2nd move */
     default void exchangeMoves(int moveIndex0, int moveIndex1)
     {
-        if (PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
+        if (PokecubeCore.isOnClientSide() && getGeneralState(GeneralStates.TAMED))
         {
             String[] moves = getMoves();
             if (moveIndex0 >= moves.length && moveIndex1 >= moves.length)
@@ -218,7 +219,7 @@ public interface IHasMoves extends IHasStats
         }
         else
         {
-            if (getPokemonAIState(IMoveConstants.TAMED))
+            if (getGeneralState(GeneralStates.TAMED))
             {
                 if (moves[3] != null)
                 {

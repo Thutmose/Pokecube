@@ -23,12 +23,4 @@ public abstract class LogicBase implements ILogicRunnable, IMoveConstants
     public void doServerTick(World world)
     {
     }
-
-    protected void setPokemobAIState(int state, boolean value)
-    {
-        pokemob.setPokemonAIState(state, value);// dataManager says it is
-                                                // threadsafe, if this doesn't
-                                                // work, will use what AIBase
-                                                // uses.
-    }
 }

@@ -35,10 +35,11 @@ import pokecube.core.events.RecallEvent;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.TeamManager;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
@@ -241,11 +242,11 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             MinecraftForge.EVENT_BUS.post(evtrec);
             if (getEntity().getHealth() > 0 && evtrec.isCanceled()) { return; }
             this.setEvolutionTicks(0);
-            this.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
-            this.setPokemonAIState(IMoveConstants.EVOLVING, false);
-            if (getPokemonAIState(MEGAFORME) || getPokedexEntry().isMega)
+            this.setGeneralState(GeneralStates.EXITINGCUBE, false);
+            this.setGeneralState(GeneralStates.EVOLVING, false);
+            if (getCombatState(CombatStates.MEGAFORME) || getPokedexEntry().isMega)
             {
-                this.setPokemonAIState(MEGAFORME, false);
+                this.setCombatState(CombatStates.MEGAFORME, false);
                 float hp = getEntity().getHealth();
                 IPokemob base = megaEvolve(getPokedexEntry().getBaseForme());
                 base.getEntity().setHealth(hp);
@@ -268,7 +269,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             Entity owner = getPokemonOwner();
             /** If we have a target, and we were recalled with health, assign
              * the target to our owner instead. */
-            if (this.getPokemonAIState(ANGRY) && this.getEntity().getAttackTarget() != null
+            if (this.getCombatState(CombatStates.ANGRY) && this.getEntity().getAttackTarget() != null
                     && this.getEntity().getHealth() > 0)
             {
                 if (owner instanceof EntityLivingBase)
@@ -278,7 +279,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                     {
                         this.getEntity().isDead = true;
                         targetMob.getEntity().setAttackTarget(getPokemonOwner());
-                        targetMob.setPokemonAIState(ANGRY, true);
+                        targetMob.setCombatState(CombatStates.ANGRY, true);
                         this.getEntity().isDead = false;
                         if (PokecubeMod.debug) PokecubeMod.log("Swapping agro to cowardly owner!");
                     }
@@ -289,8 +290,8 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                 }
             }
 
-            this.setPokemonAIState(IMoveConstants.NOMOVESWAP, false);
-            this.setPokemonAIState(IMoveConstants.ANGRY, false);
+            this.setCombatState(CombatStates.NOMOVESWAP, false);
+            this.setCombatState(CombatStates.ANGRY, false);
             getEntity().setAttackTarget(null);
             getEntity().captureDrops = true;
             EntityPlayer tosser = PokecubeMod.getFakePlayer(getEntity().getEntityWorld());
@@ -430,13 +431,13 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             /*
              * unset tame.
              */
-            this.setPokemonAIState(IMoveConstants.TAMED, false);
+            this.setGeneralState(GeneralStates.TAMED, false);
             return;
         }
         /*
          * Set it as tame.
          */
-        this.setPokemonAIState(IMoveConstants.TAMED, true);
+        this.setGeneralState(GeneralStates.TAMED, true);
         /*
          * Set not to wander around by default, they can choose to enable this
          * later.
@@ -525,7 +526,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public boolean isPlayerOwned()
     {
-        return this.getPokemonAIState(IMoveConstants.TAMED) && players;
+        return this.getGeneralState(GeneralStates.TAMED) && players;
     }
 
     @Override

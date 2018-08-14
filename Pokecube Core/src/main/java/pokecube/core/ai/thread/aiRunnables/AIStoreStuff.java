@@ -14,10 +14,10 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.berries.ItemBerry;
 import thut.lib.CompatWrapper;
 import thut.lib.ItemStackTools;
@@ -105,7 +105,7 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
 
     private boolean findBerryStorage(boolean refresh)
     {
-        if (!refresh && berryLoc != null && pokemob.getPokemonAIState(IMoveConstants.TAMED)) { return true; }
+        if (!refresh && berryLoc != null && pokemob.getGeneralState(GeneralStates.TAMED)) { return true; }
         if (berryLoc != null && refresh)
         {
             BlockPos found = checkDir(world, null, berryLoc, null);
@@ -126,7 +126,7 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
 
     private boolean findItemStorage(boolean refresh)
     {
-        if (!refresh && storageLoc != null && pokemob.getPokemonAIState(IMoveConstants.TAMED)) { return true; }
+        if (!refresh && storageLoc != null && pokemob.getGeneralState(GeneralStates.TAMED)) { return true; }
         if (storageLoc != null && refresh)
         {
             BlockPos found = checkDir(world, null, storageLoc, storageFace);
@@ -326,8 +326,8 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
             pokemob.getEntity().getNavigator().tryMoveToXYZ(emptyInventory.getX() + 0.5, emptyInventory.getY() + 0.5,
                     emptyInventory.getZ() + 0.5, speed);
             // We should be pathing, so return true.
-            if (PokecubeMod.debug) PokecubeMod
-                    .log(pokemob.getPokemonDisplayName().getUnformattedText() + " Pathing to Pick Up at " + emptyInventory);
+            if (PokecubeMod.debug) PokecubeMod.log(
+                    pokemob.getPokemonDisplayName().getUnformattedText() + " Pathing to Pick Up at " + emptyInventory);
             return true;
         }
         boolean collected = false;
@@ -379,7 +379,7 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
      * @return */
     private boolean tameCheck()
     {
-        return (pokemob.getPokemonAIState(IMoveConstants.TAMED) && !pokemob.getPokemonAIState(IMoveConstants.STAYING));
+        return (pokemob.getGeneralState(GeneralStates.TAMED) && !pokemob.getGeneralState(GeneralStates.STAYING));
     }
 
     @Override

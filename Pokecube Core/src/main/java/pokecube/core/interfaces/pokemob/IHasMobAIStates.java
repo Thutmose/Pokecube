@@ -1,22 +1,45 @@
 package pokecube.core.interfaces.pokemob;
 
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.entity.ai.IAIMob;
 
-public interface IHasMobAIStates extends IMoveConstants, IAIMob
+public interface IHasMobAIStates extends IAIMob, IMoveConstants
 {
-    /** @param state
-     * @return the value of the AI state state. */
-    boolean getPokemonAIState(int state);
+    int getTotalCombatState();
 
-    /*
-     * Sets AI state state to flag.
-     */
-    void setPokemonAIState(int state, boolean flag);
+    void setTotalCombatState(int state);
 
-    int getTotalAIState();
+    /** the value of the AI state state. */
+    boolean getCombatState(CombatStates state);
 
-    void setTotalAIState(int state);
+    /** Sets AI state state to flag. */
+    void setCombatState(CombatStates state, boolean flag);
+
+    ///////////////////////////////////////////////////
+
+    int getTotalLogicState();
+
+    void setTotalLogicState(int state);
+
+    /** the value of the AI state state. */
+    boolean getLogicState(LogicStates state);
+
+    /** Sets AI state state to flag. */
+    void setLogicState(LogicStates state, boolean flag);
+
+    ///////////////////////////////////////////////////
+    int getTotalGeneralState();
+
+    void setTotalGeneralState(int state);
+
+    /** the value of the AI state state. */
+    boolean getGeneralState(GeneralStates state);
+
+    /** Sets AI state state to flag. */
+    void setGeneralState(GeneralStates state, boolean flag);
 
     void initAI();
 

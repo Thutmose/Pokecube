@@ -10,14 +10,91 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.NonPersistantAI;
+import pokecube.core.interfaces.OldAI;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.TagNames;
 import thut.lib.CompatWrapper;
 
 public abstract class PokemobSaves extends PokemobOwned implements TagNames
 {
     private NBTTagCompound extraData = new NBTTagCompound();
+
+    private void handleOldAIStates(int value)
+    {
+        // Split value to bits, determine which field in IMoveConstants
+        // with @OldAI correspond to that bit, then find the corresponding field
+        // in generalStates, CombatStates or LogicStates, and apply that to the
+        // new system.
+        fields:
+        for (Field f : IMoveConstants.class.getFields())
+        {
+            OldAI annot = f.getAnnotation(OldAI.class);
+            if (annot != null)
+            {
+                try
+                {
+                    int state = f.getInt(null);
+
+                    if ((value & state) != 0)
+                    {
+                        // Check if it is a logic state.
+                        for (LogicStates f1 : LogicStates.values())
+                        {
+                            if (f1.name().equals(f.getName()))
+                            {
+                                this.setLogicState(f1, true);
+                                continue fields;
+                            }
+                        }
+                        // Check if it is a General state.
+                        for (GeneralStates f1 : GeneralStates.values())
+                        {
+                            if (f1.name().equals(f.getName()))
+                            {
+                                this.setGeneralState(f1, true);
+                                continue fields;
+                            }
+                        }
+                        // Check if it is a Combat state.
+                        for (CombatStates f1 : CombatStates.values())
+                        {
+                            if (f1.name().equals(f.getName()))
+                            {
+                                this.setCombatState(f1, true);
+                                continue fields;
+                            }
+                        }
+                    }
+                }
+                catch (IllegalArgumentException | IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void cleanLoadedAIStates()
+    {
+        // First clear out any non-persistant ai states from logic states
+        for (LogicStates state : LogicStates.values())
+        {
+            if (!state.persists()) this.setLogicState(state, false);
+        }
+        // Then clean up general states
+        for (GeneralStates state : GeneralStates.values())
+        {
+            if (!state.persists()) this.setGeneralState(state, false);
+        }
+        // Finally cleanup combat states
+        for (CombatStates state : CombatStates.values())
+        {
+            if (!state.persists()) this.setCombatState(state, false);
+        }
+    }
 
     @Override
     public void readPokemobData(NBTTagCompound tag)
@@ -52,7 +129,6 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             {
                 e.printStackTrace();
             }
-            this.setTraded(ownerShipTag.getBoolean(ISTRADED));
         }
         // Read stats tag
         if (!statsTag.hasNoTags())
@@ -128,23 +204,15 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         // Read AI
         if (!aiTag.hasNoTags())
         {
-            setTotalAIState(aiTag.getInteger(AISTATE));
-            for (Field f : IMoveConstants.class.getFields())
+            if (aiTag.hasKey(AISTATE))
             {
-                NonPersistantAI annot = f.getAnnotation(NonPersistantAI.class);
-                if (annot != null)
-                {
-                    try
-                    {
-                        int state = f.getInt(null);
-                        setPokemonAIState(state, false);
-                    }
-                    catch (IllegalArgumentException | IllegalAccessException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
+                handleOldAIStates(aiTag.getInteger(AISTATE));
             }
+            setTotalCombatState(aiTag.getInteger(COMBATSTATE));
+            setTotalGeneralState(aiTag.getInteger(GENERALSTATE));
+            setTotalLogicState(aiTag.getInteger(LOGICSTATE));
+            cleanLoadedAIStates();
+
             setHungerTime(aiTag.getInteger(HUNGER));
             NBTTagCompound routines = aiTag.getCompoundTag(AIROUTINES);
             for (String s : routines.getKeySet())
@@ -186,7 +254,6 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         ownerShipTag.setString(TEAM, getPokemobTeam());
         if (getOriginalOwnerUUID() != null) ownerShipTag.setString(OT, getOriginalOwnerUUID().toString());
         if (getPokemonOwnerID() != null) ownerShipTag.setString(OWNER, getPokemonOwnerID().toString());
-        ownerShipTag.setBoolean(ISTRADED, getPokemonAIState(TRADED));
 
         // Write stats tag
         NBTTagCompound statsTag = new NBTTagCompound();
@@ -261,7 +328,11 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         }
         // Misc AI
         NBTTagCompound aiTag = new NBTTagCompound();
-        aiTag.setInteger(AISTATE, getTotalAIState());
+
+        aiTag.setInteger(GENERALSTATE, getTotalGeneralState());
+        aiTag.setInteger(LOGICSTATE, getTotalLogicState());
+        aiTag.setInteger(COMBATSTATE, getTotalCombatState());
+
         aiTag.setInteger(HUNGER, getHungerTime());
         NBTTagCompound aiRoutineTag = new NBTTagCompound();
         for (AIRoutine routine : AIRoutine.values())

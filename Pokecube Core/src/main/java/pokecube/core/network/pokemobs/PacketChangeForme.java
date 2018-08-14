@@ -14,11 +14,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.ICanEvolve;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.megastuff.MegaCapability;
 import thut.core.common.commands.CommandTools;
 
@@ -100,7 +101,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
         }
         else
         {
-            if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
+            if (pokemob.getGeneralState(GeneralStates.EVOLVING)) return;
             boolean hasRing = MegaCapability.canMegaEvolve(player, pokemob);
             if (!hasRing)
             {
@@ -117,7 +118,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                     ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.megaevolve.command.revert",
                             "green", old);
                     pokemob.displayMessageToOwner(mess);
-                    pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
+                    pokemob.setCombatState(CombatStates.MEGAFORME, false);
                     mess = CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             newEntry.getUnlocalizedName());
                     ICanEvolve.setDelayedMegaEvolve(pokemob, newEntry, mess);
@@ -129,20 +130,20 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                     pokemob.displayMessageToOwner(mess);
                     mess = CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
                             newEntry.getUnlocalizedName());
-                    pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
+                    pokemob.setCombatState(CombatStates.MEGAFORME, true);
                     ICanEvolve.setDelayedMegaEvolve(pokemob, newEntry, mess);
                 }
             }
             else
             {
-                if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME))
+                if (pokemob.getCombatState(CombatStates.MEGAFORME))
                 {
                     String old = pokemob.getPokemonDisplayName().getFormattedText();
                     ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.megaevolve.command.revert",
                             "green", old);
                     pokemob.displayMessageToOwner(mess);
                     newEntry = pokemob.getPokedexEntry().getBaseForme();
-                    pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
+                    pokemob.setCombatState(CombatStates.MEGAFORME, false);
                     mess = CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             newEntry.getUnlocalizedName());
                     ICanEvolve.setDelayedMegaEvolve(pokemob, newEntry, mess);

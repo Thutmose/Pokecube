@@ -12,10 +12,11 @@ import net.minecraft.util.SoundCategory;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveAction;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import thut.api.maths.Vector3;
 
@@ -76,7 +77,7 @@ public class ActionTeleport implements IMoveAction
     @Override
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
-        boolean angry = user.getPokemonAIState(IMoveConstants.ANGRY);
+        boolean angry = user.getCombatState(CombatStates.ANGRY);
         if (!angry && user.getPokemonOwner() instanceof EntityPlayer && user.getEntity().isServerWorld())
         {
             EntityPlayer target = (EntityPlayer) user.getPokemonOwner();
@@ -102,12 +103,12 @@ public class ActionTeleport implements IMoveAction
                 IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
                 if (attackedMob != null)
                 {
-                    attackedMob.setPokemonAIState(IPokemob.ANGRY, false);
+                    attackedMob.setCombatState(CombatStates.ANGRY, false);
                     attackedMob.getEntity().setAttackTarget(null);
                 }
             }
             user.getEntity().setAttackTarget(null);
-            if (user.getPokemonAIState(IMoveConstants.TAMED)) user.returnToPokecube();
+            if (user.getGeneralState(GeneralStates.TAMED)) user.returnToPokecube();
             else teleportRandomly(user.getEntity());
         }
         return true;

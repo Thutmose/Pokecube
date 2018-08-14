@@ -40,6 +40,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.entity.IOngoingAffected;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.animations.AnimationMultiAnimations;
@@ -170,7 +172,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         Entity entity = attacker.getEntity();
 
-        if (!move.isNotIntercepable() && attacker.getPokemonAIState(IMoveConstants.ANGRY))
+        if (!move.isNotIntercepable() && attacker.getCombatState(CombatStates.ANGRY))
         {
             Vec3d loc1 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
             Vec3d loc2 = new Vec3d(location.x, location.y, location.z);
@@ -453,7 +455,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             if (((EntityLiving) attacked).getAttackTarget() != attackerMob)
                 ((EntityLiving) attacked).setAttackTarget(attackerMob);
-            targetPokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
+            targetPokemob.setCombatState(CombatStates.ANGRY, true);
         }
         if (efficiency > 0 && packet.applyOngoing)
         {
@@ -497,7 +499,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             finalAttackStrength = Math.max(0, finalAttackStrength);
         }
 
-        boolean wild = !attacker.getPokemonAIState(TAMED);
+        boolean wild = !attacker.getGeneralState(GeneralStates.TAMED);
 
         if (PokecubeMod.core.getConfig().maxWildPlayerDamage >= 0 && wild && attacked instanceof EntityPlayer)
         {

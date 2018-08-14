@@ -25,12 +25,12 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAnimation;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
@@ -206,12 +206,12 @@ public class Move_Explode extends Move_Basic
                 && (pokemob.getEntity().getHealth() >= 0 && attacked != pokemob))
         {
             boolean giveExp = true;
-            if ((target.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().pvpExp)
+            if ((target.getGeneralState(GeneralStates.TAMED) && !PokecubeMod.core.getConfig().pvpExp)
                     && (target.getPokemonOwner() instanceof EntityPlayer))
             {
                 giveExp = false;
             }
-            if ((target.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
+            if ((target.getGeneralState(GeneralStates.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
             {
                 giveExp = false;
             }

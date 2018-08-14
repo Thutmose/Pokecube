@@ -26,9 +26,11 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IBerryFruitBlock;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.TimePeriod;
@@ -102,7 +104,7 @@ public class AIHungry extends AIBase
 
         int hungerTime = pokemob.getHungerTime();
         v.set(entity);
-        sleepy = !pokemob.getPokemonAIState(IPokemob.ANGRY);
+        sleepy = !pokemob.getCombatState(CombatStates.ANGRY);
         if (sleepy) for (TimePeriod p : pokemob.getPokedexEntry().activeTimes())
         {// TODO find some way to determine actual length of day for things like
          // AR support.
@@ -114,16 +116,16 @@ public class AIHungry extends AIBase
         } // Don't run hunger AI stuff when in combat.
         else
         {
-            pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+            pokemob.setLogicState(LogicStates.SLEEPING, false);
             return;
         }
         ChunkCoordinate c = new ChunkCoordinate(v, entity.dimension);
         int deathTime = PokecubeMod.core.getConfig().pokemobLifeSpan;
         if (!pokemob.neverHungry() && pokemob.getHungerCooldown() < 0)
         {
-            if (hungerTime > 0 && !pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+            if (hungerTime > 0 && !pokemob.getCombatState(CombatStates.HUNTING))
             {
-                pokemob.setPokemonAIState(IMoveConstants.HUNTING, true);
+                pokemob.setCombatState(CombatStates.HUNTING, true);
             }
         }
 
@@ -134,7 +136,7 @@ public class AIHungry extends AIBase
                 AxisAlignedBB bb = v.set(entity).addTo(0, entity.getEyeHeight(), 0).getAABB()
                         .grow(PokecubeMod.core.getConfig().fishHookBaitRange);
                 List<EntityFishHook> hooks = entity.getEntityWorld().getEntitiesWithinAABB(EntityFishHook.class, bb);
-                pokemob.setPokemonAIState(IPokemob.HUNTING, true);
+                pokemob.setCombatState(CombatStates.HUNTING, true);
                 if (!hooks.isEmpty())
                 {
                     Collections.shuffle(hooks);
@@ -158,7 +160,7 @@ public class AIHungry extends AIBase
         Random rand = new Random(pokemob.getRNGValue());
         int cur = (entity.ticksExisted / hungerTicks);
         int tick = rand.nextInt(10);
-        if (hungerTime > hurtTime && !entity.getEntityWorld().isRemote && !pokemob.getPokemonAIState(IPokemob.ANGRY)
+        if (hungerTime > hurtTime && !entity.getEntityWorld().isRemote && !pokemob.getCombatState(CombatStates.ANGRY)
                 && !pokemob.neverHungry() && cur % 10 == tick)
         {
             boolean ate = false;
@@ -167,7 +169,7 @@ public class AIHungry extends AIBase
                 ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
                 if (stack != null && stack.getItem() instanceof ItemBerry)
                 {
-                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    setCombatState(pokemob, CombatStates.HUNTING, false);
                     pokemob.eat(berry);
                     CompatWrapper.increment(stack, -1);
                     if (!CompatWrapper.isValid(stack))
@@ -179,7 +181,7 @@ public class AIHungry extends AIBase
             }
             if (!ate)
             {
-                boolean tameCheck = !pokemob.isPlayerOwned() || pokemob.getPokemonAIState(IMoveConstants.STAYING);
+                boolean tameCheck = !pokemob.isPlayerOwned() || pokemob.getGeneralState(GeneralStates.STAYING);
                 if (entity.getEntityData().hasKey("lastInteract"))
                 {
                     long time = entity.getEntityData().getLong("lastInteract");
@@ -202,48 +204,48 @@ public class AIHungry extends AIBase
                 }
             }
         }
-        boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
+        boolean ownedSleepCheck = pokemob.getGeneralState(GeneralStates.TAMED)
+                && !(pokemob.getGeneralState(GeneralStates.STAYING));
         if (sleepy && hungerTime < 0 && !ownedSleepCheck)
         {
             if (!isGoodSleepingSpot(c))
             {
-                pokemob.setPokemonAIState(IMoveConstants.IDLE, true);
+                pokemob.setGeneralState(GeneralStates.IDLE, true);
                 Path path = this.entity.getNavigator().getPathToPos(pokemob.getHome());
                 if (path != null && path.getCurrentPathLength() > 32) path = null;
                 addEntityPath(entity, path, moveSpeed);
-                pokemob.setPokemonAIState(IMoveConstants.IDLE, false);
+                pokemob.setGeneralState(GeneralStates.IDLE, false);
             }
             else if (entity.getAttackTarget() == null && entity.getNavigator().noPath())
             {
-                pokemob.setPokemonAIState(IMoveConstants.SLEEPING, true);
-                pokemob.setPokemonAIState(IMoveConstants.HUNTING, false);
+                pokemob.setLogicState(LogicStates.SLEEPING, true);
+                pokemob.setCombatState(CombatStates.HUNTING, false);
             }
             else if (!entity.getNavigator().noPath() || entity.getAttackTarget() != null)
             {
-                pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+                pokemob.setLogicState(LogicStates.SLEEPING, false);
             }
         }
-        else if (!pokemob.getPokemonAIState(IMoveConstants.TIRED))
+        else if (!pokemob.getLogicState(LogicStates.TIRED))
         {
-            pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+            pokemob.setLogicState(LogicStates.SLEEPING, false);
         }
         if (ownedSleepCheck)
         {
-            pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+            pokemob.setLogicState(LogicStates.SLEEPING, false);
         }
 
         // Run these on the main thread, so the world access stuff isn't
         // problematic.
         eat:
-        if (pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+        if (pokemob.getCombatState(CombatStates.HUNTING))
         {
             if (pokemob.isPhototroph())
             {
                 if (entity.getEntityWorld().provider.isDaytime() && v.canSeeSky(world))
                 {
                     pokemob.setHungerTime(pokemob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
-                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    setCombatState(pokemob, CombatStates.HUNTING, false);
                     break eat;
                 }
             }
@@ -282,7 +284,7 @@ public class AIHungry extends AIBase
                             }
                     }
                     berry.setItem(new ItemStack(b));
-                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    setCombatState(pokemob, CombatStates.HUNTING, false);
                     pokemob.eat(berry);
                     break eat;
                 }
@@ -297,7 +299,7 @@ public class AIHungry extends AIBase
                 else
                 {
                     pokemob.setHungerTime(pokemob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
-                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    setCombatState(pokemob, CombatStates.HUNTING, false);
                     break eat;
                 }
             }
@@ -330,7 +332,7 @@ public class AIHungry extends AIBase
 
         if (distance < 3)
         {
-            setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+            setCombatState(pokemob, CombatStates.HUNTING, false);
             berry.setItem(fruit);
             pokemob.eat(berry);
             toRun.addElement(new InventoryChange(entity, 2, fruit, true));
@@ -351,7 +353,7 @@ public class AIHungry extends AIBase
                     && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
             {
                 addEntityPath(entity, path, moveSpeed);
-                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                setCombatState(pokemob, CombatStates.HUNTING, false);
                 berry.setItem(fruit);
                 pokemob.noEat(berry);
                 foodLoc.clear();
@@ -366,7 +368,7 @@ public class AIHungry extends AIBase
         diff = Math.max(diff, entity.width);
         if (dist < diff)
         {
-            setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+            setCombatState(pokemob, CombatStates.HUNTING, false);
             berry.setItem(new ItemStack(b.getBlock()));
             pokemob.eat(berry);
             if (PokecubeMod.core.getConfig().pokemobsEatPlants)
@@ -421,7 +423,7 @@ public class AIHungry extends AIBase
             if (shouldChangePath
                     && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
             {
-                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                setCombatState(pokemob, CombatStates.HUNTING, false);
                 berry.setItem(new ItemStack(b.getBlock()));
                 pokemob.noEat(berry);
                 foodLoc.clear();
@@ -452,7 +454,7 @@ public class AIHungry extends AIBase
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.COBBLESTONE);
                 }
             }
-            setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+            setCombatState(pokemob, CombatStates.HUNTING, false);
             berry.setItem(new ItemStack(b.getBlock()));
             pokemob.eat(berry);
             foodLoc.clear();
@@ -489,7 +491,7 @@ public class AIHungry extends AIBase
             }
             if (shouldChangePath && !pathed)
             {
-                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                setCombatState(pokemob, CombatStates.HUNTING, false);
                 berry.setItem(new ItemStack(b.getBlock()));
                 pokemob.noEat(berry);
                 foodLoc.clear();
@@ -539,7 +541,7 @@ public class AIHungry extends AIBase
                 {
                     pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
                 }
-                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                setCombatState(pokemob, CombatStates.HUNTING, false);
                 berry.setItem(stack.copy());
                 pokemob.eat(berry);
                 return;
@@ -548,7 +550,7 @@ public class AIHungry extends AIBase
         // Tame pokemon can eat berries out of trapped chests, so check for
         // one
         // of those here.
-        if (pokemob.getPokemonAIState(IMoveConstants.TAMED))
+        if (pokemob.getGeneralState(GeneralStates.TAMED))
         {
             IInventory container = null;
             v.set(entity).add(0, entity.height, 0);
@@ -569,7 +571,7 @@ public class AIHungry extends AIBase
                         {
                             container.setInventorySlotContents(i1, CompatWrapper.nullStack);
                         }
-                        setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                        setCombatState(pokemob, CombatStates.HUNTING, false);
 
                         Path path = entity.getNavigator().getPathToXYZ(temp.x, temp.y, temp.z);
                         addEntityPath(entity, path, moveSpeed);
@@ -584,10 +586,10 @@ public class AIHungry extends AIBase
         // mate
         pokemob.resetLoveStatus();
 
-        if (pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getPokemonAIState(IMoveConstants.SITTING))
+        if (pokemob.getGeneralState(GeneralStates.TAMED) && pokemob.getLogicState(LogicStates.SITTING))
         {
             pokemob.setHungerCooldown(100);
-            setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+            setCombatState(pokemob, CombatStates.HUNTING, false);
             return;
         }
         block = false;
@@ -611,7 +613,7 @@ public class AIHungry extends AIBase
                 if (entity.isInWater())
                 {
                     pokemob.eat(berry);
-                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    setCombatState(pokemob, CombatStates.HUNTING, false);
                     return;
                 }
                 if (temp != null)
@@ -622,7 +624,7 @@ public class AIHungry extends AIBase
             }
             if (!block && pokemob.eatsBerries())
             {
-                if (pokemob.getPokemonAIState(IMoveConstants.TAMED))
+                if (pokemob.getGeneralState(GeneralStates.TAMED))
                 {
                     Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
                     if (temp != null)
@@ -635,7 +637,7 @@ public class AIHungry extends AIBase
                 {
                     pokemob.setHungerCooldown(10);
                     toRun.add(new GenBerries(pokemob));
-                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    setCombatState(pokemob, CombatStates.HUNTING, false);
                 }
             }
         }
@@ -643,7 +645,7 @@ public class AIHungry extends AIBase
         if (foodLoc.isEmpty())
         {
             pokemob.setHungerCooldown(10);
-            setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+            setCombatState(pokemob, CombatStates.HUNTING, false);
         }
     }
 
@@ -708,20 +710,20 @@ public class AIHungry extends AIBase
         int hungerTicks = 20;
         if (entity.ticksExisted % hungerTicks != 0) return false;
 
-        boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
+        boolean ownedSleepCheck = pokemob.getGeneralState(GeneralStates.TAMED)
+                && !(pokemob.getGeneralState(GeneralStates.STAYING));
         if (ownedSleepCheck)
         {
-            pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+            pokemob.setLogicState(LogicStates.SLEEPING, false);
         }
         if (world == null || entity.getAttackTarget() != null) return false;
         pokemob.setHungerCooldown(pokemob.getHungerCooldown() - hungerTicks);
         pokemob.setHungerTime(pokemob.getHungerTime() + hungerTicks);
-        boolean hunting = pokemob.getPokemonAIState(IMoveConstants.HUNTING);
-        if (pokemob.getPokemonAIState(IMoveConstants.SLEEPING) || !hunting || pokemob.neverHungry())
+        boolean hunting = pokemob.getCombatState(CombatStates.HUNTING);
+        if (pokemob.getLogicState(LogicStates.SLEEPING) || !hunting || pokemob.neverHungry())
         {
             if (pokemob.neverHungry()) pokemob.setHungerTime(0);
-            if (hunting) setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+            if (hunting) setCombatState(pokemob, CombatStates.HUNTING, false);
             return false;
         }
         if (foodLoc.distToEntity(entity) > 32) foodLoc.clear();

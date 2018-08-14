@@ -16,6 +16,8 @@ import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.maths.Vector3;
 import thut.core.client.render.animation.ModelHolder;
 import thut.core.client.render.model.IAnimationChanger;
@@ -26,14 +28,14 @@ import thut.core.client.render.model.IPartTexturer;
 public abstract class AbstractModelRenderer<T extends EntityLiving> extends RenderLivingBase<T>
         implements IModelRenderer<T>
 {
-    final Vector3             rotPoint                  = Vector3.getNewVector();
+    final Vector3             rotPoint          = Vector3.getNewVector();
 
     private IPartTexturer     texturer;
     private IAnimationChanger animator;
 
     // Used to check if it has a custom sleeping animation.
-    private boolean           checkedForSleep           = false;
-    private boolean           hasSleepAnimation         = false;
+    private boolean           checkedForSleep   = false;
+    private boolean           hasSleepAnimation = false;
 
     // Values used to properly reset the GL state after rendering.
     public ModelHolder        model_holder;
@@ -74,7 +76,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
         {
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(par1EntityLiving);
             boolean status = pokemob.getStatus() == IMoveConstants.STATUS_SLP;
-            if (status || pokemob.getPokemonAIState(IMoveConstants.SLEEPING))
+            if (status || pokemob.getLogicState(LogicStates.SLEEPING))
             {
                 float ratio = 1F;
                 GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
@@ -140,7 +142,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
             float sy = (float) getScale().y;
             float sz = (float) getScale().z;
             s = (mob.getSize());
-            if (partialTick <= 1 && mob.getPokemonAIState(IMoveConstants.EXITINGCUBE))
+            if (partialTick <= 1 && mob.getGeneralState(GeneralStates.EXITINGCUBE))
             {
                 int ticks = -mob.getEvolutionTicks() + 50 + LogicMiscUpdate.EXITCUBEDURATION;
                 if (ticks <= LogicMiscUpdate.EXITCUBEDURATION / 2)

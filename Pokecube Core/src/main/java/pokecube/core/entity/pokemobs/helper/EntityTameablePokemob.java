@@ -31,10 +31,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry.InteractionLogic.Interaction;
-import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 
@@ -71,16 +70,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IShe
         return PokecubeItems.isValidHeldItem(itemStack);
     }
 
-    /** Used to get the state without continually looking up in dataManager.
-     * 
-     * @param state
-     * @param array
-     * @return */
-    protected boolean getAIState(int state, int array)
-    {
-        return (array & state) != 0;
-    }
-
     @SideOnly(Side.CLIENT)
     public float getInterestedAngle(float f)
     {
@@ -108,7 +97,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IShe
     /** returns true if a sheeps wool has been sheared */
     public boolean getSheared()
     {
-        return pokemobCap.getPokemonAIState(IPokemob.SHEARED);
+        return pokemobCap.getGeneralState(GeneralStates.SHEARED);
     }
 
     @Override
@@ -144,7 +133,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IShe
             if (last < getEntityWorld().getTotalWorldTime() - (action.cooldown + rand.nextInt(1 + action.variance))
                     && !getEntityWorld().isRemote)
             {
-                pokemobCap.setPokemonAIState(IMoveConstants.SHEARED, false);
+                pokemobCap.setGeneralState(GeneralStates.SHEARED, false);
             }
 
             return !getSheared();
@@ -159,7 +148,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IShe
         if (pokemobCap.getPokedexEntry().interact(key))
         {
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-            pokemobCap.setPokemonAIState(IMoveConstants.SHEARED, true);
+            pokemobCap.setGeneralState(GeneralStates.SHEARED, true);
             getEntityData().setLong("lastSheared", getEntityWorld().getTotalWorldTime());
             List<ItemStack> list = pokemobCap.getPokedexEntry().getInteractResult(key);
             Interaction action = pokemobCap.getPokedexEntry().interactionLogic.actions

@@ -10,9 +10,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.world.IBlockAccess;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 
@@ -54,7 +56,7 @@ public class AIIdle extends AIBase
     private void doFlyingIdle()
     {
         boolean grounded = !mob.isRoutineEnabled(AIRoutine.AIRBORNE);
-        boolean tamed = mob.getPokemonAIState(IMoveConstants.TAMED) && !mob.getPokemonAIState(IMoveConstants.STAYING);
+        boolean tamed = mob.getGeneralState(GeneralStates.TAMED) && !mob.getGeneralState(GeneralStates.STAYING);
         boolean up = Math.random() < 0.9;
         if (grounded && up && !tamed)
         {
@@ -129,13 +131,13 @@ public class AIIdle extends AIBase
         v1.set(entity);
         v.set(this.x, this.y, this.z);
 
-        if (v.isEmpty() || v1.distToSq(v) <= 1 || mob.getPokemonAIState(IMoveConstants.SITTING)) return;
+        if (v.isEmpty() || v1.distToSq(v) <= 1 || mob.getLogicState(LogicStates.SITTING)) return;
 
-        mob.setPokemonAIState(IMoveConstants.IDLE, true);
+        mob.setGeneralState(GeneralStates.IDLE, true);
         Path path = this.entity.getNavigator().getPathToXYZ(this.x, this.y, this.z);
         if (path != null && path.getCurrentPathLength() > maxLength) path = null;
         addEntityPath(entity, path, speed);
-        mob.setPokemonAIState(IMoveConstants.IDLE, false);
+        mob.setGeneralState(GeneralStates.IDLE, false);
     }
 
     @Override
@@ -145,9 +147,9 @@ public class AIIdle extends AIBase
         Path current = null;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE)
-                || entity.getAttackTarget() != null || mob.getPokemonAIState(IMoveConstants.PATHING)
-                || mob.getPokemonAIState(IMoveConstants.CONTROLLED))
+        if (world == null || mob.getPokedexEntry().isStationary || mob.getCombatState(CombatStates.EXECUTINGMOVE)
+                || entity.getAttackTarget() != null || mob.getLogicState(LogicStates.PATHING)
+                || mob.getGeneralState(GeneralStates.CONTROLLED))
             return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {
@@ -170,20 +172,20 @@ public class AIIdle extends AIBase
         }
         if (entity.getAttackTarget() != null || !entity.getNavigator().noPath()) return false;
 
-        if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)
-                && !mob.getPokemonAIState(IMoveConstants.STAYING))
+        if (mob.getLogicState(LogicStates.SITTING) && mob.getGeneralState(GeneralStates.TAMED)
+                && !mob.getGeneralState(GeneralStates.STAYING))
             return false;
         int idleTimer = IDLETIMER;
-        if (mob.getPokemonAIState(IPokemob.SLEEPING) || (mob.getStatus() & IPokemob.STATUS_SLP) > 0) return false;
-        else if (mob.getPokemonAIState(IMoveConstants.CONTROLLED) || current != null)
+        if (mob.getLogicState(LogicStates.SLEEPING) || (mob.getStatus() & IPokemob.STATUS_SLP) > 0) return false;
+        else if (mob.getGeneralState(GeneralStates.CONTROLLED) || current != null)
         {
             return false;
         }
         else if ((entity.ticksExisted + new Random(mob.getRNGValue()).nextInt(idleTimer))
                 % (idleTimer) == new Random(mob.getRNGValue()).nextInt(idleTimer))
         {
-            boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED)
-                    && !mob.getPokemonAIState(IMoveConstants.STAYING);
+            boolean tameFactor = mob.getGeneralState(GeneralStates.TAMED)
+                    && !mob.getGeneralState(GeneralStates.STAYING);
             int distance = (int) (maxLength = tameFactor ? 8 : 16);
             v.clear();
             if (!tameFactor)
@@ -203,7 +205,7 @@ public class AIIdle extends AIBase
                 if (mob.getPokemonOwner() != null) setTo = mob.getPokemonOwner();
                 v.set(setTo);
             }
-            v1.set((v.isEmpty() && mob.getPokemonAIState(IMoveConstants.STAYING)) ? entity : v);
+            v1.set((v.isEmpty() && mob.getGeneralState(GeneralStates.STAYING)) ? entity : v);
             Vector3 v = getRandomPointNear(world, mob, v1, distance);
 
             double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(),

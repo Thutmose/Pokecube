@@ -68,10 +68,10 @@ import pokecube.core.client.render.RenderHealth;
 import pokecube.core.client.render.entity.RenderPokemobOnShoulder;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketMountedControl;
@@ -232,7 +232,7 @@ public class EventsHandlerClient
         if (pokemob != null && PokecubeMod.core.getConfig().autoSelectMoves)
         {
             Entity target = pokemob.getEntity().getAttackTarget();
-            if (target != null && !pokemob.getPokemonAIState(IMoveConstants.MATING))
+            if (target != null && !pokemob.getGeneralState(GeneralStates.MATING))
             {
                 setMostDamagingMove(pokemob, target);
             }
@@ -320,7 +320,7 @@ public class EventsHandlerClient
         if (ClientProxyPokecube.mobMegavolve.isPressed())
         {
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-            if (current != null && !current.getPokemonAIState(IMoveConstants.EVOLVING))
+            if (current != null && !current.getGeneralState(GeneralStates.EVOLVING))
             {
                 PacketChangeForme.sendPacketToServer(current.getEntity(), null);
             }

@@ -12,10 +12,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import pokecube.core.ai.utils.pathing.node.WalkNodeLadderProcessor;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.maths.Vector3;
 
 /** This is overridden from the vanilla one to allow using a custom,
@@ -99,7 +101,7 @@ public class PokemobNavigator extends PathNavigate2
     private boolean shouldPath(BlockPos pos)
     {
         Path current = noPath() ? null : getPath();
-        if (current != null && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+        if (current != null && !pokemob.getCombatState(CombatStates.ANGRY))
         {
             Vector3 p = v.set(current.getFinalPathPoint());
             Vector3 v = v1.set(pos);
@@ -113,12 +115,12 @@ public class PokemobNavigator extends PathNavigate2
     public boolean canNavigate()
     {
         if (wrapped == null) checkValues();
-        if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0
+        if (pokemob.getLogicState(LogicStates.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0
                 || (pokemob.getStatus() & IPokemob.STATUS_FRZ) > 0
-                || pokemob.getPokemonAIState(IMoveConstants.CONTROLLED)
-                || pokemob.getPokemonAIState(IMoveConstants.NOPATHING))
+                || pokemob.getGeneralState(GeneralStates.CONTROLLED)
+                || pokemob.getLogicState(LogicStates.NOPATHING))
             return false;
-        if (pokemob.getPokemonAIState(IPokemob.SITTING)) return false;
+        if (pokemob.getLogicState(LogicStates.SITTING)) return false;
         return this.entity.onGround || this.isInLiquid() || this.canFly;
     }
 

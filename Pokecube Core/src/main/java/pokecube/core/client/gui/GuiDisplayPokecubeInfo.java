@@ -50,6 +50,8 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackEntityHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackLocationHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackNothingHandler;
@@ -625,7 +627,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(object);
             if (pokemob == null) continue;
 
-            boolean owner = pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getPokemonOwner() != null;
+            boolean owner = pokemob.getGeneralState(GeneralStates.TAMED) && pokemob.getPokemonOwner() != null;
 
             if (owner)
             {
@@ -633,8 +635,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             int id = pokemob.getPokemonUID();
 
-            if (owner && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
-                    && !pokemob.getPokemonAIState(IMoveConstants.STAYING) && !added.contains(id))
+            if (owner && !pokemob.getLogicState(LogicStates.SITTING)
+                    && !pokemob.getGeneralState(GeneralStates.STAYING) && !added.contains(id))
             {
                 ret.add(pokemob);
                 added.add(id);
@@ -817,8 +819,8 @@ public class GuiDisplayPokecubeInfo extends Gui
         IPokemob pokemob;
         if ((pokemob = getCurrentPokemob()) != null)
         {
-            PacketCommand.sendCommand(pokemob, Command.STANCE, new StanceHandler(
-                    !pokemob.getPokemonAIState(IMoveConstants.SITTING), StanceHandler.BUTTONTOGGLESIT));
+            PacketCommand.sendCommand(pokemob, Command.STANCE,
+                    new StanceHandler(!pokemob.getLogicState(LogicStates.SITTING), StanceHandler.BUTTONTOGGLESIT));
         }
         else
         {
@@ -831,7 +833,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             if (targetMob != null && targetMob.getPokemonOwner() == player)
             {
                 PacketCommand.sendCommand(targetMob, Command.STANCE, new StanceHandler(
-                        !targetMob.getPokemonAIState(IMoveConstants.SITTING), StanceHandler.BUTTONTOGGLESIT));
+                        !targetMob.getLogicState(LogicStates.SITTING), StanceHandler.BUTTONTOGGLESIT));
             }
         }
     }

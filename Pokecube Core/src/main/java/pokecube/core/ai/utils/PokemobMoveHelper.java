@@ -10,6 +10,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 
 /** Overriden to properly support mobs that move in 3D, such as flying or
  * swimming ones, as well as the make it so if a mob has transformed, it uses
@@ -69,7 +70,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 shouldGoDown = !shouldGoUp;
             }
         }
-        if ((pokemob.getPokemonAIState(IPokemob.SLEEPING)
+        if ((pokemob.getLogicState(LogicStates.SLEEPING)
                 || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0) && air)
             shouldGoDown = true;
         float length = pokemob.getPokedexEntry().length * pokemob.getSize();

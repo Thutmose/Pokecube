@@ -30,6 +30,8 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IMobColourable;
@@ -53,7 +55,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 
     public static void renderExitCube(IPokemob pokemob, float partialTick)
     {
-        if (!pokemob.getPokemonAIState(IMoveConstants.EXITINGCUBE)) return;
+        if (!pokemob.getGeneralState(GeneralStates.EXITINGCUBE)) return;
         Entity entity = pokemob.getEntity();
         NBTTagCompound sealTag = PokecubeManager.getSealTag(entity);
         if (sealTag != null && !sealTag.hasNoTags())
@@ -366,7 +368,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         this.renderLivingAt(entity, x, y, z);
         GL11.glPushMatrix();
         int ticks = entity.ticksExisted;
-        boolean exitCube = mob.getPokemonAIState(IMoveConstants.EXITINGCUBE);
+        boolean exitCube = mob.getGeneralState(GeneralStates.EXITINGCUBE);
         if (exitCube && ticks <= 5 && !(partialTick <= 1))
         {
             float max = 5;// ;
@@ -415,7 +417,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         this.mainModel.setLivingAnimations(entity, f6, f5, partialTick);
         this.mainModel.setRotationAngles(f6, f5, f8, f2, f7, f4, entity);
 
-        if (mob.getStatus() == IMoveConstants.STATUS_SLP || mob.getPokemonAIState(IMoveConstants.SLEEPING))
+        if (mob.getStatus() == IMoveConstants.STATUS_SLP || mob.getLogicState(LogicStates.SLEEPING))
         {
             f6 = f5 = 0;
             f2 = -40;

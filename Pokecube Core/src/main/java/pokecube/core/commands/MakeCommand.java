@@ -32,11 +32,11 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
@@ -141,7 +141,7 @@ public class MakeCommand extends CommandBase
                 {
                     PokecubeMod.log(Level.INFO, "Creating " + pokemob.getPokedexEntry() + " for " + profile.getName());
                     pokemob.setPokemonOwner(profile.getId());
-                    pokemob.setPokemonAIState(IMoveConstants.TAMED, true);
+                    pokemob.setGeneralState(GeneralStates.TAMED, true);
                 }
                 temp.set(sender.getPosition()).addTo(offset);
                 temp.moveEntity(mob);

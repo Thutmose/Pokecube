@@ -5,9 +5,11 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
@@ -50,8 +52,8 @@ public class AIReturnHome extends AIBase
         BlockPos home = mob.getHome();
         if (entity.getAttackTarget() != null
                 || mob.getHomeDistance() * mob.getHomeDistance() < home.distanceSq(entity.getPosition())
-                || mob.getPokemonAIState(IMoveConstants.SITTING) || (mob.getPokemonAIState(IPokemob.TAMED)
-                        && !mob.getPokemonAIState(IPokemob.STAYING))) { return false; }
+                || mob.getLogicState(LogicStates.SITTING) || (mob.getGeneralState(GeneralStates.TAMED)
+                        && !mob.getGeneralState(GeneralStates.STAYING))) { return false; }
 
         PokedexEntry entry = mob.getPokedexEntry();
         boolean activeTime = false;
@@ -63,7 +65,7 @@ public class AIReturnHome extends AIBase
                 activeTime = true;
             }
         }
-        return !activeTime && !mob.getPokemonAIState(IMoveConstants.ANGRY);
+        return !activeTime && !mob.getCombatState(CombatStates.ANGRY);
     }
 
 }

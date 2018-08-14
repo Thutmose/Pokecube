@@ -25,12 +25,10 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.ClientProxy;
-import pokecube.modelloader.client.render.TextureHelper;
 
 public class GuiAnimate extends GuiScreen
 {
@@ -75,7 +73,7 @@ public class GuiAnimate extends GuiScreen
         else if (gender[1].equalsIgnoreCase("f"))
         {
             sexe = IPokemob.FEMALE;
-            
+
         }
         if (button.id == 2)
         {
@@ -307,26 +305,7 @@ public class GuiAnimate extends GuiScreen
 
         if (!tex.isEmpty() && !state.isFocused())
         {
-            int state = 0;
-            try
-            {
-                state = Integer.parseInt(tex);
-            }
-            catch (NumberFormatException e)
-            {
-                state = TextureHelper.getState(tex);
-            }
-            if (state >= 0)
-            {
-                for (int i = 0; i < 32; i++)
-                    pokemob.setPokemonAIState(1 << i, false);
-                pokemob.setPokemonAIState(state, true);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < 31; i++)
-                pokemob.setPokemonAIState(1 << i, 1 << i == IMoveConstants.SITTING ? true : false);
+            // TODO per state rendering for this.
         }
 
         EntityLiving entity = pokemob.getEntity();

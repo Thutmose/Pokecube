@@ -3,10 +3,10 @@ package powercrystals.minefactoryreloaded.api.rednet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.util.EnumFacing;
 
 /**
  * Defines a Block that can print information about itself using the RedNet Meter. This must be implemented on your Block class.

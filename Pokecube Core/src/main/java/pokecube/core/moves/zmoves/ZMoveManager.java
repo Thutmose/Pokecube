@@ -1,8 +1,8 @@
 package pokecube.core.moves.zmoves;
 
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.moves.MovesUtils;
 
 public class ZMoveManager
@@ -15,7 +15,7 @@ public class ZMoveManager
      * @return */
     public static Move_Base getZMove(IPokemob user)
     {
-        if (user.getPokemonAIState(IMoveConstants.USEDZMOVE)) return null;
+        if (user.getCombatState(CombatStates.USEDZMOVE)) return null;
         int selected = user.getMoveIndex();
         if (selected >= user.getMoves().length) return null;
         Move_Base move = MovesUtils.getMoveFromName(user.getMoves()[selected]);

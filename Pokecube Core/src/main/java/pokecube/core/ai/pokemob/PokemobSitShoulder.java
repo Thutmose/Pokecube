@@ -6,6 +6,8 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 
 public class PokemobSitShoulder extends EntityAIBase
 {
@@ -25,10 +27,10 @@ public class PokemobSitShoulder extends EntityAIBase
     public boolean shouldExecute()
     {
         EntityLivingBase entitylivingbase = (EntityLivingBase) this.pokemob.getOwner();
-        if (!(entitylivingbase instanceof EntityPlayer) || pokemob.getPokemonAIState(IPokemob.STAYING)) return false;
+        if (!(entitylivingbase instanceof EntityPlayer) || pokemob.getGeneralState(GeneralStates.STAYING)) return false;
         boolean flag = entitylivingbase != null && !((EntityPlayer) entitylivingbase).isSpectator()
                 && !((EntityPlayer) entitylivingbase).capabilities.isFlying && !entitylivingbase.isInWater()
-                && !this.pokemob.getPokemonAIState(IPokemob.SITTING);
+                && !this.pokemob.getLogicState(LogicStates.SITTING);
         if (!flag) cooldownTicks = 100;
         if (cooldownTicks < -100) cooldownTicks = 100;
         return flag && cooldownTicks-- <= 0;
@@ -51,7 +53,7 @@ public class PokemobSitShoulder extends EntityAIBase
     /** Keep ticking a continuous task that has already been started */
     public void updateTask()
     {
-        if (!this.isSittingOnShoulder && !this.pokemob.getPokemonAIState(IPokemob.SITTING) && !this.entity.getLeashed())
+        if (!this.isSittingOnShoulder && !this.pokemob.getLogicState(LogicStates.SITTING) && !this.entity.getLeashed())
         {
             if (this.entity.getEntityBoundingBox().intersects(this.owner.getEntityBoundingBox()))
             {

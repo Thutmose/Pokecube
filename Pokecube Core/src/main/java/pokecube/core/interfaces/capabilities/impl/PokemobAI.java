@@ -17,9 +17,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
@@ -28,7 +30,9 @@ import thut.lib.CompatWrapper;
 public abstract class PokemobAI extends PokemobEvolves
 {
     private boolean[]                               routineStates = new boolean[AIRoutine.values().length];
-    private int                                     cachedAIState;
+    private int                                     cachedGeneralState;
+    private int                                     cachedCombatState;
+    private int                                     cachedLogicState;
     private Map<ResourceLocation, ResourceLocation> shinyTexs     = Maps.newHashMap();
 
     @Override
@@ -38,23 +42,87 @@ public abstract class PokemobAI extends PokemobEvolves
     }
 
     @Override
-    public boolean getPokemonAIState(int state)
+    public boolean getGeneralState(GeneralStates state)
     {
-        if (getEntity().getEntityWorld().isRemote) cachedAIState = dataManager.get(params.AIACTIONSTATESDW);
-        return (cachedAIState & state) != 0;
+        if (getEntity().getEntityWorld().isRemote) cachedGeneralState = dataManager.get(params.GENERALSTATESDW);
+        return (cachedGeneralState & state.getMask()) != 0;
     }
 
     @Override
-    public int getTotalAIState()
+    public int getTotalGeneralState()
     {
-        return dataManager.get(params.AIACTIONSTATESDW);
+        return dataManager.get(params.GENERALSTATESDW);
     }
 
     @Override
-    public void setTotalAIState(int state)
+    public void setTotalGeneralState(int state)
     {
-        cachedAIState = state;
-        dataManager.set(params.AIACTIONSTATESDW, state);
+        cachedGeneralState = state;
+        dataManager.set(params.GENERALSTATESDW, state);
+    }
+
+    @Override
+    public void setGeneralState(GeneralStates state, boolean flag)
+    {
+        int byte0 = dataManager.get(params.GENERALSTATESDW);
+        int newState = flag ? (byte0 | state.getMask()) : (byte0 & -state.getMask() - 1);
+        setTotalGeneralState(newState);
+    }
+
+    @Override
+    public boolean getCombatState(CombatStates state)
+    {
+        if (getEntity().getEntityWorld().isRemote) cachedCombatState = dataManager.get(params.COMBATSTATESDW);
+        return (cachedCombatState & state.getMask()) != 0;
+    }
+
+    @Override
+    public int getTotalCombatState()
+    {
+        return dataManager.get(params.COMBATSTATESDW);
+    }
+
+    @Override
+    public void setTotalCombatState(int state)
+    {
+        cachedCombatState = state;
+        dataManager.set(params.COMBATSTATESDW, state);
+    }
+
+    @Override
+    public void setCombatState(CombatStates state, boolean flag)
+    {
+        int byte0 = dataManager.get(params.COMBATSTATESDW);
+        int newState = flag ? (byte0 | state.getMask()) : (byte0 & -state.getMask() - 1);
+        setTotalCombatState(newState);
+    }
+
+    @Override
+    public boolean getLogicState(LogicStates state)
+    {
+        if (getEntity().getEntityWorld().isRemote) cachedLogicState = dataManager.get(params.LOGICSTATESDW);
+        return (cachedLogicState & state.getMask()) != 0;
+    }
+
+    @Override
+    public int getTotalLogicState()
+    {
+        return dataManager.get(params.LOGICSTATESDW);
+    }
+
+    @Override
+    public void setTotalLogicState(int state)
+    {
+        cachedLogicState = state;
+        dataManager.set(params.LOGICSTATESDW, state);
+    }
+
+    @Override
+    public void setLogicState(LogicStates state, boolean flag)
+    {
+        int byte0 = dataManager.get(params.LOGICSTATESDW);
+        int newState = flag ? (byte0 | state.getMask()) : (byte0 & -state.getMask() - 1);
+        setTotalLogicState(newState);
     }
 
     @Override
@@ -225,7 +293,7 @@ public abstract class PokemobAI extends PokemobEvolves
     {
         getEntity().fallDistance = 0;
         getEntity().extinguish();
-        this.setPokemonAIState(EVOLVING, false);
+        this.setGeneralState(GeneralStates.EVOLVING, false);
         popped = true;
         if (getEntity().getEntityWorld().isRemote) return;
         getEntity().playSound(this.getSound(), 0.25f, 1);
@@ -248,19 +316,6 @@ public abstract class PokemobAI extends PokemobEvolves
     public void setDirectionPitch(float pitch)
     {
         dataManager.set(params.DIRECTIONPITCHDW, pitch);
-    }
-
-    @Override
-    public void setPokemonAIState(int state, boolean flag)
-    {
-        int byte0 = dataManager.get(params.AIACTIONSTATESDW);
-        if (state == STAYING && flag)
-        {
-            here.set(getEntity());
-            setHome(here.intX(), here.intY(), here.intZ(), 16);
-        }
-        int newState = flag ? (byte0 | state) : (byte0 & -state - 1);
-        setTotalAIState(newState);
     }
 
     @Override
@@ -291,6 +346,6 @@ public abstract class PokemobAI extends PokemobEvolves
     @Override
     public boolean isGrounded()
     {
-        return getPokemonAIState(IMoveConstants.GROUNDED) || !isRoutineEnabled(AIRoutine.AIRBORNE);
+        return getLogicState(LogicStates.GROUNDED) || !isRoutineEnabled(AIRoutine.AIRBORNE);
     }
 }

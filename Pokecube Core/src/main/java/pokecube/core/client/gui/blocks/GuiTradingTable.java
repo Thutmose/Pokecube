@@ -17,10 +17,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketTrade;
@@ -173,7 +173,7 @@ public class GuiTradingTable extends GuiContainer
 
         size = Math.max(entity.width, entity.height);
         size = Math.max(pokemob.getPokedexEntry().length * pokemob.getSize(), size);
-        pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+        pokemob.setGeneralState(GeneralStates.EXITINGCUBE, false);
         // }
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);

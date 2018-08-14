@@ -4,9 +4,11 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.maths.Vector3;
 
 /** This is used instead of a Swimming AI task. It manages making mobs "jump" to
@@ -36,7 +38,7 @@ public class LogicFloatFlySwim extends LogicBase
 
     public boolean shouldRun()
     {
-        return !pokemob.getPokemonAIState(IMoveConstants.CONTROLLED);
+        return !pokemob.getGeneralState(GeneralStates.CONTROLLED);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class LogicFloatFlySwim extends LogicBase
         }
         else if (isWaterMob)
         {
-            if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+            if (!pokemob.getCombatState(CombatStates.ANGRY))
             {
                 float floatHeight = (float) 0.5;
                 Path path = entity.getNavigator().getPath();
@@ -87,26 +89,26 @@ public class LogicFloatFlySwim extends LogicBase
         if (transformed != null) pokemob = transformed;
         PokedexEntry entry = pokemob.getPokedexEntry();
         boolean canFloat = pokemob.floats();
-        if (canFloat && !pokemob.getPokemonAIState(IMoveConstants.INWATER))
+        if (canFloat && !pokemob.getLogicState(LogicStates.INWATER))
         {
             float floatHeight = (float) entry.preferedHeight;
             Vector3 down = Vector3.getNextSurfacePoint(entity.getEntityWorld(), here.set(pokemob.getEntity()),
                     Vector3.secondAxisNeg, floatHeight);
             if (down != null) here.set(down);
             if (!(here.getBlock(entity.getEntityWorld())).isReplaceable(entity.getEntityWorld(), here.getPos())
-                    && !pokemob.getPokemonAIState(IMoveConstants.SLEEPING)
+                    && !pokemob.getLogicState(LogicStates.SLEEPING)
                     || here.getBlockState(entity.getEntityWorld()).getMaterial().isLiquid())
             {
                 entity.motionY += 0.005;
             }
             else entity.motionY -= 0.01;
-            if (down == null || pokemob.getPokemonAIState(IMoveConstants.SITTING))
+            if (down == null || pokemob.getLogicState(LogicStates.SITTING))
             {
                 entity.motionY -= 0.02;
             }
             here.set(pokemob.getEntity());
         }
-        if ((pokemob.floats() || pokemob.flys()) && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+        if ((pokemob.floats() || pokemob.flys()) && !pokemob.getCombatState(CombatStates.ANGRY))
         {
             float floatHeight = (float) entry.preferedHeight;
             Path path = entity.getNavigator().getPath();

@@ -13,10 +13,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.world.IBlockAccess;
 import pokecube.core.events.handlers.SpawnHandler;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -67,14 +68,14 @@ public abstract class PokemobHungry extends PokemobMoves
         }
         setHungerTime(getHungerTime() - hungerValue);
         hungerCooldown = 0;
-        setPokemonAIState(HUNTING, false);
+        setCombatState(CombatStates.HUNTING, false);
         if (getEntity().isDead) return;
         float missingHp = getEntity().getMaxHealth() - getEntity().getHealth();
         float toHeal = getEntity().getHealth() + Math.max(1, missingHp * 0.25f);
         getEntity().setHealth(Math.min(toHeal, getEntity().getMaxHealth()));
         // Make wild pokemon level up naturally to their cap, to allow wild
         // hatches
-        if (!getPokemonAIState(IMoveConstants.TAMED))
+        if (!getGeneralState(GeneralStates.TAMED))
         {
             int exp = SpawnHandler.getSpawnXp(getEntity().getEntityWorld(), here.set(getEntity()), getPokedexEntry());
             if (getExp() < exp)

@@ -3,6 +3,7 @@ package pokecube.core.ai.thread.logicRunnables;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.TickHandler;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
@@ -41,7 +42,7 @@ public class LogicInLiquid extends LogicBase
             if (!lava) lava = lava || box.isInMaterial(world, Vector3.empty, Vector3.empty, Material.LAVA);
             if (!water) water = water || box.isInMaterial(world, Vector3.empty, Vector3.empty, Material.WATER);
         }
-        setPokemobAIState(INLAVA, lava);
-        setPokemobAIState(INWATER, water);
+        pokemob.setLogicState(LogicStates.INLAVA, lava);
+        pokemob.setLogicState(LogicStates.INWATER, water);
     }
 }

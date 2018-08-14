@@ -27,11 +27,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.TeamManager;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.TickHandler;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.IAICombat;
@@ -50,6 +52,8 @@ public class AIFindTarget extends AIBase implements IAICombat
     public static Set<Class<?>>           invalidClasses = Sets.newHashSet();
     public static Set<String>             invalidIDs     = Sets.newHashSet();
 
+    /** Checks the blacklists set via configs, to see whether the target is a
+     * valid choice. */
     public static final Predicate<Entity> validTargets   = new Predicate<Entity>()
                                                          {
                                                              @Override
@@ -83,14 +87,14 @@ public class AIFindTarget extends AIBase implements IAICombat
         Entity attacker = source.getTrueSource();
 
         // Camcel the event if it is from owner.
-        if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED)
+        if (pokemobCap.getGeneralState(GeneralStates.TAMED)
                 && ((attacker instanceof EntityPlayer && ((EntityPlayer) attacker) == pokemobCap.getOwner())))
         {
             event.setCanceled(true);
             event.setResult(Result.DENY);
             return;
         }
-        pokemobCap.setPokemonAIState(IMoveConstants.SITTING, false);
+        pokemobCap.setLogicState(LogicStates.SITTING, false);
 
         if (attacked instanceof EntityLiving)
         {
@@ -110,7 +114,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             if (agres != null)
             {
                 if (agres.getPokedexEntry().isFood(pokemobCap.getPokedexEntry())
-                        && agres.getPokemonAIState(IMoveConstants.HUNTING))
+                        && agres.getCombatState(CombatStates.HUNTING))
                 {
                     // track running away.
                 }
@@ -142,7 +146,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         Entity attacker = source.getTrueSource();
 
         // Camcel the event if it is from owner.
-        if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED)
+        if (pokemobCap.getGeneralState(GeneralStates.TAMED)
                 && ((attacker instanceof EntityPlayer && ((EntityPlayer) attacker) == pokemobCap.getOwner())))
         {
             event.setCanceled(true);
@@ -158,6 +162,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         // Only handle attack target set, not revenge target set.
         if (evt.getTarget() == evt.getEntityLiving().getRevengeTarget()) return;
 
+        // Prevent mob from targetting self.
         if (evt.getTarget() == evt.getEntityLiving())
         {
             if (PokecubeMod.core.getConfig().debug)
@@ -168,9 +173,10 @@ public class AIFindTarget extends AIBase implements IAICombat
             return;
         }
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
-        if (pokemob != null && pokemob.getOwner() != null)
+        if (pokemob != null)
         {
-            if (evt.getTarget() == pokemob.getOwner())
+            // Prevent pokemob from targetting its owner.
+            if (pokemob.getOwner() != null && evt.getTarget() == pokemob.getOwner())
             {
                 if (PokecubeMod.core.getConfig().debug)
                 {
@@ -179,38 +185,42 @@ public class AIFindTarget extends AIBase implements IAICombat
                 }
                 return;
             }
+
             pokemob.onSetTarget(evt.getTarget());
         }
+        // Attempt to swap target onto a pokemob owned by the target entity.
         if (evt.getTarget() != null && evt.getEntityLiving() instanceof EntityLiving)
         {
             List<IPokemob> pokemon = EventsHandler.getPokemobs(evt.getTarget(), 32);
             if (pokemon.isEmpty()) return;
             double closest = 1000;
             IPokemob newtarget = null;
+            // Find nearest pokemob owned by the target
             for (IPokemob e : pokemon)
             {
                 double dist = e.getEntity().getDistanceSq(evt.getEntityLiving());
                 if (e.getEntity() == evt.getEntityLiving()) continue;
                 if (e.getEntity().isDead) continue;
                 if (dist < closest
-                        && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING))
+                        && !(e.getGeneralState(GeneralStates.STAYING) && e.getLogicState(LogicStates.SITTING))
                         && e.isRoutineEnabled(AIRoutine.AGRESSIVE))
                 {
                     closest = dist;
                     newtarget = e;
                 }
             }
-            if (newtarget != null && newtarget.getEntity() != evt.getEntityLiving())
+            // swap target onto the pokemob found.
+            if (newtarget != null)
             {
                 ((EntityLiving) evt.getEntityLiving()).setAttackTarget(newtarget.getEntity());
                 IPokemob mob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
                 if (mob != null)
                 {
-                    mob.setPokemonAIState(IMoveConstants.ANGRY, true);
-                    mob.setPokemonAIState(IMoveConstants.SITTING, false);
+                    mob.setCombatState(CombatStates.ANGRY, true);
+                    mob.setLogicState(LogicStates.SITTING, false);
                 }
                 newtarget.getEntity().setAttackTarget(evt.getEntityLiving());
-                newtarget.setPokemonAIState(IMoveConstants.ANGRY, true);
+                newtarget.setCombatState(CombatStates.ANGRY, true);
             }
         }
     }
@@ -220,6 +230,8 @@ public class AIFindTarget extends AIBase implements IAICombat
     Vector3                  v                = Vector3.getNewVector();
     Vector3                  v1               = Vector3.getNewVector();
 
+    /** Checks the validTargts as well as team settings, will not allow
+     * targetting things on the same team. */
     final Predicate<Entity>  validGuardTarget = new Predicate<Entity>()
                                               {
                                                   @Override
@@ -263,6 +275,8 @@ public class AIFindTarget extends AIBase implements IAICombat
             if (!(list.get(i) instanceof EntityPlayer)) continue;
 
             EntityPlayer entityplayer1 = (EntityPlayer) list.get(i);
+            if (entityplayer1.isCreative()) continue;
+            if (entityplayer1.isSpectator()) continue;
 
             if (!entityplayer1.capabilities.disableDamage && entityplayer1.isEntityAlive())
             {
@@ -326,7 +340,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         // Check if the pokemob is set to follow, and if so, look for mobs
         // nearby trying to attack the owner of the pokemob, if any such are
         // found, try to aggress them immediately.
-        if (!pokemob.getPokemonAIState(IMoveConstants.STAYING) && pokemob.getPokemonAIState(IMoveConstants.TAMED)
+        if (!pokemob.getGeneralState(GeneralStates.STAYING) && pokemob.getGeneralState(GeneralStates.TAMED)
                 && !PokecubeCore.isOnClientSide())
         {
             List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
@@ -342,8 +356,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                     {
                         addTargetInfo(this.entity, entity);
                         entityTarget = (EntityLivingBase) entity;
-                        setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
-                        setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
+                        setCombatState(pokemob, CombatStates.ANGRY, true);
+                        setLogicState(pokemob, LogicStates.SITTING, false);
                         return;
                     }
                 }
@@ -351,8 +365,8 @@ public class AIFindTarget extends AIBase implements IAICombat
         }
 
         // If hunting, look for valid prey, and if found, agress it.
-        if (!pokemob.getPokemonAIState(IMoveConstants.SITTING) && pokemob.isCarnivore()
-                && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+        if (!pokemob.getLogicState(LogicStates.SITTING) && pokemob.isCarnivore()
+                && pokemob.getCombatState(CombatStates.HUNTING))
         {
             List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
             if (!list.isEmpty())
@@ -366,8 +380,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                     {
                         addTargetInfo(this.entity, entity);
                         entityTarget = (EntityLivingBase) entity;
-                        setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
-                        setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
+                        setCombatState(pokemob, CombatStates.ANGRY, true);
+                        setLogicState(pokemob, LogicStates.SITTING, false);
                         return;
                     }
                 }
@@ -375,17 +389,22 @@ public class AIFindTarget extends AIBase implements IAICombat
         }
         // If guarding, look for mobs not on the same team as you, and if you
         // find them, try to agress them.
-        if (pokemob.getPokemonAIState(IMoveConstants.GUARDING))
+        if (pokemob.getCombatState(CombatStates.GUARDING))
         {
             List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
             List<Object> pokemobs = new ArrayList<Object>();
 
+            // Select either owner or home position as the centre of the check,
+            // this results in it guarding either its home or its owner. Home is
+            // used if it is on stay, or it has no owner.
             Vector3 centre = Vector3.getNewVector();
-            if (pokemob.getPokemonAIState(IMoveConstants.STAYING) || pokemob.getPokemonOwner() == null)
+            if (pokemob.getGeneralState(GeneralStates.STAYING) || pokemob.getPokemonOwner() == null)
                 centre.set(pokemob.getHome());
             else centre.set(pokemob.getPokemonOwner());
 
             pokemobs = getEntitiesWithinDistance(centre, entity.dimension, 16, EntityLivingBase.class);
+
+            // Only allow valid guard targets.
             for (Object o : pokemobs)
             {
                 if (validGuardTarget.apply((Entity) o)) ret.add((EntityLivingBase) o);
@@ -393,6 +412,8 @@ public class AIFindTarget extends AIBase implements IAICombat
             EntityLivingBase newtarget = null;
             double closest = Integer.MAX_VALUE;
             Vector3 here = v1.set(entity, true);
+
+            // Select closest visible guard target.
             for (EntityLivingBase e : ret)
             {
                 double dist = e.getDistanceSq(entity);
@@ -404,11 +425,12 @@ public class AIFindTarget extends AIBase implements IAICombat
                 }
             }
 
+            // Agro the target.
             if (newtarget != null && Vector3.isVisibleEntityFromEntity(entity, newtarget))
             {
                 addTargetInfo(entity, newtarget);
-                setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
-                setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
+                setCombatState(pokemob, CombatStates.ANGRY, true);
+                setLogicState(pokemob, LogicStates.SITTING, false);
                 entityTarget = newtarget;
                 return;
             }
@@ -423,8 +445,8 @@ public class AIFindTarget extends AIBase implements IAICombat
         EntityLivingBase target = entity.getAttackTarget();
 
         // Don't look for targets if you are sitting.
-        boolean ret = target == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
-        boolean tame = pokemob.getPokemonAIState(IMoveConstants.TAMED);
+        boolean ret = target == null && !pokemob.getLogicState(LogicStates.SITTING);
+        boolean tame = pokemob.getGeneralState(GeneralStates.TAMED);
 
         if (target == null && entityTarget != null)
         {
@@ -436,7 +458,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             else
             {
                 agroTimer--;
-                if (agroTimer == -1 || !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+                if (agroTimer == -1 || !pokemob.getCombatState(CombatStates.ANGRY))
                 {
                     target = null;
                     agroTimer = -1;
@@ -458,11 +480,11 @@ public class AIFindTarget extends AIBase implements IAICombat
             // try to kill the owner if they run away.
             if (entityTarget != null && entityTarget != target && entityTarget instanceof IEntityOwnable
                     && ((IEntityOwnable) entityTarget).getOwner() == target
-                    && pokemob.getPokemonAIState(IMoveConstants.TAMED) && (entityTarget.getHealth() <= 0))
+                    && pokemob.getGeneralState(GeneralStates.TAMED) && (entityTarget.getHealth() <= 0))
             {
                 PokecubeMod.log(Level.INFO, "Battle over, forgetting target. " + this.entity.ticksExisted);
                 addTargetInfo(entity, null);
-                setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
+                setCombatState(pokemob, CombatStates.ANGRY, false);
                 entityTarget = null;
                 target = null;
                 agroTimer = -1;
@@ -490,7 +512,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             }
 
             // If we are not angry, we should forget target.
-            if (!pokemob.getPokemonAIState(IPokemob.ANGRY))
+            if (!pokemob.getCombatState(CombatStates.ANGRY))
             {
                 addTargetInfo(entity, null);
                 entityTarget = null;
@@ -512,8 +534,8 @@ public class AIFindTarget extends AIBase implements IAICombat
             if (tame)
             {
                 Entity owner = pokemob.getPokemonOwner();
-                boolean stayOrGuard = pokemob.getPokemonAIState(IMoveConstants.GUARDING)
-                        || pokemob.getPokemonAIState(IMoveConstants.STAYING);
+                boolean stayOrGuard = pokemob.getCombatState(CombatStates.GUARDING)
+                        || pokemob.getGeneralState(GeneralStates.STAYING);
                 if (owner != null && !stayOrGuard
                         && owner.getDistance(entity) > PokecubeMod.core.getConfig().chaseDistance)
                 {
@@ -540,7 +562,7 @@ public class AIFindTarget extends AIBase implements IAICombat
 
             if (player != null && Vector3.isVisibleEntityFromEntity(entity, player))
             {
-                setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
+                setCombatState(pokemob, CombatStates.ANGRY, true);
                 addTargetInfo(entity, player);
                 entityTarget = player;
                 if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Found player to be angry with, agressing.");

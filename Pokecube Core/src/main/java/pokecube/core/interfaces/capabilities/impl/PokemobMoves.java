@@ -20,6 +20,8 @@ import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.network.pokemobs.PacketSyncMoveUse;
@@ -42,7 +44,7 @@ public abstract class PokemobMoves extends PokemobSexed
         }
 
         String attack;
-        if (this.getPokemonAIState(IMoveConstants.TAMED))
+        if (this.getGeneralState(GeneralStates.TAMED))
         {
             // A tamed pokemon should not attack a player
             // but it must keep it as a target.
@@ -266,7 +268,7 @@ public abstract class PokemobMoves extends PokemobSexed
         }
         else
         {
-            if (moveIndex == getMoveIndex() || getPokemonAIState(NOMOVESWAP)) return;
+            if (moveIndex == getMoveIndex() || getCombatState(CombatStates.NOMOVESWAP)) return;
             if (getMove(moveIndex) == null)
             {
                 setMoveIndex(5);

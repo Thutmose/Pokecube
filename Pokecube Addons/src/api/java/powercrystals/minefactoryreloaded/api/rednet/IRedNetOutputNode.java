@@ -1,9 +1,8 @@
 package powercrystals.minefactoryreloaded.api.rednet;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
-
 import powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection;
 
 /**

@@ -533,8 +533,7 @@ public class AnimationLoader
                         }
                         catch (Exception e)
                         {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            PokecubeMod.log(Level.WARNING, "Error loading " + modelName, e);
                         }
                     }
                 }

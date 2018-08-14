@@ -1,6 +1,6 @@
 package pokecube.modelloader.client.render;
 
-import java.lang.reflect.Field;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -18,6 +18,9 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.core.client.render.model.IPartTexturer;
 
 public class TextureHelper implements IPartTexturer
@@ -58,13 +61,17 @@ public class TextureHelper implements IPartTexturer
 
     private static class TexState
     {
-        Map<Integer, double[]>    aiStates     = Maps.newHashMap();
-        Map<Integer, double[]>    infoStates   = Maps.newHashMap();
-        Set<RandomState>          randomStates = Sets.newHashSet();
-        SequenceState             sequence     = null;
+        // TODO Redo this to use new state system that specifies
+        // logic/ai/combat.
+        Map<LogicStates, double[]>   logic        = Maps.newHashMap();
+        Map<GeneralStates, double[]> general      = Maps.newHashMap();
+        Map<CombatStates, double[]>  combat       = Maps.newHashMap();
+        Map<Integer, double[]>       infoStates   = Maps.newHashMap();
+        Set<RandomState>             randomStates = Sets.newHashSet();
+        SequenceState                sequence     = null;
         // TODO way to handle cheaning this up.
-        Map<Integer, RandomState> running      = Maps.newHashMap();
-        Map<Integer, Integer>     setTimes     = Maps.newHashMap();
+        Map<Integer, RandomState>    running      = Maps.newHashMap();
+        Map<Integer, Integer>        setTimes     = Maps.newHashMap();
 
         void addState(String trigger, String[] diffs)
         {
@@ -72,7 +79,7 @@ public class TextureHelper implements IPartTexturer
             for (int i = 0; i < arr.length; i++)
                 arr[i] = Double.parseDouble(diffs[i].trim());
 
-            int state = -1;
+            boolean state = false;
             boolean info = false;
             try
             {
@@ -82,15 +89,15 @@ public class TextureHelper implements IPartTexturer
             }
             catch (Exception e)
             {
-                state = getState(trigger, false);
+                state = parseState(trigger, arr);
             }
             if (info)
             {
 
             }
-            else if (state > 0)
+            if (state)
             {
-                aiStates.put(state, arr);
+
             }
             else if (trigger.contains("random"))
             {
@@ -104,6 +111,38 @@ public class TextureHelper implements IPartTexturer
             {
                 new NullPointerException("No Template found for " + trigger).printStackTrace();
             }
+        }
+
+        private boolean parseState(String trigger, double[] arr)
+        {
+            for (LogicStates state : LogicStates.values())
+            {
+                if (state.name().toLowerCase(Locale.ENGLISH).equals(trigger))
+                {
+                    logic.put(state, arr);
+                    logicNames.put(trigger, state);
+                    return true;
+                }
+            }
+            for (GeneralStates state : GeneralStates.values())
+            {
+                if (state.name().toLowerCase(Locale.ENGLISH).equals(trigger))
+                {
+                    general.put(state, arr);
+                    generalNames.put(trigger, state);
+                    return true;
+                }
+            }
+            for (CombatStates state : CombatStates.values())
+            {
+                if (state.name().toLowerCase(Locale.ENGLISH).equals(trigger))
+                {
+                    combat.put(state, arr);
+                    combatNames.put(trigger, state);
+                    return true;
+                }
+            }
+            return false;
         }
 
         boolean applyState(double[] toFill, IPokemob pokemob)
@@ -124,12 +163,14 @@ public class TextureHelper implements IPartTexturer
                 return true;
             }
 
-            for (Integer i : aiStates.keySet())
+            for (LogicStates state : logic.keySet())
             {
-                if (pokemob.getPokemonAIState(i)
-                        || i == IPokemob.SLEEPING && (pokemob.getStatus() & IMoveConstants.STATUS_SLP) != 0)
+                // If logic state, or state is sleeping, and mob has sleep
+                // status.
+                if (pokemob.getLogicState(state)
+                        || (state == LogicStates.SLEEPING && (pokemob.getStatus() & IMoveConstants.STATUS_SLP) != 0))
                 {
-                    double[] arr = aiStates.get(i);
+                    double[] arr = logic.get(state);
                     dx = arr[0];
                     dy = arr[1];
                     toFill[0] = dx;
@@ -137,6 +178,37 @@ public class TextureHelper implements IPartTexturer
                     return true;
                 }
             }
+
+            for (GeneralStates state : general.keySet())
+            {
+                // If logic state, or state is sleeping, and mob has sleep
+                // status.
+                if (pokemob.getGeneralState(state))
+                {
+                    double[] arr = logic.get(state);
+                    dx = arr[0];
+                    dy = arr[1];
+                    toFill[0] = dx;
+                    toFill[1] = dy;
+                    return true;
+                }
+            }
+
+            for (CombatStates state : combat.keySet())
+            {
+                // If logic state, or state is sleeping, and mob has sleep
+                // status.
+                if (pokemob.getCombatState(state))
+                {
+                    double[] arr = logic.get(state);
+                    dx = arr[0];
+                    dy = arr[1];
+                    toFill[0] = dx;
+                    toFill[1] = dy;
+                    return true;
+                }
+            }
+
             if (running.containsKey(pokemob.getEntity().getEntityId()))
             {
                 RandomState run = running.get(pokemob.getEntity().getEntityId());
@@ -190,57 +262,29 @@ public class TextureHelper implements IPartTexturer
         }
     }
 
-    public final static Map<String, Integer> mappedStates = Maps.newHashMap();
+    private final static Map<String, LogicStates>   logicNames   = Maps.newHashMap();
+    private final static Map<String, GeneralStates> generalNames = Maps.newHashMap();
+    private final static Map<String, CombatStates>  combatNames  = Maps.newHashMap();
 
-    public static int getState(String trigger)
-    {
-        return getState(trigger, true);
-    }
-
-    static int getState(String trigger, boolean exception)
-    {
-        if (mappedStates.containsKey(trigger)) return mappedStates.get(trigger);
-        try
-        {
-            Field f;
-            int state = 0;
-            String[] args = trigger.split("\\+");
-            for (String s : args)
-            {
-                String test = s.trim().toUpperCase(java.util.Locale.ENGLISH);
-                if ((f = IMoveConstants.class.getDeclaredField(test)) != null)
-                {
-                    state |= f.getInt(null);
-                }
-            }
-            return state;
-        }
-        catch (Exception e)
-        {
-            if (exception) e.printStackTrace();
-        }
-        return -1;
-    }
-
-    IPokemob                         pokemob;
-    PokedexEntry                     entry;
+    IPokemob                                        pokemob;
+    PokedexEntry                                    entry;
     /** Map of part/material name -> texture name */
-    Map<String, String>              texNames     = Maps.newHashMap();
+    Map<String, String>                             texNames     = Maps.newHashMap();
     /** Map of part/material name -> map of custom state -> texture name */
-    Map<String, Map<String, String>> texNames2    = Maps.newHashMap();
-    ResourceLocation                 default_tex;
-    String                           default_path;
+    Map<String, Map<String, String>>                texNames2    = Maps.newHashMap();
+    ResourceLocation                                default_tex;
+    String                                          default_path;
 
-    Map<String, Boolean>             smoothing    = Maps.newHashMap();
+    Map<String, Boolean>                            smoothing    = Maps.newHashMap();
 
-    boolean                          default_flat = true;
+    boolean                                         default_flat = true;
 
     /** Map of part/material name -> resource location */
-    Map<String, ResourceLocation>    texMap       = Maps.newHashMap();
+    Map<String, ResourceLocation>                   texMap       = Maps.newHashMap();
 
-    Map<String, TexState>            texStates    = Maps.newHashMap();
+    Map<String, TexState>                           texStates    = Maps.newHashMap();
 
-    Map<String, String>              formeMap     = Maps.newHashMap();
+    Map<String, String>                             formeMap     = Maps.newHashMap();
 
     public TextureHelper(Node node)
     {
@@ -430,8 +474,13 @@ public class TextureHelper implements IPartTexturer
         }
         catch (Exception e)
         {
-            int i = getState(state, false);
-            if (i > 0) return pokemob.getPokemonAIState(i);
+            LogicStates logic = logicNames.get(state);
+            if (logic != null) return pokemob.getLogicState(logic)
+                    || (logic == LogicStates.SLEEPING && (pokemob.getStatus() & IMoveConstants.STATUS_SLP) != 0);
+            GeneralStates general = generalNames.get(state);
+            if (general != null) return pokemob.getGeneralState(general);
+            CombatStates combat = combatNames.get(state);
+            if (combat != null) return pokemob.getCombatState(combat);
         }
         return false;
     }

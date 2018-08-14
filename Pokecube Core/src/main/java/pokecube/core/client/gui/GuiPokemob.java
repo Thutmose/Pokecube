@@ -36,10 +36,12 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.events.handlers.EventsHandlerClient;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.interfaces.pokemob.commandhandlers.StanceHandler;
 import pokecube.core.network.pokemobs.PacketCommand;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
@@ -188,7 +190,7 @@ public class GuiPokemob extends GuiContainer
                     ResourceLocation texture;
                     if (id == StanceHandler.BUTTONTOGGLESTAY)
                     {
-                        if (pokemob.getPokemonAIState(IMoveConstants.STAYING))
+                        if (pokemob.getGeneralState(GeneralStates.STAYING))
                         {
                             texture = new ResourceLocation(PokecubeMod.ID, "textures/gui/standing.png");
                         }
@@ -200,7 +202,7 @@ public class GuiPokemob extends GuiContainer
                     else
                     {
 
-                        if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
+                        if (pokemob.getLogicState(LogicStates.SITTING))
                         {
                             texture = new ResourceLocation(PokecubeMod.ID, "textures/gui/sitting.png");
                         }
@@ -249,7 +251,7 @@ public class GuiPokemob extends GuiContainer
                     RenderAdvancedPokemobModel<?> render = (RenderAdvancedPokemobModel<?>) o;
                     if (id == StanceHandler.BUTTONTOGGLESTAY)
                     {
-                        if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
+                        if (pokemob.getLogicState(LogicStates.SITTING))
                         {
                             render.anim = "sitting";
                         }
@@ -257,7 +259,7 @@ public class GuiPokemob extends GuiContainer
                     }
                     else
                     {
-                        if (pokemob.getPokemonAIState(IMoveConstants.STAYING)) render.anim = "idle";
+                        if (pokemob.getGeneralState(GeneralStates.STAYING)) render.anim = "idle";
                         else render.anim = "walking";
                     }
                     render.overrideAnim = true;
@@ -276,7 +278,7 @@ public class GuiPokemob extends GuiContainer
                 mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                 this.drawTexturedModalRect(x + 2, y + 2,
                         mc.getTextureMapBlocks().getAtlasSprite("minecraft:items/diamond_sword"), 16, 16);
-                if (!pokemob.getPokemonAIState(IMoveConstants.GUARDING))
+                if (!pokemob.getCombatState(CombatStates.GUARDING))
                 {
                     this.drawGradientRect(x + 2, y + 2, x + width - 2, y + width - 2, 0x88884444, 0x88884444);
                 }
@@ -407,10 +409,9 @@ public class GuiPokemob extends GuiContainer
         if (guibutton instanceof PokemobButton)
         {
             byte type = (byte) guibutton.id;
-            boolean state = type == StanceHandler.BUTTONTOGGLEGUARD
-                    ? !pokemob.getPokemonAIState(IMoveConstants.GUARDING)
-                    : type == StanceHandler.BUTTONTOGGLESIT ? !pokemob.getPokemonAIState(IMoveConstants.SITTING)
-                            : !pokemob.getPokemonAIState(IMoveConstants.STAYING);
+            boolean state = type == StanceHandler.BUTTONTOGGLEGUARD ? !pokemob.getCombatState(CombatStates.GUARDING)
+                    : type == StanceHandler.BUTTONTOGGLESIT ? !pokemob.getLogicState(LogicStates.SITTING)
+                            : !pokemob.getGeneralState(GeneralStates.STAYING);
             PacketCommand.sendCommand(pokemob, Command.STANCE, new StanceHandler(state, type));
         }
         else if (guibutton.id == 3)
@@ -481,13 +482,13 @@ public class GuiPokemob extends GuiContainer
         }
         if (stay.isMouseOver())
         {
-            if (pokemob.getPokemonAIState(IMoveConstants.STAYING)) text.add(I18n.format("pokemob.stance.stay"));
+            if (pokemob.getGeneralState(GeneralStates.STAYING)) text.add(I18n.format("pokemob.stance.stay"));
             else text.add(I18n.format("pokemob.stance.follow"));
             this.drawHoveringText(text, x, y);
         }
         if (sit.isMouseOver())
         {
-            if (pokemob.getPokemonAIState(IMoveConstants.SITTING)) text.add(I18n.format("pokemob.stance.sit"));
+            if (pokemob.getLogicState(LogicStates.SITTING)) text.add(I18n.format("pokemob.stance.sit"));
             else text.add(I18n.format("pokemob.stance.stand"));
             this.drawHoveringText(text, x, y);
         }

@@ -6,9 +6,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.moves.TerrainDamageSource;
 import thut.api.maths.Vector3;
 
@@ -33,7 +33,7 @@ public class AIEventHandler
         if (evt.getSource() instanceof TerrainDamageSource
                 && (pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving())) != null)
         {
-            if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY)
+            if (!pokemob.getCombatState(CombatStates.ANGRY)
                     && ((EntityLiving) evt.getEntityLiving()).getNavigator().noPath())
             {
                 Vector3 v = AIIdle.getRandomPointNear(evt.getEntity().getEntityWorld(), pokemob,

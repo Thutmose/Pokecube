@@ -22,9 +22,9 @@ import pokecube.core.events.EvolveEvent;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.TradeEvent;
 import pokecube.core.handlers.Config;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.utils.Permissions;
@@ -35,8 +35,8 @@ public class StatsHandler
     public void canCapture(CaptureEvent.Pre evt)
     {
         PokedexEntry entry = evt.caught.getPokedexEntry();
-        if (evt.caught.getPokemonAIState(IMoveConstants.TAMED)) evt.setResult(Result.DENY);
-        if (evt.caught.getPokemonAIState(IMoveConstants.DENYCAPTURE)) evt.setResult(Result.DENY);
+        if (evt.caught.getGeneralState(GeneralStates.TAMED)) evt.setResult(Result.DENY);
+        if (evt.caught.getGeneralState(GeneralStates.DENYCAPTURE)) evt.setResult(Result.DENY);
         Entity catcher = ((EntityPokecube) evt.pokecube).shootingEntity;
         if (!EntityPokecubeBase.canCaptureBasedOnConfigs(evt.caught))
         {

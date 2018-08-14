@@ -25,6 +25,9 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.IAIRunnable;
 import thut.api.maths.Vector3;
@@ -32,6 +35,7 @@ import thut.lib.ItemStackTools;
 
 public abstract class AIBase implements IAIRunnable
 {
+    /** Thread safe sound playing. */
     public static class PlaySound implements IRunnable
     {
         final int           dim;
@@ -61,6 +65,7 @@ public abstract class AIBase implements IAIRunnable
 
     }
 
+    /** Thread safe inventory setting for pokemobs. */
     public static class InventoryChange implements IRunnable
     {
         public final int       entity;
@@ -209,29 +214,6 @@ public abstract class AIBase implements IAIRunnable
         }
     }
 
-    public static class StateInfo implements IRunnable
-    {
-        public final int     pokemobUid;
-        public final int     state;
-        public final boolean value;
-
-        public StateInfo(int uid, int state_, boolean value_)
-        {
-            pokemobUid = uid;
-            state = state_;
-            value = value_;
-        }
-
-        @Override
-        public boolean run(World world)
-        {
-            IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityByID(pokemobUid));
-            if (pokemob == null) return false;
-            pokemob.setPokemonAIState(state, value);
-            return true;
-        }
-    }
-
     /** A thread safe object used to set the attack target of an entity.
      * 
      * @author Thutmose */
@@ -356,7 +338,7 @@ public abstract class AIBase implements IAIRunnable
         if (set)
         {
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
-            if (pokemob != null) pokemob.setPokemonAIState(IPokemob.PATHING, path != null);
+            if (pokemob != null) pokemob.setLogicState(LogicStates.PATHING, path != null);
             toRun.add(getPathManager().path);
         }
         return set;
@@ -371,16 +353,6 @@ public abstract class AIBase implements IAIRunnable
                 PokecubeMod.log(Level.WARNING, "adding duplicate move", new IllegalArgumentException());
         }
         else moves.add(new MoveInfo(attacker, targetEnt, dim, target, distance));
-    }
-
-    /** Thread safe AI state setting
-     * 
-     * @param uid
-     * @param state
-     * @param value */
-    protected void addStateInfo(int uid, int state, boolean value)
-    {
-        toRun.add(new StateInfo(uid, state, value));
     }
 
     protected void addTargetInfo(Entity attacker, Entity target)
@@ -531,9 +503,19 @@ public abstract class AIBase implements IAIRunnable
         return this;
     }
 
-    protected void setPokemobAIState(IPokemob pokemob, int state, boolean value)
+    protected void setCombatState(IPokemob pokemob, CombatStates state, boolean value)
     {
-        addStateInfo(pokemob.getEntity().getEntityId(), state, value);
+        pokemob.setCombatState(state, value);
+    }
+
+    protected void setGeneralState(IPokemob pokemob, GeneralStates state, boolean value)
+    {
+        pokemob.setGeneralState(state, value);
+    }
+
+    protected void setLogicState(IPokemob pokemob, LogicStates state, boolean value)
+    {
+        pokemob.setLogicState(state, value);
     }
 
     @Override

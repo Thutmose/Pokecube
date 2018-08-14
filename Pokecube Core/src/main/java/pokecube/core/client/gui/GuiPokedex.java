@@ -44,9 +44,9 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
@@ -456,7 +456,7 @@ public class GuiPokedex extends GuiScreen
                 if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(15, 15, 15, 255);
             }
 
-            pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
+            pokemob.setGeneralState(GeneralStates.EXITINGCUBE, false);
 
             float mobScale = pokemob.getSize();
             Vector3f dims = pokemob.getPokedexEntry().getModelSize();

@@ -17,6 +17,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 
 /** This class extends {@link EntityDamageSource} and only modifies the death
  * message.
@@ -57,7 +58,7 @@ public class PokemobDamageSource extends DamageSource
             return message;
         }
         else if (sourceMob != null && sourceMob.getPokemonOwner() == null
-                && !sourceMob.getPokemonAIState(IMoveConstants.TAMED))
+                && !sourceMob.getGeneralState(GeneralStates.TAMED))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.killed.wild",
                     par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName());

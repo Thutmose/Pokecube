@@ -10,9 +10,9 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
@@ -26,7 +26,7 @@ public class ActionDig implements IMoveAction
     @Override
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
-        if (user.getPokemonAIState(IMoveConstants.ANGRY)) return false;
+        if (user.getCombatState(CombatStates.ANGRY)) return false;
         boolean used = false;
         int count = 10;
         int level = user.getLevel();

@@ -18,6 +18,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -111,7 +113,7 @@ public class LogicMovesUpdates extends LogicBase
 
         // Run tasks that can be on server or client.
         if (pokemob.getTransformedTo() != null && entity.getAttackTarget() == null
-                && !(pokemob.getPokemonAIState(IMoveConstants.MATING) || pokemob.getLover() != null))
+                && !(pokemob.getGeneralState(GeneralStates.MATING) || pokemob.getLover() != null))
 
         {
             pokemob.setTransformedTo(null);
@@ -149,7 +151,7 @@ public class LogicMovesUpdates extends LogicBase
         byte status = pokemob.getStatus();
         if (status == IMoveConstants.STATUS_NON)
         {
-            if (pokemob.getPokemonAIState(IMoveConstants.SLEEPING))
+            if (pokemob.getLogicState(LogicStates.SLEEPING))
             {
                 int duration = 10;
                 entity.addPotionEffect(

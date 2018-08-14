@@ -36,6 +36,9 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.impl.PokemobSaves;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.entity.ai.AIThreadManager.AIStuff;
 
 public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializable<NBTTagCompound>, IPokemob
@@ -119,9 +122,9 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
             }
         }
         if (entity == null || remote) return;
-        setPokemonAIState(SITTING, false);
+        setLogicState(LogicStates.SITTING, false);
         setTargetID(entity.getEntityId());
-        setPokemonAIState(IPokemob.ANGRY, true);
+        setCombatState(CombatStates.ANGRY, true);
         if (entity != getEntity().getAttackTarget() && getAbility() != null && !entity.getEntityWorld().isRemote)
         {
             getAbility().onAgress(this, entity);
@@ -155,7 +158,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
     @Override
     public void setHeading(float heading)
     {
-        if (getPokemonAIState(CONTROLLED))
+        if (getGeneralState(GeneralStates.CONTROLLED))
         {
             getEntity().rotationYaw = heading;
             dataManager.set(params.HEADINGDW, heading);
@@ -165,7 +168,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
     @Override
     public float getHeading()
     {
-        if (getPokemonAIState(CONTROLLED)) { return dataManager.get(params.HEADINGDW); }
+        if (getGeneralState(GeneralStates.CONTROLLED)) { return dataManager.get(params.HEADINGDW); }
         return getEntity().rotationYaw;
     }
 
@@ -216,8 +219,8 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
             @Override
             public boolean shouldRun()
             {
-                if (!getPokemonAIState(IPokemob.TAMED)) return true;
-                return getPokemonAIState(IPokemob.STAYING);
+                if (!getGeneralState(GeneralStates.TAMED)) return true;
+                return getGeneralState(GeneralStates.STAYING);
             }
         };
         // Add in some vanilla-like AI classes

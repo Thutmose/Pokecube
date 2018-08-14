@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 
 public class PokemobAILookIdle extends EntityAIBase
 {
@@ -41,7 +42,7 @@ public class PokemobAILookIdle extends EntityAIBase
     @Override
     public boolean shouldContinueExecuting()
     {
-        if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0)
+        if (pokemob.getLogicState(LogicStates.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0)
             return false;
         if (idle) return this.idleTime >= 0;
         return !this.closestEntity.isEntityAlive() ? false
@@ -70,7 +71,7 @@ public class PokemobAILookIdle extends EntityAIBase
     public boolean shouldExecute()
     {
         if (theWatcher.getRNG().nextFloat() > chance) return false;
-        if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0)
+        if (pokemob.getLogicState(LogicStates.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0)
             return false;
         idle = false;
         if (this.theWatcher.getAttackTarget() != null)

@@ -37,10 +37,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.network.packets.PacketPokecube;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
@@ -168,14 +170,14 @@ public class EntityPokecube extends EntityPokecubeBase
                     else
                     {
                         entity1.getEntity().setAttackTarget(entityHit);
-                        entity1.setPokemonAIState(IMoveConstants.SITTING, false);
+                        entity1.setLogicState(LogicStates.SITTING, false);
                         if (entityHit instanceof EntityCreature)
                         {
                             ((EntityCreature) entityHit).setAttackTarget(entity1.getEntity());
                         }
                         if (pokemob != null)
                         {
-                            pokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
+                            pokemob.setCombatState(CombatStates.ANGRY, true);
                         }
                     }
                 }
@@ -277,7 +279,7 @@ public class EntityPokecube extends EntityPokecubeBase
                 this.getLookHelper().setLookPosition(diff.x, diff.y, diff.z, 360, 0);
                 this.getLookHelper().onUpdateLook();
                 this.rotationYaw = -this.rotationYawHead;
-                if (released == null || mob.isDead || !released.getPokemonAIState(IMoveConstants.EXITINGCUBE))
+                if (released == null || mob.isDead || !released.getGeneralState(GeneralStates.EXITINGCUBE))
                     this.setDead();
             }
             else this.setDead();

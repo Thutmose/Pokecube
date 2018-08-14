@@ -1,8 +1,8 @@
 package mcjty.lostcities.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
+
+import javax.annotation.Nonnull;
 
 public interface ILostChunkInfo {
 

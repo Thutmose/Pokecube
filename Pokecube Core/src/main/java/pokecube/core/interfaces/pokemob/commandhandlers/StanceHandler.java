@@ -3,9 +3,11 @@ package pokecube.core.interfaces.pokemob.commandhandlers;
 import io.netty.buffer.ByteBuf;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.events.handlers.EventsHandler;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
@@ -33,13 +35,13 @@ public class StanceHandler implements IMobCommandHandler
     {
         if (key == BUTTONTOGGLEGUARD)
         {
-            pokemob.setPokemonAIState(IMoveConstants.GUARDING, !pokemob.getPokemonAIState(IMoveConstants.GUARDING));
+            pokemob.setCombatState(CombatStates.GUARDING, !pokemob.getCombatState(CombatStates.GUARDING));
         }
         else if (key == BUTTONTOGGLESTAY)
         {
             boolean stay;
-            pokemob.setPokemonAIState(IMoveConstants.STAYING,
-                    stay = !pokemob.getPokemonAIState(IMoveConstants.STAYING));
+            pokemob.setGeneralState(GeneralStates.STAYING,
+                    stay = !pokemob.getGeneralState(GeneralStates.STAYING));
             IGuardAICapability guard = pokemob.getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
             if (stay)
             {
@@ -57,7 +59,7 @@ public class StanceHandler implements IMobCommandHandler
         }
         else if (key == BUTTONTOGGLESIT)
         {
-            pokemob.setPokemonAIState(IMoveConstants.SITTING, !pokemob.getPokemonAIState(IMoveConstants.SITTING));
+            pokemob.setLogicState(LogicStates.SITTING, !pokemob.getLogicState(LogicStates.SITTING));
         }
     }
 

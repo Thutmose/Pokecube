@@ -12,10 +12,10 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 
 public class CullCommand extends CommandBase
 {
@@ -60,7 +60,7 @@ public class CullCommand extends CommandBase
             {
                 if (!specific || e.getPokedexEntry() == entry)
                 {
-                    if (!e.getPokemonAIState(IMoveConstants.TAMED) && o.getEntityWorld().getClosestPlayerToEntity(o,
+                    if (!e.getGeneralState(GeneralStates.TAMED) && o.getEntityWorld().getClosestPlayerToEntity(o,
                             PokecubeMod.core.getConfig().maxSpawnRadius) == null)
                     {
                         o.setDead();

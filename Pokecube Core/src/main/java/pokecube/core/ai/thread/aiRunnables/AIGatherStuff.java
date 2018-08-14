@@ -24,11 +24,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import pokecube.core.PokecubeCore;
-import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
@@ -140,18 +142,20 @@ public class AIGatherStuff extends AIBase
 
     private void findStuff()
     {
-        if (pokemob.getHome() == null || pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                && pokemob.getPokemonAIState(IMoveConstants.SITTING)) { return; }
+        // Only mobs that are standing with homes should look for stuff.
+        if (pokemob.getHome() == null || pokemob.getGeneralState(GeneralStates.TAMED)
+                && pokemob.getLogicState(LogicStates.SITTING)) { return; }
         block = false;
         v.set(pokemob.getHome()).add(0, entity.height, 0);
 
-        int distance = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeMod.core.getConfig().tameGatherDistance
+        int distance = pokemob.getGeneralState(GeneralStates.TAMED) ? PokecubeMod.core.getConfig().tameGatherDistance
                 : PokecubeMod.core.getConfig().wildGatherDistance;
 
         List<Object> list = getEntitiesWithinDistance(entity, distance, EntityItem.class);
         EntityItem newTarget = null;
         double closest = 1000;
 
+        // Check for items to possibly gather.
         for (Object o : list)
         {
             EntityItem e = (EntityItem) o;
@@ -163,6 +167,7 @@ public class AIGatherStuff extends AIBase
                 newTarget = e;
             }
         }
+        // Found an item, return.
         if (newTarget != null)
         {
             stuffLoc.set(newTarget);
@@ -170,6 +175,7 @@ public class AIGatherStuff extends AIBase
             return;
         }
         v.set(entity).addTo(0, entity.getEyeHeight(), 0);
+        // check for berries to collect.
         if (!block && pokemob.eatsBerries())
         {
             Vector3 temp = v.findClosestVisibleObject(world, true, distance, berryMatcher);
@@ -183,7 +189,7 @@ public class AIGatherStuff extends AIBase
         {
 
         }
-
+        // Nothing found, enter cooldown.
         if (stuffLoc.isEmpty())
         {
             collectCooldown = COOLDOWN;
@@ -194,6 +200,7 @@ public class AIGatherStuff extends AIBase
     {
         if (!mainThread)
         {
+            // Set path to the stuff found.
             if (entity.getNavigator().noPath())
             {
                 double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
@@ -223,7 +230,7 @@ public class AIGatherStuff extends AIBase
             }
             if (dist < diff)
             {
-                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                setCombatState(pokemob, CombatStates.HUNTING, false);
                 IBlockState state = stuffLoc.getBlockState(entity.getEntityWorld());
                 Block plant = stuffLoc.getBlock(entity.getEntityWorld());
                 TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.AIR);
@@ -290,27 +297,37 @@ public class AIGatherStuff extends AIBase
     @Override
     public boolean shouldRun()
     {
-        if(!pokemob.isRoutineEnabled(AIRoutine.GATHER)) return false;
+        // Check if gather is enabled first.
+        if (!pokemob.isRoutineEnabled(AIRoutine.GATHER)) return false;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        boolean wildCheck = !PokecubeMod.core.getConfig().wildGather
-                && !pokemob.getPokemonAIState(IMoveConstants.TAMED);
+        boolean wildCheck = !PokecubeMod.core.getConfig().wildGather && !pokemob.getGeneralState(GeneralStates.TAMED);
+        // Check if this should be doing something else instead, if so return
+        // false.
         if (world == null || tameCheck() || entity.getAttackTarget() != null || wildCheck) return false;
-        int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeMod.core.getConfig().tameGatherDelay
+        int rate = pokemob.getGeneralState(GeneralStates.TAMED) ? PokecubeMod.core.getConfig().tameGatherDelay
                 : PokecubeMod.core.getConfig().wildGatherDelay;
         Random rand = new Random(pokemob.getRNGValue());
+        // Check if it has a location, if so, apply a delay and return false if
+        // not correct tick for this pokemob.
         if (pokemob.getHome() == null || entity.ticksExisted % rate != rand.nextInt(rate)) return false;
+        // Apply cooldown.
         if (collectCooldown < -2000)
         {
             collectCooldown = COOLDOWN;
         }
+        // If too far, clear location.
         if (stuffLoc.distToEntity(entity) > 32) stuffLoc.clear();
+        // If on cooldown, return.
         if (collectCooldown > 0) return false;
+
+        // check if pokemob has room in inventory for stuff, if so, return true.
         IInventory inventory = pokemob.getPokemobInventory();
         for (int i = 3; i < inventory.getSizeInventory(); i++)
         {
             hasRoom = !CompatWrapper.isValid(inventory.getStackInSlot(i));
             if (hasRoom) return true;
         }
+        // Otherwise return false.
         return false;
     }
 
@@ -319,7 +336,7 @@ public class AIGatherStuff extends AIBase
      * @return */
     private boolean tameCheck()
     {
-        return pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                && (!pokemob.getPokemonAIState(IMoveConstants.STAYING) || !PokecubeMod.core.getConfig().tameGather);
+        return pokemob.getGeneralState(GeneralStates.TAMED)
+                && (!pokemob.getGeneralState(GeneralStates.STAYING) || !PokecubeMod.core.getConfig().tameGather);
     }
 }

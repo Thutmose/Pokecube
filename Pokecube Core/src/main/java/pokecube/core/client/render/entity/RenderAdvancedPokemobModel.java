@@ -15,6 +15,9 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.moves.MovesUtils;
 import pokecube.modelloader.client.render.AbstractModelRenderer;
 import pokecube.modelloader.client.render.AnimationLoader;
@@ -105,7 +108,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         GL11.glTranslated(x, y, z);
         if ((partialTick <= 1))
         {
-            boolean exitCube = mob.getPokemonAIState(IMoveConstants.EXITINGCUBE);
+            boolean exitCube = mob.getGeneralState(GeneralStates.EXITINGCUBE);
             if (mob.isEvolving()) RenderPokemob.renderEvolution(mob, yaw);
             if (exitCube) RenderPokemob.renderExitCube(mob, yaw);
         }
@@ -171,7 +174,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
                 + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
 
         boolean asleep = pokemob.getStatus() == IMoveConstants.STATUS_SLP
-                || pokemob.getPokemonAIState(IMoveConstants.SLEEPING);
+                || pokemob.getLogicState(LogicStates.SLEEPING);
 
         if (!checkedForContactAttack)
         {
@@ -183,7 +186,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             hasRangedAttackAnimation = model.hasAnimation("attack_ranged", entity);
             checkedForRangedAttack = true;
         }
-        if (pokemob.getPokemonAIState(IPokemob.EXECUTINGMOVE))
+        if (pokemob.getCombatState(CombatStates.EXECUTINGMOVE))
         {
             int index = pokemob.getMoveIndex();
             Move_Base move;
@@ -212,7 +215,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             phase = "asleep";
             return phase;
         }
-        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && model.hasAnimation("sitting", entity))
+        if (pokemob.getLogicState(LogicStates.SITTING) && model.hasAnimation("sitting", entity))
         {
             phase = "sitting";
             return phase;

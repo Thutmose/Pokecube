@@ -13,12 +13,14 @@ import net.minecraftforge.common.IShearable;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -75,7 +77,7 @@ public class LogicMiscUpdate extends LogicBase
             checkInventory(world);
 
             // Randomly increase happiness for being outside of pokecube.
-            if (Math.random() > 0.999 && pokemob.getPokemonAIState(IMoveConstants.TAMED))
+            if (Math.random() > 0.999 && pokemob.getGeneralState(GeneralStates.TAMED))
             {
                 HappinessType.applyHappiness(pokemob, HappinessType.TIME);
             }
@@ -202,7 +204,7 @@ public class LogicMiscUpdate extends LogicBase
             particle = "aurora";// Merry Xmas
             particleIntensity = 10;
         }
-        if (pokemob.getPokemonAIState(IPokemob.MATING) && entity.ticksExisted % 10 == 0)
+        if (pokemob.getGeneralState(GeneralStates.MATING) && entity.ticksExisted % 10 == 0)
         {
             Vector3 heart = Vector3.getNewVector();
             for (int i = 0; i < 3; ++i)
@@ -265,19 +267,14 @@ public class LogicMiscUpdate extends LogicBase
     {
     }
 
-    protected boolean getAIState(int state, int array)
-    {
-        return (array & state) != 0;
-    }
-
     private void checkEvolution()
     {
-        boolean evolving = pokemob.getPokemonAIState(EVOLVING);
+        boolean evolving = pokemob.getGeneralState(GeneralStates.EVOLVING);
         if (Tools.isStack(pokemob.getHeldItem(), "everstone"))
         {
             if (evolving)
             {
-                pokemob.setPokemonAIState(EVOLVING, false);
+                pokemob.setGeneralState(GeneralStates.EVOLVING, false);
                 pokemob.setEvolutionTicks(-1);
                 evolving = false;
             }
@@ -298,13 +295,13 @@ public class LogicMiscUpdate extends LogicBase
         {
             if (num <= 0)
             {
-                pokemob.setPokemonAIState(EVOLVING, false);
+                pokemob.setGeneralState(GeneralStates.EVOLVING, false);
                 pokemob.setEvolutionTicks(-1);
             }
             if (num <= 50)
             {
                 pokemob.evolve(false, false, pokemob.getEvolutionStack());
-                pokemob.setPokemonAIState(EVOLVING, false);
+                pokemob.setGeneralState(GeneralStates.EVOLVING, false);
                 pokemob.setEvolutionTicks(-1);
             }
         }
@@ -312,13 +309,12 @@ public class LogicMiscUpdate extends LogicBase
 
     private void checkAIStates()
     {
-        int state = pokemob.getTotalAIState();
-        boolean angry = getAIState(IMoveConstants.ANGRY, state);
+        boolean angry = pokemob.getCombatState(CombatStates.ANGRY);
 
         // If angry and has no target, make it not angry.
         if (angry && lastHadTargetTime-- <= 0)
         {
-            pokemob.setPokemonAIState(ANGRY, false);
+            pokemob.setCombatState(CombatStates.ANGRY, false);
         }
         else if (angry && entity.getAttackTarget() != null)
         {
@@ -347,25 +343,25 @@ public class LogicMiscUpdate extends LogicBase
             pokemob.setRoutineState(AIRoutine.AIRBORNE, true);
         }
 
-        if (getAIState(IMoveConstants.TAMED, state) && (pokemob.getPokemonOwnerID() == null))
+        if (pokemob.getGeneralState(GeneralStates.TAMED) && (pokemob.getPokemonOwnerID() == null))
         {
-            pokemob.setPokemonAIState(IMoveConstants.TAMED, false);
+            pokemob.setGeneralState(GeneralStates.TAMED, false);
         }
         if (pokemob.getLoveTimer() > 600)
         {
             pokemob.resetLoveStatus();
         }
-        if (entity.ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
+        if (entity.ticksExisted > EXITCUBEDURATION && pokemob.getGeneralState(GeneralStates.EXITINGCUBE))
         {
-            pokemob.setPokemonAIState(EXITINGCUBE, false);
+            pokemob.setGeneralState(GeneralStates.EXITINGCUBE, false);
         }
-        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && !entity.getNavigator().noPath())
+        if (pokemob.getLogicState(LogicStates.SITTING) && !entity.getNavigator().noPath())
         {
             entity.getNavigator().clearPath();
         }
-        if (pokemob.getPokemonAIState(IMoveConstants.PATHING) && entity.getNavigator().noPath() && pathTimer++ > 10)
+        if (pokemob.getLogicState(LogicStates.PATHING) && entity.getNavigator().noPath() && pathTimer++ > 10)
         {
-            pokemob.setPokemonAIState(IMoveConstants.PATHING, false);
+            pokemob.setLogicState(LogicStates.PATHING, false);
             pathTimer = 0;
         }
     }

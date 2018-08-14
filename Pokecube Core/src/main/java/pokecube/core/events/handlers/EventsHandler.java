@@ -77,7 +77,6 @@ import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -106,7 +105,6 @@ import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.KillEvent;
 import pokecube.core.handlers.Config;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
@@ -118,6 +116,9 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
 import pokecube.core.interfaces.entity.IOngoingAffected;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
+import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.UsableItemEffects;
 import pokecube.core.items.berries.ItemBerry;
@@ -313,7 +314,7 @@ public class EventsHandler
             if (pokemob != null)
             {
                 if (pokemob != excluded && pokemob.getPokemonOwner() == player
-                        && !pokemob.getPokemonAIState(IMoveConstants.STAYING))
+                        && !pokemob.getGeneralState(GeneralStates.STAYING))
                 {
                     pokemob.returnToPokecube();
                 }
@@ -475,7 +476,7 @@ public class EventsHandler
         }
         if (evt.getEntity() instanceof IPokemob && evt.getEntity().getEntityData().getBoolean("onShoulder"))
         {
-            ((IPokemob) evt.getEntity()).setPokemonAIState(IPokemob.SITTING, false);
+            ((IPokemob) evt.getEntity()).setLogicState(LogicStates.SITTING, false);
             evt.getEntity().getEntityData().removeTag("onShoulder");
         }
         if (evt.getEntity() instanceof EntityCreeper)
@@ -494,12 +495,6 @@ public class EventsHandler
                     }, 6.0F, 1.0D, 1.2D);
             creeper.tasks.addTask(3, avoidAI);
         }
-    }
-
-    @SubscribeEvent
-    public void onCraft(ItemCraftedEvent event)
-    {
-        // TODO achievemtns for crafting stuff here.
     }
 
     @SubscribeEvent
@@ -622,7 +617,7 @@ public class EventsHandler
             }
             Item torch = Item.getItemFromBlock(Blocks.TORCH);
             boolean isOwner = false;
-            if (pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getOwner() != null)
+            if (pokemob.getGeneralState(GeneralStates.TAMED) && pokemob.getOwner() != null)
             {
                 isOwner = pokemob.getOwner().getEntityId() == player.getEntityId();
             }
@@ -717,11 +712,11 @@ public class EventsHandler
                 evt.setCancellationResult(EnumActionResult.SUCCESS);
                 return;
             }
-            boolean deny = pokemob.getPokemonAIState(IMoveConstants.NOITEMUSE);
+            boolean deny = pokemob.getCombatState(CombatStates.NOITEMUSE);
             if (deny && entity.getAttackTarget() == null)
             {
                 deny = false;
-                pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, false);
+                pokemob.setCombatState(CombatStates.NOITEMUSE, false);
             }
 
             if (deny)
@@ -793,7 +788,7 @@ public class EventsHandler
                         if (result.getType() == EnumActionResult.SUCCESS)
                         {
                             player.setHeldItem(hand, result.getResult());
-                            pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
+                            pokemob.setCombatState(CombatStates.NOITEMUSE, true);
                             evt.setCanceled(true);
                             evt.setCancellationResult(EnumActionResult.SUCCESS);
                             return;
@@ -810,7 +805,7 @@ public class EventsHandler
                         ItemStack toSet = held.copy();
                         CompatWrapper.setStackSize(toSet, 1);
                         pokemob.setHeldItem(toSet);
-                        pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
+                        pokemob.setCombatState(CombatStates.NOITEMUSE, true);
                         CompatWrapper.increment(held, -1);
                         if (!CompatWrapper.isValid(held))
                         {
@@ -853,7 +848,7 @@ public class EventsHandler
             System.err.println("Null Entry for " + pokemob);
             return false;
         }
-        if (!entry.ridable || pokemob.getPokemonAIState(IPokemob.GUARDING)) return false;
+        if (!entry.ridable || pokemob.getCombatState(CombatStates.GUARDING)) return false;
         if (!CompatWrapper.isValid(pokemob.getPokemobInventory().getStackInSlot(0))) return false;
 
         if (rider instanceof EntityPlayerMP && rider == pokemob.getOwner())
@@ -900,7 +895,7 @@ public class EventsHandler
         if (pokemob != null)
         {
             event.getEntityLiving().captureDrops = true;
-            if (!pokemob.getPokemonAIState(IMoveConstants.TAMED))
+            if (!pokemob.getGeneralState(GeneralStates.TAMED))
             {
                 for (int i = 0; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
                 {
@@ -1144,8 +1139,8 @@ public class EventsHandler
             IPokemob mob = CapabilityPokemob.getPokemobFor(o);
             if (mob != null)
             {
-                boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
-                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay)
+                boolean stay = mob.getGeneralState(GeneralStates.STAYING);
+                if (mob.getGeneralState(GeneralStates.TAMED) && (mob.getPokemonOwner() == entity) && !stay)
                     mob.returnToPokecube();
             }
         }
@@ -1208,13 +1203,13 @@ public class EventsHandler
         if (attackedMob != null && attacked.getHealth() <= 0)
         {
             boolean giveExp = !attackedMob.isShadow();
-            boolean pvp = attackedMob.getPokemonAIState(IMoveConstants.TAMED)
+            boolean pvp = attackedMob.getGeneralState(GeneralStates.TAMED)
                     && (attackedMob.getPokemonOwner() instanceof EntityPlayer);
             if (pvp && !PokecubeMod.core.getConfig().pvpExp)
             {
                 giveExp = false;
             }
-            if ((attackedMob.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
+            if ((attackedMob.getGeneralState(GeneralStates.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
             {
                 giveExp = false;
             }
@@ -1246,10 +1241,10 @@ public class EventsHandler
                 pokemob.setAttackTarget(null);
             }
             if (attacker.getPokedexEntry().isFood(attackedMob.getPokedexEntry())
-                    && attacker.getPokemonAIState(IMoveConstants.HUNTING))
+                    && attacker.getCombatState(CombatStates.HUNTING))
             {
                 attacker.eat(pokemob.getAttackTarget());
-                attacker.setPokemonAIState(IMoveConstants.HUNTING, false);
+                attacker.setCombatState(CombatStates.HUNTING, false);
                 pokemob.getNavigator().clearPath();
             }
         }

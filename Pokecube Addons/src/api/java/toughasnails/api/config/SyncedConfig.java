@@ -1,8 +1,8 @@
 package toughasnails.api.config;
 
-import com.google.common.collect.Maps;
-
 import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 public class SyncedConfig
 {

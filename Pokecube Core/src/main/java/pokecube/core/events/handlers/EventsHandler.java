@@ -90,6 +90,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability;
+import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.ai.utils.AIEventHandler;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.blocks.nests.TileEntityBasePortal;
@@ -745,8 +746,7 @@ public class EventsHandler
                         held.shrink(1);
                         if (held.isEmpty())
                         {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem,
-                                    ItemStack.EMPTY);
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                         }
                     }
                     pokemob.setLoveTimer(0);
@@ -969,6 +969,15 @@ public class EventsHandler
     @SubscribeEvent
     public void livingHurtEvent(LivingHurtEvent evt)
     {
+        // No harming invalid targets.
+        if (!AIFindTarget.validTargets.apply(evt.getEntity()))
+        {
+            evt.setCanceled(true);
+            return;
+        }
+
+        // Prevent suffocating the player if they are in wall while riding
+        // pokemob.
         if (evt.getEntityLiving() instanceof EntityPlayer && evt.getSource() == DamageSource.IN_WALL)
         {
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getRidingEntity());

@@ -61,6 +61,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -408,6 +409,7 @@ public class PokecubeCore extends PokecubeMod
         PlayerDataHandler.dataMap.add(PokecubePlayerStats.class);
         PlayerDataHandler.dataMap.add(PokecubePlayerCustomData.class);
 
+        // Register the village stuff.
         if (config.villagePokecenters)
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());
         if (config.villagePokemarts)
@@ -424,14 +426,19 @@ public class PokecubeCore extends PokecubeMod
             if (PokecubeMod.debug) PokecubeMod.log("Error registering Structures with Vanilla Minecraft");
         }
 
+        // Register worldgen stuff
         if (config.generateFossils) GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         if (config.nests) GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenTemplates(), 10);
+
         helper.initAllBlocks();
         proxy.registerKeyBindings();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
         helper.postInit();
+
+        // Check if we need to remove any mob spawns from maps.
         removeAllMobs();
+
         PokecubeItems.init();
         // Initialize the triggers.
         Triggers.init();
@@ -441,10 +448,17 @@ public class PokecubeCore extends PokecubeMod
     private void postInit(FMLPostInitializationEvent evt)
     {
         if (PokecubeMod.debug) PokecubeMod.log("Pokecube Core Post Init");
+        // Initialize the target blacklists.
+        AIFindTarget.initIDs();
+        // Send database postinit.
         Database.postInit();
+        // Apply settings for custom starters.
         StarterInfo.processStarterInfo();
+        // Initizalize abilities.
         AbilityManager.init();
+        // Fire postpostinit event to addons.
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
+        // Register all our permissions.
         Permissions.register();
     }
 

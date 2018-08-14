@@ -48,29 +48,60 @@ public class AIFindTarget extends AIBase implements IAICombat
         MinecraftForge.EVENT_BUS.register(AIFindTarget.class);
     }
 
-    public static int                     DEAGROTIMER    = 50;
-    public static Set<Class<?>>           invalidClasses = Sets.newHashSet();
-    public static Set<String>             invalidIDs     = Sets.newHashSet();
+    public static int           DEAGROTIMER    = 50;
+    public static Set<Class<?>> invalidClasses = Sets.newHashSet();
+    public static Set<String>   invalidIDs     = Sets.newHashSet();
+
+    public static void initIDs()
+    {
+        for (String s : PokecubeCore.core.getConfig().guardBlacklistClass)
+        {
+            try
+            {
+                Class<?> c = Class.forName(s, false, PokecubeCore.core.getConfig().getClass().getClassLoader());
+                AIFindTarget.invalidClasses.add(c);
+            }
+            catch (ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        for (String s : PokecubeCore.core.getConfig().guardBlacklistId)
+        {
+            if (s.endsWith("*"))
+            {
+                s = s.substring(0, s.length() - 1);
+                for (ResourceLocation res : EntityList.getEntityNameList())
+                {
+                    if (res.toString().startsWith(s))
+                    {
+                        AIFindTarget.invalidIDs.add(res.toString());
+                    }
+                }
+            }
+            else AIFindTarget.invalidIDs.add(s);
+        }
+    }
 
     /** Checks the blacklists set via configs, to see whether the target is a
      * valid choice. */
-    public static final Predicate<Entity> validTargets   = new Predicate<Entity>()
-                                                         {
-                                                             @Override
-                                                             public boolean apply(Entity input)
-                                                             {
-                                                                 String id = EntityList.getEntityString(input);
-                                                                 if (invalidIDs.contains(id)) return false;
-                                                                 ResourceLocation eid = EntityList.getKey(input);
-                                                                 if (eid != null) id = eid.toString();
-                                                                 if (invalidIDs.contains(id)) return false;
-                                                                 for (Class<?> clas : invalidClasses)
-                                                                 {
-                                                                     if (clas.isInstance(input)) return false;
-                                                                 }
-                                                                 return true;
-                                                             }
-                                                         };
+    public static final Predicate<Entity> validTargets = new Predicate<Entity>()
+    {
+        @Override
+        public boolean apply(Entity input)
+        {
+            String id = EntityList.getEntityString(input);
+            if (invalidIDs.contains(id)) return false;
+            ResourceLocation eid = EntityList.getKey(input);
+            if (eid != null) id = eid.toString();
+            if (invalidIDs.contains(id)) return false;
+            for (Class<?> clas : invalidClasses)
+            {
+                if (clas.isInstance(input)) return false;
+            }
+            return true;
+        }
+    };
 
     /** Prevents the owner from attacking their own pokemob, and takes care of
      * properly setting attack targets for whatever was hurt. */

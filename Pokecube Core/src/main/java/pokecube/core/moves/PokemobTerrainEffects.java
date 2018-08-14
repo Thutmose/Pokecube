@@ -16,6 +16,7 @@ import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -75,6 +76,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
     {
         if (entity.getEntityWorld().getTotalWorldTime() % (2 * PokecubeMod.core.getConfig().attackCooldown) != 0)
             return;
+        if (!AIFindTarget.validTargets.apply(entity)) return;
         IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
         if (mob != null)
         {

@@ -718,24 +718,10 @@ public class Config extends ConfigBase
         {
             PokecubeMod.giftLocations.add(loc);
         }
-
-        for (String s : guardBlacklistClass)
+        if (Loader.instance().hasReachedState(LoaderState.POSTINITIALIZATION))
         {
-            try
-            {
-                Class<?> c = Class.forName(s, false, getClass().getClassLoader());
-                AIFindTarget.invalidClasses.add(c);
-            }
-            catch (ClassNotFoundException e)
-            {
-                e.printStackTrace();
-            }
+            AIFindTarget.initIDs();
         }
-        for (String s : guardBlacklistId)
-        {
-            AIFindTarget.invalidIDs.add(s);
-        }
-
         for (String s : recipeDatabases)
             XMLRecipeHandler.recipeFiles.add(s);
         for (String s : rewardDatabases)

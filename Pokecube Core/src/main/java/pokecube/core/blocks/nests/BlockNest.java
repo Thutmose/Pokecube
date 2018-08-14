@@ -23,12 +23,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pokecube.core.blocks.berries.IMetaBlock;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
-import thut.lib.CompatWrapper;
 
-public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
+public class BlockNest extends Block implements ITileEntityProvider
 {
     public static ArrayList<String> types = new ArrayList<String>();
 
@@ -77,17 +75,9 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
         return state;
     }
 
-    // 1.11
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        return onBlockActivated(worldIn, pos, state, playerIn, hand, playerIn.getHeldItem(hand), side, hitX, hitY,
-                hitZ);
-    }
-
-    // 1.10
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         TileEntity tile_entity = worldIn.getTileEntity(pos);
         if (tile_entity instanceof TileEntityNest && playerIn.capabilities.isCreativeMode
@@ -98,7 +88,7 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
             TileEntityNest nest = (TileEntityNest) tile_entity;
             PokedexEntry entry = ItemPokemobEgg.getEntry(playerIn.getHeldItemMainhand());
             if (entry != null) nest.pokedexNb = entry.getPokedexNb();
-            CompatWrapper.sendChatMessage(playerIn, new TextComponentString("Set to " + entry));
+            playerIn.sendMessage(new TextComponentString("Set to " + entry));
             return true;
         }
         if (state.getValue(TYPE) == 1)
@@ -110,12 +100,6 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
             }
         }
         return true;
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        return super.getUnlocalizedName();
     }
 
     @Override

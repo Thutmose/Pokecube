@@ -109,7 +109,7 @@ public class PokedexEntryLoader
 
         public MegaEvoRule(PokedexEntry baseForme)
         {
-            this.stack = CompatWrapper.nullStack;
+            this.stack = ItemStack.EMPTY;
             this.moveName = "";
             this.ability = "";
             this.baseForme = baseForme;
@@ -1583,11 +1583,11 @@ public class PokedexEntryLoader
                 PokedexEntry formeEntry = Database.getEntry(forme);
                 if (!forme.isEmpty() && formeEntry != null)
                 {
-                    ItemStack stack = CompatWrapper.nullStack;
+                    ItemStack stack = ItemStack.EMPTY;
                     if (item_preset != null && !item_preset.isEmpty())
                     {
                         if (PokecubeMod.debug) PokecubeMod.log(forme + " " + item_preset);
-                        stack = item_preset.isEmpty() ? CompatWrapper.nullStack
+                        stack = item_preset.isEmpty() ? ItemStack.EMPTY
                                 : PokecubeItems.getStack(item_preset, false);
                     }
                     else if (rule.item != null)

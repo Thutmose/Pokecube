@@ -213,7 +213,7 @@ public class RenderHealth
                 int r = 0;
                 int g = 255;
                 int b = 0;
-                ItemStack stack = CompatWrapper.nullStack;
+                ItemStack stack = ItemStack.EMPTY;
                 if (pokemob.getPokemonOwner() == renderManager.renderViewEntity)
                 {
                     stack = entity.getHeldItemMainhand();

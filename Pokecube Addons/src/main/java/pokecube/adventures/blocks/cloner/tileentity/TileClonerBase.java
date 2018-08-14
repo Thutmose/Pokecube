@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -36,7 +37,7 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
 
     public TileClonerBase(int size, int output)
     {
-        inventory = CompatWrapper.makeList(size);
+        inventory = NonNullList.<ItemStack> withSize(size, ItemStack.EMPTY);
         this.outputSlot = output;
         for (EnumFacing side : EnumFacing.VALUES)
         {
@@ -157,7 +158,7 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
 
                 if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory.set(slot, CompatWrapper.fromTag(tag));
+                    inventory.set(slot, new ItemStack(tag));
                 }
             }
         }
@@ -245,7 +246,7 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
     public void setInventorySlotContents(int index, ItemStack stack)
     {
         check = true;
-        if (!CompatWrapper.isValid(stack)) getInventory().set(index, CompatWrapper.nullStack);
+        if (!CompatWrapper.isValid(stack)) getInventory().set(index, ItemStack.EMPTY);
         else getInventory().set(index, stack);
     }
 

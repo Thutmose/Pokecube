@@ -48,7 +48,6 @@ import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
-import thut.lib.CompatWrapper;
 
 public class JERCompat
 {
@@ -108,7 +107,7 @@ public class JERCompat
             float chance = entry.drops.get(stack);
             drops.add(drop = new LootDrop(stack, chance));
             drop.minDrop = 1;
-            drop.maxDrop = CompatWrapper.getStackSize(stack);
+            drop.maxDrop = stack.getCount();
         }
         for (ItemStack stack : entry.held.keySet())
         {

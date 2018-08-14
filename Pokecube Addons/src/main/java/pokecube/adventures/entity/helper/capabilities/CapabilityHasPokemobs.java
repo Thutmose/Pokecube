@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -170,7 +171,7 @@ public class CapabilityHasPokemobs
                     for (int j = i; j < getMaxPokemobCount() - 1; j++)
                     {
                         setPokemob(j, getPokemob(j + 1));
-                        setPokemob(j + 1, CompatWrapper.nullStack);
+                        setPokemob(j + 1, ItemStack.EMPTY);
                     }
                 }
             }
@@ -195,13 +196,13 @@ public class CapabilityHasPokemobs
         default void clear()
         {
             for (int i = 0; i < getMaxPokemobCount(); i++)
-                setPokemob(i, CompatWrapper.nullStack);
+                setPokemob(i, ItemStack.EMPTY);
         }
 
         /** The next pokemob to be sent out */
         default ItemStack getNextPokemob()
         {
-            if (getNextSlot() < 0) return CompatWrapper.nullStack;
+            if (getNextSlot() < 0) return ItemStack.EMPTY;
             for (int i = 0; i < getMaxPokemobCount(); i++)
             {
                 ItemStack stack = getPokemob(i);
@@ -210,7 +211,7 @@ public class CapabilityHasPokemobs
                     for (int j = i; j < getMaxPokemobCount() - 1; j++)
                     {
                         setPokemob(j, getPokemob(j + 1));
-                        setPokemob(j + 1, CompatWrapper.nullStack);
+                        setPokemob(j + 1, ItemStack.EMPTY);
                     }
                 }
             }
@@ -419,7 +420,8 @@ public class CapabilityHasPokemobs
             battleCooldown = Config.instance.trainerCooldown;
             resetTime = battleCooldown;
             holder = PAEventsHandler.getParameterHolder(user.getClass());
-            if (!TypeTrainer.mobTypeMapper.shouldSync(user)) pokecubes = CompatWrapper.makeList(6);
+            if (!TypeTrainer.mobTypeMapper.shouldSync(user))
+                pokecubes = NonNullList.<ItemStack> withSize(6, ItemStack.EMPTY);
         }
 
         public Set<ITargetWatcher> getTargetWatchers()
@@ -807,7 +809,7 @@ public class CapabilityHasPokemobs
                 if (nbttaglist.tagCount() != 0)
                     for (int i = 0; i < Math.min(nbttaglist.tagCount(), getMaxPokemobCount()); ++i)
                     {
-                    this.setPokemob(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
+                    this.setPokemob(i, new ItemStack(nbttaglist.getCompoundTagAt(i)));
                     }
             }
             this.setType(TypeTrainer.getTrainer(nbt.getString("type")));

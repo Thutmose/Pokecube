@@ -19,7 +19,6 @@ import pokecube.core.network.pokemobs.PacketSyncExp;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Matrix3;
-import thut.lib.CompatWrapper;
 
 public abstract class PokemobStats extends PokemobGenes
 {
@@ -99,7 +98,7 @@ public abstract class PokemobStats extends PokemobGenes
                 {
                     updateHealth();
                     ItemStack held = getHeldItem();
-                    if (!getEntity().isDead && (canEvolve(CompatWrapper.nullStack) || canEvolve(held)))
+                    if (!getEntity().isDead && (canEvolve(ItemStack.EMPTY) || canEvolve(held)))
                     {
                         levelUp(newLvl);
                         IPokemob evo = this.evolve(true, false, held);

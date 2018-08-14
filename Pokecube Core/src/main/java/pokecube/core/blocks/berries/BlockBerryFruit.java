@@ -116,9 +116,9 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public ItemStack getBerryStack(IBlockAccess world, BlockPos pos)
     {
-        if (!(world.getTileEntity(pos) instanceof TileEntityBerries)) return CompatWrapper.nullStack;
+        if (!(world.getTileEntity(pos) instanceof TileEntityBerries)) return ItemStack.EMPTY;
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
-        if (tile == null) return CompatWrapper.nullStack;
+        if (tile == null) return ItemStack.EMPTY;
         return BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
     }
 
@@ -138,8 +138,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         Random rand = world instanceof World ? ((World) world).rand : RANDOM;
         int count = quantityDropped(state, fortune, rand);
         ItemStack stack = getBerryStack(world, pos);
-        if (!CompatWrapper.isValid(stack)) return;
-        CompatWrapper.setStackSize(stack, count);
+        if (stack.isEmpty()) return;
+        stack.setCount(count);
         ret.add(stack);
     }
 

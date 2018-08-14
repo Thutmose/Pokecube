@@ -58,7 +58,6 @@ import pokecube.core.utils.Permissions;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 import thut.core.common.commands.CommandTools;
-import thut.lib.CompatWrapper;
 
 public class MoveEventsHandler
 {
@@ -110,12 +109,12 @@ public class MoveEventsHandler
             {
                 EntityItem item = items.get(i);
                 ItemStack stack = item.getItem();
-                int num = CompatWrapper.getStackSize(stack);
+                int num = stack.getCount();
                 ItemStack newstack = FurnaceRecipes.instance().getSmeltingResult(stack);
                 if (newstack != null)
                 {
                     newstack = newstack.copy();
-                    CompatWrapper.setStackSize(newstack, num);
+                    newstack.setCount(num);
                     int i1 = num;
                     float f = FurnaceRecipes.instance().getSmeltingExperience(newstack);
                     if (f == 0.0F)

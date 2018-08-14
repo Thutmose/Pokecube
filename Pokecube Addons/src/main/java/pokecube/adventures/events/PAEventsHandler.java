@@ -72,7 +72,6 @@ import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
-import thut.lib.CompatWrapper;
 
 public class PAEventsHandler
 {
@@ -424,7 +423,7 @@ public class PAEventsHandler
         DataParamHolder holder = getParameterHolder(e.getClass());
         e.getDataManager().register(holder.TYPE, "");
         for (int i = 0; i < 6; i++)
-            e.getDataManager().register(holder.pokemobs[i], CompatWrapper.nullStack);
+            e.getDataManager().register(holder.pokemobs[i], ItemStack.EMPTY);
         return holder;
     }
 

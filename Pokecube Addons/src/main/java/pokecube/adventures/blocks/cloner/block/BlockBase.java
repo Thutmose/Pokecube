@@ -134,7 +134,7 @@ public abstract class BlockBase extends BlockRotatable implements ITileEntityPro
                 float ry = rand.nextFloat() * 0.6F + 0.1F;
                 float rz = rand.nextFloat() * 0.6F + 0.1F;
                 EntityItem entity_item = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
-                        new ItemStack(item.getItem(), CompatWrapper.getStackSize(item), item.getItemDamage()));
+                        new ItemStack(item.getItem(), item.getCount(), item.getItemDamage()));
                 if (item.hasTagCompound())
                 {
                     entity_item.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
@@ -144,7 +144,7 @@ public abstract class BlockBase extends BlockRotatable implements ITileEntityPro
                 entity_item.motionY = rand.nextGaussian() * factor + 0.2F;
                 entity_item.motionZ = rand.nextGaussian() * factor;
                 world.spawnEntity(entity_item);
-                CompatWrapper.setStackSize(item, 0);
+                item.setCount(0);
             }
         }
     }

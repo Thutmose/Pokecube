@@ -9,7 +9,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import thut.lib.CompatWrapper;
 
 public abstract class ContainerBase extends Container
 {
@@ -72,7 +71,7 @@ public abstract class ContainerBase extends Container
      * slot. */
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
-        ItemStack itemstack = CompatWrapper.nullStack;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack())
         {
@@ -81,29 +80,28 @@ public abstract class ContainerBase extends Container
             int num = tile.getSizeInventory();
             if (index == 0)
             {
-                if (!this.mergeItemStack(itemstack1, num, 36 + num, true)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, num, 36 + num, true)) { return ItemStack.EMPTY; }
                 slot.onSlotChange(itemstack1, itemstack);
             }
             else if (index >= num && index < 27 + num)
             {
-                if (!this.mergeItemStack(itemstack1, 1, num, false)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, 1, num, false)) { return ItemStack.EMPTY; }
             }
             else if (index >= 27 + num && index < 36 + num)
             {
-                if (!this.mergeItemStack(itemstack1, num, 27 + num, false)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, num, 27 + num, false)) { return ItemStack.EMPTY; }
             }
-            else if (!this.mergeItemStack(itemstack1, num, 36 + num, false)) { return CompatWrapper.nullStack; }
+            else if (!this.mergeItemStack(itemstack1, num, 36 + num, false)) { return ItemStack.EMPTY; }
 
-            if (!CompatWrapper.isValid(itemstack1))
+            if (itemstack1.isEmpty())
             {
-                slot.putStack(CompatWrapper.nullStack);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {
                 slot.onSlotChanged();
             }
-            if (CompatWrapper.getStackSize(itemstack1) != CompatWrapper
-                    .getStackSize(itemstack)) { return CompatWrapper.nullStack; }
+            if (itemstack1.getCount() != itemstack.getCount()) { return ItemStack.EMPTY; }
             slot.onTake(playerIn, itemstack1);
         }
         return itemstack;

@@ -35,7 +35,6 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
-import thut.lib.CompatWrapper;
 
 public class EditPokemobPage extends Page
 {
@@ -720,7 +719,7 @@ public class EditPokemobPage extends Page
         }
         else
         {
-            parent.trainer.setPokemob(pokemobIndex, CompatWrapper.nullStack);
+            parent.trainer.setPokemob(pokemobIndex, ItemStack.EMPTY);
         }
         PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
         NBTBase tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, parent.trainer,

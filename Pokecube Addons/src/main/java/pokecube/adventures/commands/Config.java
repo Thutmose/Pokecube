@@ -13,8 +13,6 @@ import java.util.logging.Level;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -28,7 +26,6 @@ import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.utils.DBLoader;
-import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.database.worldgen.WorldgenHandler;
 import pokecube.core.database.worldgen.WorldgenHandler.Structure;
@@ -39,7 +36,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import thut.api.terrain.BiomeType;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
-import thut.lib.CompatWrapper;
 
 public class Config extends ConfigBase
 {
@@ -261,38 +257,6 @@ public class Config extends ConfigBase
                 SpawnHandler.subBiomeLevels.put(b.getType(), variance);
             }
         }
-    }
-
-    protected ItemStack parseItemStack(String toParse)
-    {
-        String[] drop = toParse.split(",");
-        int count = 1;
-        String name = drop[0];
-        int meta = 0;
-        try
-        {
-            if (drop.length > 1) count = Integer.parseInt(drop[1]);
-            if (drop.length > 2) meta = Integer.parseInt(drop[2]);
-        }
-        catch (NumberFormatException e)
-        {
-
-        }
-
-        Item item = PokecubeItems.getItem(name);
-        ItemStack stack = PokecubeItems.getStack(name);
-        ItemStack toAdd;
-        if (item == null && stack == null) { return null; }
-        if (item != null)
-        {
-            toAdd = new ItemStack(item, count, meta);
-        }
-        else
-        {
-            toAdd = stack;
-            CompatWrapper.setStackSize(toAdd, count);
-        }
-        return toAdd;
     }
 
     public void postInit()

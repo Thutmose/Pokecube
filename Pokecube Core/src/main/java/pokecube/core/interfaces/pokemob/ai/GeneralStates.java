@@ -43,6 +43,8 @@ public enum GeneralStates
         return mask;
     }
 
+    /** if this is false, then the value will be cleared whenever the pokemob is
+     * loaded from nbt. */
     public boolean persists()
     {
         return persist;

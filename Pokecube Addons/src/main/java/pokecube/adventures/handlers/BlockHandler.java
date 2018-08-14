@@ -5,6 +5,8 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.BlockAFA;
 import pokecube.adventures.blocks.afa.BlockCommander;
@@ -24,22 +26,22 @@ import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
-import thut.lib.CompatWrapper;
 
 public class BlockHandler
 {
-    public static List<Block> blocks  = Lists.newArrayList();
+    public static List<Block> blocks = Lists.newArrayList();
 
     public static void registerTiles(Object registry)
     {
-        CompatWrapper.registerTileEntity(TileEntityWarpPad.class, PokecubeAdv.ID + ":warppad");
-        CompatWrapper.registerTileEntity(TileEntityCloner.class, PokecubeAdv.ID + ":cloner");
-        CompatWrapper.registerTileEntity(TileEntitySplicer.class, PokecubeAdv.ID + ":splicer");
-        CompatWrapper.registerTileEntity(TileEntityGeneExtractor.class, PokecubeAdv.ID + ":extractor");
-        CompatWrapper.registerTileEntity(TileEntityAFA.class, PokecubeAdv.ID + ":afa");
-        CompatWrapper.registerTileEntity(TileEntityDaycare.class, PokecubeAdv.ID + ":daycare");
-        CompatWrapper.registerTileEntity(TileEntityCommander.class, PokecubeAdv.ID + ":commander");
-        CompatWrapper.registerTileEntity(TileEntitySiphon.class, PokecubeAdv.ID + ":pokesiphon");
+        GameRegistry.registerTileEntity(TileEntityWarpPad.class, new ResourceLocation(PokecubeAdv.ID + ":warppad"));
+        GameRegistry.registerTileEntity(TileEntityCloner.class, new ResourceLocation(PokecubeAdv.ID + ":cloner"));
+        GameRegistry.registerTileEntity(TileEntitySplicer.class, new ResourceLocation(PokecubeAdv.ID + ":splicer"));
+        GameRegistry.registerTileEntity(TileEntityGeneExtractor.class,
+                new ResourceLocation(PokecubeAdv.ID + ":extractor"));
+        GameRegistry.registerTileEntity(TileEntityAFA.class, new ResourceLocation(PokecubeAdv.ID + ":afa"));
+        GameRegistry.registerTileEntity(TileEntityDaycare.class, new ResourceLocation(PokecubeAdv.ID + ":daycare"));
+        GameRegistry.registerTileEntity(TileEntityCommander.class, new ResourceLocation(PokecubeAdv.ID + ":commander"));
+        GameRegistry.registerTileEntity(TileEntitySiphon.class, new ResourceLocation(PokecubeAdv.ID + ":pokesiphon"));
     }
 
     public static void registerBlocks(Object registry)

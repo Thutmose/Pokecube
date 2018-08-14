@@ -39,6 +39,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -67,7 +68,6 @@ import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
 import pokecube.core.items.vitamins.ItemCandy;
 import pokecube.core.items.vitamins.ItemVitamin;
-import thut.lib.CompatWrapper;
 
 public class ItemHandler extends Mod_Pokecube_Helper
 {
@@ -96,8 +96,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addBerryTiles(Object registry)
     {
-        CompatWrapper.registerTileEntity(TileEntityBerries.class, "pokecube:berries");
-        CompatWrapper.registerTileEntity(TileEntityTickBerries.class, "pokecube:berries_ticks");
+        GameRegistry.registerTileEntity(TileEntityBerries.class, new ResourceLocation("pokecube:berries"));
+        GameRegistry.registerTileEntity(TileEntityTickBerries.class, new ResourceLocation("pokecube:berries_ticks"));
     }
 
     private static void addBerryItems(Object registry)
@@ -184,14 +184,17 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addMiscTiles(Object registry)
     {
-        CompatWrapper.registerTileEntity(TileEntityPokecubeTable.class, "pokecube:pokecube_table");
-        CompatWrapper.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class, "pokecube:pokecenter");
-        CompatWrapper.registerTileEntity(TileEntityNest.class, "pokecube:pokemobnest");
-        CompatWrapper.registerTileEntity(TileEntityBasePortal.class, "pokecube:pokecubebaseportal");
-        CompatWrapper.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pokecube:pc");
-        CompatWrapper.registerTileEntity(TileEntityTradingTable.class, "pokecube:tradingtable");
-        CompatWrapper.registerTileEntity(TileEntityTMMachine.class, "pokecube:tm_machine");
-        CompatWrapper.registerTileEntity(TileEntityRepel.class, "pokecube:repel");
+        GameRegistry.registerTileEntity(TileEntityPokecubeTable.class, new ResourceLocation("pokecube:pokecube_table"));
+        GameRegistry.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class,
+                new ResourceLocation("pokecube:pokecenter"));
+        GameRegistry.registerTileEntity(TileEntityNest.class, new ResourceLocation("pokecube:pokemobnest"));
+        GameRegistry.registerTileEntity(TileEntityBasePortal.class,
+                new ResourceLocation("pokecube:pokecubebaseportal"));
+        GameRegistry.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class,
+                new ResourceLocation("pokecube:pc"));
+        GameRegistry.registerTileEntity(TileEntityTradingTable.class, new ResourceLocation("pokecube:tradingtable"));
+        GameRegistry.registerTileEntity(TileEntityTMMachine.class, new ResourceLocation("pokecube:tm_machine"));
+        GameRegistry.registerTileEntity(TileEntityRepel.class, new ResourceLocation("pokecube:repel"));
     }
 
     private static void addMiscItems(Object registry)

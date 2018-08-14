@@ -393,13 +393,13 @@ public class PokecubeItems extends Items
 
     public static ItemStack getRandomMeteorDrop()
     {
-        if (meteorDrops.size() == 0) return CompatWrapper.nullStack;
+        if (meteorDrops.size() == 0) return ItemStack.EMPTY;
         return meteorDrops.get(new Random().nextInt(meteorDrops.size())).copy();
     }
 
     public static ItemStack getRandomSpawnerDrop()
     {
-        if (spawnerDrops.size() == 0) return CompatWrapper.nullStack;
+        if (spawnerDrops.size() == 0) return ItemStack.EMPTY;
         return spawnerDrops.get(new Random().nextInt(spawnerDrops.size())).copy();
     }
 
@@ -410,7 +410,7 @@ public class PokecubeItems extends Items
 
     public static ItemStack getStack(String name, boolean stacktrace)
     {
-        if (name == null) return CompatWrapper.nullStack;
+        if (name == null) return ItemStack.EMPTY;
         NonNullList<ItemStack> stacks = OreDictionary.getOres(name);
         if (!stacks.isEmpty()) return stacks.get(0).copy();
         Item item = getItem(name);
@@ -419,7 +419,7 @@ public class PokecubeItems extends Items
         {
             PokecubeMod.log(Level.WARNING, name + " Not found in list of items.", new NullPointerException());
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     public static void init()
@@ -504,7 +504,7 @@ public class PokecubeItems extends Items
     public static ItemStack makeCandyStack()
     {
         ItemStack candy = PokecubeItems.getStack("rarecandy");
-        if (!CompatWrapper.isValid(candy)) return CompatWrapper.nullStack;
+        if (!CompatWrapper.isValid(candy)) return ItemStack.EMPTY;
         makeStackValid(candy);
         candy.setStackDisplayName("Rare Candy");
         return candy;

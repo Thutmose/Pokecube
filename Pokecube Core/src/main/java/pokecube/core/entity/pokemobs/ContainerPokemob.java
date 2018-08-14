@@ -141,7 +141,7 @@ public class ContainerPokemob extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int p_82846_2_)
     {
-        ItemStack itemstack = CompatWrapper.nullStack;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(p_82846_2_);
 
         if (hasSlots && slot != null && slot.getHasStack())
@@ -151,7 +151,7 @@ public class ContainerPokemob extends Container
             int size = this.pokemobInv.getSizeInventory();
             if (p_82846_2_ < size)
             {
-                if (!this.mergeItemStack(itemstack1, size, size, true)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, size, size, true)) { return ItemStack.EMPTY; }
             }
             else if (this.getSlot(1).isItemValid(itemstack1) && !this.getSlot(1).getHasStack())
             {
@@ -159,13 +159,13 @@ public class ContainerPokemob extends Container
             }
             else if (this.getSlot(0).isItemValid(itemstack1))
             {
-                if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return ItemStack.EMPTY; }
             }
-            else if (size <= 2 || !this.mergeItemStack(itemstack1, 2, size, false)) { return CompatWrapper.nullStack; }
+            else if (size <= 2 || !this.mergeItemStack(itemstack1, 2, size, false)) { return ItemStack.EMPTY; }
 
             if (!CompatWrapper.isValid(itemstack1))
             {
-                slot.putStack(CompatWrapper.nullStack);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {

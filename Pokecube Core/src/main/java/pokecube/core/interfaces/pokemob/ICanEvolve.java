@@ -39,7 +39,6 @@ import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.api.network.PacketHandler;
-import thut.lib.CompatWrapper;
 
 public interface ICanEvolve extends IHasEntry, IHasOwner
 {
@@ -166,7 +165,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
      * @return whether should evolve */
     default boolean canEvolve(ItemStack stack)
     {
-        if (stack != CompatWrapper.nullStack && Tools.isStack(stack, "everstone")) return false;
+        if (stack != ItemStack.EMPTY && Tools.isStack(stack, "everstone")) return false;
         if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
         {
             for (EvolutionData d : getPokedexEntry().getEvolutions())
@@ -365,7 +364,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 if (d.shouldEvolve(thisMob, stack))
                 {
                     evol = d.evolution;
-                    if (!d.shouldEvolve(thisMob, CompatWrapper.nullStack)) neededItem = true;
+                    if (!d.shouldEvolve(thisMob, ItemStack.EMPTY)) neededItem = true;
                     data = d;
                     break;
                 }
@@ -381,7 +380,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 // Remove held item if it had one.
                 if (neededItem && stack == thisMob.getHeldItem())
                 {
-                    evo.setHeldItem(CompatWrapper.nullStack);
+                    evo.setHeldItem(ItemStack.EMPTY);
                 }
                 // Init things like moves.
                 evo.getMoveStats().oldLevel = data.level - 1;
@@ -413,7 +412,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 if (d.shouldEvolve(thisMob, stack))
                 {
                     evol = d.evolution;
-                    if (!d.shouldEvolve(thisMob, CompatWrapper.nullStack) && stack == thisMob.getHeldItem())
+                    if (!d.shouldEvolve(thisMob, ItemStack.EMPTY) && stack == thisMob.getHeldItem())
                         neededItem = true;
                     data = d;
                     break;
@@ -429,7 +428,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 {
                     // If delayed, set the pokemob as starting to evolve, and
                     // set the evolution for display effects.
-                    if (stack != CompatWrapper.nullStack) setEvolutionStack(stack.copy());
+                    if (stack != ItemStack.EMPTY) setEvolutionStack(stack.copy());
                     this.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
                     this.setEvolvingEffects(evol);
                     this.setGeneralState(GeneralStates.EVOLVING, true);
@@ -445,7 +444,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     // Clear held item if used for evolving.
                     if (neededItem)
                     {
-                        evo.setHeldItem(CompatWrapper.nullStack);
+                        evo.setHeldItem(ItemStack.EMPTY);
                     }
                     evt = new EvolveEvent.Post(evo);
                     MinecraftForge.EVENT_BUS.post(evt);

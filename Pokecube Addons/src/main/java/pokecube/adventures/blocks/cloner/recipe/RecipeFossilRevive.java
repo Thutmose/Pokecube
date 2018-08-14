@@ -235,7 +235,7 @@ public class RecipeFossilRevive implements IPoweredRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     public int getRecipeSize()
@@ -246,7 +246,7 @@ public class RecipeFossilRevive implements IPoweredRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     ResourceLocation registryName;

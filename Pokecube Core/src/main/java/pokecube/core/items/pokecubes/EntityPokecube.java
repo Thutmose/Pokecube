@@ -83,7 +83,7 @@ public class EntityPokecube extends EntityPokecubeBase
 
         static LootEntry createFromNBT(NBTTagCompound nbt)
         {
-            ItemStack loot = CompatWrapper.fromTag(nbt.getCompoundTag("loot"));
+            ItemStack loot = new ItemStack(nbt.getCompoundTag("loot"));
             return new LootEntry(loot, nbt.getInteger("rolls"));
         }
 
@@ -468,7 +468,7 @@ public class EntityPokecube extends EntityPokecubeBase
                         if (cannotCollect(player)) return false;
                         players.add(new CollectEntry(player.getCachedUniqueIdString(),
                                 getEntityWorld().getTotalWorldTime()));
-                        ItemStack loot = CompatWrapper.nullStack;
+                        ItemStack loot = ItemStack.EMPTY;
 
                         if (!lootStacks.isEmpty())
                         {

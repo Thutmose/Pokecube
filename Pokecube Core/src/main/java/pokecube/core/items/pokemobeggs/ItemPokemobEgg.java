@@ -197,7 +197,7 @@ public class ItemPokemobEgg extends Item
             mob.setPokemonOwner(owner);
             mob.setGeneralState(GeneralStates.TAMED, true);
             mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
-            mob.setHeldItem(CompatWrapper.nullStack);
+            mob.setHeldItem(ItemStack.EMPTY);
         }
     }
 
@@ -304,7 +304,7 @@ public class ItemPokemobEgg extends Item
                             entity.getRNG().nextInt(7) + 1));
                 }
             }
-            entity.setHeldItem(EnumHand.MAIN_HAND, CompatWrapper.nullStack);
+            entity.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
             entity.playLivingSound();
         }
 
@@ -316,7 +316,7 @@ public class ItemPokemobEgg extends Item
     {
         this.setCreativeTab(null);
     }
-    
+
     @Override
     public boolean getShareTag()
     {
@@ -330,7 +330,8 @@ public class ItemPokemobEgg extends Item
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced)
     {
         PokedexEntry entry = getEntry(stack);
-        if (entry != null) tooltip.add(1, I18n.format("item.pokemobegg.named.name", I18n.format(entry.getUnlocalizedName())));
+        if (entry != null)
+            tooltip.add(1, I18n.format("item.pokemobegg.named.name", I18n.format(entry.getUnlocalizedName())));
     }
 
     public boolean dropEgg(World world, ItemStack stack, Vector3 location, Entity placer)
@@ -406,7 +407,7 @@ public class ItemPokemobEgg extends Item
         ItemStack stack = playerIn.getHeldItem(hand);
         if (dropEgg(worldIn, stack, loc, playerIn) && !playerIn.capabilities.isCreativeMode)
         {
-            CompatWrapper.increment(stack, -1);
+            stack.shrink(1);
         }
         return EnumActionResult.SUCCESS;
     }

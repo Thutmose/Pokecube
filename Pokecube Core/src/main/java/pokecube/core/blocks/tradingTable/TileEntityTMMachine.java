@@ -22,6 +22,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -47,7 +48,7 @@ import thut.lib.CompatWrapper;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")
 public class TileEntityTMMachine extends TileEntityOwnable implements DefaultInventory, SimpleComponent
 {
-    private List<ItemStack>                   inventory = CompatWrapper.makeList(1);
+    private List<ItemStack>                   inventory = NonNullList.<ItemStack> withSize(1, ItemStack.EMPTY);
 
     public HashMap<String, ArrayList<String>> moves     = new HashMap<String, ArrayList<String>>();
 
@@ -335,7 +336,7 @@ public class TileEntityTMMachine extends TileEntityOwnable implements DefaultInv
     {
         super.readFromNBT(tagCompound);
         NBTBase temp = tagCompound.getTag("Inventory");
-        inventory = CompatWrapper.makeList(1);
+        inventory = NonNullList.<ItemStack> withSize(1, ItemStack.EMPTY);
         if (temp instanceof NBTTagList)
         {
             NBTTagList tagList = (NBTTagList) temp;
@@ -346,7 +347,7 @@ public class TileEntityTMMachine extends TileEntityOwnable implements DefaultInv
 
                 if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory.set(slot, CompatWrapper.fromTag(tag));
+                    inventory.set(slot, new ItemStack(tag));
                 }
             }
         }

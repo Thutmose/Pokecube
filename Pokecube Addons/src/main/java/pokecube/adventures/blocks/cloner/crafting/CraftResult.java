@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.item.ItemStack;
-import thut.lib.CompatWrapper;
 
 public class CraftResult extends InventoryCraftResult
 {
@@ -20,7 +19,7 @@ public class CraftResult extends InventoryCraftResult
     @Override
     public void clear()
     {
-        inventory.setInventorySlotContents(9, CompatWrapper.nullStack);
+        inventory.setInventorySlotContents(9, ItemStack.EMPTY);
     }
 
     @Override

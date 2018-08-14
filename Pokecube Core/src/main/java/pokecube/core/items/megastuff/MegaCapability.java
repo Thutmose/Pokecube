@@ -86,7 +86,7 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
         if (stack.getItem() instanceof ItemMegawearable) return true;
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("gemTag"))
         {
-            ItemStack stack2 = CompatWrapper.fromTag(CompatWrapper.getTag(stack, "gemTag", false));
+            ItemStack stack2 = new ItemStack(CompatWrapper.getTag(stack, "gemTag", false));
             if (stack2 != null) return getEntry(stack2) != null;
         }
         return false;
@@ -133,8 +133,8 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
                 .getEntry(stack.getItem().getRegistryName().getResourcePath()); }
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("gemTag"))
         {
-            ItemStack stack2 = CompatWrapper.fromTag(CompatWrapper.getTag(stack, "gemTag", false));
-            if (stack2 != null) return getEntry(stack2);
+            ItemStack stack2 = new ItemStack(CompatWrapper.getTag(stack, "gemTag", false));
+            if (!stack2.isEmpty()) return getEntry(stack2);
         }
         return null;
     }

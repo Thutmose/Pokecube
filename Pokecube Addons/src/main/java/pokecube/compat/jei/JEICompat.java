@@ -47,7 +47,6 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.InteractionLogic.Interaction;
-import thut.lib.CompatWrapper;
 
 @JEIPlugin
 public class JEICompat implements IModPlugin
@@ -127,7 +126,7 @@ public class JEICompat implements IModPlugin
                         if (form != null)
                         {
                             PokemobInteractRecipe recipe = new PokemobInteractRecipe(e, action,
-                                    CompatWrapper.nullStack);
+                                    ItemStack.EMPTY);
                             if (!pokemobInteractRecipes.contains(recipe)) pokemobInteractRecipes.add(recipe);
                         }
                         for (ItemStack stack : action.stacks)

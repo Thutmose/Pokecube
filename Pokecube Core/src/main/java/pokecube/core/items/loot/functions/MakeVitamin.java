@@ -18,7 +18,6 @@ import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.vitamins.ItemVitamin;
-import thut.lib.CompatWrapper;
 
 public class MakeVitamin extends LootFunction
 {
@@ -52,7 +51,7 @@ public class MakeVitamin extends LootFunction
         }
         if (vitamins.containsKey(arg))
         {
-            ItemStack vitamin = new ItemStack(VITAMIN, CompatWrapper.getStackSize(stack), vitamins.get(arg));
+            ItemStack vitamin = new ItemStack(VITAMIN, stack.getCount(), vitamins.get(arg));
             vitamin.setTagCompound(stack.getTagCompound());
             return vitamin;
         }

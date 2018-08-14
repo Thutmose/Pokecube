@@ -126,9 +126,9 @@ public class TradeEntryLoader
                 }
                 Map<QName, String> values = trade.sell.values;
                 TrainerTrade recipe;
-                ItemStack sell = CompatWrapper.nullStack;
-                ItemStack buy1 = CompatWrapper.nullStack;
-                ItemStack buy2 = CompatWrapper.nullStack;
+                ItemStack sell = ItemStack.EMPTY;
+                ItemStack buy1 = ItemStack.EMPTY;
+                ItemStack buy2 = ItemStack.EMPTY;
                 if (trade.sell.tag != null) values.put(new QName("tag"), trade.sell.tag);
                 sell = Tools.getStack(values);
                 values = trade.buys.get(0).values;
@@ -170,8 +170,8 @@ public class TradeEntryLoader
                     sell.setItemDamage(0);
                     Map<QName, String> values;
                     TrainerTrade recipe;
-                    ItemStack buy1 = CompatWrapper.nullStack;
-                    ItemStack buy2 = CompatWrapper.nullStack;
+                    ItemStack buy1 = ItemStack.EMPTY;
+                    ItemStack buy2 = ItemStack.EMPTY;
                     values = trade.buys.get(0).values;
                     if (trade.buys.get(0).tag != null) values.put(new QName("tag"), trade.buys.get(0).tag);
                     buy1 = Tools.getStack(values);
@@ -198,8 +198,8 @@ public class TradeEntryLoader
                 sell.setItemDamage(0);
                 Map<QName, String> values;
                 TrainerTrade recipe;
-                ItemStack buy1 = CompatWrapper.nullStack;
-                ItemStack buy2 = CompatWrapper.nullStack;
+                ItemStack buy1 = ItemStack.EMPTY;
+                ItemStack buy2 = ItemStack.EMPTY;
                 values = trade.buys.get(0).values;
                 if (trade.buys.get(0).tag != null) values.put(new QName("tag"), trade.buys.get(0).tag);
                 buy1 = Tools.getStack(values);
@@ -227,8 +227,8 @@ public class TradeEntryLoader
                 sell.setItemDamage(0);
                 Map<QName, String> values;
                 TrainerTrade recipe;
-                ItemStack buy1 = CompatWrapper.nullStack;
-                ItemStack buy2 = CompatWrapper.nullStack;
+                ItemStack buy1 = ItemStack.EMPTY;
+                ItemStack buy2 = ItemStack.EMPTY;
                 values = trade.buys.get(0).values;
                 if (trade.buys.get(0).tag != null) values.put(new QName("tag"), trade.buys.get(0).tag);
                 buy1 = Tools.getStack(values);
@@ -257,8 +257,8 @@ public class TradeEntryLoader
                 ItemStack sell = ItemTM.getTM(name);
                 Map<QName, String> values;
                 TrainerTrade recipe;
-                ItemStack buy1 = CompatWrapper.nullStack;
-                ItemStack buy2 = CompatWrapper.nullStack;
+                ItemStack buy1 = ItemStack.EMPTY;
+                ItemStack buy2 = ItemStack.EMPTY;
                 values = trade.buys.get(0).values;
                 if (trade.buys.get(0).tag != null) values.put(new QName("tag"), trade.buys.get(0).tag);
                 buy1 = Tools.getStack(values);
@@ -286,8 +286,8 @@ public class TradeEntryLoader
                     {
                         Map<QName, String> values;
                         TrainerTrade recipe;
-                        ItemStack buy1 = CompatWrapper.nullStack;
-                        ItemStack buy2 = CompatWrapper.nullStack;
+                        ItemStack buy1 = ItemStack.EMPTY;
+                        ItemStack buy2 = ItemStack.EMPTY;
                         values = trade.buys.get(0).values;
                         if (trade.buys.get(0).tag != null) values.put(new QName("tag"), trade.buys.get(0).tag);
                         buy1 = Tools.getStack(values);
@@ -318,7 +318,7 @@ public class TradeEntryLoader
                         TrainerTrade recipe;
                         if (trade.sell.tag != null) values.put(new QName("tag"), trade.sell.tag);
                         ItemStack sell = Tools.getStack(values);
-                        recipe = new TrainerTrade(badge, CompatWrapper.nullStack, sell);
+                        recipe = new TrainerTrade(badge, ItemStack.EMPTY, sell);
                         values = trade.values;
                         if (values.containsKey(CHANCE)) recipe.chance = Float.parseFloat(values.get(CHANCE));
                         if (values.containsKey(MIN)) recipe.min = Integer.parseInt(values.get(MIN));

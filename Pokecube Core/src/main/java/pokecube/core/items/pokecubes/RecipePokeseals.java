@@ -19,7 +19,7 @@ import thut.lib.IDefaultRecipe;
 
 public class RecipePokeseals implements IDefaultRecipe
 {
-    private ItemStack toCraft = CompatWrapper.nullStack;
+    private ItemStack toCraft = ItemStack.EMPTY;
     // private static final String __OBFID = "CL_00000083";
 
     /** Returns an Item that is the result of this recipe */
@@ -40,7 +40,7 @@ public class RecipePokeseals implements IDefaultRecipe
     @Override
     public boolean matches(InventoryCrafting craft, World world)
     {
-        this.toCraft = CompatWrapper.nullStack;
+        this.toCraft = ItemStack.EMPTY;
         int cube = 0;
         int paper = 0;
         int gunpowder = 0;

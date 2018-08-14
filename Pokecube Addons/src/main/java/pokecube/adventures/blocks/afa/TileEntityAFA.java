@@ -21,6 +21,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
@@ -52,7 +53,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     public static JEP parserS;
     public IPokemob   pokemob        = null;
     boolean           shiny          = false;
-    List<ItemStack>   inventory      = CompatWrapper.makeList(1);
+    List<ItemStack>   inventory      = NonNullList.<ItemStack> withSize(1, ItemStack.EMPTY);
     public int[]      shift          = { 0, 0, 0 };
     public int        scale          = 1000;
     public String     animation      = "idle";
@@ -106,7 +107,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void clear()
     {
-        inventory.set(0, CompatWrapper.nullStack);
+        inventory.set(0, ItemStack.EMPTY);
     }
 
     @Override
@@ -123,11 +124,11 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
             itemStack = inventory.get(slot).splitStack(count);
             if (!CompatWrapper.isValid(inventory.get(slot)))
             {
-                inventory.set(slot, CompatWrapper.nullStack);
+                inventory.set(slot, ItemStack.EMPTY);
             }
             return itemStack;
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -136,10 +137,10 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         if (CompatWrapper.isValid(inventory.get(slot)))
         {
             ItemStack stack = inventory.get(slot);
-            inventory.set(slot, CompatWrapper.nullStack);
+            inventory.set(slot, ItemStack.EMPTY);
             return stack;
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Callback(doc = "Returns the current loaded ability")
@@ -319,7 +320,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
 
                 if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory.set(slot, CompatWrapper.fromTag(tag));
+                    inventory.set(slot, new ItemStack(tag));
                 }
             }
         }
@@ -414,7 +415,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
+        if (CompatWrapper.isValid(stack)) inventory.set(index, ItemStack.EMPTY);
         inventory.set(index, stack);
     }
 

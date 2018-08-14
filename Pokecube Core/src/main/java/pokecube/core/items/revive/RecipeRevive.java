@@ -16,7 +16,7 @@ import thut.lib.IDefaultRecipe;
 
 public class RecipeRevive implements IDefaultRecipe
 {
-    private ItemStack healed = CompatWrapper.nullStack;
+    private ItemStack healed = ItemStack.EMPTY;
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
@@ -33,11 +33,11 @@ public class RecipeRevive implements IDefaultRecipe
     @Override
     public boolean matches(InventoryCrafting craftMatrix, World world)
     {
-        healed = CompatWrapper.nullStack;
+        healed = ItemStack.EMPTY;
         boolean revive = false;
         boolean pokeseal = false;
-        ItemStack other = CompatWrapper.nullStack;
-        ItemStack seal = CompatWrapper.nullStack;
+        ItemStack other = ItemStack.EMPTY;
+        ItemStack seal = ItemStack.EMPTY;
 
         int n = 0;
         for (int i = 0; i < craftMatrix.getSizeInventory(); i++)

@@ -142,7 +142,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     protected void entityInit()
     {
         super.entityInit();
-        this.getDataManager().register(ITEM, CompatWrapper.nullStack);
+        this.getDataManager().register(ITEM, ItemStack.EMPTY);
         getDataManager().register(RELEASING, false);
         getDataManager().register(ENTITYID, -1);
     }
@@ -376,7 +376,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         tilt = nbttagcompound.getInteger("tilt");
         time = nbttagcompound.getInteger("time");
         NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Item");
-        this.setItem(CompatWrapper.fromTag(nbttagcompound1));
+        this.setItem(new ItemStack(nbttagcompound1));
 
         ItemStack item = getItem();
 

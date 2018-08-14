@@ -22,6 +22,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.world.World;
@@ -84,16 +85,16 @@ public class TypeTrainer
         {
             ItemStack buy1 = this.getItemToBuy();
             ItemStack buy2 = this.getSecondItemToBuy();
-            if (CompatWrapper.isValid(buy1))
+            if (!buy1.isEmpty())
             {
                 buy1 = buy1.copy();
             }
-            if (CompatWrapper.isValid(buy2))
+            if (!buy2.isEmpty())
             {
                 buy2 = buy2.copy();
             }
             ItemStack sell = this.getItemToSell();
-            if (CompatWrapper.isValid(sell))
+            if (!sell.isEmpty())
             {
                 sell = sell.copy();
             }
@@ -104,7 +105,7 @@ public class TypeTrainer
             if (min != -1 && max != -1)
             {
                 if (max < min) max = min;
-                CompatWrapper.setStackSize(sell, min + new Random().nextInt(1 + max - min));
+                sell.setCount(min + new Random().nextInt(1 + max - min));
             }
             // TODO Find out where the mess with client side so the 65 isn't
             // needed.
@@ -179,7 +180,7 @@ public class TypeTrainer
         TypeTrainer type = trainer.getType();
 
         for (int i = 0; i < 6; i++)
-            trainer.setPokemob(i, CompatWrapper.nullStack);
+            trainer.setPokemob(i, ItemStack.EMPTY);
 
         if (level == 0) level = 5;
         Variance variance = SpawnHandler.DEFAULT_VARIANCE;
@@ -193,7 +194,7 @@ public class TypeTrainer
         for (int i = 0; i < number; i++)
         {
             Collections.shuffle(values);
-            ItemStack item = CompatWrapper.nullStack;
+            ItemStack item = ItemStack.EMPTY;
             for (PokedexEntry s : values)
             {
                 if (s != null)
@@ -226,7 +227,7 @@ public class TypeTrainer
     public static ItemStack makeStack(PokedexEntry entry, EntityLivingBase trainer, World world, int level)
     {
         int num = entry.getPokedexNb();
-        if (Pokedex.getInstance().getEntry(num) == null) return CompatWrapper.nullStack;
+        if (Pokedex.getInstance().getEntry(num) == null) return ItemStack.EMPTY;
 
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
         if (pokemob != null)
@@ -260,7 +261,7 @@ public class TypeTrainer
             return item;
         }
 
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     public static void initSpawns()
@@ -298,7 +299,7 @@ public class TypeTrainer
 
     public Map<SpawnBiomeMatcher, Float> matchers      = Maps.newHashMap();
     public boolean                       hasBag        = false;
-    public ItemStack                     bag           = CompatWrapper.nullStack;
+    public ItemStack                     bag           = ItemStack.EMPTY;
     public boolean                       hasBelt       = false;
     private ResourceLocation             texture;
 
@@ -308,10 +309,11 @@ public class TypeTrainer
     public List<PokedexEntry>            pokemon       = Lists.newArrayList();
     public TrainerTrades                 trades;
 
-    private ItemStack[]                  loot          = CompatWrapper.makeList(4).toArray(new ItemStack[4]);
+    private ItemStack[]                  loot          = NonNullList.<ItemStack> withSize(4, ItemStack.EMPTY)
+            .toArray(new ItemStack[4]);
 
     public String                        drops         = "";
-    public ItemStack                     held          = CompatWrapper.nullStack;
+    public ItemStack                     held          = ItemStack.EMPTY;
 
     public TypeTrainer(String name)
     {
@@ -381,7 +383,7 @@ public class TypeTrainer
                     try
                     {
                         int count = Integer.parseInt(stackinfo[1]);
-                        CompatWrapper.setStackSize(stack, count);
+                        stack.setCount(count);
                     }
                     catch (NumberFormatException e)
                     {

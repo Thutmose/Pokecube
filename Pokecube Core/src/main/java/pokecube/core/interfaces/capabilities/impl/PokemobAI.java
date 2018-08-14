@@ -25,7 +25,6 @@ import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
-import thut.lib.CompatWrapper;
 
 public abstract class PokemobAI extends PokemobEvolves
 {
@@ -321,10 +320,10 @@ public abstract class PokemobAI extends PokemobEvolves
     @Override
     public void setPokecube(ItemStack pokeballId)
     {
-        if (pokeballId != CompatWrapper.nullStack)
+        if (pokeballId != ItemStack.EMPTY)
         {
             pokeballId = pokeballId.copy();
-            CompatWrapper.setStackSize(pokeballId, 1);
+            pokeballId.setCount(1);
             if (pokeballId.hasTagCompound() && pokeballId.getTagCompound().hasKey("Pokemob"))
                 pokeballId.getTagCompound().removeTag("Pokemob");
         }

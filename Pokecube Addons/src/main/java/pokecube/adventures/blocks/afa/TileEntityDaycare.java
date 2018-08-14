@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -29,7 +30,7 @@ import thut.lib.CompatWrapper;
 
 public class TileEntityDaycare extends TileEntityOwnable implements IInventory, ITickable
 {
-    List<ItemStack>       inventory  = CompatWrapper.makeList(3);
+    List<ItemStack>       inventory  = NonNullList.<ItemStack> withSize(3, ItemStack.EMPTY);
     int                   range      = 4;
     private int           tick       = 0;
     private AxisAlignedBB box;
@@ -47,19 +48,19 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
         boolean enough;
         int size = 0;
         ItemStack stack;
-        if (CompatWrapper.isValid(stack = getStackInSlot(0)))
+        if (!(stack = getStackInSlot(0)).isEmpty())
         {
-            size = CompatWrapper.getStackSize(stack);
+            size = stack.getCount();
             numShard = size;
         }
-        if (CompatWrapper.isValid(stack = getStackInSlot(1)))
+        if (!(stack = getStackInSlot(1)).isEmpty())
         {
-            size = CompatWrapper.getStackSize(stack);
+            size = stack.getCount();
             numEmerald = size;
         }
-        if (CompatWrapper.isValid(stack = getStackInSlot(2)))
+        if (!(stack = getStackInSlot(2)).isEmpty())
         {
-            size = CompatWrapper.getStackSize(stack);
+            size = stack.getCount();
             numBlocks = size;
         }
         if (numBlocks != 0 && numEmerald < 9)
@@ -67,10 +68,10 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
             numBlocks--;
             numEmerald += 9;
             decrStackSize(2, 1);
-            if (CompatWrapper.isValid(stack = getStackInSlot(1)))
+            if (!(stack = getStackInSlot(1)).isEmpty())
             {
-                size = CompatWrapper.getStackSize(stack);
-                CompatWrapper.setStackSize(stack, size + 9);
+                size = stack.getCount();
+                stack.setCount(size + 9);
             }
             else
             {
@@ -83,15 +84,15 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
             numEmerald--;
             numShard += 9;
             decrStackSize(1, 1);
-            if (CompatWrapper.isValid(stack = getStackInSlot(0)))
+            if (!(stack = getStackInSlot(0)).isEmpty())
             {
-                size = CompatWrapper.getStackSize(stack);
-                CompatWrapper.setStackSize(stack, size + 9);
+                size = stack.getCount();
+                stack.setCount(size + 9);
             }
             else
             {
                 stack = PokecubeItems.getStack("emerald_shard");
-                CompatWrapper.setStackSize(stack, 9);
+                stack.setCount(9);
                 setInventorySlotContents(0, stack);
             }
         }
@@ -110,14 +111,14 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
                 {
                     if (remainder <= 0)
                     {
-                        setInventorySlotContents(0, CompatWrapper.nullStack);
-                        setInventorySlotContents(1, CompatWrapper.nullStack);
+                        setInventorySlotContents(0, ItemStack.EMPTY);
+                        setInventorySlotContents(1, ItemStack.EMPTY);
                         return true;
                     }
                     stack = PokecubeItems.getStack("emerald_shard");
-                    CompatWrapper.setStackSize(stack, remainder);
+                    stack.setCount(remainder);
                     setInventorySlotContents(0, stack);
-                    setInventorySlotContents(1, CompatWrapper.nullStack);
+                    setInventorySlotContents(1, ItemStack.EMPTY);
                     return true;
                 }
                 numShard = remainder % 9;
@@ -125,7 +126,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
                 stack = new ItemStack(Items.EMERALD, numEmerald, 0);
                 if (numEmerald > 0) setInventorySlotContents(1, stack);
                 stack = PokecubeItems.getStack("emerald_shard");
-                CompatWrapper.setStackSize(stack, numShard);
+                stack.setCount(numShard);
                 if (numShard > 0) setInventorySlotContents(0, stack);
                 return true;
             }
@@ -136,16 +137,16 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
                 {
                     if (remainder <= 0)
                     {
-                        setInventorySlotContents(0, CompatWrapper.nullStack);
-                        setInventorySlotContents(1, CompatWrapper.nullStack);
-                        setInventorySlotContents(2, CompatWrapper.nullStack);
+                        setInventorySlotContents(0, ItemStack.EMPTY);
+                        setInventorySlotContents(1, ItemStack.EMPTY);
+                        setInventorySlotContents(2, ItemStack.EMPTY);
                         return true;
                     }
                     stack = PokecubeItems.getStack("emerald_shard");
-                    CompatWrapper.setStackSize(stack, remainder);
+                    stack.setCount(remainder);
                     setInventorySlotContents(0, stack);
-                    setInventorySlotContents(1, CompatWrapper.nullStack);
-                    setInventorySlotContents(2, CompatWrapper.nullStack);
+                    setInventorySlotContents(1, ItemStack.EMPTY);
+                    setInventorySlotContents(2, ItemStack.EMPTY);
                     return true;
                 }
                 numShard = remainder % 9;
@@ -154,7 +155,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
                 stack = new ItemStack(Items.EMERALD, numEmerald, 0);
                 if (numEmerald > 0) setInventorySlotContents(1, stack);
                 stack = PokecubeItems.getStack("emerald_shard");
-                CompatWrapper.setStackSize(stack, numShard);
+                stack.setCount(numShard);
                 if (numShard > 0) setInventorySlotContents(0, stack);
                 stack = new ItemStack(Blocks.EMERALD_BLOCK, numBlocks, 0);
                 if (numBlocks > 0) setInventorySlotContents(2, stack);
@@ -216,7 +217,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
 
                 if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory.set(slot, CompatWrapper.fromTag(tag));
+                    inventory.set(slot, new ItemStack(tag));
                 }
             }
         }
@@ -252,7 +253,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
     public void clear()
     {
         for (int i = 0; i < inventory.size(); i++)
-            inventory.set(i, CompatWrapper.nullStack);
+            inventory.set(i, ItemStack.EMPTY);
     }
 
     @Override
@@ -276,11 +277,11 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
             itemStack = inventory.get(slot).splitStack(count);
             if (!CompatWrapper.isValid(inventory.get(slot)))
             {
-                inventory.set(slot, CompatWrapper.nullStack);
+                inventory.set(slot, ItemStack.EMPTY);
             }
             return itemStack;
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -289,16 +290,16 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory, 
         if (CompatWrapper.isValid(inventory.get(slot)))
         {
             ItemStack stack = inventory.get(slot);
-            inventory.set(slot, CompatWrapper.nullStack);
+            inventory.set(slot, ItemStack.EMPTY);
             return stack;
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
+        if (CompatWrapper.isValid(stack)) inventory.set(index, ItemStack.EMPTY);
         inventory.set(index, stack);
     }
 

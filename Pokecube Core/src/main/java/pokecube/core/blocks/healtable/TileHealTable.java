@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.PokecubeCore;
@@ -20,7 +21,7 @@ import thut.lib.CompatWrapper;
 public class TileHealTable extends TileEntityOwnable implements IInventory, ITickable
 {
     public static SoundEvent MUSICLOOP;
-    private List<ItemStack>  inventory = CompatWrapper.makeList(9);
+    private List<ItemStack>  inventory = NonNullList.<ItemStack> withSize(9, ItemStack.EMPTY);
 
     Vector3                  here      = Vector3.getNewVector();
 
@@ -50,11 +51,11 @@ public class TileHealTable extends TileEntityOwnable implements IInventory, ITic
             itemStack = getStackInSlot(slot).splitStack(count);
             if (!CompatWrapper.isValid(getStackInSlot(slot)))
             {
-                setInventorySlotContents(slot, CompatWrapper.nullStack);
+                setInventorySlotContents(slot, ItemStack.EMPTY);
             }
             return itemStack;
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -173,7 +174,7 @@ public class TileHealTable extends TileEntityOwnable implements IInventory, ITic
             byte slot = tag.getByte("Slot");
             if (slot >= 0 && slot < inventory.size())
             {
-                inventory.set(slot, CompatWrapper.fromTag(tag));
+                inventory.set(slot, new ItemStack(tag));
             }
         }
     }
@@ -184,10 +185,10 @@ public class TileHealTable extends TileEntityOwnable implements IInventory, ITic
         if (CompatWrapper.isValid(getStackInSlot(slot)))
         {
             ItemStack stack = getStackInSlot(slot);
-            setInventorySlotContents(slot, CompatWrapper.nullStack);
+            setInventorySlotContents(slot, ItemStack.EMPTY);
             return stack;
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -198,7 +199,7 @@ public class TileHealTable extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
+        if (CompatWrapper.isValid(stack)) inventory.set(index, ItemStack.EMPTY);
         inventory.set(index, stack);
     }
 
@@ -231,7 +232,7 @@ public class TileHealTable extends TileEntityOwnable implements IInventory, ITic
         for (int i = 0; i < inventory.size(); i++)
         {
             ItemStack stack = inventory.get(i);
-            if (stack != CompatWrapper.nullStack)
+            if (stack != ItemStack.EMPTY)
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte) i);

@@ -207,7 +207,12 @@ public class PokemobMoveRecipeParser implements IRecipeParser
                         {
                             size = Integer.parseInt(xml.values.get(SIZE));
                         }
-                        if (CompatWrapper.isValid(stack)) oreInputs.add(CompatWrapper.setStackSize(stack.copy(), size));
+                        if (!stack.isEmpty())
+                        {
+                            stack = stack.copy();
+                            stack.setCount(size);
+                            oreInputs.add(stack);
+                        }
                     }
                     PokecubeMod.log(oreInputs + "");
                     if (!oreInputs.isEmpty()) inputs.add(oreInputs);
@@ -216,7 +221,7 @@ public class PokemobMoveRecipeParser implements IRecipeParser
                 }
                 else inputs.add(XMLRecipeHandler.getStack(xml));
             }
-            boolean failed = !CompatWrapper.isValid(output);
+            boolean failed = output.isEmpty();
             for (Object o : inputs)
                 failed = failed || o == null;
             if (failed) { throw new NullPointerException("output: " + output + " inputs: " + inputs); }
@@ -250,7 +255,7 @@ public class PokemobMoveRecipeParser implements IRecipeParser
             if (!CompatWrapper.isValid(stack)) return false;
             for (int i = 0; i < 9; i++)
             {
-                inventory.setInventorySlotContents(i, CompatWrapper.nullStack);
+                inventory.setInventorySlotContents(i, ItemStack.EMPTY);
             }
             inventory.setInventorySlotContents(0, stack);
             if (recipe.matches(inventory, world))
@@ -291,7 +296,7 @@ public class PokemobMoveRecipeParser implements IRecipeParser
                 }
                 for (int i = 0; i < 9; i++)
                 {
-                    inventory.setInventorySlotContents(i, CompatWrapper.nullStack);
+                    inventory.setInventorySlotContents(i, ItemStack.EMPTY);
                 }
                 int num = Math.min(stacks.size(), 9);
                 for (int i = 0; i < num; i++)

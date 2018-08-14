@@ -45,7 +45,6 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.ai.ILogicRunnable;
 import thut.api.maths.Vector3;
-import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public abstract class EntityAiPokemob extends EntityMountablePokemob
@@ -505,7 +504,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (!pokemobCap.getGeneralState(GeneralStates.TAMED))
         {
-            if (this.getHeldItemMainhand() != CompatWrapper.nullStack) PokecubeItems.deValidate(getHeldItemMainhand());
+            if (this.getHeldItemMainhand() != ItemStack.EMPTY) PokecubeItems.deValidate(getHeldItemMainhand());
         }
         super.onDeathUpdate();
     }

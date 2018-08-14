@@ -86,7 +86,7 @@ public class EntityPokemobEgg extends EntityLiving
             if (this.delayBeforeCanPickup > 0) { return false; }
 
             ItemStack itemstack = this.getHeldItemMainhand();
-            int i = CompatWrapper.getStackSize(itemstack);
+            int i = itemstack.getCount();
             EntityPlayer player = (EntityPlayer) e;
             if (mother != null && mother.getOwner() != player)
             {
@@ -95,7 +95,7 @@ public class EntityPokemobEgg extends EntityLiving
             if ((i <= 0 || player.inventory.addItemStackToInventory(itemstack)))
             {
                 player.onItemPickup(this, i);
-                if (CompatWrapper.getStackSize(itemstack) <= 0)
+                if (itemstack.isEmpty())
                 {
                     this.setDead();
                 }

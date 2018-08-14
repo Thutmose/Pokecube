@@ -278,7 +278,7 @@ public class Pokecube extends Item implements IPokecube
                     {
                         if (player.inventory.getStackInSlot(i) == stack)
                         {
-                            player.inventory.setInventorySlotContents(i, CompatWrapper.nullStack);
+                            player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
                             break;
                         }
                     }
@@ -301,7 +301,7 @@ public class Pokecube extends Item implements IPokecube
         EntityPokecube entity = null;
         ResourceLocation id = PokecubeItems.getCubeId(cube.getItem());
         if (id == null || !IPokecube.BEHAVIORS.containsKey(id)) return false;
-        ItemStack stack = CompatWrapper.copy(cube);
+        ItemStack stack = cube.copy();
         boolean hasMob = PokecubeManager.hasMob(stack);
         Config config = PokecubeCore.core.getConfig();
         // Check permissions
@@ -318,7 +318,7 @@ public class Pokecube extends Item implements IPokecube
                     && !handler.hasPermission(player.getGameProfile(), Permissions.SENDOUTSPECIFIC.get(entry), context))
                 return false;
         }
-        CompatWrapper.setStackSize(stack, 1);
+        stack.setCount(1);
         entity = new EntityPokecube(world, thrower, stack);
         Vector3 temp = Vector3.getNewVector().set(thrower).add(0, thrower.getEyeHeight(), 0);
         Vector3 temp1 = Vector3.getNewVector().set(thrower.getLookVec()).scalarMultBy(1.5);
@@ -347,8 +347,8 @@ public class Pokecube extends Item implements IPokecube
         EntityPokecube entity = null;
         ResourceLocation id = PokecubeItems.getCubeId(cube.getItem());
         if (id == null || !IPokecube.BEHAVIORS.containsKey(id)) return false;
-        ItemStack stack = CompatWrapper.copy(cube);
-        CompatWrapper.setStackSize(stack, 1);
+        ItemStack stack = cube.copy();
+        stack.setCount(1);
         entity = new EntityPokecube(world, thrower, stack);
         boolean rightclick = target == thrower;
         if (rightclick) target = null;

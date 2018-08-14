@@ -48,7 +48,6 @@ import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
-import thut.lib.CompatWrapper;
 
 public abstract class PokemobOwned extends PokemobAI implements IInventoryChangedListener
 {
@@ -187,7 +186,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             {
                 ItemStack itemstack = animalchest.getStackInSlot(j);
 
-                if (itemstack != CompatWrapper.nullStack)
+                if (itemstack != ItemStack.EMPTY)
                 {
                     this.pokeChest.setInventorySlotContents(j, itemstack.copy());
                 }

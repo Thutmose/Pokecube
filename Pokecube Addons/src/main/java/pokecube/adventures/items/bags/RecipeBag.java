@@ -14,7 +14,7 @@ import thut.lib.IDefaultRecipe;
 
 public class RecipeBag implements IDefaultRecipe
 {
-    private ItemStack output = CompatWrapper.nullStack;
+    private ItemStack output = ItemStack.EMPTY;
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
@@ -31,11 +31,11 @@ public class RecipeBag implements IDefaultRecipe
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        output = CompatWrapper.nullStack;
+        output = ItemStack.EMPTY;
         boolean bag = false;
         boolean dye = false;
-        ItemStack dyeStack = CompatWrapper.nullStack;
-        ItemStack bagStack = CompatWrapper.nullStack;
+        ItemStack dyeStack = ItemStack.EMPTY;
+        ItemStack bagStack = ItemStack.EMPTY;
         int n = 0;
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {

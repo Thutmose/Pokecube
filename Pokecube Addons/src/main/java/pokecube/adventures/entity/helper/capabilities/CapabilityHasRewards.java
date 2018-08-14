@@ -115,7 +115,7 @@ public class CapabilityHasRewards
             for (int i = 0; i < nbttaglist.tagCount(); ++i)
             {
                 NBTTagCompound tag = nbttaglist.getCompoundTagAt(i);
-                ItemStack stack = CompatWrapper.fromTag(tag);
+                ItemStack stack = new ItemStack(tag);
                 float chance = tag.hasKey("chance") ? tag.getFloat("chance") : 1;
                 instance.getRewards().add(new Reward(stack, chance));
             }

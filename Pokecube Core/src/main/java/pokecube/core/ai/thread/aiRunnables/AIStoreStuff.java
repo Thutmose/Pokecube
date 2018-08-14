@@ -234,7 +234,7 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
             stack = berries.getStackInSlot(i);
             if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry)
             {
-                berries.setStackInSlot(i, CompatWrapper.nullStack);
+                berries.setStackInSlot(i, ItemStack.EMPTY);
                 pokemobInv.setStackInSlot(firstFreeSlot, pokemobInv.getStackInSlot(2));
                 pokemobInv.setStackInSlot(2, stack);
                 // Collected our berry, Can pass to storage now.
@@ -284,7 +284,7 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
                 PokecubeMod.log(pokemob.getPokemonDisplayName().getUnformattedText() + " Storing " + stack);
             if (ItemStackTools.addItemStackToInventory(stack, storage, 0))
             {
-                if (!CompatWrapper.isValid(stack)) stack = CompatWrapper.nullStack;
+                if (!CompatWrapper.isValid(stack)) stack = ItemStack.EMPTY;
                 pokemobInv.setStackInSlot(i, stack);
             }
         }
@@ -342,7 +342,7 @@ public class AIStoreStuff extends AIBase implements INBTSerializable<NBTTagCompo
                     ItemStack stack = inventory.getStackInSlot(i);
                     if (CompatWrapper.isValid(stack))
                     {
-                        inventory.setStackInSlot(i, CompatWrapper.nullStack);
+                        inventory.setStackInSlot(i, ItemStack.EMPTY);
                         pokemobInv.setStackInSlot(slot, stack);
                         // Collected our item successfully
                         if (PokecubeMod.debug)

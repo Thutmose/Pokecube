@@ -8,6 +8,7 @@ import javax.vecmath.Vector3f;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +22,6 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
-import thut.lib.CompatWrapper;
 
 public class BlockReanimator extends BlockBase
 {
@@ -177,7 +177,7 @@ public class BlockReanimator extends BlockBase
                 // entity.posY,
                 // (float) entity.posZ));
                 // entity.setPosition(temp1.x, temp1.y, temp1.z);
-                CompatWrapper.moveEntitySelf(entity, temp1.x, temp1.y, temp1.z);
+                entity.move(MoverType.SELF, temp1.x, temp1.y, temp1.z);
             }
             // Extra stuff to do with players.
             if (entity instanceof EntityPlayer)

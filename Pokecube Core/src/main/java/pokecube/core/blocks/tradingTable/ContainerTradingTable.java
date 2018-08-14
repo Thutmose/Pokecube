@@ -25,10 +25,9 @@ public class ContainerTradingTable extends Container
     protected static boolean isItemValid(ItemStack itemstack)
     {
         return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound())
-                || (itemstack.getItem() == Items.EMERALD && CompatWrapper.getStackSize(itemstack) == 64)
-                || (itemstack.getItem() == Item.getItemFromBlock(Blocks.STONE_BUTTON)
-                        && CompatWrapper.getStackSize(itemstack) == 1)
-                || (itemstack.getItem() instanceof IPokecube && CompatWrapper.getStackSize(itemstack) == 1);
+                || (itemstack.getItem() == Items.EMERALD && itemstack.getCount() == 64)
+                || (itemstack.getItem() == Item.getItemFromBlock(Blocks.STONE_BUTTON) && itemstack.getCount() == 1)
+                || (itemstack.getItem() instanceof IPokecube && itemstack.getCount() == 1);
     }
 
     TileEntityTradingTable tile;
@@ -92,7 +91,7 @@ public class ContainerTradingTable extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = CompatWrapper.nullStack;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack())
         {
@@ -101,12 +100,12 @@ public class ContainerTradingTable extends Container
             if (index < 2)
             {
                 if (!this.mergeItemStack(itemstack1, 2, this.inventorySlots.size(),
-                        false)) { return CompatWrapper.nullStack; }
+                        false)) { return ItemStack.EMPTY; }
             }
-            else if (!this.mergeItemStack(itemstack1, 0, 2, false)) { return CompatWrapper.nullStack; }
+            else if (!this.mergeItemStack(itemstack1, 0, 2, false)) { return ItemStack.EMPTY; }
             if (!CompatWrapper.isValid(itemstack1))
             {
-                slot.putStack(CompatWrapper.nullStack);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {

@@ -209,7 +209,7 @@ public class ItemModelReloader extends Item
                                             if (!forme.isEmpty()) rule.name = forme.replace("'", "");
                                             if (!move.isEmpty()) rule.move = move;
                                             if (!ability.isEmpty()) rule.ability = ability;
-                                            ItemStack stack = itemN.isEmpty() ? CompatWrapper.nullStack
+                                            ItemStack stack = itemN.isEmpty() ? ItemStack.EMPTY
                                                     : PokecubeItems.getStack(itemN, false);
                                             if (CompatWrapper.isValid(stack))
                                             {

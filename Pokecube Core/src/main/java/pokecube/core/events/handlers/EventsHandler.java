@@ -691,7 +691,7 @@ public class EventsHandler
                 if (dye != null && (entry.validDyes.isEmpty() || entry.validDyes.contains(dye)))
                 {
                     pokemob.setSpecialInfo(dye.getDyeDamage());
-                    if (!player.capabilities.isCreativeMode) CompatWrapper.increment(held, -1);
+                    if (!player.capabilities.isCreativeMode) held.shrink(1);
                     evt.setCanceled(true);
                     evt.setCancellationResult(EnumActionResult.SUCCESS);
                     return;
@@ -742,11 +742,11 @@ public class EventsHandler
                 {
                     if (!player.capabilities.isCreativeMode)
                     {
-                        CompatWrapper.increment(held, -1);
-                        if (!CompatWrapper.isValid(held))
+                        held.shrink(1);
+                        if (held.isEmpty())
                         {
                             player.inventory.setInventorySlotContents(player.inventory.currentItem,
-                                    CompatWrapper.nullStack);
+                                    ItemStack.EMPTY);
                         }
                     }
                     pokemob.setLoveTimer(0);
@@ -761,7 +761,7 @@ public class EventsHandler
             // Owner only interactions phase 2
             if (isOwner)
             {
-                if (CompatWrapper.isValid(held) && !PokecubeCore.isOnClientSide())
+                if (!held.isEmpty() && !PokecubeCore.isOnClientSide())
                 {
                     // Check if it should evolve from item, do so if yes.
                     if (PokecubeItems.isValidEvoItem(held) && pokemob.canEvolve(held))
@@ -769,11 +769,14 @@ public class EventsHandler
                         IPokemob evolution = pokemob.evolve(true, false, held);
                         if (evolution != null)
                         {
-                            CompatWrapper.increment(held, -1);
-                            if (!CompatWrapper.isValid(held))
+                            if (!player.capabilities.isCreativeMode)
                             {
-                                player.inventory.setInventorySlotContents(player.inventory.currentItem,
-                                        CompatWrapper.nullStack);
+                                held.shrink(1);
+                                if (held.isEmpty())
+                                {
+                                    player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                            ItemStack.EMPTY);
+                                }
                             }
                         }
                         evt.setCanceled(true);
@@ -798,19 +801,21 @@ public class EventsHandler
                     if (PokecubeItems.isValidHeldItem(held))
                     {
                         ItemStack heldItem = pokemob.getHeldItem();
-                        if (CompatWrapper.isValid(heldItem))
+                        if (!heldItem.isEmpty())
                         {
                             dropItem(pokemob);
                         }
                         ItemStack toSet = held.copy();
-                        CompatWrapper.setStackSize(toSet, 1);
+                        toSet.setCount(1);
                         pokemob.setHeldItem(toSet);
                         pokemob.setCombatState(CombatStates.NOITEMUSE, true);
-                        CompatWrapper.increment(held, -1);
-                        if (!CompatWrapper.isValid(held))
+                        if (!player.capabilities.isCreativeMode) held.shrink(1);
                         {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem,
-                                    CompatWrapper.nullStack);
+                            if (held.isEmpty())
+                            {
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                        ItemStack.EMPTY);
+                            }
                         }
                         evt.setCanceled(true);
                         evt.setCancellationResult(EnumActionResult.SUCCESS);
@@ -885,7 +890,7 @@ public class EventsHandler
         Entity entity = dropper.getEntity();
         EntityItem drop = new EntityItem(entity.getEntityWorld(), entity.posX, entity.posY + 0.5, entity.posZ, toDrop);
         entity.getEntityWorld().spawnEntity(drop);
-        dropper.setHeldItem(CompatWrapper.nullStack);
+        dropper.setHeldItem(ItemStack.EMPTY);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -901,14 +906,14 @@ public class EventsHandler
                 {
                     ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
                     if (!stack.isEmpty()) event.getEntityLiving().entityDropItem(stack.copy(), 0.0f);
-                    pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
+                    pokemob.getPokemobInventory().setInventorySlotContents(i, ItemStack.EMPTY);
                 }
                 if (pokemob.getPokedexEntry().lootTable == null)
                 {
                     List<ItemStack> drops = pokemob.getPokedexEntry().getRandomDrops(event.getLootingLevel());
                     for (ItemStack stack : drops)
                     {
-                        if (event.getEntityLiving().isBurning() && stack != CompatWrapper.nullStack)
+                        if (event.getEntityLiving().isBurning() && stack != ItemStack.EMPTY)
                         {
                             ItemStack newDrop = FurnaceRecipes.instance().getSmeltingResult(stack);
                             if (!newDrop.isEmpty()) stack = newDrop.copy();

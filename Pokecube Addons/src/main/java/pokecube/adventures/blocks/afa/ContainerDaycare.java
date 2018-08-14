@@ -99,7 +99,7 @@ public class ContainerDaycare extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = CompatWrapper.nullStack;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack())
         {
@@ -108,12 +108,12 @@ public class ContainerDaycare extends Container
             if (index < 1)
             {
                 if (!this.mergeItemStack(itemstack1, 1, this.inventorySlots.size(),
-                        false)) { return CompatWrapper.nullStack; }
+                        false)) { return ItemStack.EMPTY; }
             }
-            else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
+            else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return ItemStack.EMPTY; }
             if (!CompatWrapper.isValid(itemstack1))
             {
-                slot.putStack(CompatWrapper.nullStack);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {

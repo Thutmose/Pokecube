@@ -119,7 +119,7 @@ public class RecipeSelector implements IDefaultRecipe
         selectorValues.put(stack, value);
     }
 
-    ItemStack output = CompatWrapper.nullStack;
+    ItemStack output = ItemStack.EMPTY;
 
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)

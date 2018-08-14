@@ -51,7 +51,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
-import thut.lib.CompatWrapper;
 
 public class IECompat
 {
@@ -119,7 +118,10 @@ public class IECompat
     {
         QName name = new QName("tag");
         String tag = values.containsKey(name) ? values.get(name) : "";
-        if (values.containsKey(NUMBER)) CompatWrapper.setStackSize(stack, Integer.parseInt(values.get(NUMBER)));
+        if (values.containsKey(NUMBER))
+        {
+            stack.setCount(Integer.parseInt(values.get(NUMBER)));
+        }
         if (!tag.isEmpty())
         {
             try

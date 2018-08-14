@@ -623,8 +623,7 @@ public final class SpawnHandler
         if (v.y < 0 || !checkNoSpawnerInArea(world, v.intX(), v.intY(), v.intZ())) return ret;
         refreshTerrain(v, world);
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, v);
-        int b = t.getBiome(v);
-        if (onlySubbiomes && b <= 255) { return ret; }
+        if (onlySubbiomes && t.getBiome(v) < 0) { return ret; }
         long time = System.nanoTime();
         SpawnEvent.Pick event = new SpawnEvent.Pick.Pre(null, v, world);
         MinecraftForge.EVENT_BUS.post(event);

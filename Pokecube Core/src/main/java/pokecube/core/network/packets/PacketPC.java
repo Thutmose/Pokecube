@@ -5,6 +5,7 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -15,7 +16,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.interfaces.PokecubeMod;
-import thut.lib.CompatWrapper;
 
 public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
 {
@@ -151,7 +151,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
                     if (message.data.getBoolean("val" + i))
                     {
                         int j = i + page * 54;
-                        pc.setInventorySlotContents(j, CompatWrapper.nullStack);
+                        pc.setInventorySlotContents(j, ItemStack.EMPTY);
                     }
                 }
             }

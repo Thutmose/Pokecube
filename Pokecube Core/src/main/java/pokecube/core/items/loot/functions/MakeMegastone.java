@@ -18,7 +18,6 @@ import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import pokecube.core.handlers.ItemGenerator;
 import pokecube.core.interfaces.PokecubeMod;
-import thut.lib.CompatWrapper;
 
 public class MakeMegastone extends LootFunction
 {
@@ -52,7 +51,7 @@ public class MakeMegastone extends LootFunction
         }
         if (nameMap.containsKey(arg))
         {
-            ItemStack newStack = new ItemStack(ITEM, CompatWrapper.getStackSize(stack), nameMap.get(arg));
+            ItemStack newStack = new ItemStack(ITEM, stack.getCount(), nameMap.get(arg));
             newStack.setTagCompound(stack.getTagCompound());
             return newStack;
         }

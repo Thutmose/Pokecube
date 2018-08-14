@@ -13,7 +13,6 @@ import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
-import thut.lib.CompatWrapper;
 
 public class Loot
 {
@@ -46,7 +45,7 @@ public class Loot
                     itemstack = lootfunction.apply(itemstack, rand, context);
                 }
 
-                int size = CompatWrapper.getStackSize(itemstack);
+                int size = itemstack.getCount();
                 if (size > 0)
                 {
                     if (size < itemstack.getItem().getItemStackLimit(itemstack))
@@ -60,7 +59,7 @@ public class Loot
                         {
                             ItemStack itemstack1 = itemstack.copy();
                             int size1 = Math.min(itemstack.getMaxStackSize(), i);
-                            CompatWrapper.setStackSize(itemstack1, size1);
+                            itemstack1.setCount(size1);
                             i -= size1;
                             stacks.add(itemstack1);
                         }

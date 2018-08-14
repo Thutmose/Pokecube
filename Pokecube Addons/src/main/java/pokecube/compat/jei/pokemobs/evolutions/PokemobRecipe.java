@@ -6,7 +6,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry.EvolutionData;
-import thut.lib.CompatWrapper;
 import thut.lib.IDefaultRecipe;
 
 public class PokemobRecipe implements IDefaultRecipe
@@ -27,13 +26,13 @@ public class PokemobRecipe implements IDefaultRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack getRecipeOutput()
     {
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     ResourceLocation registryName;

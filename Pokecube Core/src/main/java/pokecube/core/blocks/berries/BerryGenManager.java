@@ -32,7 +32,6 @@ import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import thut.api.maths.Vector3;
-import thut.lib.CompatWrapper;
 
 public class BerryGenManager
 {
@@ -312,8 +311,8 @@ public class BerryGenManager
         List<ItemStack> options = berryLocations.get(toMatch);
         if (options == null || options.isEmpty()) return ItemStack.EMPTY;
         ItemStack ret = options.get(world.rand.nextInt(options.size())).copy();
-        int size = 1 + world.rand.nextInt(CompatWrapper.getStackSize(ret) + 10);
-        CompatWrapper.setStackSize(ret, size);
+        int size = 1 + world.rand.nextInt(ret.getCount() + 10);
+        ret.setCount(size);
         return ret;
     }
 

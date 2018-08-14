@@ -26,10 +26,10 @@ public class RecipeExtract implements IPoweredRecipe
 {
     public static int ENERGYCOST  = 10000;
 
-    ItemStack         output      = CompatWrapper.nullStack;
-    ItemStack         source      = CompatWrapper.nullStack;
-    ItemStack         destination = CompatWrapper.nullStack;
-    ItemStack         selector    = CompatWrapper.nullStack;
+    ItemStack         output      = ItemStack.EMPTY;
+    ItemStack         source      = ItemStack.EMPTY;
+    ItemStack         destination = ItemStack.EMPTY;
+    ItemStack         selector    = ItemStack.EMPTY;
 
     public boolean    fixed       = false;
 
@@ -56,7 +56,7 @@ public class RecipeExtract implements IPoweredRecipe
         {
             List<ItemStack> stacks = Lists.newArrayList(ClonerHelper.DNAITEMS.keySet());
             Collections.shuffle(stacks);
-            if (CompatWrapper.isValid(source)) for (ItemStack stack : stacks)
+            if (!source.isEmpty()) for (ItemStack stack : stacks)
             {
                 if (Tools.isSameStack(stack, source))
                 {
@@ -68,14 +68,14 @@ public class RecipeExtract implements IPoweredRecipe
                     break source;
                 }
             }
-            source = CompatWrapper.nullStack;
+            source = ItemStack.EMPTY;
         }
         output = destination.copy();
-        CompatWrapper.setStackSize(output, 1);
+        output.setCount(1);
         if (!CompatWrapper.isValid(source) || genes == null) return output;
         if (output.getTagCompound() == null) output.setTagCompound(new NBTTagCompound());
         ClonerHelper.mergeGenes(genes, output, new ItemBasedSelector(selector));
-        CompatWrapper.setStackSize(output, 1);
+        output.setCount(1);
         return this.output;
     }
 
@@ -84,7 +84,7 @@ public class RecipeExtract implements IPoweredRecipe
     @Nullable
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        if (!CompatWrapper.isValid(output)) return CompatWrapper.nullStack;
+        if (!CompatWrapper.isValid(output)) return ItemStack.EMPTY;
         return this.output.copy();
     }
 
@@ -98,7 +98,7 @@ public class RecipeExtract implements IPoweredRecipe
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        output = CompatWrapper.nullStack;
+        output = ItemStack.EMPTY;
         destination = inv.getStackInSlot(0);
         source = inv.getStackInSlot(2);
         if (!fixed) selector = inv.getStackInSlot(1);
@@ -119,13 +119,13 @@ public class RecipeExtract implements IPoweredRecipe
                     break source;
                 }
             }
-            source = CompatWrapper.nullStack;
+            source = ItemStack.EMPTY;
         }
         if (!(ClonerHelper.isDNAContainer(destination)))
         {
-            destination = CompatWrapper.nullStack;
+            destination = ItemStack.EMPTY;
         }
-        if (ClonerHelper.getGeneSelectors(selector).isEmpty()) selector = CompatWrapper.nullStack;
+        if (ClonerHelper.getGeneSelectors(selector).isEmpty()) selector = ItemStack.EMPTY;
         if (CompatWrapper.isValid(selector) && CompatWrapper.isValid(source) && CompatWrapper.isValid(destination)
                 && genes != null) { return true; }
         return false;

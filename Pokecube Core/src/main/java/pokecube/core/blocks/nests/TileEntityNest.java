@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraftforge.common.MinecraftForge;
@@ -34,7 +35,7 @@ import thut.lib.CompatWrapper;
 public class TileEntityNest extends TileEntity implements ITickable, IInventory
 {
 
-    private List<ItemStack> inventory = CompatWrapper.makeList(27);
+    private List<ItemStack> inventory = NonNullList.<ItemStack> withSize(27, ItemStack.EMPTY);
     int                     pokedexNb = 0;
     HashSet<IPokemob>       residents = new HashSet<IPokemob>();
     int                     time      = 0;
@@ -59,7 +60,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     public void clear()
     {
         for (int i = 0; i < inventory.size(); i++)
-            inventory.set(i, CompatWrapper.nullStack);
+            inventory.set(i, ItemStack.EMPTY);
     }
 
     @Override
@@ -76,11 +77,11 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
             itemStack = getStackInSlot(slot).splitStack(count);
             if (!CompatWrapper.isValid(getStackInSlot(slot)))
             {
-                setInventorySlotContents(slot, CompatWrapper.nullStack);
+                setInventorySlotContents(slot, ItemStack.EMPTY);
             }
             return itemStack;
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -179,7 +180,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
                 if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory.set(slot, CompatWrapper.fromTag(tag));
+                    inventory.set(slot, new ItemStack(tag));
                 }
             }
         }
@@ -201,10 +202,10 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         if (CompatWrapper.isValid(getStackInSlot(slot)))
         {
             ItemStack stack = getStackInSlot(slot);
-            setInventorySlotContents(slot, CompatWrapper.nullStack);
+            setInventorySlotContents(slot, ItemStack.EMPTY);
             return stack;
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -215,7 +216,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
+        if (CompatWrapper.isValid(stack)) inventory.set(index, ItemStack.EMPTY);
         inventory.set(index, stack);
     }
 
@@ -224,8 +225,8 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     {
         time++;
         int power = world.getRedstonePower(getPos(), EnumFacing.DOWN);// .getBlockPowerInput(x,
-                                                                         // y,
-                                                                         // z);
+                                                                      // y,
+                                                                      // z);
 
         if (world.isRemote || (world.getDifficulty() == EnumDifficulty.PEACEFUL && power == 0)) return;
 

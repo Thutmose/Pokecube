@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import thut.lib.CompatWrapper;
 
 public class ClonerRecipeWrapper implements IRecipeWrapper
 {
@@ -30,9 +29,9 @@ public class ClonerRecipeWrapper implements IRecipeWrapper
             if (input instanceof ItemStack)
             {
                 ItemStack itemStack = (ItemStack) input;
-                if (CompatWrapper.getStackSize(itemStack) != 1)
+                if (itemStack.getCount() != 1)
                 {
-                    CompatWrapper.setStackSize(itemStack, 1);
+                    itemStack.setCount(1);
                 }
             }
         }

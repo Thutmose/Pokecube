@@ -23,7 +23,6 @@ import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
-import thut.lib.CompatWrapper;
 
 public class ActionSmash implements IMoveAction
 {
@@ -63,7 +62,7 @@ public class ActionSmash implements IMoveAction
                     EntityItem item = items.get(i);
                     ItemStack stack = item.getItem();
                     if (Block.getBlockFromItem(stack.getItem()) == null) continue;
-                    int num = CompatWrapper.getStackSize(stack);
+                    int num = stack.getCount();
                     ItemStack newstack = null;
                     for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
                     {
@@ -78,7 +77,7 @@ public class ActionSmash implements IMoveAction
                     {
                         newstack = newstack.copy();
                         if (newstack.getItemDamage() == 32767) newstack.setItemDamage(stack.getItemDamage());
-                        CompatWrapper.setStackSize(newstack, num);
+                        newstack.setCount(num);
                         int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
                         hunger = (int) Math.max(1, hunger / (float) user.getLevel());
                         user.setHungerTime(user.getHungerTime() + hunger);

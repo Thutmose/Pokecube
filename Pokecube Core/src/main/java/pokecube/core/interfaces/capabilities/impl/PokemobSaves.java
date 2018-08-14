@@ -173,7 +173,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
                 int j = nbttagcompound1.getByte("Slot") & 255;
                 if (j < this.getPokemobInventory().getSizeInventory())
                 {
-                    this.getPokemobInventory().setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
+                    this.getPokemobInventory().setInventorySlotContents(j, new ItemStack(nbttagcompound1));
                 }
                 this.setHeldItem(this.getPokemobInventory().getStackInSlot(1));
             }
@@ -197,13 +197,14 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             if (visualsTag.hasKey(POKECUBE))
             {
                 NBTTagCompound pokecubeTag = visualsTag.getCompoundTag(POKECUBE);
-                this.setPokecube(CompatWrapper.fromTag(pokecubeTag));
+                this.setPokecube(new ItemStack(pokecubeTag));
             }
         }
 
         // Read AI
         if (!aiTag.hasNoTags())
         {
+            // TODO clean this up.
             if (aiTag.hasKey(AISTATE))
             {
                 handleOldAIStates(aiTag.getInteger(AISTATE));

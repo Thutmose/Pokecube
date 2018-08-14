@@ -187,9 +187,8 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
 
             return INSIDE.getType();
         }
-        int biome = 0;
+        int biome = -1;
         Biome b = v.getBiome(chunk, world.getBiomeProvider());
-        biome = BiomeDatabase.getBiomeType(b);
         if (!PokecubeCore.core.getConfig().autoDetectSubbiomes) return biome;
         boolean notLake = BiomeDatabase.contains(b, Type.OCEAN) || BiomeDatabase.contains(b, Type.SWAMP)
                 || BiomeDatabase.contains(b, Type.RIVER) || BiomeDatabase.contains(b, Type.WATER)

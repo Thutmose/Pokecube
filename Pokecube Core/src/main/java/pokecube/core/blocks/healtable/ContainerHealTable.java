@@ -111,7 +111,7 @@ public class ContainerHealTable extends Container implements IHealer
             {
                 ItemStack var3 = this.inventoryHealTable.removeStackFromSlot(var2);
 
-                if (var3 != CompatWrapper.nullStack)
+                if (var3 != ItemStack.EMPTY)
                 {
                     if (player.isDead || player.getHealth() <= 0 || player.inventory.getFirstEmptyStack() == -1)
                     {
@@ -158,7 +158,7 @@ public class ContainerHealTable extends Container implements IHealer
 
             if (!CompatWrapper.isValid(stack_in_slot))
             {
-                slot_object.putStack(CompatWrapper.nullStack);
+                slot_object.putStack(ItemStack.EMPTY);
             }
             else
             {
@@ -170,7 +170,7 @@ public class ContainerHealTable extends Container implements IHealer
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = CompatWrapper.nullStack;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack())
         {
@@ -179,12 +179,12 @@ public class ContainerHealTable extends Container implements IHealer
             if (index < 6)
             {
                 if (!this.mergeItemStack(itemstack1, 6, this.inventorySlots.size(),
-                        false)) { return CompatWrapper.nullStack; }
+                        false)) { return ItemStack.EMPTY; }
             }
-            else if (!this.mergeItemStack(itemstack1, 0, 6, false)) { return CompatWrapper.nullStack; }
+            else if (!this.mergeItemStack(itemstack1, 0, 6, false)) { return ItemStack.EMPTY; }
             if (!CompatWrapper.isValid(itemstack1))
             {
-                slot.putStack(CompatWrapper.nullStack);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {

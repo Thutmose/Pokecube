@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
@@ -39,7 +40,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
 {
     public static boolean   theftEnabled = false;
 
-    private List<ItemStack> inventory    = CompatWrapper.makeList(2);
+    private List<ItemStack> inventory    = NonNullList.<ItemStack> withSize(2, ItemStack.EMPTY);
 
     public EntityPlayer     player1;
     public EntityPlayer     player2;
@@ -61,19 +62,19 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory.get(0))))
             {
                 dropCube(inventory.get(0), player);
-                this.setInventorySlotContents(0, CompatWrapper.nullStack);
+                this.setInventorySlotContents(0, ItemStack.EMPTY);
             }
             if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory.get(1))))
             {
                 dropCube(inventory.get(1), player);
-                this.setInventorySlotContents(1, CompatWrapper.nullStack);
+                this.setInventorySlotContents(1, ItemStack.EMPTY);
             }
         }
     }
 
     private void dropCube(ItemStack cube, EntityPlayer player)
     {
-        if (cube != CompatWrapper.nullStack)
+        if (cube != ItemStack.EMPTY)
         {
             if (player.isDead || player.getHealth() <= 0 || player.inventory.getFirstEmptyStack() == -1)
             {
@@ -205,7 +206,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     {
         super.readFromNBT(tagCompound);
         NBTBase temp = tagCompound.getTag("Inventory");
-        inventory = CompatWrapper.makeList(2);
+        inventory = NonNullList.<ItemStack> withSize(2, ItemStack.EMPTY);
         if (temp instanceof NBTTagList)
         {
             NBTTagList tagList = (NBTTagList) temp;
@@ -216,7 +217,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
 
                 if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory.set(slot, CompatWrapper.fromTag(tag));
+                    inventory.set(slot, new ItemStack(tag));
                 }
             }
         }
@@ -259,9 +260,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         {
             mon2.setPokemonOwner(trader1);
             mon1.setPokemonOwner(trader2);
-            boolean mon1everstone = PokecubeManager.getHeldItem(poke1) != CompatWrapper.nullStack
+            boolean mon1everstone = PokecubeManager.getHeldItem(poke1) != ItemStack.EMPTY
                     && Tools.isStack(PokecubeManager.getHeldItem(poke1), "everstone");
-            boolean mon2everstone = PokecubeManager.getHeldItem(poke2) != CompatWrapper.nullStack
+            boolean mon2everstone = PokecubeManager.getHeldItem(poke2) != ItemStack.EMPTY
                     && Tools.isStack(PokecubeManager.getHeldItem(poke2), "everstone");
             if (!mon1everstone) mon1.setTraded(true);
             if (!mon2everstone) mon2.setTraded(true);
@@ -275,7 +276,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             else InventoryPC.addPokecubeToPC(to2, world);
             MinecraftForge.EVENT_BUS.post(new TradeEvent(world, to1));
             MinecraftForge.EVENT_BUS.post(new TradeEvent(world, to2));
-            inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
+            inventory = Lists.newArrayList(ItemStack.EMPTY, ItemStack.EMPTY);
         }
         player1 = null;
         player2 = null;
@@ -324,7 +325,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             player1.inventory.addItemStackToInventory(stack);
             player1 = null;
             player2 = null;
-            inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
+            inventory = Lists.newArrayList(ItemStack.EMPTY, ItemStack.EMPTY);
             return true;
         }
         int index = PokecubeManager.isFilled(a) ? 0 : 1;
@@ -337,14 +338,14 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
                 PokecubeManager.setOwner(inventory.get(index),
                         mob.getPokemonOwnerID() == null ? player1.getUniqueID() : null);
                 player1.inventory.addItemStackToInventory(inventory.get(index));
-                inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
+                inventory = Lists.newArrayList(ItemStack.EMPTY, ItemStack.EMPTY);
             }
             return false;
         }
         if (theftEnabled) return false;
         PokecubeManager.setOwner(inventory.get(index), player1.getUniqueID());
         player1.inventory.addItemStackToInventory(inventory.get(index));
-        inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
+        inventory = Lists.newArrayList(ItemStack.EMPTY, ItemStack.EMPTY);
         return true;
     }
 

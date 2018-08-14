@@ -23,10 +23,10 @@ public class RecipeSplice implements IPoweredRecipe
 {
     public static int ENERGYCOST = 10000;
 
-    ItemStack         output     = CompatWrapper.nullStack;
-    ItemStack         dna        = CompatWrapper.nullStack;
-    ItemStack         egg        = CompatWrapper.nullStack;
-    ItemStack         selector   = CompatWrapper.nullStack;
+    ItemStack         output     = ItemStack.EMPTY;
+    ItemStack         dna        = ItemStack.EMPTY;
+    ItemStack         egg        = ItemStack.EMPTY;
+    ItemStack         selector   = ItemStack.EMPTY;
 
     public boolean    fixed      = false;
 
@@ -55,7 +55,7 @@ public class RecipeSplice implements IPoweredRecipe
     @Nullable
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        if (!CompatWrapper.isValid(output)) return CompatWrapper.nullStack;
+        if (!CompatWrapper.isValid(output)) return ItemStack.EMPTY;
         return this.output.copy();
     }
 
@@ -69,19 +69,19 @@ public class RecipeSplice implements IPoweredRecipe
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        output = CompatWrapper.nullStack;
+        output = ItemStack.EMPTY;
         dna = inv.getStackInSlot(0);
         egg = inv.getStackInSlot(2);
         if (!fixed) selector = inv.getStackInSlot(1);
         if (ClonerHelper.getGenes(dna) == null)
         {
-            dna = CompatWrapper.nullStack;
+            dna = ItemStack.EMPTY;
         }
         if (ClonerHelper.getGenes(egg) == null)
         {
-            egg = CompatWrapper.nullStack;
+            egg = ItemStack.EMPTY;
         }
-        if (ClonerHelper.getGeneSelectors(selector).isEmpty()) selector = CompatWrapper.nullStack;
+        if (ClonerHelper.getGeneSelectors(selector).isEmpty()) selector = ItemStack.EMPTY;
 
         if (CompatWrapper.isValid(selector) && CompatWrapper.isValid(dna) && CompatWrapper.isValid(egg))
         {
@@ -91,7 +91,7 @@ public class RecipeSplice implements IPoweredRecipe
             egg = egg.copy();
             if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
             ClonerHelper.spliceGenes(ClonerHelper.getGenes(dna), egg, new ItemBasedSelector(selector));
-            CompatWrapper.setStackSize(egg, 1);
+            egg.setCount(1);
             output = egg;
             return true;
         }

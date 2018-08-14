@@ -133,7 +133,7 @@ public class LogicMovesUpdates extends LogicBase
         {
             ActionResult<ItemStack> result = usable.onTick(pokemob, pokemob.getHeldItem());
             if (result.getType() == EnumActionResult.SUCCESS) pokemob.setHeldItem(result.getResult());
-            if (!CompatWrapper.isValid(pokemob.getHeldItem())) pokemob.setHeldItem(CompatWrapper.nullStack);
+            if (!CompatWrapper.isValid(pokemob.getHeldItem())) pokemob.setHeldItem(ItemStack.EMPTY);
         }
     }
 

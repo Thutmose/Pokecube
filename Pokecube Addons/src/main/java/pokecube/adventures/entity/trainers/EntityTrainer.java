@@ -262,7 +262,7 @@ public class EntityTrainer extends EntityTrainerBase
             TrainerSpawnHandler.addTrainerCoord(this);
         }
         ItemStack next;
-        if (pokemobsCap.getCooldown() > getEntityWorld().getTotalWorldTime()) next = CompatWrapper.nullStack;
+        if (pokemobsCap.getCooldown() > getEntityWorld().getTotalWorldTime()) next = ItemStack.EMPTY;
         else next = pokemobsCap.getNextPokemob();
         if (CompatWrapper.isValid(next))
         {
@@ -270,7 +270,7 @@ public class EntityTrainer extends EntityTrainerBase
         }
         else
         {
-            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, CompatWrapper.nullStack);
+            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
 
         if (CompatWrapper.isValid(pokemobsCap.getType().held))

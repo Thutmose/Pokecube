@@ -40,7 +40,6 @@ import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
-import thut.lib.CompatWrapper;
 
 public abstract class PokemobBase implements IPokemob
 {
@@ -148,7 +147,7 @@ public abstract class PokemobBase implements IPokemob
             dataManager.register(ZMOVECD, Integer.valueOf(-1));
 
             // Held item sync
-            dataManager.register(HELDITEM, CompatWrapper.nullStack);
+            dataManager.register(HELDITEM, ItemStack.EMPTY);
 
             // Flavours for various berries eaten.
             for (int i = 0; i < 5; i++)
@@ -206,7 +205,7 @@ public abstract class PokemobBase implements IPokemob
     protected int                  loveTimer;
     protected Vector<IBreedingMob> males            = new Vector<>();
     protected int                  uid              = -1;
-    protected ItemStack            pokecube         = CompatWrapper.nullStack;
+    protected ItemStack            pokecube         = ItemStack.EMPTY;
     /** Tracker for things related to moves. */
     protected PokemobMoveStats     moveInfo         = new PokemobMoveStats();
     /** The current move being used, this is used to track whether the mob can
@@ -229,7 +228,7 @@ public abstract class PokemobBase implements IPokemob
     Alleles                        genesShiny;
     Alleles                        genesSpecies;
 
-    protected ItemStack            stack            = CompatWrapper.nullStack;
+    protected ItemStack            stack            = ItemStack.EMPTY;
 
     public PokemobAIUtilityMove    utilMoveAI;
     public LogicMountedControl     controller;

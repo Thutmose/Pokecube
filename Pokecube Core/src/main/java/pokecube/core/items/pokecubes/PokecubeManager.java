@@ -26,7 +26,7 @@ public class PokecubeManager
 {
     public static ItemStack getHeldItem(ItemStack stack)
     {
-        if (!isFilled(stack)) return CompatWrapper.nullStack;
+        if (!isFilled(stack)) return ItemStack.EMPTY;
         try
         {
             NBTTagList equipmentTags = (NBTTagList) TagNames.getPokecubePokemobTag(stack.getTagCompound())
@@ -35,14 +35,14 @@ public class PokecubeManager
             {
                 byte slot = equipmentTags.getCompoundTagAt(i).getByte("Slot");
                 if (slot != 1) continue;
-                ItemStack held = CompatWrapper.fromTag(equipmentTags.getCompoundTagAt(i));
+                ItemStack held = new ItemStack(equipmentTags.getCompoundTagAt(i));
                 return held;
             }
         }
         catch (Exception e)
         {
         }
-        return CompatWrapper.nullStack;
+        return ItemStack.EMPTY;
     }
 
     public static String getOwner(ItemStack itemStack)
@@ -183,7 +183,7 @@ public class PokecubeManager
         }
         itemStack = itemStack.copy();
         itemStack.setItemDamage(damage);
-        CompatWrapper.setStackSize(itemStack, 1);
+        itemStack.setCount(1);
         if (!itemStack.hasTagCompound()) itemStack.setTagCompound(new NBTTagCompound());
         String itemName = pokemob.getPokemonDisplayName().getFormattedText();
         Entity poke = pokemob.getEntity();

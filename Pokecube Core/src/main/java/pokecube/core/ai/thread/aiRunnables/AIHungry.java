@@ -171,10 +171,10 @@ public class AIHungry extends AIBase
                 {
                     setCombatState(pokemob, CombatStates.HUNTING, false);
                     pokemob.eat(berry);
-                    CompatWrapper.increment(stack, -1);
+                    stack.shrink(1);
                     if (!CompatWrapper.isValid(stack))
                     {
-                        pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
+                        pokemob.getPokemobInventory().setInventorySlotContents(i, ItemStack.EMPTY);
                     }
                     ate = true;
                 }
@@ -534,12 +534,12 @@ public class AIHungry extends AIBase
         for (int i = 2; i < 7; i++)
         {
             ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
-            if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry)
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemBerry)
             {
-                CompatWrapper.increment(stack, -1);
-                if (!CompatWrapper.isValid(stack))
+                stack.shrink(1);
+                if (stack.isEmpty())
                 {
-                    pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
+                    pokemob.getPokemobInventory().setInventorySlotContents(i, ItemStack.EMPTY);
                 }
                 setCombatState(pokemob, CombatStates.HUNTING, false);
                 berry.setItem(stack.copy());
@@ -564,12 +564,12 @@ public class AIHungry extends AIBase
                 for (int i1 = 0; i1 < 27; i1++)
                 {
                     ItemStack stack = container.getStackInSlot(i1);
-                    if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry)
+                    if (!stack.isEmpty() && stack.getItem() instanceof ItemBerry)
                     {
-                        CompatWrapper.increment(stack, -1);
-                        if (!CompatWrapper.isValid(stack))
+                        stack.shrink(1);
+                        if (stack.isEmpty())
                         {
-                            container.setInventorySlotContents(i1, CompatWrapper.nullStack);
+                            container.setInventorySlotContents(i1, ItemStack.EMPTY);
                         }
                         setCombatState(pokemob, CombatStates.HUNTING, false);
 

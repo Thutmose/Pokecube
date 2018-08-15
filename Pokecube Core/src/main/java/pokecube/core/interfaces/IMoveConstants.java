@@ -3,8 +3,6 @@
  */
 package pokecube.core.interfaces;
 
-import pokecube.core.utils.PokeType;
-
 /** @author Manchou */
 public interface IMoveConstants extends IMoveNames
 {
@@ -65,29 +63,6 @@ public interface IMoveConstants extends IMoveNames
     // No move move for just sitting there
     String           MOVE_NONE            = "none";
     String           DEFAULT_MOVE         = "tackle";
-
-    /*
-     * Types
-     */
-    PokeType         unknown              = PokeType.unknown;
-    PokeType         normal               = PokeType.getType("normal");
-    PokeType         fighting             = PokeType.getType("fighting");
-    PokeType         flying               = PokeType.getType("flying");
-    PokeType         poison               = PokeType.getType("poison");
-    PokeType         ground               = PokeType.getType("ground");
-    PokeType         rock                 = PokeType.getType("rock");
-    PokeType         bug                  = PokeType.getType("bug");
-    PokeType         ghost                = PokeType.getType("ghost");
-    PokeType         steel                = PokeType.getType("steel");
-    PokeType         fire                 = PokeType.getType("fire");
-    PokeType         water                = PokeType.getType("water");
-    PokeType         grass                = PokeType.getType("grass");
-    PokeType         electric             = PokeType.getType("electric");
-    PokeType         psychic              = PokeType.getType("psychic");
-    PokeType         ice                  = PokeType.getType("ice");
-    PokeType         dragon               = PokeType.getType("dragon");
-    PokeType         dark                 = PokeType.getType("dark");
-    PokeType         fairy                = PokeType.getType("fairy");
 
     /*
      * Flavours

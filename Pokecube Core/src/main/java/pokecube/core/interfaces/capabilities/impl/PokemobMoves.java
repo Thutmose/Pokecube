@@ -2,7 +2,10 @@ package pokecube.core.interfaces.capabilities.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -20,6 +23,7 @@ import pokecube.core.interfaces.capabilities.CapabilityAffected;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
+import pokecube.core.interfaces.entity.impl.PersistantStatusEffect.Status;
 import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.moves.MovesUtils;
@@ -301,10 +305,27 @@ public abstract class PokemobMoves extends PokemobSexed
             dataManager.set(params.STATUSDW, status);
             return true;
         }
+        Status actual = Status.getStatus(status);
+        if (actual == null)
+        {
+            List<Status> options = Lists.newArrayList();
+            for (Status temp : Status.values())
+            {
+                if ((temp.getMask() & status) != 0)
+                {
+                    options.add(temp);
+                }
+            }
+            if (options.isEmpty()) return false;
+            if (options.size() > 1) Collections.shuffle(options);
+            status = options.get(0).getMask();
+        }
         if (status == STATUS_BRN && isType(PokeType.getType("fire"))) return false;
         if (status == STATUS_PAR && isType(PokeType.getType("electric"))) return false;
         if (status == STATUS_FRZ && isType(PokeType.getType("ice"))) return false;
-        if ((status == STATUS_PSN || status == STATUS_PSN2) && (isType(poison) || isType(steel))) return false;
+        if ((status == STATUS_PSN || status == STATUS_PSN2)
+                && (isType(PokeType.getType("poison")) || isType(PokeType.getType("steel"))))
+            return false;
         dataManager.set(params.STATUSDW, status);
         if ((status == STATUS_SLP || status == STATUS_FRZ) && turns == -1) turns = 5;
         short timer = (short) (turns == -1 ? PokecubeMod.core.getConfig().attackCooldown * 5

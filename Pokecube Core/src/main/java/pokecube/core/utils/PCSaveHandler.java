@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.core.common.handlers.PlayerDataHandler;
 
 public class PCSaveHandler
@@ -46,6 +47,7 @@ public class PCSaveHandler
             File file = PlayerDataHandler.getFileForUUID(uuid.toString(), "PCInventory");
             if (file != null && file.exists())
             {
+                if (PokecubeMod.debug) PokecubeMod.log("Loading PC: " + uuid);
                 FileInputStream fileinputstream = new FileInputStream(file);
                 NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
                 fileinputstream.close();

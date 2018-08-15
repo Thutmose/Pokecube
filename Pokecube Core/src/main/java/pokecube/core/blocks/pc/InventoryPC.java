@@ -170,103 +170,37 @@ public class InventoryPC implements IInventory
         }
     }
 
-    public static NBTTagList saveToNBT()
-    {
-        NBTTagList nbttag = new NBTTagList();
-
-        HashSet<String> keys = new HashSet<String>();
-        for (String s : map.keySet())
-            keys.add(s);
-
-        for (String uuid : keys)
-        {
-            if (map.get(uuid) == null || uuid.equals(""))
-            {
-                continue;
-            }
-
-            boolean isUid = true;
-            try
-            {
-                UUID.fromString(uuid);
-            }
-            catch (Exception e)
-            {
-                isUid = false;
-            }
-            if (!isUid) continue;
-
-            NBTTagCompound items = new NBTTagCompound();
-            NBTTagCompound boxes = new NBTTagCompound();
-            boxes.setString("UUID", uuid);
-            boxes.setBoolean("seenOwner", map.get(uuid).seenOwner);
-            boxes.setBoolean("autoSend", map.get(uuid).autoToPC);
-            boxes.setInteger("page", map.get(uuid).page);
-
-            for (int i = 0; i < PAGECOUNT; i++)
-            {
-                boxes.setString("name" + i, map.get(uuid).boxes[i]);
-            }
-            items.setInteger("page", map.get(uuid).getPage());
-            for (int i = 0; i < map.get(uuid).getSizeInventory(); i++)
-            {
-                ItemStack itemstack = map.get(uuid).getStackInSlot(i);
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-                if (!itemstack.isEmpty())
-                {
-                    nbttagcompound.setShort("Slot", (short) i);
-                    itemstack.writeToNBT(nbttagcompound);
-                    items.setTag("item" + i, nbttagcompound);
-                }
-            }
-            items.setTag("boxes", boxes);
-            nbttag.appendTag(items);
-        }
-
-        return nbttag;
-    }
-
     public static NBTTagList saveToNBT(String uuid)
     {
         NBTTagList nbttag = new NBTTagList();
+        UUID player = UUID.fromString(uuid);
+        if (map.get(player) == null || defaultId.equals(player)) { return nbttag; }
+        NBTTagCompound items = new NBTTagCompound();
+        NBTTagCompound boxes = new NBTTagCompound();
+        boxes.setString("UUID", uuid);
+        boxes.setBoolean("seenOwner", map.get(player).seenOwner);
+        boxes.setBoolean("autoSend", map.get(player).autoToPC);
+        boxes.setInteger("page", map.get(player).page);
 
-        String name = "";
-
-        for (String player : map.keySet())
+        for (int i = 0; i < PAGECOUNT; i++)
         {
-            if (map.get(player) == null || player.equals("") || !(name.equalsIgnoreCase(player) || uuid.equals(player)))
-            {
-                continue;
-            }
-            NBTTagCompound items = new NBTTagCompound();
-            NBTTagCompound boxes = new NBTTagCompound();
-            boxes.setString("UUID", player);
-            boxes.setBoolean("seenOwner", map.get(player).seenOwner);
-            // System.out.println(map.get(player).seenOwner);
-            boxes.setBoolean("autoSend", map.get(player).autoToPC);
-            boxes.setInteger("page", map.get(player).page);
-
-            for (int i = 0; i < PAGECOUNT; i++)
-            {
-                boxes.setString("name" + i, map.get(player).boxes[i]);
-            }
-            items.setInteger("page", map.get(player).getPage());
-            for (int i = 0; i < map.get(player).getSizeInventory(); i++)
-            {
-                ItemStack itemstack = map.get(player).getStackInSlot(i);
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-                if (itemstack != ItemStack.EMPTY)
-                {
-                    nbttagcompound.setShort("Slot", (short) i);
-                    itemstack.writeToNBT(nbttagcompound);
-                    items.setTag("item" + i, nbttagcompound);
-                }
-            }
-            items.setTag("boxes", boxes);
-            nbttag.appendTag(items);
+            boxes.setString("name" + i, map.get(player).boxes[i]);
         }
+        items.setInteger("page", map.get(player).getPage());
+        for (int i = 0; i < map.get(player).getSizeInventory(); i++)
+        {
+            ItemStack itemstack = map.get(player).getStackInSlot(i);
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+
+            if (itemstack != ItemStack.EMPTY)
+            {
+                nbttagcompound.setShort("Slot", (short) i);
+                itemstack.writeToNBT(nbttagcompound);
+                items.setTag("item" + i, nbttagcompound);
+            }
+        }
+        items.setTag("boxes", boxes);
+        nbttag.appendTag(items);
 
         return nbttag;
     }

@@ -100,14 +100,6 @@ public class PCSaveHandler
         }
     }
 
-    public void writePcToNBT(NBTTagCompound nbt)
-    {
-        nbt.setBoolean("seenPCCreator", seenPCCreator);
-        NBTTagList tagsPC = InventoryPC.saveToNBT();
-        nbt.setTag("PC", tagsPC);
-
-    }
-
     public void writePcToNBT(NBTTagCompound nbt, String uuid)
     {
         nbt.setBoolean("seenPCCreator", seenPCCreator);

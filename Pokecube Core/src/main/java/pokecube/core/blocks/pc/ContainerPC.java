@@ -68,9 +68,8 @@ public class ContainerPC extends Container
         super();
         xOffset = 0;
         yOffset = 0;
-        InventoryPC temp = pc != null
-                ? pc.getPC() != null ? pc.getPC() : InventoryPC.getPC(ivplay.player.getCachedUniqueIdString())
-                : InventoryPC.getPC(ivplay.player.getCachedUniqueIdString());
+        InventoryPC temp = pc != null ? pc.getPC() != null ? pc.getPC() : InventoryPC.getPC(ivplay.player.getUniqueID())
+                : InventoryPC.getPC(ivplay.player.getUniqueID());
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) inv = InventoryPC.getPC(ivplay.player);
         else inv = temp;
         invPlayer = ivplay;

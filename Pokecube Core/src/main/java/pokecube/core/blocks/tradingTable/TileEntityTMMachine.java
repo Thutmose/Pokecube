@@ -288,7 +288,7 @@ public class TileEntityTMMachine extends TileEntityOwnable implements DefaultInv
         {
             boolean pc = hasPC();
             if (!pc) { return Lists.newArrayList(); }
-            InventoryPC pcInv = InventoryPC.getPC(player.getCachedUniqueIdString());
+            InventoryPC pcInv = InventoryPC.getPC(player.getUniqueID());
             ArrayList<String> moves = getMoves(pcInv);
             Collections.sort(moves);
 

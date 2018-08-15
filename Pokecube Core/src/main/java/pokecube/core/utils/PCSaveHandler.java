@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.UUID;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -37,12 +38,12 @@ public class PCSaveHandler
     {
     }
 
-    public void loadPC(String uuid)
+    public void loadPC(UUID uuid)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
         try
         {
-            File file = PlayerDataHandler.getFileForUUID(uuid, "PCInventory");
+            File file = PlayerDataHandler.getFileForUUID(uuid.toString(), "PCInventory");
             if (file != null && file.exists())
             {
                 FileInputStream fileinputstream = new FileInputStream(file);
@@ -71,14 +72,14 @@ public class PCSaveHandler
         }
     }
 
-    public void savePC(String uuid)
+    public void savePC(UUID uuid)
     {
         if (FMLCommonHandler.instance().getMinecraftServerInstance() == null
                 || FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             return;
         try
         {
-            File file = PlayerDataHandler.getFileForUUID(uuid, "PCInventory");
+            File file = PlayerDataHandler.getFileForUUID(uuid.toString(), "PCInventory");
             if (file != null)
             {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
@@ -100,7 +101,7 @@ public class PCSaveHandler
         }
     }
 
-    public void writePcToNBT(NBTTagCompound nbt, String uuid)
+    public void writePcToNBT(NBTTagCompound nbt, UUID uuid)
     {
         nbt.setBoolean("seenPCCreator", seenPCCreator);
         NBTTagList tagsPC = InventoryPC.saveToNBT(uuid);

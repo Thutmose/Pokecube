@@ -120,7 +120,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
         }
         if (message.message == ONOPEN)
         {
-            InventoryPC.blank = new InventoryPC("blank");
+            InventoryPC.blank = new InventoryPC(InventoryPC.defaultId);
             InventoryPC pc = InventoryPC.getPC(player);
             pc.seenOwner = message.data.getBoolean("O");
             pc.autoToPC = message.data.getBoolean("A");

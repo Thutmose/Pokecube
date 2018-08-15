@@ -15,35 +15,35 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PCSaveHandler;
 import thut.lib.CompatWrapper;
 
 public class InventoryPC implements IInventory
 {
-    public static HashMap<String, InventoryPC> map       = new HashMap<String, InventoryPC>();
+    public static HashMap<UUID, InventoryPC> map       = new HashMap<UUID, InventoryPC>();
     // blank PC for client use.
-    public static InventoryPC                  blank;
-    public static UUID                         defaultId = new UUID(1234, 4321);
-    public static int                          PAGECOUNT = 32;
+    public static InventoryPC                blank;
+    public static UUID                       defaultId = new UUID(1234, 4321);
+    public static int                        PAGECOUNT = 32;
 
     public static void addPokecubeToPC(ItemStack mob, World world)
     {
         if (!(PokecubeManager.isFilled(mob))) return;
         String player = PokecubeManager.getOwner(mob);
+        UUID id;
         try
         {
-            UUID.fromString(player);
+            id = UUID.fromString(player);
+            addStackToPC(id, mob);
         }
         catch (Exception e)
         {
 
         }
-        addStackToPC(player, mob);
     }
 
-    public static void addStackToPC(String uuid, ItemStack mob)
+    public static void addStackToPC(UUID uuid, ItemStack mob)
     {
         if (uuid == null || !CompatWrapper.isValid(mob))
         {
@@ -73,11 +73,11 @@ public class InventoryPC implements IInventory
     public static InventoryPC getPC(Entity player)
     {// TODO Sync box names/numbers to blank
         if (player == null || player.getEntityWorld().isRemote)
-            return blank == null ? blank = new InventoryPC("blank") : blank;
-        return getPC(player.getCachedUniqueIdString());
+            return blank == null ? blank = new InventoryPC(defaultId) : blank;
+        return getPC(player.getUniqueID());
     }
 
-    public static InventoryPC getPC(String uuid)
+    public static InventoryPC getPC(UUID uuid)
     {
         if (uuid != null)
         {
@@ -87,23 +87,8 @@ public class InventoryPC implements IInventory
             }
             if (map.containsKey(uuid))
             {
-                if (PokecubeCore.proxy.getPlayer(uuid) != null)
-                {
-                    String username = PokecubeCore.proxy.getPlayer(uuid).getName();
-                    map.remove(username);
-                }
                 return map.get(uuid);
             }
-            boolean isUid = true;
-            try
-            {
-                UUID.fromString(uuid);
-            }
-            catch (Exception e)
-            {
-                isUid = false;
-            }
-            if (!isUid) return getPC(PokecubeMod.fakeUUID.toString());
             return new InventoryPC(uuid);
         }
         return null;
@@ -122,17 +107,21 @@ public class InventoryPC implements IInventory
         {
             NBTTagCompound items = nbt.getCompoundTagAt(i);
             NBTTagCompound boxes = items.getCompoundTag("boxes");
-            String player = boxes.getString("username");
 
-            String uuid = boxes.getString("UUID");
+            String id = boxes.getString("UUID");
 
-            if ((uuid == "" || uuid == null) && (player == "" || player == null))
+            if ((id == "" || id == null))
             {
                 continue;
             }
-            if (uuid == "" || uuid == null)
+            UUID uuid;
+            try
             {
-                uuid = player;
+                uuid = UUID.fromString(id);
+            }
+            catch (Exception e)
+            {
+                continue;
             }
             if (!replace && map.containsKey(uuid)) continue;
 
@@ -170,26 +159,25 @@ public class InventoryPC implements IInventory
         }
     }
 
-    public static NBTTagList saveToNBT(String uuid)
+    public static NBTTagList saveToNBT(UUID uuid)
     {
         NBTTagList nbttag = new NBTTagList();
-        UUID player = UUID.fromString(uuid);
-        if (map.get(player) == null || defaultId.equals(player)) { return nbttag; }
+        if (map.get(uuid) == null || defaultId.equals(uuid)) { return nbttag; }
         NBTTagCompound items = new NBTTagCompound();
         NBTTagCompound boxes = new NBTTagCompound();
-        boxes.setString("UUID", uuid);
-        boxes.setBoolean("seenOwner", map.get(player).seenOwner);
-        boxes.setBoolean("autoSend", map.get(player).autoToPC);
-        boxes.setInteger("page", map.get(player).page);
+        boxes.setString("UUID", uuid.toString());
+        boxes.setBoolean("seenOwner", map.get(uuid).seenOwner);
+        boxes.setBoolean("autoSend", map.get(uuid).autoToPC);
+        boxes.setInteger("page", map.get(uuid).page);
 
         for (int i = 0; i < PAGECOUNT; i++)
         {
-            boxes.setString("name" + i, map.get(player).boxes[i]);
+            boxes.setString("name" + i, map.get(uuid).boxes[i]);
         }
-        items.setInteger("page", map.get(player).getPage());
-        for (int i = 0; i < map.get(player).getSizeInventory(); i++)
+        items.setInteger("page", map.get(uuid).getPage());
+        for (int i = 0; i < map.get(uuid).getSizeInventory(); i++)
         {
-            ItemStack itemstack = map.get(player).getStackInSlot(i);
+            ItemStack itemstack = map.get(uuid).getStackInSlot(i);
             NBTTagCompound nbttagcompound = new NBTTagCompound();
 
             if (itemstack != ItemStack.EMPTY)
@@ -214,7 +202,7 @@ public class InventoryPC implements IInventory
     public String[]                          boxes     = new String[PAGECOUNT];
     private Int2ObjectOpenHashMap<ItemStack> contents  = new Int2ObjectOpenHashMap<>();
 
-    public final String                      owner;
+    public final UUID                        owner;
 
     public boolean                           seenOwner = false;
 
@@ -226,9 +214,9 @@ public class InventoryPC implements IInventory
         page = from.page;
     }
 
-    public InventoryPC(String player)
+    public InventoryPC(UUID player)
     {
-        if (!player.equals("") && !map.containsKey(player)) map.put(player, this);
+        if (player != defaultId && !map.containsKey(player)) map.put(player, this);
         opened = new boolean[PAGECOUNT];
         boxes = new String[PAGECOUNT];
         owner = player;
@@ -267,7 +255,7 @@ public class InventoryPC implements IInventory
     @Override
     public void closeInventory(EntityPlayer player)
     {
-        PCSaveHandler.getInstance().savePC(player.getCachedUniqueIdString());
+        PCSaveHandler.getInstance().savePC(player.getUniqueID());
     }
 
     @Override
@@ -322,10 +310,10 @@ public class InventoryPC implements IInventory
     @Override
     public String getName()
     {
-        EntityPlayer player = PokecubeCore.getPlayer(owner);
+        EntityPlayer player = PokecubeCore.getPlayer(owner.toString());
         String name = "Public";
 
-        if (!owner.equals(defaultId.toString()))
+        if (!owner.equals(defaultId))
         {
             name = "Private bound";
         }

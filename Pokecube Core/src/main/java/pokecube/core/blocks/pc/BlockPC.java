@@ -89,7 +89,6 @@ public class BlockPC extends BlockRotatable implements ITileEntityProvider
         return false;
     }
 
-    // 1.11
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
@@ -99,7 +98,7 @@ public class BlockPC extends BlockRotatable implements ITileEntityProvider
         IBlockState down = worldIn.getBlockState(pos.down());
         Block idDown = down.getBlock();
         if (!(idDown instanceof BlockPC) || ((BlockPC) idDown).top) return false;
-        InventoryPC inventoryPC = InventoryPC.getPC(playerIn.getCachedUniqueIdString());
+        InventoryPC inventoryPC = InventoryPC.getPC(playerIn.getUniqueID());
         if (inventoryPC != null)
         {
             if (worldIn.isRemote) { return true; }

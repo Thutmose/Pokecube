@@ -29,7 +29,7 @@ import thut.api.network.PacketHandler;
 public class TileEntityPC extends TileEntityOwnable implements IInventory, SimpleComponent
 {
     private boolean     bound     = false;
-    private String      boundId   = "";
+    private UUID        boundId   = null;
     private String      boundName = "";
     public List<String> visible   = new ArrayList<String>();
 
@@ -200,11 +200,18 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
     {
         super.readFromNBT(par1NBTTagCompound);
         this.bound = par1NBTTagCompound.getBoolean("bound");
-        boundId = par1NBTTagCompound.getString("boundID");
-        boundName = par1NBTTagCompound.getString("boundName");
-        if (boundId == null || boundId.isEmpty())
+        try
         {
-            boundId = new UUID(1234, 4321).toString();
+            if (par1NBTTagCompound.hasKey("boundID"))
+                boundId = UUID.fromString(par1NBTTagCompound.getString("boundID"));
+        }
+        catch (Exception e)
+        {
+        }
+        boundName = par1NBTTagCompound.getString("boundName");
+        if (boundId == null)
+        {
+            boundId = InventoryPC.defaultId;
             boundName = "Public Box";
         }
     }
@@ -226,10 +233,9 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
             PokecubeMod.packetPipeline.sendToServer(packet);
             return;
         }
-        String uuid = player.getCachedUniqueIdString();
         TileEntity te = world.getTileEntity(getPos().down());
         if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).setBoundOwner(player);
-        boundId = uuid;
+        boundId = player.getUniqueID();
         boundName = player.getDisplayNameString();
         if (!world.isRemote)
         {
@@ -268,13 +274,12 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
 
         if (bound)
         {
-            UUID id = InventoryPC.defaultId;
-            boundId = id.toString();
+            boundId = InventoryPC.defaultId;
             boundName = "Public";
         }
         else
         {
-            boundId = "";
+            boundId = null;
             boundName = "";
         }
         if (!world.isRemote)
@@ -291,7 +296,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
     {
         super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setBoolean("bound", bound);
-        par1NBTTagCompound.setString("boundID", boundId);
+        if (boundId != null) par1NBTTagCompound.setString("boundID", boundId.toString());
         par1NBTTagCompound.setString("boundName", boundName);
         return par1NBTTagCompound;
     }

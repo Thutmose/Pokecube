@@ -245,6 +245,10 @@ public class Config extends ConfigBase
     /** Distance to player needed to agress the player */
     public int                           mobAggroRadius               = 3;
     @Configure(category = mobAI)
+    /** Approximately how many ticks between wild pokemobs running agro
+     * checks. */
+    public int                           mobAgroRate                  = 200;
+    @Configure(category = mobAI)
     /** Approximate number of ticks before pok�mob starts taking hunger
      * damage */
     public int                           pokemobLifeSpan              = 8000;

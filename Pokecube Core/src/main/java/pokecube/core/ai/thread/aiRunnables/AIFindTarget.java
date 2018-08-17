@@ -2,6 +2,7 @@ package pokecube.core.ai.thread.aiRunnables;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -42,6 +44,48 @@ import thut.api.maths.Vector3;
 /** This IAIRunnable is to find targets for the pokemob to try to kill. */
 public class AIFindTarget extends AIBase implements IAICombat
 {
+    private static class ValidCheck implements Predicate<Entity>
+    {
+        @Override
+        public boolean apply(Entity input)
+        {
+            String id = EntityList.getEntityString(input);
+            if (invalidIDs.contains(id)) return false;
+            ResourceLocation eid = EntityList.getKey(input);
+            if (eid != null) id = eid.toString();
+            if (invalidIDs.contains(id)) return false;
+            for (Class<?> clas : invalidClasses)
+            {
+                if (clas.isInstance(input)) return false;
+            }
+            if (input instanceof EntityPlayerMP)
+            {
+                EntityPlayerMP player = (EntityPlayerMP) input;
+                if (player.isSpectator()) return false;
+            }
+            return true;
+        }
+    }
+
+    public static class AgroCheck implements Predicate<IPokemob>
+    {
+        @Override
+        public boolean apply(IPokemob input)
+        {
+            boolean tame = input.getGeneralState(GeneralStates.TAMED);
+            boolean wildAgress = !tame;
+            if (PokecubeCore.core.getConfig().mobAgroRate > 0)
+                wildAgress = wildAgress && new Random().nextInt(PokecubeCore.core.getConfig().mobAgroRate) == 0;
+            else wildAgress = false;
+            // Check if the mob should always be agressive.
+            if (!tame && !wildAgress && input.getEntity().ticksExisted % 20 == 0)
+            {
+                wildAgress = input.getEntity().getEntityData().getBoolean("alwaysAgress");
+            }
+            return wildAgress;
+        }
+    }
+
     public static boolean handleDamagedTargets = true;
     static
     {
@@ -85,23 +129,11 @@ public class AIFindTarget extends AIBase implements IAICombat
 
     /** Checks the blacklists set via configs, to see whether the target is a
      * valid choice. */
-    public static final Predicate<Entity> validTargets = new Predicate<Entity>()
-    {
-        @Override
-        public boolean apply(Entity input)
-        {
-            String id = EntityList.getEntityString(input);
-            if (invalidIDs.contains(id)) return false;
-            ResourceLocation eid = EntityList.getKey(input);
-            if (eid != null) id = eid.toString();
-            if (invalidIDs.contains(id)) return false;
-            for (Class<?> clas : invalidClasses)
-            {
-                if (clas.isInstance(input)) return false;
-            }
-            return true;
-        }
-    };
+    public static final Predicate<Entity> validTargets            = new ValidCheck();
+
+    /** Checks to see if the wild pokemob should try to agro the nearest visible
+     * player. */
+    public static Predicate<IPokemob>     shouldAgroNearestPlayer = new AgroCheck();
 
     /** Prevents the owner from attacking their own pokemob, and takes care of
      * properly setting attack targets for whatever was hurt. */
@@ -460,7 +492,6 @@ public class AIFindTarget extends AIBase implements IAICombat
             {
                 addTargetInfo(entity, newtarget);
                 setCombatState(pokemob, CombatStates.ANGRY, true);
-                setLogicState(pokemob, LogicStates.SITTING, false);
                 entityTarget = newtarget;
                 return;
             }
@@ -577,15 +608,8 @@ public class AIFindTarget extends AIBase implements IAICombat
             return false;
         }
 
-        boolean wildAgress = !tame && entity.getRNG().nextInt(200) == 0;
-        // Check if the mob should always be agressive.
-        if (!tame && !wildAgress && entity.ticksExisted % 20 == 0)
-        {
-            wildAgress = entity.getEntityData().getBoolean("alwaysAgress");
-        }
         // If wild, randomly decided to agro a nearby player instead.
-        // TODO make this configurable somehow based on specifics
-        if (ret && wildAgress)
+        if (ret && shouldAgroNearestPlayer.apply(pokemob))
         {
             EntityPlayer player = getClosestVulnerablePlayerToEntity(entity,
                     PokecubeMod.core.getConfig().mobAggroRadius);

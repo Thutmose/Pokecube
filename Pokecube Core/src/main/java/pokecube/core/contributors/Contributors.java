@@ -29,9 +29,7 @@ public class Contributors
 
     public Contributor getContributor(GameProfile profile)
     {
-        if (byName.containsKey(profile.getName()))// &&
-                                                  // !byUUID.containsKey(profile.getId()))
-            return byName.get(profile.getName());
+        if (byName.containsKey(profile.getName())) return byName.get(profile.getName());
         return byUUID.get(profile.getId());
     }
 }

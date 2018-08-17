@@ -97,7 +97,6 @@ public class InspectPokemobTrigger implements ICriterionTrigger<InspectPokemobTr
 
     public InspectPokemobTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

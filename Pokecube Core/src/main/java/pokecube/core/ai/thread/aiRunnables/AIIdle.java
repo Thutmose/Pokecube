@@ -160,8 +160,8 @@ public class AIIdle extends AIBase
         {
             v.set(current.getFinalPathPoint());
             v1.set(entity);
-            double diff = 4 * entity.width;// TODO refine tis to using length
-                                           // too
+            // TODO refine this to using length too
+            double diff = 4 * entity.width;
             diff = Math.max(2, diff);
             if (v.distToSq(v1) < diff)
             {

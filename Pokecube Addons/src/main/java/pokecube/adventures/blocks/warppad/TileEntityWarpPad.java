@@ -202,7 +202,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
     }
 
     @Callback(doc = "function(x:number, y:number, z:number, w:number) - Sets the 4-vector destination, w is the dimension")
-    @Optional.Method(modid = "opencomputers") // TODO OC
+    @Optional.Method(modid = "opencomputers")
     public Object[] setDestination(Context context, Arguments args) throws Exception
     {
         if (args.isDouble(0) && args.isDouble(1) && args.isDouble(2) && args.isDouble(3))

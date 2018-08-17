@@ -97,7 +97,6 @@ public class HatchPokemobTrigger implements ICriterionTrigger<HatchPokemobTrigge
 
     public HatchPokemobTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

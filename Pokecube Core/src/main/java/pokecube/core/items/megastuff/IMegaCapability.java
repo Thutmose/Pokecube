@@ -6,10 +6,14 @@ import pokecube.core.database.PokedexEntry;
 
 public interface IMegaCapability
 {
-    // TODO in here check if the mega wearable is acceptable for the pokemob
-    // being mega evolved, handle this server side, not client side.
+    /** Check if the itemstack is a mega stone. */
     boolean isStone(ItemStack stack);
 
+    /** Check if the mega stone is valid for the given entry.
+     * 
+     * @param stack
+     * @param entry
+     * @return */
     boolean isValid(ItemStack stack, PokedexEntry entry);
 
     PokedexEntry getEntry(ItemStack stack);

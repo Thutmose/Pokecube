@@ -97,7 +97,6 @@ public class EvolvePokemobTrigger implements ICriterionTrigger<EvolvePokemobTrig
 
     public EvolvePokemobTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

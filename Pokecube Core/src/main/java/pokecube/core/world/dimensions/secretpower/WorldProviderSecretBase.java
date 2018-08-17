@@ -18,6 +18,8 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
@@ -26,9 +28,13 @@ import pokecube.core.world.dimensions.PokecubeDimensionManager;
 
 public class WorldProviderSecretBase extends WorldProvider
 {
-    public static int  DEFAULTSIZE = 8;
-    String             owner;
-    private static JEP parser;
+    public static final String PERMMINEOWNBASE   = "pokecube.secretbase.mine.own";
+    public static final String PERMMINEOTHERBASE = "pokecube.secretbase.mine.other";
+
+    public static int          DEFAULTSIZE       = 8;
+    String                     owner;
+    private static JEP         parser;
+    private static boolean     perms             = false;
 
     public static void init(String function)
     {
@@ -42,6 +48,15 @@ public class WorldProviderSecretBase extends WorldProvider
         parser.addVariable("k", 0);
         parser.addVariable("h", 0);
         parser.parseExpression(function);
+
+        if (!perms)
+        {
+            perms = true;
+            PermissionAPI.registerNode(PERMMINEOTHERBASE, DefaultPermissionLevel.OP,
+                    "Can the player mine blocks in someone else's secret base.");
+            PermissionAPI.registerNode(PERMMINEOWNBASE, DefaultPermissionLevel.ALL,
+                    "Can the player mine blocks in their own secret base.");
+        }
     }
 
     public static void initToDefaults(WorldBorder border)
@@ -197,7 +212,8 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public boolean canMineBlock(net.minecraft.entity.player.EntityPlayer player, BlockPos pos)
     {
-        return true;// TODO Check permissions for the base somehow.
+        return PermissionAPI.hasPermission(player,
+                player.getCachedUniqueIdString().equals(owner) ? PERMMINEOWNBASE : PERMMINEOTHERBASE);
     }
 
     /** Called to determine if the chunk at the given chunk coordinates within

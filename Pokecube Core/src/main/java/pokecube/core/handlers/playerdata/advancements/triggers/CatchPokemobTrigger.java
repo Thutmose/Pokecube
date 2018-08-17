@@ -126,7 +126,6 @@ public class CatchPokemobTrigger implements ICriterionTrigger<CatchPokemobTrigge
 
     public CatchPokemobTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

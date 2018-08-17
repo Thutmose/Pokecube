@@ -92,7 +92,6 @@ public class BeatTrainerTrigger implements ICriterionTrigger<BeatTrainerTrigger.
 
     public BeatTrainerTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

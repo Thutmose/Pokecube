@@ -46,13 +46,7 @@ public class ChunkProviderSecretBase implements IChunkGenerator
         return Lists.newArrayList();
     }
 
-    // 1.10
-    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position)
-    {
-        return null;
-    }
-
-    // 1.11
+    @Override
     public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean p_180513_4_)
     {
         return null;
@@ -66,7 +60,6 @@ public class ChunkProviderSecretBase implements IChunkGenerator
     @Override
     public boolean isInsideStructure(World p_193414_1_, String p_193414_2_, BlockPos p_193414_3_)
     {
-        // TODO Auto-generated method stub
         return false;
     }
 

@@ -163,7 +163,7 @@ public class MoveEventsHandler
         Vector3 prevBlock = Vector3.getNewVector().set(attacker.getEntity()).subtractFrom(location).norm()
                 .addTo(location);
         IBlockState prevState = prevBlock.getBlockState(world);
-        int flamNext = nextState.getBlock().getFlammability(world, nextBlock.getPos(), EnumFacing.UP);// TODO
+        int flamNext = nextState.getBlock().getFlammability(world, nextBlock.getPos(), EnumFacing.UP);
         if (state.getMaterial().isReplaceable() && flamNext != 0)
         {
             location.setBlock(world, Blocks.FIRE);

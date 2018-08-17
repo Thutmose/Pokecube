@@ -90,7 +90,6 @@ public class FirstPokemobTrigger implements ICriterionTrigger<FirstPokemobTrigge
 
     public FirstPokemobTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

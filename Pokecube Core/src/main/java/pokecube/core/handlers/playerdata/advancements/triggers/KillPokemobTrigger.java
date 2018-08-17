@@ -97,7 +97,6 @@ public class KillPokemobTrigger implements ICriterionTrigger<KillPokemobTrigger.
 
     public KillPokemobTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

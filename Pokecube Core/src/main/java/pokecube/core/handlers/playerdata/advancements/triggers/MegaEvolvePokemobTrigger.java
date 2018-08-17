@@ -97,7 +97,6 @@ public class MegaEvolvePokemobTrigger implements ICriterionTrigger<MegaEvolvePok
 
     public MegaEvolvePokemobTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

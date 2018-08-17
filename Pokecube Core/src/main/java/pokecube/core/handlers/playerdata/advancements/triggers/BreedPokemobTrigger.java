@@ -117,7 +117,6 @@ public class BreedPokemobTrigger implements ICriterionTrigger<BreedPokemobTrigge
 
     public BreedPokemobTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

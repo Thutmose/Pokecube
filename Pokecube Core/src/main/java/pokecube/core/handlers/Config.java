@@ -529,8 +529,8 @@ public class Config extends ConfigBase
     String[]                             mystLocs                     = {};
     @Configure(category = advanced)
     boolean                              resetTags                    = false;
-    @Configure(category = advanced) // TODO find more internal variables to add
-                                    // to this.
+    @Configure(category = advanced)
+    // TODO find more internal variables to add to this.
     String[]                             extraVars                    = { "jc:" + EventsHandler.juiceChance,
             "rc:" + EventsHandler.candyChance, "eggDpl:" + ItemPokemobEgg.PLAYERDIST,
             "eggDpm:" + ItemPokemobEgg.MOBDIST };

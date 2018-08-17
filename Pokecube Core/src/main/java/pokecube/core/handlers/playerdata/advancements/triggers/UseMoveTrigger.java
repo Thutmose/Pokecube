@@ -101,7 +101,6 @@ public class UseMoveTrigger implements ICriterionTrigger<UseMoveTrigger.Instance
 
     public UseMoveTrigger()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -154,11 +153,8 @@ public class UseMoveTrigger implements ICriterionTrigger<UseMoveTrigger.Instance
     public UseMoveTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context)
     {
         String attack = json.get("move").getAsString();
-        MovePacket packet = new MovePacket(null, null, MovesUtils.getMoveFromName(attack));// TODO
-                                                                                           // get
-                                                                                           // this
-                                                                                           // done
-                                                                                           // better.
+        // TODO get this done better.
+        MovePacket packet = new MovePacket(null, null, MovesUtils.getMoveFromName(attack));
         return new UseMoveTrigger.Instance(packet);
     }
 

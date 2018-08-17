@@ -9,6 +9,8 @@ import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import pokecube.modelloader.ModPokecubeML;
+import pokecube.modelloader.common.Config;
 import thut.core.client.render.model.IModelRenderer;
 
 public class ModelWrapper extends ModelBase
@@ -19,6 +21,7 @@ public class ModelWrapper extends ModelBase
     public ModelWrapper(String name)
     {
         this.name = name;
+        if (ModPokecubeML.preload || Config.instance.toPreload.contains(name)) checkWrapped();
     }
 
     public void setWrapped(ModelBase wrapped)

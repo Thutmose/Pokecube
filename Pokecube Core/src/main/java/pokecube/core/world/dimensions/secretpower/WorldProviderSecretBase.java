@@ -34,7 +34,14 @@ public class WorldProviderSecretBase extends WorldProvider
     public static int          DEFAULTSIZE       = 8;
     String                     owner;
     private static JEP         parser;
-    private static boolean     perms             = false;
+
+    public static void initPerms()
+    {
+        PermissionAPI.registerNode(PERMMINEOTHERBASE, DefaultPermissionLevel.OP,
+                "Can the player mine blocks in someone else's secret base.");
+        PermissionAPI.registerNode(PERMMINEOWNBASE, DefaultPermissionLevel.ALL,
+                "Can the player mine blocks in their own secret base.");
+    }
 
     public static void init(String function)
     {
@@ -48,15 +55,6 @@ public class WorldProviderSecretBase extends WorldProvider
         parser.addVariable("k", 0);
         parser.addVariable("h", 0);
         parser.parseExpression(function);
-
-        if (!perms)
-        {
-            perms = true;
-            PermissionAPI.registerNode(PERMMINEOTHERBASE, DefaultPermissionLevel.OP,
-                    "Can the player mine blocks in someone else's secret base.");
-            PermissionAPI.registerNode(PERMMINEOWNBASE, DefaultPermissionLevel.ALL,
-                    "Can the player mine blocks in their own secret base.");
-        }
     }
 
     public static void initToDefaults(WorldBorder border)

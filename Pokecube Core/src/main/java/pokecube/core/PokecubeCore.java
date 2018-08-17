@@ -114,6 +114,7 @@ import pokecube.core.utils.Permissions;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
+import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import pokecube.core.world.gen.WorldGenFossils;
 import pokecube.core.world.gen.WorldGenNests;
 import pokecube.core.world.gen.WorldGenTemplates;
@@ -439,6 +440,8 @@ public class PokecubeCore extends PokecubeMod
     private void postInit(FMLPostInitializationEvent evt)
     {
         if (PokecubeMod.debug) PokecubeMod.log("Pokecube Core Post Init");
+        // Initialize permissions for secret base stuff
+        WorldProviderSecretBase.initPerms();
         // Initialize the target blacklists.
         AIFindTarget.initIDs();
         // Send database postinit.

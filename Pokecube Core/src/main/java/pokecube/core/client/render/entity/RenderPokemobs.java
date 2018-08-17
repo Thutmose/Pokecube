@@ -19,9 +19,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.database.Database;
+import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.EntityTools;
 import pokecube.modelloader.ModPokecubeML;
@@ -97,8 +97,7 @@ public class RenderPokemobs extends RenderPokemob
     {
         IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
         if (mob == null) return false;
-        int nb = mob.getPokedexNb();
-        if (!PokecubeMod.registered.get(nb))
+        if (!Pokedex.getInstance().isRegistered(mob.getPokedexEntry()))
         {
             System.err.println("attempting to render an un-registed pokemon " + entity);
             return false;

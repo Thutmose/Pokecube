@@ -371,8 +371,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         // Check if the pokemob is set to follow, and if so, look for mobs
         // nearby trying to attack the owner of the pokemob, if any such are
         // found, try to aggress them immediately.
-        if (!pokemob.getGeneralState(GeneralStates.STAYING) && pokemob.getGeneralState(GeneralStates.TAMED)
-                && !PokecubeCore.isOnClientSide())
+        if (!pokemob.getGeneralState(GeneralStates.STAYING) && pokemob.getGeneralState(GeneralStates.TAMED))
         {
             List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
             if (!list.isEmpty() && pokemob.getPokemonOwner() != null)

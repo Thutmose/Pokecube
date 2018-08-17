@@ -3,7 +3,6 @@ package pokecube.core.interfaces;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -58,60 +57,58 @@ public abstract class PokecubeMod
         }
     }
 
-    public final static String                    ID                         = "pokecube";
-    public final static String                    VERSION                    = "@VERSION";
-    public final static String                    MCVERSIONS                 = "@MCVERSION";
-    public final static String                    MINVERSION                 = "@MINVERSION";
-    public final static String                    MINFORGEVERSION            = "@FORGEVERSION";
+    public final static String                               ID                         = "pokecube";
+    public final static String                               VERSION                    = "@VERSION";
+    public final static String                               MCVERSIONS                 = "@MCVERSION";
+    public final static String                               MINVERSION                 = "@MINVERSION";
+    public final static String                               MINFORGEVERSION            = "@FORGEVERSION";
 
-    public final static String                    DEPSTRING                  = ";required-after:thutcore@@THUTCORE";
-    public final static String                    GIST                       = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/";
-    public final static String                    UPDATEURL                  = GIST + "core.json";
+    public final static String                               DEPSTRING                  = ";required-after:thutcore@@THUTCORE";
+    public final static String                               GIST                       = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/";
+    public final static String                               UPDATEURL                  = GIST + "core.json";
 
-    public final static String                    GIFTURL                    = GIST + "gift";
-    public static final int                       MAX_DAMAGE                 = 0x7FFF;
+    public final static String                               GIFTURL                    = GIST + "gift";
+    public static final int                                  MAX_DAMAGE                 = 0x7FFF;
 
-    public static final int                       FULL_HEALTH                = MAX_DAMAGE - 1;
-    private static HashMap<Integer, FakePlayer>   fakePlayers                = new HashMap<Integer, FakePlayer>();
+    public static final int                                  FULL_HEALTH                = MAX_DAMAGE - 1;
+    private static HashMap<Integer, FakePlayer>              fakePlayers                = new HashMap<Integer, FakePlayer>();
 
     /** When true, this will result in a bunch of debug spam being printed to
      * Pokecube.log. */
-    public static boolean                         debug                      = false;
+    public static boolean                                    debug                      = false;
 
-    public static PokecubeMod                     core;
+    public static PokecubeMod                                core;
 
-    public static NetworkWrapper                  packetPipeline;
+    public static NetworkWrapper                             packetPipeline;
 
     // Manchou mobs are default mobs
-    public static String                          defaultMod                 = "pokecube_ml";
+    public static String                                     defaultMod                 = "pokecube_ml";
 
-    public static double                          MAX_DENSITY                = 1;
-    public static Map<String, String>             gifts                      = Maps.newHashMap();
-    public static Set<String>                     giftLocations              = Sets.newHashSet();
-    public static Map<PokedexEntry, Class<?>>     pokedexmap                 = Maps.newHashMap();
-    public static Map<PokedexEntry, Class<?>>     genericMobClasses          = Maps.newHashMap();
+    public static double                                     MAX_DENSITY                = 1;
+    public static Map<String, String>                        gifts                      = Maps.newHashMap();
+    public static Set<String>                                giftLocations              = Sets.newHashSet();
+    public static Map<PokedexEntry, Class<? extends Entity>> pokedexmap                 = Maps.newHashMap();
+    public static Map<PokedexEntry, Class<?>>                genericMobClasses          = Maps.newHashMap();
 
-    public static final EventBus                  MOVE_BUS                   = new EventBus();
+    public static final EventBus                             MOVE_BUS                   = new EventBus();
 
-    public static BitSet                          registered                 = new BitSet();
-
-    public static CreativeTabs                    creativeTabPokecube        = new CreativeTabPokecube(
+    public static CreativeTabs                               creativeTabPokecube        = new CreativeTabPokecube(
             CreativeTabs.CREATIVE_TAB_ARRAY.length, "Pokecube");
 
-    public static CreativeTabs                    creativeTabPokecubes       = new CreativeTabPokecubes(
+    public static CreativeTabs                               creativeTabPokecubes       = new CreativeTabPokecubes(
             CreativeTabs.CREATIVE_TAB_ARRAY.length, "Pokecubes");
 
-    public static CreativeTabs                    creativeTabPokecubeBerries = new CreativeTabPokecubeBerries(
+    public static CreativeTabs                               creativeTabPokecubeBerries = new CreativeTabPokecubeBerries(
             CreativeTabs.CREATIVE_TAB_ARRAY.length, "Berries");
 
-    public static CreativeTabs                    creativeTabPokecubeBlocks  = new CreativeTabPokecubeBlocks(
+    public static CreativeTabs                               creativeTabPokecubeBlocks  = new CreativeTabPokecubeBlocks(
             CreativeTabs.CREATIVE_TAB_ARRAY.length, "Pokecube Blocks");
 
-    public static HashMap<Integer, EntityEggInfo> pokemobEggs                = Maps.newHashMap();
+    public static HashMap<Integer, EntityEggInfo>            pokemobEggs                = Maps.newHashMap();
 
-    public static final UUID                      fakeUUID                   = new UUID(1234, 4321);
-    private static Logger                         logger                     = Logger.getLogger("Pokecube");
-    protected static FileHandler                  logHandler                 = null;
+    public static final UUID                                 fakeUUID                   = new UUID(1234, 4321);
+    private static Logger                                    logger                     = Logger.getLogger("Pokecube");
+    protected static FileHandler                             logHandler                 = null;
 
     private static void initLogger()
     {

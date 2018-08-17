@@ -18,7 +18,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.PokecubeCore;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -213,8 +212,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         super.init(nb);
         pokemobCap.getPokedexEntry();
         pokemobCap.setRNGValue(rand.nextInt());
-        if (PokecubeCore.isOnClientSide()) this.setHealth(getMaxHealth());
-        else this.setHealth(0);
+        this.setHealth(getMaxHealth());
     }
 
     @Override

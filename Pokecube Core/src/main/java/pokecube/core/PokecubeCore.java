@@ -51,8 +51,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLModIdMappingEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
@@ -60,7 +58,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.healtable.TileHealTable;
@@ -207,11 +204,6 @@ public class PokecubeCore extends PokecubeMod
         return getProxy().getWorld();
     }
 
-    public static boolean isOnClientSide()
-    {
-        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
-    }
-
     public static void registerSpawns()
     {
         int n = 0;
@@ -335,15 +327,14 @@ public class PokecubeCore extends PokecubeMod
     }
 
     /** Returns the class of the {@link EntityLiving} for the given pokedexNb.
-     * If no Pokemob has been registered for this pokedex number, it returns
+     * If no Pokemob has been registered for this pokedex entry, it returns
      * <code>null</code>.
      * 
      * @param entry
-     *            the pokedex number
+     *            the pokedex entry
      * @return the {@link Class} of the pokemob */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Class getEntityClassForEntry(PokedexEntry entry)
+    public Class<? extends Entity> getEntityClassForEntry(PokedexEntry entry)
     {
         try
         {
@@ -630,16 +621,11 @@ public class PokecubeCore extends PokecubeMod
         MinecraftForge.EVENT_BUS.register(events);
     }
 
-    /** Registers a Pokemob into the Pokedex. Have a look to the file called
-     * <code>"HelpEntityJava.png"</code> provided with the SDK.
-     *
-     * @param createEgg
-     *            whether an egg should be created for this species (is a base
-     *            non legendary pokemob)
-     * @param mod
-     *            the instance of your mod
-     * @param pokedexnb
-     *            the pokedex number */
+    /** Registers a Pokemob into the Pokedex, this finds or generates a class
+     * for the mob automatically, if you want to provide your own class for the
+     * pokemob, call
+     * {@link PokecubeCore#registerPokemonByClass(Class, boolean, Object, PokedexEntry)}
+     * instead */
     @Override
     public void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry)
     {
@@ -668,8 +654,8 @@ public class PokecubeCore extends PokecubeMod
         }
     }
 
-    /** Registers a Pokemob into the Pokedex. Have a look to the file called
-     * <code>"HelpEntityJava.png"</code> provided with the SDK.
+    /** Registers a Pokemob into the Pokedex, this method should only be used if
+     * you want to provide your own pokemob class..
      *
      * @param clazz
      *            the {@link Entity} class, must extends {@link EntityPokemob}
@@ -698,7 +684,6 @@ public class PokecubeCore extends PokecubeMod
         {
             pokedexmap = new HashMap();
         }
-        String name = entry.getTrimmedName();
         if (clazz != null)
         {
             try
@@ -728,15 +713,20 @@ public class PokecubeCore extends PokecubeMod
                     }
                     entry.setModId(defaultMod);
                 }
+                // Register the mob with minecraft.
+                CompatWrapper.registerModEntity(clazz, entry.getTrimmedName(), getUniqueEntityId(mod), mod, 80, 3,
+                        true);
 
-                CompatWrapper.registerModEntity(clazz, name, getUniqueEntityId(mod), mod, 80, 3, true);
+                // Register the pokemob with proxy, This does things like
+                // register that it has genes, animations, etc.
                 proxy.registerClass(clazz, entry);
+                // Make an egg for the mob.
                 if (!pokemobEggs.containsKey(entry.getPokedexNb()))
                 {
                     pokemobEggs.put(new Integer(entry.getPokedexNb()),
                             CompatWrapper.getEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
                 }
-                registered.set(entry.getPokedexNb());
+                // Register the entry with the pokedex.
                 Pokedex.getInstance().registerPokemon(entry);
             }
             catch (Throwable e)
@@ -746,6 +736,7 @@ public class PokecubeCore extends PokecubeMod
         }
     }
 
+    /** Removes the biome spawn entries for the default mobs. */
     private void removeAllMobs()
     {
         Biome[] biomes;
@@ -785,11 +776,10 @@ public class PokecubeCore extends PokecubeMod
         MinecraftForge.EVENT_BUS.register(new pokecube.core.items.megastuff.WearablesCompat());
     }
 
-    @EventHandler
-    public void serverLoad(FMLServerAboutToStartEvent event)
-    {
-    }
-
+    /** Registers commands, mob spawns and structure spawns. <br>
+     * <br>
+     * Structure/mob spawns are here, they need to be done after world has
+     * started loading to account for registry remapping. */
     @EventHandler
     public void serverLoad(FMLServerStartingEvent event)
     {
@@ -818,6 +808,7 @@ public class PokecubeCore extends PokecubeMod
         }
     }
 
+    /** Cleans up some values to be clear for next world. */
     @EventHandler
     public void serverStop(FMLServerStoppingEvent event)
     {
@@ -826,6 +817,22 @@ public class PokecubeCore extends PokecubeMod
         PokecubeDimensionManager.getInstance().onServerStop(event);
         WorldGenTemplates.TemplateGenStartBuilding.clear();
         SpawnHandler.clear();
+    }
+
+    /** Second cleanup pass for after world stops. */
+    @EventHandler
+    public void serverStop(FMLServerStoppedEvent evt)
+    {
+        InventoryPC.clearPC();
+        MoveAnimationHelper.Instance().clear();
+        if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
+        if (debug)
+        {
+            // limit to 1% precision
+            double value = ((int) (EntityPokemobBase.averagePokemobTick * 100)) / 100d;
+            log("Average Pokemob Tick Time for this Session: " + value + "\u00B5s");
+        }
+        EntityPokemobBase.averagePokemobTick = 0;
     }
 
     @Override
@@ -838,34 +845,6 @@ public class PokecubeCore extends PokecubeMod
     public void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
         getProxy().spawnParticle(world, par1Str, location, velocity, args);
-    }
-
-    /** Loads PC data when server starts
-     * 
-     * @param evt */
-    @EventHandler
-    public void WorldLoadEvent(FMLServerStartedEvent evt)
-    {
-        PokecubePlayerStats.initMap();
-        MoveAnimationHelper.Instance().clear();
-    }
-
-    /** clears PC when server stops
-     * 
-     * @param evt */
-    @EventHandler
-    public void WorldUnloadEvent(FMLServerStoppedEvent evt)
-    {
-        InventoryPC.clearPC();
-        PokecubePlayerStats.reset();
-        if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
-        if (debug)
-        {
-            // limit to 1% precision
-            double value = ((int) (EntityPokemobBase.averagePokemobTick * 100)) / 100d;
-            log("Average Pokemob Tick Time for this Session: " + value + "\u00B5s");
-        }
-        EntityPokemobBase.averagePokemobTick = 0;
     }
 
     @EventHandler

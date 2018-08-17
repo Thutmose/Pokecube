@@ -494,17 +494,20 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     protected void onDeathUpdate()
     {
-        if (!PokecubeCore.isOnClientSide() && pokemobCap.getGeneralState(GeneralStates.TAMED))
+        if (isServerWorld())
         {
-            HappinessType.applyHappiness(pokemobCap, HappinessType.FAINT);
-            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own",
-                    pokemobCap.getPokemonDisplayName());
-            pokemobCap.displayMessageToOwner(mess);
-            pokemobCap.returnToPokecube();
-        }
-        if (!pokemobCap.getGeneralState(GeneralStates.TAMED))
-        {
-            if (this.getHeldItemMainhand() != ItemStack.EMPTY) PokecubeItems.deValidate(getHeldItemMainhand());
+            if (pokemobCap.getGeneralState(GeneralStates.TAMED))
+            {
+                HappinessType.applyHappiness(pokemobCap, HappinessType.FAINT);
+                ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own",
+                        pokemobCap.getPokemonDisplayName());
+                pokemobCap.displayMessageToOwner(mess);
+                pokemobCap.returnToPokecube();
+            }
+            else
+            {
+                if (this.getHeldItemMainhand() != ItemStack.EMPTY) PokecubeItems.deValidate(getHeldItemMainhand());
+            }
         }
         super.onDeathUpdate();
     }

@@ -10,7 +10,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.LevelUpEvent;
 import pokecube.core.interfaces.IPokemob;
@@ -123,7 +122,7 @@ public abstract class PokemobStats extends PokemobGenes
     @Override
     public void setPokemonNickname(String nickname)
     {
-        if (PokecubeCore.isOnClientSide())
+        if (!getEntity().isServerWorld())
         {
             if (!nickname.equals(getPokemonNickname()) && getEntity().addedToChunk)
             {

@@ -145,9 +145,10 @@ public class PokecubeSerializer
     public static PokecubeSerializer getInstance()
     {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        World world = PokecubeCore.proxy.getWorld();
         String serverId = PokecubeCore.proxy.getFolderName();
-        if (PokecubeCore
-                .isOnClientSide()) { return instance == null ? instance = new PokecubeSerializer(server) : instance; }
+        if (world == null
+                || world.isRemote) { return instance == null ? instance = new PokecubeSerializer(server) : instance; }
 
         if (instance == null || instance.serverId == null || !instance.serverId.equals(serverId))
         {

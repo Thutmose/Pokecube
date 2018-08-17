@@ -168,6 +168,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 
     public void registerClass(Class<? extends EntityLiving> clazz, PokedexEntry entry)
     {
+        // Register this pokemob has having genes.
         PokemobGenes.registerClass(clazz, entry);
     }
 

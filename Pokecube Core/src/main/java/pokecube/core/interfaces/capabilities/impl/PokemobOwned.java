@@ -216,7 +216,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     {
         if (returning) return;
         returning = true;
-        if (PokecubeCore.isOnClientSide())
+        if (!getEntity().isServerWorld())
         {
             try
             {

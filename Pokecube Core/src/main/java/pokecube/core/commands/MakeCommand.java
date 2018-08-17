@@ -497,6 +497,15 @@ public class MakeCommand extends CommandBase
 
     public static GameProfile getProfile(MinecraftServer server, String arg)
     {
+        try
+        {
+            EntityPlayer player = getPlayer(server, server, arg);
+            return player.getGameProfile();
+        }
+        catch (CommandException e1)
+        {
+        }
+
         UUID id = null;
         String name = null;
 

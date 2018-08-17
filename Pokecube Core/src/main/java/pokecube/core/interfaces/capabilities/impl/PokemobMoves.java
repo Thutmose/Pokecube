@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -266,7 +265,7 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public void setMoveIndex(int moveIndex)
     {
-        if (PokecubeCore.isOnClientSide())
+        if (!getEntity().isServerWorld())
         {
             // Do nothing, packet should be handled by gui handler, not us.
         }

@@ -49,7 +49,6 @@ import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.events.onload.InitDatabase;
 import pokecube.core.events.onload.RegisterPokemobsEvent;
-import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.MoveAnimationHelper;
@@ -119,7 +118,6 @@ public class ModPokecubeML implements IMobProvider
     @EventHandler
     public void registerMobs(FMLPreInitializationEvent evt)
     {
-        PokecubePlayerStats.initAchievements();
         registerDatabase(evt);
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());

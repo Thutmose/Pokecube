@@ -29,7 +29,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
@@ -85,11 +89,12 @@ public class JERCompat
     @CompatClass(phase = Phase.POSTPOST)
     public static void JERInit()
     {
-        new JERCompat().register();
+        new JERCompat();
     }
 
     public JERCompat()
     {
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     private LootDrop[] getDrops(PokedexEntry entry)
@@ -136,45 +141,9 @@ public class JERCompat
             List<SpawnBiomeMatcher> matchers = Lists.newArrayList(entry.getSpawnData().matchers.keySet());
             if (matchers.get(0) != null)
             {
-                // SpawnRule spawnRule = matchers.get(0).spawnRule;
-                // float maxLight = 1;
-                // float minLight = 0;
-                // boolean day = true;
-                // boolean night = true;
-                // Float.parseFloat(spawnRule.values.get(SpawnBiomeMatcher.MAXLIGHT));
-                // if (spawnRule.values.containsKey(SpawnBiomeMatcher.DAY))
-                // {
-                // day =
-                // Boolean.parseBoolean(spawnRule.values.get(SpawnBiomeMatcher.DAY));
-                // }
-                // if (spawnRule.values.containsKey(SpawnBiomeMatcher.NIGHT))
-                // {
-                // night =
-                // Boolean.parseBoolean(spawnRule.values.get(SpawnBiomeMatcher.NIGHT));
-                // }
-                // if (spawnRule.values.containsKey(SpawnBiomeMatcher.MINLIGHT))
-                // {
-                // minLight =
-                // Float.parseFloat(spawnRule.values.get(SpawnBiomeMatcher.MINLIGHT));
-                // }
-                // if (spawnRule.values.containsKey(SpawnBiomeMatcher.MAXLIGHT))
-                // {
-                // maxLight =
-                // Float.parseFloat(spawnRule.values.get(SpawnBiomeMatcher.MAXLIGHT));
-                // }
-                // Relative relative = Relative.below;
-                // int light = 15;
-                // if (maxLight != 1)
-                // {
-                // relative = Relative.below;
-                // light = (int) (maxLight * 15);
-                // }
-                // TODO see about asking JER to open up this constructor.
-                // LightLevel ret = new LightLevel(light, relative);
-                // return ret;
+                // TODO fill this out.
             }
         }
-
         return LightLevel.any;
     }
 
@@ -206,11 +175,14 @@ public class JERCompat
         return biomes.toArray(new String[0]);
     }
 
-    public void register()
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SideOnly(Side.CLIENT)
+    public void register(WorldEvent.Load event)
     {
         registerMobs();
         registerOres();
         registerPlants();
+        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
     @SuppressWarnings("unchecked")

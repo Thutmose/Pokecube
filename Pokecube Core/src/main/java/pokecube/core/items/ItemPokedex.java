@@ -5,6 +5,7 @@ package pokecube.core.items;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -18,7 +19,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -52,6 +52,26 @@ public class ItemPokedex extends Item
             this.setCreativeTab(PokecubeMod.creativeTabPokecube);
             this.setUnlocalizedName(this.getRegistryName().getResourcePath());
         }
+    }
+
+    @Override
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target,
+            EnumHand hand)
+    {
+        if (playerIn instanceof EntityPlayerMP)
+        {
+            Chunk chunk = playerIn.getEntityWorld().getChunkFromBlockCoords(playerIn.getPosition());
+            PacketHandler.sendTerrainToClient(playerIn.getEntityWorld(), new ChunkPos(chunk.x, chunk.z),
+                    (EntityPlayerMP) playerIn);
+            PacketDataSync.sendInitPacket(playerIn, "pokecube-stats");
+            PacketPokedex.sendSecretBaseInfoPacket(playerIn, watch);
+            Entity entityHit = target;
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityHit);
+            if (pokemob != null) PokecubePlayerDataHandler.getInstance().getPlayerData(playerIn)
+                    .getData(PokecubePlayerStats.class).inspect(playerIn, pokemob);
+            return true;
+        }
+        return super.itemInteractionForEntity(stack, playerIn, target, hand);
     }
 
     @Override
@@ -123,7 +143,7 @@ public class ItemPokedex extends Item
 
     private void showGui(EntityPlayer player)
     {
-        if (!PokecubeCore.isOnClientSide())
+        if (player instanceof EntityPlayerMP)
         {
             Chunk chunk = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition());
             PacketHandler.sendTerrainToClient(player.getEntityWorld(), new ChunkPos(chunk.x, chunk.z),

@@ -106,7 +106,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     protected boolean canDespawn()
     {
         boolean canDespawn = pokemobCap.getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
-        boolean checks = pokemobCap.getGeneralState(GeneralStates.TAMED) || pokemobCap.getPokemonOwner() != null
+        boolean checks = pokemobCap.getGeneralState(GeneralStates.TAMED) || pokemobCap.getOwnerId() != null
                 || pokemobCap.getCombatState(CombatStates.ANGRY) || getAttackTarget() != null || this.hasCustomName()
                 || isNoDespawnRequired();
         if (checks) return false;

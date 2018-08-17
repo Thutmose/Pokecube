@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,14 +35,17 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.registries.GameData;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -56,7 +60,6 @@ import pokecube.core.database.rewards.XMLRewardsHandler.XMLReward;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLRewards;
 import pokecube.core.database.worldgen.WorldgenHandler;
 import pokecube.core.events.onload.InitDatabase;
-import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.PokecubeMod.Type;
@@ -1006,14 +1009,23 @@ public class Database
         }
         ProgressManager.pop(bar);
 
-        /** This should probably be removed. */
-        bar = ProgressManager.push("Achivements", allFormes.size());
-        for (PokedexEntry e : allFormes)
+        for (PokedexEntry entry : Database.getSortedFormes())
         {
-            bar.step(e.getName());
-            PokecubePlayerStats.registerAchievements(e);
+            Class<? extends Entity> clazz = PokecubeCore.pokedexmap.get(entry);
+            if (clazz != null)
+            {
+                // Initialize the datamanager parameters for the added pokemob.
+                try
+                {
+                    clazz.getConstructor(World.class).newInstance(PokecubeCore.getWorld());
+                }
+                catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException | NoSuchMethodException | SecurityException e)
+                {
+                    PokecubeMod.log(Level.WARNING, "Error with " + clazz, e);
+                }
+            }
         }
-        ProgressManager.pop(bar);
     }
 
     private static void loadStarterPack()
@@ -1158,7 +1170,7 @@ public class Database
             String name1 = name + ".json";
             File temp1 = new File(CONFIGLOC + name1);
             // Check for json first
-            if (temp1.exists() || name.equals("rewards")  && FORCECOPYRECIPES)
+            if (temp1.exists() || name.equals("rewards") && FORCECOPYRECIPES)
             {
                 // Check if needs to overwrite default database
                 if (name.equals("rewards") && FORCECOPYRECIPES)

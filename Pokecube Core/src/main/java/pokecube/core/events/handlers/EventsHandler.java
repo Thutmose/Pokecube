@@ -120,7 +120,6 @@ import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.interfaces.pokemob.ai.LogicStates;
-import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.UsableItemEffects;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.megastuff.IMegaCapability;
@@ -603,12 +602,17 @@ public class EventsHandler
             EnumHand hand = evt.getHand();
             ItemStack held = player.getHeldItem(hand);
             EntityLiving entity = pokemob.getEntity();
+
+            // Item has custom entity interaction, let that run instead.
+            if (held.getItem().itemInteractionForEntity(held, player, entity, hand))
+            {
+                evt.setCanceled(true);
+                evt.setCancellationResult(EnumActionResult.SUCCESS);
+                return;
+            }
+
             PokedexEntry entry = pokemob.getPokedexEntry();
-            ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
-            // Check shearable interaction.
-            if (CompatWrapper.isValid(held) && Tools.isSameStack(key, held) && entry.interact(key)) { return; }
-            // uncomment this for 1.11.2 and 1.12
-            if (hand != EnumHand.MAIN_HAND) return;
+
             // Check Pokedex Entry defined Interaction for player.
             if (entry.interact(player, pokemob, true))
             {
@@ -616,7 +620,7 @@ public class EventsHandler
                 evt.setCancellationResult(EnumActionResult.SUCCESS);
                 return;
             }
-            Item torch = Item.getItemFromBlock(Blocks.TORCH);
+
             boolean isOwner = false;
             if (pokemob.getGeneralState(GeneralStates.TAMED) && pokemob.getOwner() != null)
             {
@@ -628,7 +632,7 @@ public class EventsHandler
                 // Either push pokemob around, or if sneaking, make it try to
                 // climb
                 // on shoulder
-                if (CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
+                if ((held.getItem() == Items.STICK || held.getItem() == Item.getItemFromBlock(Blocks.TORCH)))
                 {
                     if (player.isSneaking())
                     {
@@ -641,7 +645,7 @@ public class EventsHandler
                     return;
                 }
                 // Debug thing to maximize happiness
-                if (CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)
+                if (held.getItem() == Items.APPLE)
                 {
                     if (player.capabilities.isCreativeMode && player.isSneaking())
                     {
@@ -649,7 +653,7 @@ public class EventsHandler
                     }
                 }
                 // Debug thing to increase hunger time
-                if (CompatWrapper.isValid(held) && held.getItem() == Items.GOLDEN_HOE)
+                if (held.getItem() == Items.GOLDEN_HOE)
                 {
                     if (player.capabilities.isCreativeMode && player.isSneaking())
                     {
@@ -671,7 +675,7 @@ public class EventsHandler
             }
 
             // is Dyeable
-            if (CompatWrapper.isValid(held) && entry.dyeable)
+            if (!held.isEmpty() && entry.dyeable)
             {
                 int[] ids = OreDictionary.getOreIDs(held);
                 EnumDyeColor dye = null;
@@ -700,19 +704,6 @@ public class EventsHandler
                 else if (held.getItem() == Items.SHEARS) { return; }
             }
 
-            // Open Pokedex Gui
-            if (CompatWrapper.isValid(held) && held.getItem() instanceof ItemPokedex)
-            {
-                if (PokecubeCore.isOnClientSide() && !player.isSneaking())
-                {
-                    player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, entity.getEntityWorld(),
-                            (int) entity.posX, (int) entity.posY, (int) entity.posZ);
-                    evt.setCanceled(true);
-                    return;
-                }
-                evt.setCancellationResult(EnumActionResult.SUCCESS);
-                return;
-            }
             boolean deny = pokemob.getCombatState(CombatStates.NOITEMUSE);
             if (deny && entity.getAttackTarget() == null)
             {
@@ -727,8 +718,7 @@ public class EventsHandler
                 return;
             }
 
-            boolean saddleCheck = !player.isSneaking() && !PokecubeCore.isOnClientSide()
-                    && (!CompatWrapper.isValid(held))
+            boolean saddleCheck = !player.isSneaking() && (!CompatWrapper.isValid(held))
                     && (isOwner || (pokemob.getEntity() instanceof EntityMountablePokemob
                             && ((EntityMountablePokemob) pokemob.getEntity()).canFitPassenger(player)))
                     && handleHmAndSaddle(player, pokemob);
@@ -761,7 +751,7 @@ public class EventsHandler
             // Owner only interactions phase 2
             if (isOwner)
             {
-                if (!held.isEmpty() && !PokecubeCore.isOnClientSide())
+                if (!held.isEmpty())
                 {
                     // Check if it should evolve from item, do so if yes.
                     if (PokecubeItems.isValidEvoItem(held) && pokemob.canEvolve(held))
@@ -824,7 +814,7 @@ public class EventsHandler
                 }
                 // Open Gui
                 pokemob.getPokemobInventory().setCustomName(entity.getDisplayName().getFormattedText());
-                if (!PokecubeCore.isOnClientSide() && !saddleCheck)
+                if (!saddleCheck)
                 {
                     player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, entity.getEntityWorld(),
                             entity.getEntityId(), 0, 0);

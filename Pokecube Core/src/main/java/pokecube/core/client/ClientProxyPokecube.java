@@ -487,6 +487,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public void registerClass(Class<? extends EntityLiving> clazz, PokedexEntry entry)
     {
         super.registerClass(clazz, entry);
+        // Register the pokemob class as having animations
         CapabilityAnimation.registerAnimateClass(clazz);
     }
 
@@ -558,7 +559,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 }
                 catch (Exception e)
                 {
-//                    PokecubeMod.log(Level.SEVERE, "Error copying " + field.getName(), e);
+                    // PokecubeMod.log(Level.SEVERE, "Error copying " +
+                    // field.getName(), e);
                 }
             }
         }

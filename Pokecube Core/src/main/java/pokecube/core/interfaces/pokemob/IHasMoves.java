@@ -52,7 +52,7 @@ public interface IHasMoves extends IHasStats
      *            index of 2nd move */
     default void exchangeMoves(int moveIndex0, int moveIndex1)
     {
-        if (PokecubeCore.isOnClientSide() && getGeneralState(GeneralStates.TAMED))
+        if (!getEntity().isServerWorld() && getGeneralState(GeneralStates.TAMED))
         {
             String[] moves = getMoves();
             if (moveIndex0 >= moves.length && moveIndex1 >= moves.length)

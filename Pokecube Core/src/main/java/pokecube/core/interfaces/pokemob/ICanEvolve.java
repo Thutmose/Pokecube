@@ -16,7 +16,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
@@ -166,11 +165,11 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
     default boolean canEvolve(ItemStack stack)
     {
         if (stack != ItemStack.EMPTY && Tools.isStack(stack, "everstone")) return false;
-        if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
+        if (this.getPokedexEntry().canEvolve() && getEntity().isServerWorld())
         {
             for (EvolutionData d : getPokedexEntry().getEvolutions())
             {
-                if (d.shouldEvolve(CapabilityPokemob.getPokemobFor(getEntity()), stack)) { return true; }
+                if (d.shouldEvolve((IPokemob) this, stack)) { return true; }
             }
         }
         return false;
@@ -412,8 +411,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 if (d.shouldEvolve(thisMob, stack))
                 {
                     evol = d.evolution;
-                    if (!d.shouldEvolve(thisMob, ItemStack.EMPTY) && stack == thisMob.getHeldItem())
-                        neededItem = true;
+                    if (!d.shouldEvolve(thisMob, ItemStack.EMPTY) && stack == thisMob.getHeldItem()) neededItem = true;
                     data = d;
                     break;
                 }

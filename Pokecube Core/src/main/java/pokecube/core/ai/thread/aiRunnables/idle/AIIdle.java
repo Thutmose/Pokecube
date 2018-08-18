@@ -3,6 +3,7 @@ package pokecube.core.ai.thread.aiRunnables.idle;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -46,6 +47,7 @@ public class AIIdle extends AIBase
         this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
     }
 
+    /** Floating things try to stay their preferedHeight from the ground. */
     private void doFloatingIdle()
     {
         v.set(x, y, z);
@@ -54,6 +56,9 @@ public class AIIdle extends AIBase
         y = temp.y + entry.preferedHeight;
     }
 
+    /** Flying things will path to air, so long as not airborne, somethimes they
+     * will decide to path downwards, the height they path to will be centered
+     * around players, to prevent them from all flying way up, or way down */
     private void doFlyingIdle()
     {
         boolean grounded = !mob.isRoutineEnabled(AIRoutine.AIRBORNE);
@@ -82,6 +87,7 @@ public class AIIdle extends AIBase
         }
     }
 
+    /** Grounded things will path to surface points. */
     private void doGroundIdle()
     {
         v.set(x, y, z);
@@ -89,6 +95,7 @@ public class AIIdle extends AIBase
         if (v != null) y = v.y;
     }
 
+    /** Stationary things will not idle path at all */
     public void doStationaryIdle()
     {
         x = entity.posX;
@@ -96,9 +103,16 @@ public class AIIdle extends AIBase
         z = entity.posZ;
     }
 
+    /** Water things will not idle path out of water. */
     public void doWaterIdle()
     {
-
+        v.set(this.x, this.y, this.z);
+        if (world.getBlockState(v.getPos()).getMaterial() != Material.WATER)
+        {
+            x = entity.posX;
+            y = entity.posY;
+            z = entity.posZ;
+        }
     }
 
     @Override
@@ -132,7 +146,7 @@ public class AIIdle extends AIBase
         v1.set(entity);
         v.set(this.x, this.y, this.z);
 
-        if (v.isEmpty() || v1.distToSq(v) <= 1 || mob.getLogicState(LogicStates.SITTING)) return;
+        if (v1.distToSq(v) <= 1 || mob.getLogicState(LogicStates.SITTING)) return;
 
         mob.setGeneralState(GeneralStates.IDLE, true);
         Path path = this.entity.getNavigator().getPathToXYZ(this.x, this.y, this.z);
@@ -188,7 +202,6 @@ public class AIIdle extends AIBase
             boolean tameFactor = mob.getGeneralState(GeneralStates.TAMED)
                     && !mob.getGeneralState(GeneralStates.STAYING);
             int distance = (int) (maxLength = tameFactor ? 8 : 16);
-            v.clear();
             if (!tameFactor)
             {
                 if (mob.getHome() == null
@@ -206,12 +219,9 @@ public class AIIdle extends AIBase
                 if (mob.getPokemonOwner() != null) setTo = mob.getPokemonOwner();
                 v.set(setTo);
             }
-            v1.set((v.isEmpty() && mob.getGeneralState(GeneralStates.STAYING)) ? entity : v);
             Vector3 v = getRandomPointNear(world, mob, v1, distance);
-
             double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(),
                     mob.getPokedexEntry().width * mob.getSize());
-
             diff = Math.max(2, diff);
             if (v == null || this.v.distToSq(v) < diff) { return false; }
             this.x = v.x;

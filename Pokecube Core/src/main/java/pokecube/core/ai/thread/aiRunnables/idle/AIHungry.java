@@ -311,8 +311,10 @@ public class AIHungry extends AIBase
         int hunger = Math.max(hungerTime, -deathTime / 4);
         if (hunger != hungerTime) pokemob.setHungerTime(hunger);
 
-        if (entity.getAttackTarget() == null && !entity.isDead && !entity.getEntityWorld().isRemote
-                && pokemob.getHungerCooldown() < 0 && pokemob.getHungerTime() < 0 && cur % 10 == tick)
+        // Regenerate health if out of battle.
+        if (entity.getAttackTarget() == null && entity.getHealth() > 0 && !entity.isDead
+                && !entity.getEntityWorld().isRemote && pokemob.getHungerCooldown() < 0 && pokemob.getHungerTime() < 0
+                && cur % 10 == tick)
         {
             float dh = Math.max(1, entity.getMaxHealth() * 0.05f);
             float toHeal = entity.getHealth() + dh;

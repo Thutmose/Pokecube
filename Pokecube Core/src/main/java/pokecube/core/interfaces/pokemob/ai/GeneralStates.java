@@ -18,7 +18,7 @@ public enum GeneralStates
     DENYCAPTURE(1 << 6),
     /** Has the Pokemon been traded */
     TRADED(1 << 7),
-    /** Pokemon is idle. */
+    /** Pokemon is executing idle pathfinding. */
     IDLE(1 << 8, false),
     /** Pokemob is exiting pokecube */
     EXITINGCUBE(1 << 9);

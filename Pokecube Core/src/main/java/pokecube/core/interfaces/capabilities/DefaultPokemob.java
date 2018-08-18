@@ -19,6 +19,7 @@ import pokecube.core.ai.thread.aiRunnables.combat.AICombatMovement;
 import pokecube.core.ai.thread.aiRunnables.combat.AIDodge;
 import pokecube.core.ai.thread.aiRunnables.combat.AIFindTarget;
 import pokecube.core.ai.thread.aiRunnables.combat.AILeap;
+import pokecube.core.ai.thread.aiRunnables.combat.AISelectMove;
 import pokecube.core.ai.thread.aiRunnables.idle.AIGuardEgg;
 import pokecube.core.ai.thread.aiRunnables.idle.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.idle.AIIdle;
@@ -229,6 +230,8 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         this.getAI().addAITask(new AILeap(this).setPathManager(manager).setPriority(225));
         // Move around in combat
         this.getAI().addAITask(new AICombatMovement(this).setPathManager(manager).setPriority(250));
+        // Choose what attacks to use
+        this.getAI().addAITask(new AISelectMove(this).setPathManager(manager).setPriority(250));
         // Look for targets to kill
         this.getAI().addAITask(new AIFindTarget(this).setPathManager(manager).setPriority(400));
 

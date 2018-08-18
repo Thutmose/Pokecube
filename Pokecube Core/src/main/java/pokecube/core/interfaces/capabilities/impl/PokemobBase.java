@@ -213,7 +213,6 @@ public abstract class PokemobBase implements IPokemob
     protected EntityMoveUse        activeMove;
     /** Used for size when pathing */
     protected Vector3              sizes            = Vector3.getNewVector();
-    protected int                  moveIndexCounter = 0;
     /** Cooldown for hunger AI */
     protected int                  hungerCooldown   = 0;
 

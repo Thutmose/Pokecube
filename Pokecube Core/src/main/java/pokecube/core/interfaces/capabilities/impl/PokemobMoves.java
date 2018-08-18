@@ -1,6 +1,5 @@
 package pokecube.core.interfaces.capabilities.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -13,7 +12,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -24,10 +22,8 @@ import pokecube.core.interfaces.entity.IOngoingAffected;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect;
 import pokecube.core.interfaces.entity.impl.PersistantStatusEffect.Status;
 import pokecube.core.interfaces.pokemob.ai.CombatStates;
-import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.animations.EntityMoveUse;
-import pokecube.core.network.pokemobs.PacketSyncMoveUse;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 import thut.core.common.commands.CommandTools;
@@ -38,56 +34,18 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public void executeMove(Entity target, Vector3 targetLocation, float f)
     {
-        String currentMove = getMove(getMoveIndex());
-        if (currentMove == MOVE_NONE || currentMove == null) { return; }
+        String attack = getMove(getMoveIndex());
+        // If no move selected, just return here.
+        if (attack == MOVE_NONE || attack == null) { return; }
 
+        // If no target location selected, set it accordingly.
         if (targetLocation == null)
         {
             if (target != null) targetLocation = Vector3.getNewVector().set(target);
             else targetLocation = Vector3.getNewVector().set(getEntity());
         }
 
-        String attack;
-        if (this.getGeneralState(GeneralStates.TAMED))
-        {
-            // A tamed pokemon should not attack a player
-            // but it must keep it as a target.
-            attack = getMove(getMoveIndex());
-            if (attack == null)
-            {
-                new Exception().getStackTrace();
-                return;
-            }
-
-            if (attack.equalsIgnoreCase(MOVE_METRONOME))
-            {
-                attack = null;
-                ArrayList<MoveEntry> moves = new ArrayList<MoveEntry>(MoveEntry.values());
-                while (attack == null)
-                {
-                    Collections.shuffle(moves);
-                    MoveEntry move = moves.iterator().next();
-                    if (move != null) attack = move.name;
-
-                }
-            }
-        }
-        else
-        {
-            // TODO do not pick a disabled move.
-            if (moveIndexCounter++ > rand.nextInt(3))
-            {
-                int nb = rand.nextInt(5);
-                String move = getMove(nb);
-                while (move == null && nb > 0)
-                {
-                    nb = rand.nextInt(nb);
-                }
-                moveIndexCounter = 0;
-                setMoveIndex(nb);
-            }
-            attack = getMove(getMoveIndex());
-        }
+        // If all moves are disabled, use struggle instead.
         int index = getMoveIndex();
         if (index < 4 && index >= 0)
         {
@@ -96,7 +54,9 @@ public abstract class PokemobMoves extends PokemobSexed
                 attack = "struggle";
             }
         }
+
         Move_Base move = MovesUtils.getMoveFromName(attack);
+        // If the move is somehow null, report it and return early.
         if (move == null || move.move == null)
         {
             PokecubeMod.log(Level.SEVERE,
@@ -104,10 +64,11 @@ public abstract class PokemobMoves extends PokemobSexed
                     new IllegalArgumentException());
             return;
         }
+
+        // Check ranged vs contact and set cooldown accordinly.
         boolean distanced = (move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0;
         this.setAttackCooldown(MovesUtils.getAttackDelay(this, attack, distanced, target instanceof EntityPlayer));
 
-        PacketSyncMoveUse.sendUpdate(this);
         if (target != getEntity())
         {
             if (target instanceof EntityLiving)

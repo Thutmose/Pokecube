@@ -347,6 +347,10 @@ public interface IHasMoves extends IHasStats
      *            the initial value to set */
     void setStatusTimer(short timer);
 
+    /** The pokemob will render and have moves according to whatever is set
+     * here. If null is set, then it will use its own moves.
+     * 
+     * @param to */
     void setTransformedTo(Entity to);
 
     /** Used by moves such as vine whip to set the pokemob as using something.
@@ -359,7 +363,18 @@ public interface IHasMoves extends IHasStats
         else getMoveStats().weapon2 = weapon;
     }
 
+    /** Marks the move as disabled for a certain time.
+     * 
+     * @param index
+     *            - The move index to disable
+     * @param timer
+     *            - How many ticks to disable for */
     void setDisableTimer(int index, int timer);
 
+    /** If this is greater than 0, the move is considered disabled.
+     * 
+     * @param index
+     *            - The move index to check
+     * @return - ticks still disabled for */
     int getDisableTimer(int index);
 }

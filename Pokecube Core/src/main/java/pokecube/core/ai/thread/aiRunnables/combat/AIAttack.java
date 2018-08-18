@@ -27,7 +27,6 @@ import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.utils.Tools;
 import thut.api.TickHandler;
 import thut.api.entity.ai.IAICombat;
 import thut.api.maths.Matrix3;
@@ -239,36 +238,6 @@ public class AIAttack extends AIBase implements IAICombat
                 this.entityTarget.posZ);
 
         move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
-
-        // If the mob is hunting or guarding, select most damaging attack
-        // against the
-        // target.
-        if ((pokemob.getCombatState(CombatStates.HUNTING) && !pokemob.getGeneralState(GeneralStates.TAMED))
-                || pokemob.getCombatState(CombatStates.GUARDING))
-        {
-            int index = pokemob.getMoveIndex();
-            int max = 0;
-            String[] moves = pokemob.getMoves();
-            for (int i = 0; i < 4; i++)
-            {
-                String s = moves[i];
-                if (s != null)
-                {
-                    Move_Base m = MovesUtils.getMoveFromName(s);
-                    int temp = Tools.getPower(s, pokemob, entityTarget);
-                    if (dist > 5 && (m.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)
-                    {
-                        temp *= 1.5;
-                    }
-                    if (temp > max)
-                    {
-                        index = i;
-                        max = temp;
-                    }
-                }
-            }
-            if (index != pokemob.getMoveIndex()) pokemob.setMoveIndex(index);
-        }
 
         if (move == null) move = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
         // Check to see if the move is ranged, contact or self.

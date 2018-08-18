@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.events.CommandAttackEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -50,13 +49,9 @@ public class AttackLocationHandler implements IMobCommandHandler
                 return;
             }
 
-            // Otherwise execute the move.
-            if (pokemob.getUtilityMoveAI() != null)
-            {
-                pokemob.setCombatState(CombatStates.NEWEXECUTEMOVE, true);
-                ((PokemobAIUtilityMove) pokemob.getUtilityMoveAI()).destination = location;
-            }
-            else pokemob.executeMove(null, location, 0);
+            // Otherwise set the location for execution of move.
+            pokemob.setCombatState(CombatStates.NEWEXECUTEMOVE, true);
+            pokemob.setTargetPos(location);
         }
     }
 

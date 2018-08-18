@@ -41,9 +41,10 @@ public abstract class PokemobMoves extends PokemobSexed
         String currentMove = getMove(getMoveIndex());
         if (currentMove == MOVE_NONE || currentMove == null) { return; }
 
-        if (targetLocation == null && target != null)
+        if (targetLocation == null)
         {
-            targetLocation = Vector3.getNewVector().set(target);
+            if (target != null) targetLocation = Vector3.getNewVector().set(target);
+            else targetLocation = Vector3.getNewVector().set(getEntity());
         }
 
         String attack;

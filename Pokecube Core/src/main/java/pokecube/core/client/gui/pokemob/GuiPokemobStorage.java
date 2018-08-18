@@ -20,7 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
-import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
+import pokecube.core.ai.thread.aiRunnables.utility.AIStoreStuff;
 import pokecube.core.client.Resources;
 import pokecube.core.client.gui.GuiPokemob;
 import pokecube.core.entity.pokemobs.ContainerPokemob;

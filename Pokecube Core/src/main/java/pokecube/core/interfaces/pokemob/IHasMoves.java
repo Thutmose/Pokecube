@@ -2,7 +2,6 @@ package pokecube.core.interfaces.pokemob;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -169,7 +168,15 @@ public interface IHasMoves extends IHasStats
 
     Entity getTransformedTo();
 
-    EntityAIBase getUtilityMoveAI();
+    /** This is the target location for move use.
+     * 
+     * @return */
+    Vector3 getTargetPos();
+
+    /** Sets the target location for a move use.
+     * 
+     * @param pos */
+    void setTargetPos(Vector3 pos);
 
     default Entity getWeapon(int index)
     {

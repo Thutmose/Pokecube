@@ -1,4 +1,4 @@
-package pokecube.core.ai.thread.aiRunnables;
+package pokecube.core.ai.thread.aiRunnables.utility;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -15,6 +15,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
+import pokecube.core.ai.thread.aiRunnables.AIBase;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.pokemob.ai.GeneralStates;

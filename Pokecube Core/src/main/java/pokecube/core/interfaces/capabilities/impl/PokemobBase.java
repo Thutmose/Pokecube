@@ -18,7 +18,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.thread.logicRunnables.LogicCollision;
 import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
@@ -230,7 +229,7 @@ public abstract class PokemobBase implements IPokemob
 
     protected ItemStack            stack            = ItemStack.EMPTY;
 
-    public PokemobAIUtilityMove    utilMoveAI;
+    protected Vector3              target;
     public LogicMountedControl     controller;
     protected AIStuff              aiStuff;
 

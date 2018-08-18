@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
 
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -170,9 +169,15 @@ public abstract class PokemobAI extends PokemobEvolves
     }
 
     @Override
-    public EntityAIBase getUtilityMoveAI()
+    public Vector3 getTargetPos()
     {
-        return utilMoveAI;
+        return target;
+    }
+
+    @Override
+    public void setTargetPos(Vector3 pos)
+    {
+        this.target = pos;
     }
 
     @Override

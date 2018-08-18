@@ -1,4 +1,4 @@
-package pokecube.core.ai.thread.aiRunnables;
+package pokecube.core.ai.thread.aiRunnables.utility;
 
 import java.util.List;
 import java.util.Random;
@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import pokecube.core.PokecubeCore;
+import pokecube.core.ai.thread.aiRunnables.AIBase;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;

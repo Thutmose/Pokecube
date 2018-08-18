@@ -200,6 +200,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
             entity.setPathPriority(PathNodeType.WATER, 0);
         }
         if (getPokedexEntry().hatedMaterial != null) for (String material : getPokedexEntry().hatedMaterial)
+        {
             if (material.equalsIgnoreCase("water"))
             {
                 entity.setPathPriority(PathNodeType.WATER, -1);
@@ -209,6 +210,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
                 entity.setPathPriority(PathNodeType.DAMAGE_FIRE, -1);
                 entity.setPathPriority(PathNodeType.DANGER_FIRE, -1);
             }
+        }
 
         // These are used by pokecube's implementation of IPokemob.
         this.navi = new PokemobNavigator(this, entity.getEntityWorld());

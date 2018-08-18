@@ -295,11 +295,18 @@ public abstract class PokemobAI extends PokemobEvolves
     @Override
     public void popFromPokecube()
     {
+        // Reset some values to prevent spontaneous damage.
         getEntity().fallDistance = 0;
         getEntity().extinguish();
-        this.setGeneralState(GeneralStates.EVOLVING, false);
+        // After here is server side only.
         if (getEntity().getEntityWorld().isRemote) return;
+        // Flag as not evolving
+        this.setGeneralState(GeneralStates.EVOLVING, false);
+
+        // Play the sound for the mob.
         getEntity().playSound(this.getSound(), 0.25f, 1);
+
+        // Do the shiny particle effect.
         if (this.isShiny())
         {
             Vector3 particleLoc = Vector3.getNewVector();
@@ -312,6 +319,7 @@ public abstract class PokemobAI extends PokemobEvolves
                         EnumParticleTypes.VILLAGER_HAPPY.getParticleName(), particleLoc, null);
             }
         }
+        // Update genes settings.
         onGenesChanged();
     }
 
@@ -328,6 +336,7 @@ public abstract class PokemobAI extends PokemobEvolves
         {
             pokeballId = pokeballId.copy();
             pokeballId.setCount(1);
+            // Remove the extra tag containing data about this pokemob
             if (pokeballId.hasTagCompound() && pokeballId.getTagCompound().hasKey("Pokemob"))
                 pokeballId.getTagCompound().removeTag("Pokemob");
         }

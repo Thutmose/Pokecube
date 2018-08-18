@@ -427,7 +427,7 @@ public class MakeCommand extends CommandBase
                 }
             }
         }
-        mob.setHp(mob.getEntity().getMaxHealth());
+        mob.getEntity().setHealth(mob.getEntity().getMaxHealth());
         if (mob.getEntity() instanceof IMobColourable)
             ((IMobColourable) mob.getEntity()).setRGBA(red, green, blue, 255);
         if (initLevel)

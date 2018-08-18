@@ -72,7 +72,7 @@ public class GiftCommand extends CommandBase
                     mob.setPokecube(new ItemStack(PokecubeItems
                             .getFilledCube(CHERISHCUBE != null ? CHERISHCUBE : PokecubeBehavior.DEFAULTCUBE)));
                     mob.setPokemonOwner(player);
-                    mob.setHp(mob.getEntity().getMaxHealth());
+                    mob.getEntity().setHealth(mob.getEntity().getMaxHealth());
                     mob.returnToPokecube();
                     CommandTools.sendMessage(sender, "pokecube.command.gift");
                     player.getEntityData().setString("code:" + code, code);

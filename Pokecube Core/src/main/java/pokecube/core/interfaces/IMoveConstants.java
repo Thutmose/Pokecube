@@ -67,11 +67,11 @@ public interface IMoveConstants extends IMoveNames
     /*
      * Flavours
      */
-    byte             SPICY                = 0;                           // red
-    byte             DRY                  = 1;                           // blue
-    byte             SWEET                = 2;                           // pink
-    byte             BITTER               = 3;                           // green
-    byte             SOUR                 = 4;                           // yellow
+    byte             SPICY                = 0;       // red
+    byte             DRY                  = 1;       // blue
+    byte             SWEET                = 2;       // pink
+    byte             BITTER               = 3;       // green
+    byte             SOUR                 = 4;       // yellow
 
     /** Is the pokemob currently sitting */
     @Deprecated
@@ -223,6 +223,7 @@ public interface IMoveConstants extends IMoveNames
             default_ = value;
         }
 
+        /** @return default state for this routine. */
         public boolean getDefault()
         {
             return default_;

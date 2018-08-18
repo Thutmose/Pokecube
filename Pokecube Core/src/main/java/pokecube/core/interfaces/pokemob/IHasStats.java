@@ -22,6 +22,8 @@ public interface IHasStats extends IHasEntry
     default void addEVs(byte[] evsToAdd)
     {
         byte[] evs = getEVs().clone();
+
+        // Assign the values, cap the EVs at Byte.MAX_VALUE
         for (int i = 0; i < 6; i++)
         {
             if (evs[i] + 128 + evsToAdd[i] <= 255 && evs[i] + 128 + evsToAdd[i] >= 0)
@@ -30,12 +32,13 @@ public interface IHasStats extends IHasEntry
             }
             else
             {
-                evs[i] = (byte) 127;
+                evs[i] = Byte.MAX_VALUE;
             }
         }
 
         int sum = 0;
 
+        // Cap to 510 EVs
         for (byte ev : evs)
         {
             sum += ev + 128;
@@ -53,8 +56,11 @@ public interface IHasStats extends IHasEntry
     /** adds to how happy is the pokemob, see {@link HappinessType} */
     void addHappiness(int toAdd);
 
+    /** @return The actual ability object for this pokemob. */
     Ability getAbility();
 
+    /** @return Index of ability, 0 and 1 are "normal" abilities, above 1 are
+     *         "hidden" abilities. */
     int getAbilityIndex();
 
     /** Computes an attack strength from stats. Only used against non-poke-mobs.
@@ -130,16 +136,24 @@ public interface IHasStats extends IHasEntry
      * @return the nature */
     Nature getNature();
 
+    /** @return Scale factor for this mob, this is applied linearly to each
+     *         dimension of the mob. */
     float getSize();
 
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
      *
-     * @return the pokedex stats */
+     * @return the pokedex stat */
     default int getStat(Stats stat, boolean modified)
     {
         return Math.max(1, (int) getModifiers().getStat(this, stat, modified));
     }
 
+    /** Gets the stat as a float, this is used for things like evasion/accuracy
+     * which are not integer values.
+     * 
+     * @param stat
+     * @param modified
+     * @return the stat */
     default float getFloatStat(Stats stat, boolean modified)
     {
         return getModifiers().getStat(this, stat, modified);
@@ -163,18 +177,31 @@ public interface IHasStats extends IHasEntry
         return getModifiers().type2 != null ? getModifiers().type2 : getPokedexEntry().getType2();
     }
 
+    /** Gets the weight of the pokemob, this scaled by the value from
+     * {@link IHasStats#getSize()}
+     * 
+     * @return */
     default double getWeight()
     {
         return this.getSize() * this.getSize() * this.getSize() * getPokedexEntry().mass;
     }
 
+    /** @param typeIn
+     * @return Are we typeIn */
     default boolean isType(PokeType typeIn)
     {
         return this.getType1() == typeIn || getType2() == typeIn;
     }
 
+    /** Sets the ability object for the pokemob
+     * 
+     * @param ability */
     void setAbility(Ability ability);
 
+    /** Sets the ability index for the pokemob, see
+     * {@link IHasStats#getAbilityIndex()}
+     * 
+     * @param index */
     void setAbilityIndex(int index);
 
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
@@ -191,8 +218,6 @@ public interface IHasStats extends IHasEntry
      *            earning */
     IPokemob setExp(int exp, boolean notifyLevelUp);
 
-    void setHp(float min);
-
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
      *
      * @param evs
@@ -205,19 +230,29 @@ public interface IHasStats extends IHasEntry
      * @param nature */
     void setNature(Nature nature);
 
+    /** Sets the size for this mob, see {@link IHasStats#getSize()}
+     * 
+     * @param size */
     void setSize(float size);
 
+    /** Sets ability index to 2. */
     default void setToHiddenAbility()
     {
         this.setAbilityIndex(2);
         this.setAbility(getPokedexEntry().getHiddenAbility(CapabilityPokemob.getPokemobFor(getEntity())));
     }
 
+    /** Sets first type
+     * 
+     * @param type1 */
     default void setType1(PokeType type1)
     {
         getModifiers().type1 = type1;
     }
 
+    /** Sets second type
+     * 
+     * @param type2 */
     default void setType2(PokeType type2)
     {
         getModifiers().type2 = type2;

@@ -109,16 +109,31 @@ public interface IHasMoves extends IHasStats
      *            the float parameter of the attackEntity method */
     void executeMove(Entity target, Vector3 targetLocation, float f);
 
+    /** Cooldown for attacks, if this is greater than 0, we shouldn't be able to
+     * use any moves.
+     * 
+     * @return */
     int getAttackCooldown();
 
+    /** Called to notify the pokemob that a new target has been set.
+     * 
+     * @param entity */
     void onSetTarget(EntityLivingBase entity);
 
+    /** @return entityId of our target. */
     int getTargetID();
 
+    /** @param id
+     *            - new entityId of target, -1 for no target. */
     void setTargetID(int id);
 
+    /** Sets the move we are currently using, having this ensures we don't fire
+     * multiple moves before old one lands.
+     * 
+     * @param move */
     void setActiveMove(EntityMoveUse move);
 
+    /** @return Current move we have being executed. */
     EntityMoveUse getActiveMove();
 
     /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example.
@@ -129,6 +144,7 @@ public interface IHasMoves extends IHasStats
         return getMoveStats().changes;
     }
 
+    /** @return Name of the last move we used. */
     String getLastMoveUsed();
 
     /** Gets the {@link String} id of the specified move.
@@ -164,8 +180,11 @@ public interface IHasMoves extends IHasStats
      * @return an array of 4 {@link String} */
     String[] getMoves();
 
+    /** @return PokemobMoveStats object that contains all of our info about
+     *         combat for moves, tracks things like toxic counters, etc */
     PokemobMoveStats getMoveStats();
 
+    /** @return Mob we are transformed into, null for no mob. */
     Entity getTransformedTo();
 
     /** This is the target location for move use.
@@ -178,6 +197,11 @@ public interface IHasMoves extends IHasStats
      * @param pos */
     void setTargetPos(Vector3 pos);
 
+    /** Held item as a weapon, theoretically this should be then rendered on the
+     * mob somehow, This is not implemented though. TODO implement this.
+     * 
+     * @param index
+     * @return */
     default Entity getWeapon(int index)
     {
         return index == 0 ? getMoveStats().weapon1 : getMoveStats().weapon2;
@@ -269,6 +293,7 @@ public interface IHasMoves extends IHasStats
         PokecubeCore.MOVE_BUS.post(toPost);
     }
 
+    /** Sets all changes back to none. */
     default void healChanges()
     {
         this.getMoveStats().changes = 0;
@@ -300,8 +325,15 @@ public interface IHasMoves extends IHasStats
         }
     }
 
+    /** See {@link IHasMoves#getAttackCooldown()}
+     * 
+     * @param timer */
     void setAttackCooldown(int timer);
 
+    /** Sets the index of the new move to learn from the list of learnable new
+     * moves, see {@link PokemobMoveStats#newMoves}
+     * 
+     * @param num */
     default void setLeaningMoveIndex(int num)
     {
         this.getMoveStats().num = num;

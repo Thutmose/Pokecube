@@ -46,6 +46,8 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
     ItemStack getPokecube();
 
     @Nonnull
+    /** @return Team we are on, guarding pokemobs shouldn't attack team
+     *         members. */
     String getPokemobTeam();
 
     /** @return the String nickname */
@@ -58,6 +60,7 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
     /** Gets the UUID of the owner, might be null */
     UUID getPokemonOwnerID();
 
+    /** @return Is our owner a player. */
     boolean isPlayerOwned();
 
     /** Sets owner uuid
@@ -71,17 +74,23 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
      * @param pokeballId */
     void setPokecube(ItemStack pokecube);
 
+    /** Sets the team we are on, this is used for things like guarding
+     * 
+     * @param team */
     void setPokemobTeam(@Nonnull String team);
 
     /** Sets the nickname */
     void setPokemonNickname(String nickname);
 
-    /** from wolf code */
+    /** sets owner by specific entity. */
     void setPokemonOwner(EntityLivingBase e);
 
-    /** from wolf code */
+    /** sets owner by UUID */
     void setPokemonOwner(UUID id);
 
+    /** Sets that we are traded.
+     * 
+     * @param trade */
     default void setTraded(boolean trade)
     {
         setGeneralState(GeneralStates.TRADED, trade);
@@ -95,6 +104,7 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
         return getGeneralState(GeneralStates.TRADED);
     }
 
+    /** @return the controller object for when this is ridden */
     default LogicMountedControl getController()
     {
         return null;
@@ -107,5 +117,8 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
     /** @return The direction this mob is going, only relevant when ridden. */
     float getHeading();
 
+    /** Additional NBT tag for addons to save stuff specific to the pokemob in
+     * 
+     * @return */
     NBTTagCompound getExtraData();
 }

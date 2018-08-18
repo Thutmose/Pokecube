@@ -485,15 +485,15 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
         /** The Previous lvl, used to determine which moves to try to learn. */
         public int          oldLevel                   = 0;
 
-        // these two are used for tracking learning new moves.
-        public int          num                        = 0;
-        // The array of moves.
+        /** The array of moves. */
         public String[]     moves                      = new String[4];
-        // Moves it is trying to learn.
+        /** Moves it is trying to learn. */
         public List<String> newMoves                   = Lists.newArrayList();
-        // The last move we used.
+        /** Index of new move to learn from newMoves. */
+        public int          num                        = 0;
+        /** The last move we used. */
         public String       lastMove;
-        // Storing exp in here as well.
+        /** Storing exp in here as well. */
         public int          exp                        = 0;
 
         public void reset()

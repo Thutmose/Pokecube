@@ -42,10 +42,14 @@ import thut.api.network.PacketHandler;
 public interface ICanEvolve extends IHasEntry, IHasOwner
 {
 
+    /** Used to allow the pokemob to evolve over a few ticks */
     static class EvoTicker
     {
+        /** take 10 ticks to evolve to give time to clean things up first. */
         int          tick = 10;
+        /** Who we are evolving to. */
         final Entity evo;
+        /** UUID to evolve into. */
         final UUID   id;
 
         public EvoTicker(Entity evolution, UUID id)
@@ -77,6 +81,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         }
     }
 
+    /** Simlar to EvoTicker, but for more general form changing. */
     static class MegaEvoTicker
     {
         final World          world;
@@ -136,11 +141,21 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         }
     }
 
+    /** Shedules mega evolution for a few ticks later
+     * 
+     * @param evolver
+     *            the mob to schedule to evolve
+     * @param newForm
+     *            the form to evolve to
+     * @param message
+     *            the message to send on completion */
     public static void setDelayedMegaEvolve(IPokemob evolver, PokedexEntry newForm, ITextComponent message)
     {
         new MegaEvoTicker(newForm, PokecubeMod.core.getConfig().evolutionTicks / 2, evolver, message);
     }
 
+    /** Cancels the current evoluton for the pokemob, sends appropriate message
+     * to owner. */
     default void cancelEvolve()
     {
         if (!isEvolving()) return;
@@ -175,6 +190,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         return false;
     }
 
+    /** @return if we are currently evolving */
     default boolean isEvolving()
     {
         return this.getGeneralState(GeneralStates.EVOLVING);
@@ -241,6 +257,11 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         return theMob;
     }
 
+    /** Converts us to the given entry
+     * 
+     * @param newEntry
+     *            new pokedex entry to have
+     * @return the new pokemob, return this if it fails */
     default IPokemob megaEvolve(PokedexEntry newEntry)
     {
         EntityLivingBase thisEntity = getEntity();

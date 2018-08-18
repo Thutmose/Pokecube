@@ -407,12 +407,6 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     }
 
     @Override
-    public void setHp(float min)
-    {
-        getEntity().setHealth(min);
-    }
-
-    @Override
     public void setOriginalOwnerUUID(UUID original)
     {
         OTID = original;

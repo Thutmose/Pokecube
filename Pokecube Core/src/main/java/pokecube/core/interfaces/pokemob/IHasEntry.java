@@ -6,7 +6,7 @@ import pokecube.core.interfaces.IPokemob;
 
 public interface IHasEntry extends IHasMobAIStates
 {
-    // Returns the mob associated with this object.
+    /** @return the minecraft entity associated with this pokemob */
     default EntityLiving getEntity()
     {
         return (EntityLiving) this;
@@ -21,14 +21,17 @@ public interface IHasEntry extends IHasMobAIStates
         return getPokedexEntry().getPokedexNb();
     }
 
+    /** @return is this a shadow pokemob */
     default boolean isShadow()
     {
         return getPokedexEntry().isShadowForme;
     }
 
+    /** @return is the pokemob shiny */
     boolean isShiny();
 
-    /** @param entityIn */
+    /** @param entityIn
+     *            Sets the vanilla entity for this pokemob */
     default void setEntity(EntityLiving entityIn)
     {
         // Nope for default impl

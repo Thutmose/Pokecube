@@ -38,7 +38,6 @@ import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
-import thut.api.terrain.TerrainSegment;
 
 public abstract class PokemobBase implements IPokemob
 {
@@ -176,8 +175,7 @@ public abstract class PokemobBase implements IPokemob
 
     /** Inventory of the pokemob. */
     protected AnimalChest          pokeChest;
-    protected boolean              named            = false;
-    protected boolean              initHome         = true;
+    /** Prevents duplication on returning to pokecubes */
     protected boolean              returning        = false;
     /** Is this owned by a player? */
     protected boolean              players          = false;
@@ -189,21 +187,24 @@ public abstract class PokemobBase implements IPokemob
 
     /** The happiness value of the pokemob */
     protected int                  bonusHappiness   = 0;
+    /** Tracks whether this was a shadow mob at some point. */
     protected boolean              wasShadow        = false;
-    protected boolean              isAncient        = false;
     /** Number used as seed for various RNG things. */
     protected int                  personalityValue = 0;
-    protected int                  killCounter      = 0;
-    protected int                  resetTick        = 0;
     /** Modifiers on stats. */
     protected StatModifiers        modifiers        = new StatModifiers();
     /** Egg we are trying to protect. */
     protected Entity               egg              = null;
     /** Mob to breed with */
     protected Entity               lover;
+    /** Timer for determining whether wants to breed, will only do so if this is
+     * greater than 0 */
     protected int                  loveTimer;
+    /** List of nearby male mobs to breed with */
     protected Vector<IBreedingMob> males            = new Vector<>();
+    /** Simpler UID for some client sync things. */
     protected int                  uid              = -1;
+    /** The pokecube this mob is "in" */
     protected ItemStack            pokecube         = ItemStack.EMPTY;
     /** Tracker for things related to moves. */
     protected PokemobMoveStats     moveInfo         = new PokemobMoveStats();
@@ -216,6 +217,7 @@ public abstract class PokemobBase implements IPokemob
     /** Cooldown for hunger AI */
     protected int                  hungerCooldown   = 0;
 
+    // Here we have all of the genes currently used.
     Alleles                        genesSize;
     Alleles                        genesIVs;
     Alleles                        genesEVs;
@@ -226,20 +228,22 @@ public abstract class PokemobBase implements IPokemob
     Alleles                        genesShiny;
     Alleles                        genesSpecies;
 
+    /** Stack which will be used for evolution */
     protected ItemStack            stack            = ItemStack.EMPTY;
-
+    /** Location to try to attack. */
     protected Vector3              target;
+    /** Manages mounted control */
     public LogicMountedControl     controller;
+    /** Holder for all the custom AI stuff */
     protected AIStuff              aiStuff;
 
+    /** Custom navigator */
     public PathNavigate            navi;
+    /** Custom move helper. */
     public PokemobMoveHelper       mover;
-    protected boolean              initAI           = true;
-    protected boolean              popped           = false;
-    protected PokemobAI            aiObject;
-    protected boolean              isAFish          = false;
+
+    /** Used for various cases where things at mobs location need checking */
     protected Vector3              here             = Vector3.getNewVector();
-    public TerrainSegment          currentTerrain   = null;
 
     /** The Entity this IPokemob is attached to. */
     protected EntityLiving         entity;
@@ -251,17 +255,22 @@ public abstract class PokemobBase implements IPokemob
     /** Holds the data parameters used for syncing our stuff. */
     protected DataParameters       params;
 
+    /** Our owner. */
     protected UUID                 ownerID;
+    /** Our original owner. */
     protected UUID                 OTID;
 
+    /** Used for maintaining/storing homes and routes. */
     protected IGuardAICapability   guardCap;
 
+    // Things here are used for collision stuff.
     List<AxisAlignedBB>            aabbs            = null;
     public Matrix3                 mainBox          = new Matrix3();
     public Vector3                 offset           = Vector3.getNewVector();
 
+    /** How long the mob is */
     protected float                length;
-    // Essential Capabilites Objects
+
     /** The IMobGenetics used to store our genes. */
     public IMobGenetics            genes;
 

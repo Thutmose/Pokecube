@@ -298,7 +298,6 @@ public abstract class PokemobAI extends PokemobEvolves
         getEntity().fallDistance = 0;
         getEntity().extinguish();
         this.setGeneralState(GeneralStates.EVOLVING, false);
-        popped = true;
         if (getEntity().getEntityWorld().isRemote) return;
         getEntity().playSound(this.getSound(), 0.25f, 1);
         if (this.isShiny())

@@ -1,4 +1,4 @@
-package pokecube.core.ai.thread.aiRunnables;
+package pokecube.core.ai.thread.aiRunnables.idle;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
+import pokecube.core.ai.thread.aiRunnables.AIBase;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IBerryFruitBlock;

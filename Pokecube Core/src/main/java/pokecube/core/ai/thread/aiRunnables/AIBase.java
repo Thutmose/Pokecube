@@ -458,7 +458,8 @@ public abstract class AIBase implements IAIRunnable
         return list;
     }
 
-    List<Object> getEntitiesWithinDistance(Vector3 source, int dimension, float distance, Class<?>... targetClass)
+    protected List<Object> getEntitiesWithinDistance(Vector3 source, int dimension, float distance,
+            Class<?>... targetClass)
     {
         Vector<?> entities = AIThreadManager.worldEntities.get(dimension);
         List<Object> list = new ArrayList<Object>();

@@ -1,4 +1,4 @@
-package pokecube.core.ai.thread.aiRunnables;
+package pokecube.core.ai.thread.aiRunnables.combat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,7 @@ import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
+import pokecube.core.ai.thread.aiRunnables.AIBase;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
@@ -387,6 +388,118 @@ public class AIFindTarget extends AIBase implements IAICombat
 
     }
 
+    /** Check if owner is under attack, if so, agress the attacker. <br>
+     * <br>
+     * This is called from {@link AIFindTarget#run()}
+     * 
+     * @return if target was found. */
+    protected boolean checkOwner()
+    {
+        List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
+        if (!list.isEmpty() && pokemob.getPokemonOwner() != null)
+        {
+            for (int j = 0; j < list.size(); j++)
+            {
+                Entity entity = (Entity) list.get(j);
+
+                if (entity instanceof EntityCreature && ((EntityCreature) entity).getAttackTarget() != null
+                        && ((EntityCreature) entity).getAttackTarget().equals(pokemob.getPokemonOwner())
+                        && Vector3.isVisibleEntityFromEntity(entity, entity))
+                {
+                    addTargetInfo(this.entity, entity);
+                    entityTarget = (EntityLivingBase) entity;
+                    setCombatState(pokemob, CombatStates.ANGRY, true);
+                    setLogicState(pokemob, LogicStates.SITTING, false);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** Check if there is a target to hunt, if so, sets it as target. <br>
+     * <br>
+     * This is called from {@link AIFindTarget#run()}
+     * 
+     * @return if a hunt target was found. */
+    protected boolean checkHunt()
+    {
+        List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
+        if (!list.isEmpty())
+        {
+            for (int j = 0; j < list.size(); j++)
+            {
+                Entity entity = (Entity) list.get(j);
+                IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+                if (mob != null && pokemob.getPokedexEntry().isFood(mob.getPokedexEntry())
+                        && pokemob.getLevel() > mob.getLevel() && Vector3.isVisibleEntityFromEntity(entity, entity))
+                {
+                    addTargetInfo(this.entity, entity);
+                    entityTarget = (EntityLivingBase) entity;
+                    setCombatState(pokemob, CombatStates.ANGRY, true);
+                    setLogicState(pokemob, LogicStates.SITTING, false);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** Check for and agress any guard targets. <br>
+     * <br>
+     * This is called from {@link AIFindTarget#run()}
+     * 
+     * @return a guard target was found */
+    protected boolean checkGuard()
+    {
+        List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
+        List<Object> pokemobs = new ArrayList<Object>();
+
+        // Select either owner or home position as the centre of the check,
+        // this results in it guarding either its home or its owner. Home is
+        // used if it is on stay, or it has no owner.
+        Vector3 centre = Vector3.getNewVector();
+        if (pokemob.getGeneralState(GeneralStates.STAYING) || pokemob.getPokemonOwner() == null)
+            centre.set(pokemob.getHome());
+        else centre.set(pokemob.getPokemonOwner());
+
+        pokemobs = getEntitiesWithinDistance(centre, entity.dimension, 16, EntityLivingBase.class);
+
+        // Only allow valid guard targets.
+        for (Object o : pokemobs)
+        {
+            if (validGuardTarget.apply((Entity) o)) ret.add((EntityLivingBase) o);
+        }
+
+        if (ret.isEmpty()) return false;
+
+        EntityLivingBase newtarget = null;
+        double closest = Integer.MAX_VALUE;
+        Vector3 here = v1.set(entity, true);
+
+        // Select closest visible guard target.
+        for (EntityLivingBase e : ret)
+        {
+            double dist = e.getDistanceSq(entity);
+            v.set(e, true);
+            if (dist < closest && here.isVisible(world, v))
+            {
+                closest = dist;
+                newtarget = e;
+            }
+        }
+
+        // Agro the target.
+        if (newtarget != null && Vector3.isVisibleEntityFromEntity(entity, newtarget))
+        {
+            addTargetInfo(entity, newtarget);
+            setCombatState(pokemob, CombatStates.ANGRY, true);
+            entityTarget = newtarget;
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void run()
     {
@@ -405,97 +518,93 @@ public class AIFindTarget extends AIBase implements IAICombat
         // found, try to aggress them immediately.
         if (!pokemob.getGeneralState(GeneralStates.STAYING) && pokemob.getGeneralState(GeneralStates.TAMED))
         {
-            List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
-            if (!list.isEmpty() && pokemob.getPokemonOwner() != null)
-            {
-                for (int j = 0; j < list.size(); j++)
-                {
-                    Entity entity = (Entity) list.get(j);
-
-                    if (entity instanceof EntityCreature && ((EntityCreature) entity).getAttackTarget() != null
-                            && ((EntityCreature) entity).getAttackTarget().equals(pokemob.getPokemonOwner())
-                            && Vector3.isVisibleEntityFromEntity(entity, entity))
-                    {
-                        addTargetInfo(this.entity, entity);
-                        entityTarget = (EntityLivingBase) entity;
-                        setCombatState(pokemob, CombatStates.ANGRY, true);
-                        setLogicState(pokemob, LogicStates.SITTING, false);
-                        return;
-                    }
-                }
-            }
+            if (checkOwner()) return;
         }
 
         // If hunting, look for valid prey, and if found, agress it.
         if (!pokemob.getLogicState(LogicStates.SITTING) && pokemob.isCarnivore()
                 && pokemob.getCombatState(CombatStates.HUNTING))
         {
-            List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
-            if (!list.isEmpty())
-            {
-                for (int j = 0; j < list.size(); j++)
-                {
-                    Entity entity = (Entity) list.get(j);
-                    IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
-                    if (mob != null && pokemob.getPokedexEntry().isFood(mob.getPokedexEntry())
-                            && pokemob.getLevel() > mob.getLevel() && Vector3.isVisibleEntityFromEntity(entity, entity))
-                    {
-                        addTargetInfo(this.entity, entity);
-                        entityTarget = (EntityLivingBase) entity;
-                        setCombatState(pokemob, CombatStates.ANGRY, true);
-                        setLogicState(pokemob, LogicStates.SITTING, false);
-                        return;
-                    }
-                }
-            }
+            if (checkHunt()) return;
         }
         // If guarding, look for mobs not on the same team as you, and if you
         // find them, try to agress them.
         if (pokemob.getCombatState(CombatStates.GUARDING))
         {
-            List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
-            List<Object> pokemobs = new ArrayList<Object>();
-
-            // Select either owner or home position as the centre of the check,
-            // this results in it guarding either its home or its owner. Home is
-            // used if it is on stay, or it has no owner.
-            Vector3 centre = Vector3.getNewVector();
-            if (pokemob.getGeneralState(GeneralStates.STAYING) || pokemob.getPokemonOwner() == null)
-                centre.set(pokemob.getHome());
-            else centre.set(pokemob.getPokemonOwner());
-
-            pokemobs = getEntitiesWithinDistance(centre, entity.dimension, 16, EntityLivingBase.class);
-
-            // Only allow valid guard targets.
-            for (Object o : pokemobs)
-            {
-                if (validGuardTarget.apply((Entity) o)) ret.add((EntityLivingBase) o);
-            }
-            EntityLivingBase newtarget = null;
-            double closest = Integer.MAX_VALUE;
-            Vector3 here = v1.set(entity, true);
-
-            // Select closest visible guard target.
-            for (EntityLivingBase e : ret)
-            {
-                double dist = e.getDistanceSq(entity);
-                v.set(e, true);
-                if (dist < closest && here.isVisible(world, v))
-                {
-                    closest = dist;
-                    newtarget = e;
-                }
-            }
-
-            // Agro the target.
-            if (newtarget != null && Vector3.isVisibleEntityFromEntity(entity, newtarget))
-            {
-                addTargetInfo(entity, newtarget);
-                setCombatState(pokemob, CombatStates.ANGRY, true);
-                entityTarget = newtarget;
-                return;
-            }
+            if (checkGuard()) return;
         }
+    }
+
+    /** Check if there are any mobs nearby that will help us. <br>
+     * <br>
+     * This is called from {@link AIFindTarget#shouldRun()}
+     * 
+     * @return someone needed help. */
+    protected boolean checkForHelp(EntityLivingBase from)
+    {
+        // No need to get help against null
+        if (from == null) return false;
+
+        // Not social. doesn't do this.
+        if (!pokemob.getPokedexEntry().isSocial) return false;
+
+        // Random factor for this ai to apply
+        if (Math.random() < 0.95) return false;
+
+        List<EntityLiving> ret = new ArrayList<EntityLiving>();
+        List<Object> pokemobs = new ArrayList<Object>();
+
+        // Select either owner or home position as the centre of the check,
+        // this results in it guarding either its home or its owner. Home is
+        // used if it is on stay, or it has no owner.
+        Vector3 centre = Vector3.getNewVector();
+        if (pokemob.getGeneralState(GeneralStates.STAYING) || pokemob.getPokemonOwner() == null)
+            centre.set(pokemob.getHome());
+        else centre.set(pokemob.getPokemonOwner());
+
+        pokemobs = getEntitiesWithinDistance(centre, entity.dimension, 16, EntityLiving.class);
+
+        // We check for whether it is the same species and, has the same owner
+        // (including null) or is on the team.
+        Predicate<EntityLiving> relationCheck = new Predicate<EntityLiving>()
+        {
+            @Override
+            public boolean apply(EntityLiving input)
+            {
+                IPokemob other = CapabilityPokemob.getPokemobFor(input);
+                // No pokemob, no helps.
+                if (other == null) return false;
+                // Not related, no helps.
+                if (!other.getPokedexEntry().areRelated(pokemob.getPokedexEntry())) return false;
+                // Same owner (owned or null), helps.
+                if ((other.getOwnerId() == null && pokemob.getOwnerId() == null)
+                        || other.getOwnerId().equals(pokemob.getOwnerId()))
+                    return true;
+                // Same team, helps.
+                if (TeamManager.sameTeam(input, entity)) return true;
+                return false;
+            }
+        };
+
+        // Only allow valid guard targets.
+        for (Object o : pokemobs)
+        {
+            if (relationCheck.apply((EntityLiving) o)) ret.add((EntityLiving) o);
+        }
+
+        for (EntityLiving mob : ret)
+        {
+            // Only agress mobs that can see you are really under attack.
+            if (!mob.canEntityBeSeen(entity)) continue;
+            // Only agress if not currently in combat.
+            if (mob.getAttackTarget() != null) continue;
+            // Make all valid ones agress the target.
+            IPokemob other = CapabilityPokemob.getPokemobFor(mob);
+            addTargetInfo(mob, from);
+            setCombatState(other, CombatStates.ANGRY, false);
+        }
+
+        return false;
     }
 
     @Override
@@ -508,6 +617,11 @@ public class AIFindTarget extends AIBase implements IAICombat
         // Don't look for targets if you are sitting.
         boolean ret = target == null && !pokemob.getLogicState(LogicStates.SITTING);
         boolean tame = pokemob.getGeneralState(GeneralStates.TAMED);
+
+        /*
+         * Check for others to try to help you.
+         */
+        if (checkForHelp(target)) return false;
 
         if (target == null && entityTarget != null)
         {

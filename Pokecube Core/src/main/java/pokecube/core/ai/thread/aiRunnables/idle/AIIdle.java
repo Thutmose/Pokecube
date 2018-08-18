@@ -1,4 +1,4 @@
-package pokecube.core.ai.thread.aiRunnables;
+package pokecube.core.ai.thread.aiRunnables.idle;
 
 import java.util.List;
 import java.util.Random;
@@ -9,6 +9,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.world.IBlockAccess;
+import pokecube.core.ai.thread.aiRunnables.AIBase;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;

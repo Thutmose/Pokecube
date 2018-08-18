@@ -2,7 +2,6 @@ package pokecube.core.interfaces.capabilities;
 
 import java.util.logging.Level;
 
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
@@ -13,20 +12,21 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import pokecube.core.ai.pokemob.PokemobAIHurt;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
-import pokecube.core.ai.thread.aiRunnables.AIAttack;
 import pokecube.core.ai.thread.aiRunnables.AIBase.PathManager;
-import pokecube.core.ai.thread.aiRunnables.AICombatMovement;
-import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.ai.thread.aiRunnables.AIFollowOwner;
 import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
-import pokecube.core.ai.thread.aiRunnables.AIGuardEgg;
-import pokecube.core.ai.thread.aiRunnables.AIHungry;
-import pokecube.core.ai.thread.aiRunnables.AIIdle;
-import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
-import pokecube.core.ai.utils.GuardAI;
+import pokecube.core.ai.thread.aiRunnables.combat.AIAttack;
+import pokecube.core.ai.thread.aiRunnables.combat.AICombatMovement;
+import pokecube.core.ai.thread.aiRunnables.combat.AIDodge;
+import pokecube.core.ai.thread.aiRunnables.combat.AIFindTarget;
+import pokecube.core.ai.thread.aiRunnables.combat.AILeap;
+import pokecube.core.ai.thread.aiRunnables.idle.AIGuardEgg;
+import pokecube.core.ai.thread.aiRunnables.idle.AIHungry;
+import pokecube.core.ai.thread.aiRunnables.idle.AIIdle;
+import pokecube.core.ai.thread.aiRunnables.idle.AIMate;
+import pokecube.core.ai.thread.aiRunnables.idle.AIRoutes;
 import pokecube.core.ai.utils.GuardAI.ShouldRun;
 import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.ai.utils.pathing.PokemobNavigator;
@@ -213,8 +213,33 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         this.navi = new PokemobNavigator(this, entity.getEntityWorld());
         this.mover = new PokemobMoveHelper(entity);
 
-        GuardAI guardAI = new GuardAI(entity, this.guardCap = entity.getCapability(EventsHandler.GUARDAI_CAP, null));
-        guardAI.shouldRun = new ShouldRun()
+        // Add in some vanilla-like AI classes
+        entity.tasks.addTask(5, this.utilMoveAI = new PokemobAIUtilityMove(this));
+
+        // Generate a PathManager to use to ensure AI doesn't clear paths for
+        // more important runnables.
+        PathManager manager = new PathManager();
+
+        // Add in the Custom type of AI tasks.
+
+        // Tasks for combat
+        this.getAI().addAITask(new AIAttack(this).setPathManager(manager).setPriority(200));
+        this.getAI().addAITask(new AIDodge(this).setPathManager(manager).setPriority(225));
+        this.getAI().addAITask(new AILeap(this).setPathManager(manager).setPriority(225));
+        this.getAI().addAITask(new AICombatMovement(this).setPathManager(manager).setPriority(250));
+        this.getAI().addAITask(new AIFindTarget(this).setPathManager(manager).setPriority(400));
+
+        // Idle tasks
+        this.getAI().addAITask(new AIGuardEgg(this).setPathManager(manager).setPriority(250));
+        this.getAI().addAITask(new AIMate(this).setPathManager(manager).setPriority(300));
+        this.getAI().addAITask(new AIHungry(this, new EntityItem(entity.getEntityWorld()), 16).setPathManager(manager)
+                .setPriority(300));
+        this.getAI().addAITask(new AIIdle(this).setPathManager(manager).setPriority(500));
+
+        // Task for following routes/maintaining home location
+        this.guardCap = entity.getCapability(EventsHandler.GUARDAI_CAP, null);
+        AIRoutes routes = new AIRoutes(getEntity(), guardCap);
+        routes.wrapped.shouldRun = new ShouldRun()
         {
             @Override
             public boolean shouldRun()
@@ -223,34 +248,20 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
                 return getGeneralState(GeneralStates.STAYING);
             }
         };
-        // Add in some vanilla-like AI classes
-        entity.tasks.addTask(5, guardAI);
+        this.getAI().addAITask(routes.setPathManager(manager).setPriority(275));
 
-        entity.tasks.addTask(5, this.utilMoveAI = new PokemobAIUtilityMove(this));
-        if (entity instanceof EntityCreature) entity.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
+        // Item management/storage related tasks
+        AIStoreStuff ai = new AIStoreStuff(this);
+        this.getAI().addAITask(ai.setPathManager(manager).setPriority(350));
+        this.getAI().addAITask(new AIGatherStuff(this, 32, ai).setPathManager(manager).setPriority(400));
 
-        // Generate a PathManager to use to ensure AI doesn't clear paths for
-        // more important runnables.
-        PathManager manager = new PathManager();
-
-        // Add in the Custom type of AI tasks.
-        this.getAI().addAITask(new AIAttack(this).setPathManager(manager).setPriority(200));
-        this.getAI().addAITask(new AICombatMovement(this).setPathManager(manager).setPriority(250));
+        // Owner related tasks
         if (!entry.isStationary)
         {
             this.getAI()
                     .addAITask(new AIFollowOwner(this, 2 + entity.width + this.length, 2 + entity.width + this.length)
                             .setPathManager(manager).setPriority(400));
         }
-        this.getAI().addAITask(new AIGuardEgg(this).setPathManager(manager).setPriority(250));
-        this.getAI().addAITask(new AIMate(this).setPathManager(manager).setPriority(300));
-        this.getAI().addAITask(new AIHungry(this, new EntityItem(entity.getEntityWorld()), 16).setPathManager(manager)
-                .setPriority(300));
-        AIStoreStuff ai = new AIStoreStuff(this);
-        this.getAI().addAITask(ai.setPathManager(manager).setPriority(350));
-        this.getAI().addAITask(new AIGatherStuff(this, 32, ai).setPathManager(manager).setPriority(400));
-        this.getAI().addAITask(new AIIdle(this).setPathManager(manager).setPriority(500));
-        this.getAI().addAITask(new AIFindTarget(this).setPathManager(manager).setPriority(400));
 
         // Send notification event of AI initilization, incase anyone wants to
         // affect it.

@@ -58,7 +58,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
-import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
+import pokecube.core.ai.thread.aiRunnables.combat.AIFindTarget;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.blocks.pc.InventoryPC;

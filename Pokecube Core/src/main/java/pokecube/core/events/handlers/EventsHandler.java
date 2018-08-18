@@ -90,7 +90,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability;
-import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
+import pokecube.core.ai.thread.aiRunnables.combat.AIFindTarget;
 import pokecube.core.ai.utils.AIEventHandler;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.blocks.nests.TileEntityBasePortal;

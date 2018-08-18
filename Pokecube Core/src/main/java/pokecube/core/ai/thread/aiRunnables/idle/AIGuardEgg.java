@@ -1,4 +1,4 @@
-package pokecube.core.ai.thread.aiRunnables;
+package pokecube.core.ai.thread.aiRunnables.idle;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import pokecube.core.ai.thread.aiRunnables.AIBase;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;

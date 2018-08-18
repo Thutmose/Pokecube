@@ -10,7 +10,6 @@ import pokecube.core.utils.TimePeriod;
 
 /** Guards a given point. Constructor parameters:
  * <ul>
- * <li>EntityLiving owner - the entity this guard AI should work for
  * <li>BlockPos position - the position to guard; the entity's current position
  * if <i>null</i>
  * <li>float roamingDistance - how far the AI should be able to stray from the
@@ -19,9 +18,6 @@ import pokecube.core.utils.TimePeriod;
  * still try to find its way back; at least the same as roamingDistance + 1.0f
  * <li>TimePeriod guardingPeriod - which part of the day should this entity
  * guard its post; the full day if <i>null</i>
- * <li>boolean leaveTransports - if the AI should attempt to leave
- * transportation vehicles (boats, minecarts, horses) if too far from the guard
- * post
  * </ul>
 */
 public class GuardAI extends EntityAIBase
@@ -138,6 +134,5 @@ public class GuardAI extends EntityAIBase
             if (entity.getDistanceSq(capability.getActiveTask().getPos()) < maxDist)
                 capability.setState(GuardState.COOLDOWN);
         }
-
     }
 }

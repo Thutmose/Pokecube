@@ -5,10 +5,10 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.Path;
 import pokecube.core.ai.thread.aiRunnables.AIBase;
+import pokecube.core.ai.utils.pathing.PokemobNavigator;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.pokemob.ai.CombatStates;
-import pokecube.core.interfaces.pokemob.ai.LogicStates;
 import thut.api.maths.Vector3;
 
 /** This IAIRunnable manages the movement of the mob while it is in combat, but
@@ -32,6 +32,18 @@ public class AICombatMovement extends AIBase
         this.setMutex(0);
     }
 
+    protected void calculateCentre()
+    {
+        if (centre == null)
+        {
+            Vector3 targetLoc = Vector3.getNewVector().set(target);
+            Vector3 attackerLoc = Vector3.getNewVector().set(attacker);
+            Vector3 diff = targetLoc.addTo(attackerLoc).scalarMultBy(0.5);
+            centre = diff;
+            centre.y = Math.min(attackerLoc.y, targetLoc.y);
+        }
+    }
+
     @Override
     public void reset()
     {
@@ -41,17 +53,8 @@ public class AICombatMovement extends AIBase
     @Override
     public void run()
     {
-        if (pokemob.getLogicState(LogicStates.SLEEPING)
-                || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0)
-            return;
-        if (centre == null)
-        {
-            Vector3 targetLoc = Vector3.getNewVector().set(target);
-            Vector3 attackerLoc = Vector3.getNewVector().set(attacker);
-            Vector3 diff = targetLoc.addTo(attackerLoc).scalarMultBy(0.5);
-            centre = diff;
-            centre.y = Math.min(attackerLoc.y, targetLoc.y);
-        }
+        // Figure out where centre of combat is
+        calculateCentre();
         // If the mob has a path already, check if it is near the end, if not,
         // return early.
         if (!attacker.getNavigator().noPath())
@@ -77,7 +80,10 @@ public class AICombatMovement extends AIBase
         {
             pokemob.setCombatState(CombatStates.LEAPING, false);
             Path path = attacker.getNavigator().getPathToPos(centre.getPos());
-            addEntityPath(attacker, path, movementSpeed);
+            // Path back to center of ring.
+            if (path != null) addEntityPath(attacker, path, movementSpeed);
+            // Could not path to center, so null it to re-calulate next run.
+            else centre = null;
         }
         else
         {
@@ -94,9 +100,11 @@ public class AICombatMovement extends AIBase
     @Override
     public boolean shouldRun()
     {
-        if (pokemob.getLogicState(LogicStates.SLEEPING)
-                || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0)
+        // Not currently able to move.
+        if (attacker.getNavigator() instanceof PokemobNavigator
+                && !((PokemobNavigator) attacker.getNavigator()).canNavigate())
             return false;
+        // Has target and is angry.
         return (target = attacker.getAttackTarget()) != null && pokemob.getCombatState(CombatStates.ANGRY);
     }
 }

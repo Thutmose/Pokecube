@@ -5,16 +5,22 @@ import net.minecraft.world.World;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.thread.aiRunnables.AIBase;
 import pokecube.core.ai.utils.GuardAI;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.ai.CombatStates;
+import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 
 /** This is the AIBase version of GuardAI */
 public class AIRoutes extends AIBase
 {
+    final IPokemob       pokemob;
     public final GuardAI wrapped;
     private boolean      running;
 
     public AIRoutes(EntityLiving mob, IGuardAICapability cap)
     {
         this.wrapped = new GuardAI(mob, cap);
+        pokemob = CapabilityPokemob.getPokemobFor(mob);
     }
 
     @Override
@@ -26,7 +32,7 @@ public class AIRoutes extends AIBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
-
+        if (!shouldRun()) return;
         if (!running)
         {
             running = wrapped.shouldExecute();
@@ -55,10 +61,15 @@ public class AIRoutes extends AIBase
     }
 
     @Override
-    /** This is just wrapping the guardAI, so it doesn't do anything here. */
+    /** Runs if not a pokemob, or the pokemob is wild, or the pokemob is on
+     * stay. */
     public boolean shouldRun()
     {
-        return false;
+        // Shouldn't run if angry
+        if (pokemob != null && pokemob.getCombatState(CombatStates.ANGRY)) return false;
+
+        return pokemob == null || !pokemob.getGeneralState(GeneralStates.TAMED)
+                || pokemob.getGeneralState(GeneralStates.STAYING);
     }
 
 }

@@ -10,6 +10,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.aiRunnables.AIBase;
+import pokecube.core.ai.utils.pathing.PokemobNavigator;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
@@ -26,6 +27,7 @@ public class AIDodge extends AIBase
     final IPokemob     pokemob;
     Entity             target;
     double             movementSpeed;
+    int                dodgeCooldown = 10;
 
     public AIDodge(IPokemob entity)
     {
@@ -63,6 +65,14 @@ public class AIDodge extends AIBase
             PokecubeMod.log(Level.INFO, "Dodge: " + attacker);
         }
         /*
+         * Set dodging state to notify attack AI that target is dodging.
+         */
+        if (!pokemob.getCombatState(CombatStates.DODGING))
+        {
+            pokemob.setCombatState(CombatStates.DODGING, true);
+            dodgeCooldown = PokecubeCore.core.getConfig().attackCooldown;
+        }
+        /*
          * Compute a random perpendicular direction.
          */
         Vector3 loc = Vector3.getNewVector().set(attacker);
@@ -70,21 +80,24 @@ public class AIDodge extends AIBase
         Vector3 temp = Vector3.getNewVector();
         Vector3 perp = target.subtractFrom(loc).rotateAboutLine(Vector3.secondAxis, Math.PI / 2, temp);
         if (Math.random() > 0.5) perp = perp.scalarMultBy(-1);
-        /*
-         * Set dodging state to notify attack AI that target is dodging.
-         */
-        pokemob.setCombatState(CombatStates.DODGING, true);
         perp = perp.normalize();
         if (perp.isNaN())
         {
             new Exception().printStackTrace();
             perp.clear();
         }
+
+        double evasionMod = pokemob.getFloatStat(Stats.EVASION, true);
         /*
          * Scale dodge by pokemob's size
          */
         perp.scalarMultBy(pokemob.getPokedexEntry().width * pokemob.getSize());
-        if (perp.magSq() > 0.3) perp.norm().scalarMultBy(0.3);
+        /*
+         * Scale by evasion modifier
+         */
+        perp.scalarMultBy(evasionMod);
+        if (perp.magSq() > 4) perp.norm().scalarMultBy(2);
+
         /*
          * Only flying or floating things can dodge properly in the air.
          */
@@ -105,12 +118,23 @@ public class AIDodge extends AIBase
     @Override
     public boolean shouldRun()
     {
-        // We are already dodging, cannot do so while in dodge.
-        if (pokemob.getCombatState(CombatStates.DODGING)) return false;
+        // We are already set to dodge, cooldown ensures dodge state lasts long
+        // enough to make some ranged attacks miss
+        if (pokemob.getCombatState(CombatStates.DODGING))
+        {
+            if (dodgeCooldown-- < 0) return true;
+            // Off cooldown, reset dodge state.
+            else pokemob.setCombatState(CombatStates.DODGING, false);
+        }
         // Only dodge if there is an attack target.
         if ((target = attacker.getAttackTarget()) == null) return false;
         // Only flying or floating can dodge while in the air
         if (!attacker.onGround && !(pokemob.floats() || pokemob.flys())) return false;
+        // Only pokemobs that can path can dodge
+        if (attacker.getNavigator() instanceof PokemobNavigator
+                && !((PokemobNavigator) attacker.getNavigator()).canNavigate())
+            return false;
+
         IPokemob target = CapabilityPokemob.getPokemobFor(attacker.getAttackTarget());
         if (target != null)
         {
@@ -127,7 +151,7 @@ public class AIDodge extends AIBase
                     shouldDodgeMove = false;
                 }
             }
-            if (!shouldDodgeMove) return shouldDodgeMove;
+            return shouldDodgeMove;
         }
         /*
          * Scale amount jumped by evasion stat.

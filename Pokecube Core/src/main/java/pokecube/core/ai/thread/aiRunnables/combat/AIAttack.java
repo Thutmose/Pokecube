@@ -453,6 +453,7 @@ public class AIAttack extends AIBase implements IAICombat
         // leaping to close distance.
         else if (shouldPath && !(distanced || self) && !pokemob.getCombatState(CombatStates.LEAPING))
         {
+            setCombatState(pokemob, CombatStates.EXECUTINGMOVE, true);
             setCombatState(pokemob, CombatStates.LEAPING, true);
             if (PokecubeCore.debug)
             {

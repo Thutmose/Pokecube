@@ -544,6 +544,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         if (!((move.attackCategory & CATEGORY_SELF) > 0 && PWR == 0) && finalAttackStrength > 0)
         {
+            // Appy attack damage to players.
             if (attacked instanceof EntityPlayer)
             {
                 DamageSource source1 = new PokemobDamageSource("mob", attackerMob, MovesUtils.getMoveFromName(attack));
@@ -572,6 +573,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                     PokecubeMod.log(Level.INFO, "Magic Component: " + d2);
                 }
             }
+            // Apply attack damage to a pokemob
             else if (targetPokemob != null)
             {
                 DamageSource source = new PokemobDamageSource("mob", attackerMob, MovesUtils.getMoveFromName(attack));
@@ -584,6 +586,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 }
                 attacked.attackEntityFrom(source, finalAttackStrength);
             }
+            // Apply attack damage to another mob type.
             else
             {
                 DamageSource source = new PokemobDamageSource("mob", attackerMob, MovesUtils.getMoveFromName(attack));

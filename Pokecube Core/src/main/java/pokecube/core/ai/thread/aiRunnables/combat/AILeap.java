@@ -20,6 +20,7 @@ public class AILeap extends AIBase
     final EntityLiving attacker;
     final IPokemob     pokemob;
     Entity             target;
+    int                leapCooldown = 10;
     double             movementSpeed;
 
     public AILeap(IPokemob entity)
@@ -59,8 +60,13 @@ public class AILeap extends AIBase
         double dist = d0 * d0 + d2 * d2;
         float diff = attacker.width + target.width;
         diff = diff * diff;
-        if (!(dist >= diff && dist <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false)) { return; }
+
+        // Wait till it is a bit closer than this...
+        if (dist >= 16.0D) { return; }
         pokemob.setCombatState(CombatStates.LEAPING, false);
+
+        leapCooldown = PokecubeCore.core.getConfig().attackCooldown / 2;
+        
         Vector3 targetLoc = Vector3.getNewVector().set(target);
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);
         Vector3 dir = targetLoc.subtract(leaperLoc);
@@ -98,7 +104,8 @@ public class AILeap extends AIBase
     @Override
     public boolean shouldRun()
     {
-        return pokemob.getCombatState(CombatStates.LEAPING) && (target = attacker.getAttackTarget()) != null;
+        return leapCooldown-- < 0 && pokemob.getCombatState(CombatStates.LEAPING)
+                && (target = attacker.getAttackTarget()) != null;
     }
 
 }

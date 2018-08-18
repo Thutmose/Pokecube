@@ -31,8 +31,12 @@ public class AISelectMove extends AIBase
     public void reset()
     {
         this.target = null;
+        moveIndexCounter = 0;
     }
 
+    /** Pick a random move on a bit of a random timer.
+     * 
+     * @return if move swapped */
     protected boolean selectRandomMove()
     {
         Random rand = new Random();
@@ -57,6 +61,10 @@ public class AISelectMove extends AIBase
         return false;
     }
 
+    /** Determine which move to use based on whatever should apply the most
+     * damage to the current target.
+     * 
+     * @return if move swapped */
     protected boolean selectHighestDamage()
     {
         int index = pokemob.getMoveIndex();

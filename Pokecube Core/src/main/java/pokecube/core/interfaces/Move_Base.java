@@ -97,13 +97,26 @@ public abstract class Move_Base
      * @return */
     public abstract void onAttack(MovePacket packet);
 
+    /** Applys world effects of the move
+     * 
+     * @param attacker
+     *            - mob using the move
+     * @param location
+     *            - locaton move hits */
     public abstract void doWorldAction(IPokemob attacker, Vector3 location);
 
+    /** Gets the {@link IMoveAnimation} for this move.
+     * 
+     * @return */
     public IMoveAnimation getAnimation()
     {
         return animation;
     }
 
+    /** User sensitive version of {@link Move_Base#getAnimation()}
+     * 
+     * @param user
+     * @return */
     public IMoveAnimation getAnimation(IPokemob user)
     {
         return getAnimation();
@@ -118,6 +131,10 @@ public abstract class Move_Base
         return (byte) move.attackCategory;
     }
 
+    /** Applies hunger cost to attacker when this move is used. Hunger is used
+     * instead of PP in pokecube
+     * 
+     * @param attacker */
     public abstract void applyHungerCost(IPokemob attacker);
 
     /** Index getter.
@@ -138,7 +155,8 @@ public abstract class Move_Base
         return name;
     }
 
-    /** PP getter
+    /** PP getter PP is not used normally, so this mostly just scaled hunger
+     * cost or cooldowns
      * 
      * @return the number of Power points of this move */
     public int getPP()
@@ -213,6 +231,10 @@ public abstract class Move_Base
         return move.delayAfter ? 4 : 1;
     }
 
+    /** Sets the move animation
+     * 
+     * @param anim
+     * @return */
     public Move_Base setAnimation(IMoveAnimation anim)
     {
         this.animation = anim;
@@ -272,26 +294,42 @@ public abstract class Move_Base
         return this;
     }
 
+    /** Gets the self heal ratio for this attack and the given user.
+     * 
+     * @param user
+     * @return */
     public float getSelfHealRatio(IPokemob user)
     {
         return move.selfHealRatio;
     }
 
+    /** User sensitive version of {@link Move_Base#getCategory()}
+     * 
+     * @param user
+     * @return */
     public Category getCategory(IPokemob user)
     {
         return getCategory();
     }
 
+    /** @return Move category for this move. */
     public Category getCategory()
     {
         return Category.values()[move.category];
     }
 
+    /** @return Does this move targer the user. */
     public boolean isSelfMove()
     {
         return (this.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0;
     }
 
+    /** This method actually applies the move use from the pokemob.
+     * 
+     * @param user
+     * @param target
+     * @param start
+     * @param end */
     public void ActualMoveUse(@Nonnull Entity user, @Nullable Entity target, @Nonnull Vector3 start,
             @Nonnull Vector3 end)
     {
@@ -308,6 +346,11 @@ public abstract class Move_Base
         PokecubeCore.moveQueues.queueMove(moveUse);
     }
 
+    /** Plays any sounds needed for this move
+     * 
+     * @param attacker
+     * @param attacked
+     * @param targetPos */
     public void playSounds(Entity attacker, @Nullable Entity attacked, @Nullable Vector3 targetPos)
     {
         if (attacker != null)

@@ -10,5 +10,10 @@ import net.minecraft.world.IBlockAccess;
  * @author Thutmose */
 public interface IBerryFruitBlock
 {
+    /** @param world
+     *            - world we are in
+     * @param pos
+     *            - block pos with block
+     * @return - berry from pos and world */
     public ItemStack getBerryStack(IBlockAccess world, BlockPos pos);
 }

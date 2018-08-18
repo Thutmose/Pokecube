@@ -59,6 +59,7 @@ public interface IMoveAnimation
     public void setDuration(int duration);
 
     @SideOnly(Side.CLIENT)
+    /** Initialise colours for the move. */
     default void reallyInitRGBA()
     {
     }

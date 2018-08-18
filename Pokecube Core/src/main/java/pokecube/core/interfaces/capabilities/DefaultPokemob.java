@@ -222,6 +222,8 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
 
         // Tasks for combat
 
+        // Choose what attacks to use
+        this.getAI().addAITask(new AISelectMove(this).setPathManager(manager).setPriority(190));
         // Attack stuff
         this.getAI().addAITask(new AIAttack(this).setPathManager(manager).setPriority(200));
         // Dodge attacks
@@ -230,8 +232,6 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         this.getAI().addAITask(new AILeap(this).setPathManager(manager).setPriority(225));
         // Move around in combat
         this.getAI().addAITask(new AICombatMovement(this).setPathManager(manager).setPriority(250));
-        // Choose what attacks to use
-        this.getAI().addAITask(new AISelectMove(this).setPathManager(manager).setPriority(250));
         // Look for targets to kill
         this.getAI().addAITask(new AIFindTarget(this).setPathManager(manager).setPriority(400));
 
@@ -274,7 +274,7 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         // Owner related tasks
         if (!entry.isStationary)
         {
-            //Follow owner around
+            // Follow owner around
             this.getAI()
                     .addAITask(new AIFollowOwner(this, 2 + entity.width + this.length, 2 + entity.width + this.length)
                             .setPathManager(manager).setPriority(400));

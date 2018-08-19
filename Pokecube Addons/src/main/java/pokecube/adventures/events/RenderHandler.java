@@ -57,12 +57,17 @@ public class RenderHandler
                 || (GuiScreen.isShiftKeyDown() && !ClonerHelper.getGeneSelectors(stack).isEmpty()))
         {
             IMobGenetics genes = ClonerHelper.getGenes(stack);
+            int index = ClonerHelper.getIndex(stack);
             if (genes != null)
             {
                 for (Alleles a : genes.getAlleles().values())
                 {
                     evt.getToolTip().add(a.getExpressed().getKey().getResourcePath() + ": " + a.getExpressed());
                 }
+            }
+            if (index != -1)
+            {
+                evt.getToolTip().add("I: " + index);
             }
             Set<Class<? extends Gene>> genesSet;
             if (!(genesSet = ClonerHelper.getGeneSelectors(stack)).isEmpty())

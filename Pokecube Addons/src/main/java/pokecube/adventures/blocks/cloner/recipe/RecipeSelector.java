@@ -28,10 +28,17 @@ public class RecipeSelector implements IDefaultRecipe
     public static class ItemBasedSelector implements IGeneSelector
     {
         final ItemStack selector;
+        final int       arrIndex;
 
         public ItemBasedSelector(ItemStack selector)
         {
+            this(selector, ClonerHelper.getIndex(selector));
+        }
+
+        public ItemBasedSelector(ItemStack selector, int arrIndex)
+        {
             this.selector = selector;
+            this.arrIndex = arrIndex;
         }
 
         @Override
@@ -44,6 +51,12 @@ public class RecipeSelector implements IDefaultRecipe
                 return IGeneSelector.super.merge(source, destination);
             }
             return null;
+        }
+
+        @Override
+        public int arrIndex()
+        {
+            return arrIndex;
         }
     }
 
@@ -127,10 +140,11 @@ public class RecipeSelector implements IDefaultRecipe
         if (inv.getSizeInventory() < getRecipeSize()) return false;
         ItemStack book = inv.getStackInSlot(0);
         ItemStack modifier = inv.getStackInSlot(1);
-        if (ClonerHelper.getGeneSelectors(book).isEmpty() || !CompatWrapper.isValid(modifier)) return false;
+        if (ClonerHelper.getGeneSelectors(book).isEmpty() || modifier.isEmpty()) return false;
         SelectorValue value = getSelectorValue(modifier);
         if (value == defaultSelector) return false;
         output = book.copy();
+        output.setCount(1);
         output.getTagCompound().setTag(ClonerHelper.SELECTORTAG, value.save());
         return true;
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -21,6 +22,7 @@ import pokecube.adventures.blocks.cloner.tileentity.TileClonerBase;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TagNames;
 import thut.api.entity.genetics.Alleles;
@@ -131,6 +133,31 @@ public class ClonerHelper
         return SelectorValue.load(selectorTag);
     }
 
+    public static int getIndex(ItemStack stack)
+    {
+        if (!CompatWrapper.isValid(stack) || !stack.hasTagCompound()) return -1;
+        if (!stack.getDisplayName().startsWith("Selector")) return -1;
+        if (stack.getTagCompound().hasKey("pages") && stack.getTagCompound().getTag("pages") instanceof NBTTagList)
+        {
+            NBTTagList pages = (NBTTagList) stack.getTagCompound().getTag("pages");
+            try
+            {
+                ITextComponent comp = ITextComponent.Serializer.jsonToComponent(pages.getStringTagAt(0));
+                for (String line : comp.getUnformattedText().split("\n"))
+                {
+                    if (line.equalsIgnoreCase("ALL")) { return -1; }
+                    String[] args = line.split("#");
+                    if (args.length == 2) { return Integer.parseInt(args[1]); }
+                }
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.WARNING, "Error checking index for " + stack + " " + stack.getTagCompound(), e);
+            }
+        }
+        return -1;
+    }
+
     public static Set<Class<? extends Gene>> getGeneSelectors(ItemStack stack)
     {
         Set<Class<? extends Gene>> ret = Sets.newHashSet();
@@ -158,7 +185,8 @@ public class ClonerHelper
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.WARNING, "Error locating selectors for " + stack + " " + stack.getTagCompound(),
+                        e);
             }
         }
         return ret;
@@ -175,6 +203,7 @@ public class ClonerHelper
             domain = args[0];
             path = args[1].toLowerCase(Locale.ENGLISH);
         }
+        path = path.split("#")[0];
         ResourceLocation location = new ResourceLocation(domain, path);
         Class<? extends Gene> geneClass = GeneRegistry.getClass(location);
         return geneClass;

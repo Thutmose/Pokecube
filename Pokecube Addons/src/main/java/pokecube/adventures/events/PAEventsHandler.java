@@ -1,6 +1,7 @@
 package pokecube.adventures.events;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -46,6 +48,7 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.DefaultRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.Reward;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
@@ -53,11 +56,13 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHas
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.DefaultMessager;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
+import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.database.Database;
+import pokecube.core.database.Pokedex;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
@@ -68,6 +73,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.TerrainDamageSource;
+import pokecube.core.utils.PokeType;
 import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -84,13 +90,27 @@ public class PAEventsHandler
     public static void randomizeTrainerTeam(Entity trainer, IHasPokemobs mobs)
     {
         Vector3 loc = Vector3.getNewVector().set(trainer);
-        int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), loc, Database.getEntry(1));
+        int level = SpawnHandler.getSpawnLevel(trainer.getEntityWorld(), loc, Pokedex.getInstance().getFirstEntry());
+        if (trainer instanceof EntityLeader && ((EntityLeader) trainer).randomBadge())
+        {
+            IHasRewards rewardsCap = ((EntityLeader) trainer).rewardsCap;
+            PokeType type = PokeType.values()[new Random().nextInt(PokeType.values().length)];
+            Item item = Item.getByNameOrId(PokecubeAdv.ID + ":badge_" + type);
+            System.out.println(item);
+            if (item != null)
+            {
+                ItemStack badge = new ItemStack(item);
+                if (!rewardsCap.getRewards().isEmpty()) rewardsCap.getRewards().set(0, new Reward(badge));
+                else rewardsCap.getRewards().add(new Reward(badge));
+                ((EntityLeader) trainer).setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0).stack);
+            }
+        }
         if (trainer instanceof EntityTrainer)
         {
             EntityTrainer t = (EntityTrainer) trainer;
             t.name = "";
             t.populateBuyingList(null);
-            if (mobs.getType() != null) t.initTrainer(mobs.getType(), maxXp);
+            if (mobs.getType() != null) t.initTrainer(mobs.getType(), level);
         }
         else if (mobs.getType() != null)
         {
@@ -99,7 +119,7 @@ public class PAEventsHandler
             if (genders == 1) mobs.setGender((byte) 1);
             if (genders == 2) mobs.setGender((byte) 2);
             if (genders == 3) mobs.setGender((byte) (Math.random() < 0.5 ? 1 : 2));
-            TypeTrainer.getRandomTeam(mobs, (EntityLivingBase) trainer, maxXp, trainer.getEntityWorld());
+            TypeTrainer.getRandomTeam(mobs, (EntityLivingBase) trainer, level, trainer.getEntityWorld());
         }
     }
 

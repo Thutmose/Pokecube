@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
@@ -19,6 +20,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.advancements.Triggers;
 import pokecube.adventures.commands.BattleCommand;
@@ -55,6 +57,11 @@ import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer.MessageHandlerServer;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.adventures.utils.DBLoader;
+import pokecube.adventures.world.WorldGenInits;
+import pokecube.adventures.world.village.gym.GymCreationHandler;
+import pokecube.adventures.world.village.gym.TemplateGym;
+import pokecube.adventures.world.village.pokemart.PokeMartCreationHandler;
+import pokecube.adventures.world.village.pokemart.TemplatePokemart;
 import pokecube.core.PokecubeCore;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
@@ -117,12 +124,15 @@ public class PokecubeAdv
     {
         MinecraftForge.EVENT_BUS.register(this);
         Triggers.init();
+        WorldGenInits.FILENAMES.add(TemplatePokemart.POKEMART);
+        WorldGenInits.FILENAMES.add(TemplateGym.GYM_GENERAL);
     }
 
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
         proxy.initClient();
+        WorldGenInits.init();
         PacketPokeAdv.init();
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
@@ -131,6 +141,16 @@ public class PokecubeAdv
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
+        if (conf.villagePokemarts)
+        {
+            VillagerRegistry.instance().registerVillageCreationHandler(new PokeMartCreationHandler());
+            MapGenStructureIO.registerStructureComponent(TemplatePokemart.class, ID + ":pokemart");
+        }
+        if (conf.villageGyms)
+        {
+            VillagerRegistry.instance().registerVillageCreationHandler(new GymCreationHandler());
+            MapGenStructureIO.registerStructureComponent(TemplateGym.class, ID + ":gym_general");
+        }
         CompatWrapper.registerModEntity(EntityTarget.class, "targetParticles", 0, this, 16, 3, true);
         CompatWrapper.registerModEntity(EntityTrainer.class, "trainer", 1, this, 80, 3, true);
         CompatWrapper.registerModEntity(EntityLeader.class, "leader", 2, this, 80, 3, true);

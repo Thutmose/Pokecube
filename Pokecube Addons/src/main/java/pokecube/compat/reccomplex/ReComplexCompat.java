@@ -13,10 +13,9 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.commands.Config;
 import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.events.PAEventsHandler;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.database.Database;
-import pokecube.core.events.handlers.SpawnHandler;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.lib.CompatClass;
@@ -74,7 +73,7 @@ public class ReComplexCompat
                         EntityTrainer trainer = (EntityTrainer) o;
                         if (trainer.getShouldRandomize())
                         {
-                            randomizeTrainerTeam(trainer);
+                            PAEventsHandler.randomizeTrainerTeam(trainer, trainer.pokemobsCap);
                         }
                     }
                 }
@@ -98,13 +97,4 @@ public class ReComplexCompat
             }
         }
     }
-
-    public static void randomizeTrainerTeam(EntityTrainer trainer)
-    {
-        Vector3 loc = Vector3.getNewVector().set(trainer);
-        int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), loc, Database.getEntry(1));
-        trainer.initTrainer(trainer.pokemobsCap.getType(), maxXp);
-        System.out.println("Randomized " + trainer.name);
-    }
-
 }

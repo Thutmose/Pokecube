@@ -1,4 +1,4 @@
-package pokecube.core.world.gen.village.handlers;
+package pokecube.core.world.gen.village.buildings.pokecenter;
 
 import java.util.List;
 import java.util.Random;
@@ -11,10 +11,9 @@ import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Village;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.IVillageCreationHandler;
-import pokecube.core.world.gen.village.buildings.TemplatePokemart;
 import pokecube.core.world.gen.village.buildings.TemplateStructureBase;
 
-public class PokeMartCreationHandler implements IVillageCreationHandler
+public class PokeCentreCreationHandler implements IVillageCreationHandler
 {
 
     @Override
@@ -22,7 +21,7 @@ public class PokeMartCreationHandler implements IVillageCreationHandler
             Random random, int minX, int minY, int minZ, EnumFacing facing, int componentType)
     {
         BlockPos pos = new BlockPos(minX, minY, minZ);
-        TemplateStructureBase component = new TemplatePokemart(pos, facing);
+        TemplateStructureBase component = new TemplatePokecenter(pos, facing);
         StructureBoundingBox structureboundingbox = component.getBoundingBox();
         structureboundingbox.maxX += 2 * facing.getFrontOffsetX();
         structureboundingbox.maxZ += 2 * facing.getFrontOffsetZ();
@@ -36,13 +35,13 @@ public class PokeMartCreationHandler implements IVillageCreationHandler
     @Override
     public Class<?> getComponentClass()
     {
-        return TemplatePokemart.class;
+        return TemplatePokecenter.class;
     }
 
     @Override
     public PieceWeight getVillagePieceWeight(Random random, int i)
     {
-        return new PieceWeight(TemplatePokemart.class, 100, 1);
+        return new PieceWeight(TemplatePokecenter.class, 100, 1);
     }
 
     protected static boolean canVillageGoDeeper(StructureBoundingBox par0StructureBoundingBox)

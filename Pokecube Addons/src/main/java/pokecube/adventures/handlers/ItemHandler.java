@@ -47,7 +47,6 @@ public class ItemHandler
 
     public static void addBadges(Object registry)
     {
-
         for (PokeType type : PokeType.values())
         {
             Item badge = new ItemBadge(type);

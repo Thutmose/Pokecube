@@ -7,6 +7,7 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -20,6 +21,8 @@ import thut.api.maths.Vector3;
 
 public class EntityLeader extends EntityTrainer
 {
+    private boolean randomBadge = false;
+
     public EntityLeader(World world)
     {
         super(world);
@@ -83,5 +86,24 @@ public class EntityLeader extends EntityTrainer
             this.setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0).stack);
         }
         return super.processInteract(player, hand, stack);
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound nbt)
+    {
+        super.writeEntityToNBT(nbt);
+        nbt.setBoolean("randomBadge", randomBadge);
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound nbt)
+    {
+        super.readEntityFromNBT(nbt);
+        randomBadge = nbt.getBoolean("randomBadge");
+    }
+
+    public boolean randomBadge()
+    {
+        return randomBadge;
     }
 }

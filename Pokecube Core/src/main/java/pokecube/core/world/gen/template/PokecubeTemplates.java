@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.server.MinecraftServer;
@@ -18,14 +20,14 @@ import pokecube.core.database.Database;
 
 public class PokecubeTemplates
 {
-    public static final String                 POKECENTER = "pokecenter";
-    public static final String                 POKEMART   = "pokemart";
-    public static final String                 RUIN_1     = "ruin_1";
+    public static final String                 POKECENTER      = "pokecenter";
+    public static final String                 RUIN_1          = "ruin_1";
 
     public static String                       TEMPLATES;
 
     private static TemplateManager             MANAGER;
-    final static Map<String, PokecubeTemplate> templates  = Maps.newHashMap();
+    final static Map<String, PokecubeTemplate> templates       = Maps.newHashMap();
+    public static final List<String>           TEMPLATESTOINIT = Lists.newArrayList(POKECENTER, RUIN_1);
 
     public static TemplateManager getManager()
     {
@@ -36,9 +38,8 @@ public class PokecubeTemplates
 
     public static void serverInit(MinecraftServer server)
     {
-        initTemplate(POKECENTER);
-        initTemplate(POKEMART);
-        initTemplate(RUIN_1);
+        for (String s : TEMPLATESTOINIT)
+            initTemplate(s);
     }
 
     public static void initFiles()
@@ -53,14 +54,6 @@ public class PokecubeTemplates
             try
             {
                 copyFile(POKECENTER);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            try
-            {
-                copyFile(POKEMART);
             }
             catch (Exception e)
             {

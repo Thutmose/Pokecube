@@ -20,8 +20,8 @@ public abstract class EntityTrainerBase extends EntityHasTrades
 {
     public List<IPokemob>  currentPokemobs = new ArrayList<IPokemob>();
     public DefaultPokemobs pokemobsCap;
-    protected IHasMessages messages;
-    protected IHasRewards  rewardsCap;
+    public IHasMessages    messages;
+    public IHasRewards     rewardsCap;
     public IHasNPCAIStates aiStates;
     int                    despawncounter  = 0;
 

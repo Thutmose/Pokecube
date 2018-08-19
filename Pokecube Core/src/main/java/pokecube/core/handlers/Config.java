@@ -397,8 +397,6 @@ public class Config extends ConfigBase
     @Configure(category = world)
     public boolean                       villagePokecenters           = true;
     @Configure(category = world)
-    public boolean                       villagePokemarts             = true;
-    @Configure(category = world)
     public boolean                       chunkLoadPokecenters         = true;
 
     @Configure(category = world)

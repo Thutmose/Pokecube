@@ -119,10 +119,8 @@ import pokecube.core.world.gen.WorldGenFossils;
 import pokecube.core.world.gen.WorldGenNests;
 import pokecube.core.world.gen.WorldGenTemplates;
 import pokecube.core.world.gen.template.PokecubeTemplates;
-import pokecube.core.world.gen.village.buildings.TemplatePokecenter;
-import pokecube.core.world.gen.village.buildings.TemplatePokemart;
-import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
-import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
+import pokecube.core.world.gen.village.buildings.pokecenter.PokeCentreCreationHandler;
+import pokecube.core.world.gen.village.buildings.pokecenter.TemplatePokecenter;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
 import thut.core.common.commands.CommandConfig;
@@ -403,19 +401,9 @@ public class PokecubeCore extends PokecubeMod
 
         // Register the village stuff.
         if (config.villagePokecenters)
+        {
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());
-        if (config.villagePokemarts)
-            VillagerRegistry.instance().registerVillageCreationHandler(new PokeMartCreationHandler());
-        try
-        {
-            if (config.villagePokecenters) MapGenStructureIO.registerStructureComponent(TemplatePokecenter.class,
-                    "poke_adventures:PokeCentreStructure");
-            if (config.villagePokemarts) MapGenStructureIO.registerStructureComponent(TemplatePokemart.class,
-                    "poke_adventures:PokeMartStructure");
-        }
-        catch (Throwable e1)
-        {
-            if (PokecubeMod.debug) PokecubeMod.log("Error registering Structures with Vanilla Minecraft");
+            MapGenStructureIO.registerStructureComponent(TemplatePokecenter.class, ID + ":pokecenter");
         }
 
         // Register worldgen stuff

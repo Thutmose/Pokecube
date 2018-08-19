@@ -76,6 +76,10 @@ public class Config extends ConfigBase
     public boolean                      exp_shareLoot         = true;
     @Configure(category = world)
     public boolean                      HMLoot                = true;
+    @Configure(category = world)
+    public boolean                      villagePokemarts      = true;
+    @Configure(category = world)
+    public boolean                      villageGyms           = true;
 
     @Configure(category = machines)
     public int                          afaShinyRate          = 4096;

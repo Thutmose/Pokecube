@@ -2,9 +2,9 @@ package pokecube.core.interfaces.pokemob.commandhandlers;
 
 import io.netty.buffer.ByteBuf;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
+import pokecube.core.network.pokemobs.PacketCommand.DefaultHandler;
 
-public class MoveIndexHandler implements IMobCommandHandler
+public class MoveIndexHandler extends DefaultHandler
 {
     public byte index;
 
@@ -26,13 +26,14 @@ public class MoveIndexHandler implements IMobCommandHandler
     @Override
     public void writeToBuf(ByteBuf buf)
     {
+        super.writeToBuf(buf);
         buf.writeByte(index);
     }
 
     @Override
     public void readFromBuf(ByteBuf buf)
     {
+        super.readFromBuf(buf);
         index = buf.readByte();
     }
-
 }

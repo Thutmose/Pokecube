@@ -69,10 +69,7 @@ public class BlockRepel extends Block implements ITileEntityProvider
         return true;
     }
 
-    /** Called when a neighboring block was changed and marks that this state
-     * should perform any checks during a neighbor change. Cases may include
-     * when redstone power is updated, cactus blocks popping off due to a
-     * neighboring solid block, etc. */
+    /** Here we toggle the repel on/off */
     @Override
     public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
     {

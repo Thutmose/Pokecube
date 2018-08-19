@@ -163,6 +163,8 @@ public class AIUseMove extends AIBase
             addMoveInfo(entity.getEntityId(), -1, entity.dimension, destination, 0);
             addEntityPath(entity, null, speed);
             pokemob.setCombatState(CombatStates.EXECUTINGMOVE, false);
+            // Leap at the target location
+            pokemob.setCombatState(CombatStates.LEAPING, true);
             running = false;
         }
 

@@ -4,14 +4,14 @@ import io.netty.buffer.ByteBuf;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
 import pokecube.core.interfaces.pokemob.ai.CombatStates;
 import pokecube.core.interfaces.pokemob.ai.GeneralStates;
 import pokecube.core.interfaces.pokemob.ai.LogicStates;
+import pokecube.core.network.pokemobs.PacketCommand.DefaultHandler;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
-public class StanceHandler implements IMobCommandHandler
+public class StanceHandler extends DefaultHandler
 {
     public static final byte BUTTONTOGGLESTAY  = 0;
     public static final byte BUTTONTOGGLEGUARD = 1;
@@ -40,8 +40,7 @@ public class StanceHandler implements IMobCommandHandler
         else if (key == BUTTONTOGGLESTAY)
         {
             boolean stay;
-            pokemob.setGeneralState(GeneralStates.STAYING,
-                    stay = !pokemob.getGeneralState(GeneralStates.STAYING));
+            pokemob.setGeneralState(GeneralStates.STAYING, stay = !pokemob.getGeneralState(GeneralStates.STAYING));
             IGuardAICapability guard = pokemob.getEntity().getCapability(EventsHandler.GUARDAI_CAP, null);
             if (stay)
             {
@@ -66,6 +65,7 @@ public class StanceHandler implements IMobCommandHandler
     @Override
     public void writeToBuf(ByteBuf buf)
     {
+        super.writeToBuf(buf);
         buf.writeBoolean(state);
         buf.writeByte(key);
     }
@@ -73,6 +73,7 @@ public class StanceHandler implements IMobCommandHandler
     @Override
     public void readFromBuf(ByteBuf buf)
     {
+        super.readFromBuf(buf);
         state = buf.readBoolean();
         key = buf.readByte();
     }

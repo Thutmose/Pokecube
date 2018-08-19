@@ -203,17 +203,10 @@ public class PokecubeSerializer
         loadData();
     }
 
-    public Ticket getTicket(World world, BlockPos location)
-    {
-        Integer dimension = world.provider.getDimension();
-        HashMap<BlockPos, Ticket> tickets = chunks.get(dimension);
-        Ticket ret = null;
-        if (tickets == null || (ret = tickets.get(location)) == null || !ret.isPlayerTicket()) return null;
-        return ret;
-    }
-
     public void addChunks(World world, BlockPos location, EntityLivingBase placer)
     {
+        if (!PokecubeCore.core.getConfig().chunkLoadPokecenters) return;
+
         Integer dimension = world.provider.getDimension();
 
         HashMap<BlockPos, Ticket> tickets = chunks.get(dimension);

@@ -13,6 +13,10 @@ public interface IHasCommands
 {
     public static interface IMobCommandHandler
     {
+        IMobCommandHandler setFromOwner(boolean owner);
+
+        boolean fromOwner();
+
         /** Handles the command for the pokemob
          * 
          * @param pokemob

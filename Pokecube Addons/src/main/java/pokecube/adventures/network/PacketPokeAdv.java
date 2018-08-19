@@ -20,6 +20,7 @@ import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.network.packets.PacketAFA;
 import pokecube.adventures.network.packets.PacketBag;
+import pokecube.adventures.network.packets.PacketCommander;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -253,6 +254,9 @@ public class PacketPokeAdv
                 Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketAFA.class, PacketAFA.class, PokecubeCore.getMessageID(),
                 Side.SERVER);
+
+        PokecubeMod.packetPipeline.registerMessage(PacketCommander.class, PacketCommander.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
     }
 
     public static MessageClient makeClientPacket(byte channel, byte[] data)

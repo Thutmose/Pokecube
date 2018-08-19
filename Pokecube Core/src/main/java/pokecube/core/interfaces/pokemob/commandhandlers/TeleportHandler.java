@@ -19,8 +19,8 @@ import pokecube.core.handlers.playerdata.PokecubePlayerData;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.network.pokemobs.PacketCommand.DefaultHandler;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
@@ -28,7 +28,7 @@ import thut.api.maths.Vector4;
 import thut.core.common.commands.CommandTools;
 import thut.lib.CompatWrapper;
 
-public class TeleportHandler implements IMobCommandHandler
+public class TeleportHandler extends DefaultHandler
 {
     public static float                MINDIST        = 5;
     public static final Set<Integer>   invalidDests   = Sets.newHashSet();
@@ -174,7 +174,7 @@ public class TeleportHandler implements IMobCommandHandler
             if (invalidDests.contains(dim) || invalidDests.contains(oldDim))
             {
                 ITextComponent text = CommandTools.makeTranslatedMessage("pokemob.teleport.invalid", "red");
-                pokemob.displayMessageToOwner(text);
+                if (fromOwner()) pokemob.displayMessageToOwner(text);
                 return;
             }
         }
@@ -190,7 +190,7 @@ public class TeleportHandler implements IMobCommandHandler
         if (needed > count)
         {
             ITextComponent text = CommandTools.makeTranslatedMessage("pokemob.teleport.noitems", "red", needed);
-            pokemob.displayMessageToOwner(text);
+            if (fromOwner()) pokemob.displayMessageToOwner(text);
             return;
         }
         if (needed > 0)
@@ -215,14 +215,14 @@ public class TeleportHandler implements IMobCommandHandler
         if (needed > 0)
         {
             ITextComponent text = CommandTools.makeTranslatedMessage("pokemob.teleport.noitems", "red", needed);
-            pokemob.displayMessageToOwner(text);
+            if (fromOwner()) pokemob.displayMessageToOwner(text);
             return;
         }
         ITextComponent attackName = new TextComponentTranslation(
                 MovesUtils.getUnlocalizedMove(IMoveNames.MOVE_TELEPORT));
         ITextComponent text = CommandTools.makeTranslatedMessage("pokemob.move.used", "green",
                 pokemob.getPokemonDisplayName(), attackName);
-        pokemob.displayMessageToOwner(text);
+        if (fromOwner()) pokemob.displayMessageToOwner(text);
         EventsHandler.recallAllPokemobsExcluding(player, (IPokemob) null);
         Transporter.teleportEntity(player, loc, dim, false);
     }
@@ -230,11 +230,12 @@ public class TeleportHandler implements IMobCommandHandler
     @Override
     public void writeToBuf(ByteBuf buf)
     {
+        super.writeToBuf(buf);
     }
 
     @Override
     public void readFromBuf(ByteBuf buf)
     {
+        super.readFromBuf(buf);
     }
-
 }

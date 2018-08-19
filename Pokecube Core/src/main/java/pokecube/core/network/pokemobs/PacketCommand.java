@@ -46,8 +46,9 @@ public class PacketCommand implements IMessage, IMessageHandler<PacketCommand, I
         }
     }
 
-    private static class DefaultHandler implements IMobCommandHandler
+    public static class DefaultHandler implements IMobCommandHandler
     {
+        boolean byOwner;
 
         @Override
         public void handleCommand(IPokemob pokemob) throws Exception
@@ -57,11 +58,26 @@ public class PacketCommand implements IMessage, IMessageHandler<PacketCommand, I
         @Override
         public void writeToBuf(ByteBuf buf)
         {
+            buf.writeBoolean(fromOwner());
         }
 
         @Override
         public void readFromBuf(ByteBuf buf)
         {
+            setFromOwner(buf.readBoolean());
+        }
+
+        @Override
+        public IMobCommandHandler setFromOwner(boolean owner)
+        {
+            this.byOwner = owner;
+            return this;
+        }
+
+        @Override
+        public boolean fromOwner()
+        {
+            return this.byOwner;
         }
 
     }

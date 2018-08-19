@@ -398,6 +398,8 @@ public class Config extends ConfigBase
     public boolean                       villagePokecenters           = true;
     @Configure(category = world)
     public boolean                       villagePokemarts             = true;
+    @Configure(category = world)
+    public boolean                       chunkLoadPokecenters         = true;
 
     @Configure(category = world)
     public String                        baseSizeFunction             = "8 + c/10 + h/10 + k/20";

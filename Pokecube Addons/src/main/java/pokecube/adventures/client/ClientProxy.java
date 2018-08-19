@@ -29,11 +29,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.CommonProxy;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.adventures.blocks.afa.TileEntityCommander;
 import pokecube.adventures.blocks.afa.TileEntityDaycare;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 import pokecube.adventures.client.gui.GUIBiomeSetter;
 import pokecube.adventures.client.gui.GuiAFA;
 import pokecube.adventures.client.gui.GuiBag;
+import pokecube.adventures.client.gui.GuiCommander;
 import pokecube.adventures.client.gui.GuiDaycare;
 import pokecube.adventures.client.gui.cloner.GuiCloner;
 import pokecube.adventures.client.gui.cloner.GuiExtractor;
@@ -62,6 +64,11 @@ public class ClientProxy extends CommonProxy
             ContainerBag cont = new ContainerBag(player.inventory);
             cont.gotoInventoryPage(x);
             return new GuiBag(cont);
+        }
+        if (guiID == PokecubeAdv.GUICOMMANDER_ID)
+        {
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileEntityCommander) return new GuiCommander((TileEntityCommander) tile);
         }
         if (guiID == PokecubeAdv.GUICLONER_ID) { return new GuiCloner(player.inventory,
                 (TileEntityCloner) world.getTileEntity(pos)); }

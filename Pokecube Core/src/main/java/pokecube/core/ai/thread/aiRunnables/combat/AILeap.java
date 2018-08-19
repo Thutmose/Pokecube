@@ -49,25 +49,30 @@ public class AILeap extends AIBase
     @Override
     public void run()
     {
-        // Use horizontal distance to allow floating things to leap downwards.
-        double d0 = this.attacker.posX - this.target.posX;
-        double d2 = this.attacker.posZ - this.target.posZ;
+        // This case is where target is the attack target.
+        if (target != null)
+        {
+            // Use horizontal distance to allow floating things to leap
+            // downwards.
+            double d0 = this.attacker.posX - this.target.posX;
+            double d2 = this.attacker.posZ - this.target.posZ;
+            double d3 = this.attacker.posY - this.target.posY;
+            /* Don't leap up if too far. */
+            if (d3 < -5) return;
 
-        double d3 = this.attacker.posY - this.target.posY;
-        /* Don't leap up if too far. */
-        if (d3 < -5) return;
+            double dist = d0 * d0 + d2 * d2;
+            float diff = attacker.width + target.width;
+            diff = diff * diff;
 
-        double dist = d0 * d0 + d2 * d2;
-        float diff = attacker.width + target.width;
-        diff = diff * diff;
-
-        // Wait till it is a bit closer than this...
-        if (dist >= 16.0D) { return; }
+            // Wait till it is a bit closer than this...
+            if (dist >= 16.0D) { return; }
+        }
         pokemob.setCombatState(CombatStates.LEAPING, false);
 
         leapCooldown = PokecubeCore.core.getConfig().attackCooldown / 2;
-        
-        Vector3 targetLoc = Vector3.getNewVector().set(target);
+
+        // Target loc could just be a position
+        Vector3 targetLoc = target != null ? Vector3.getNewVector().set(target) : pokemob.getTargetPos();
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);
         Vector3 dir = targetLoc.subtract(leaperLoc);
         /*
@@ -105,7 +110,7 @@ public class AILeap extends AIBase
     public boolean shouldRun()
     {
         return leapCooldown-- < 0 && pokemob.getCombatState(CombatStates.LEAPING)
-                && (target = attacker.getAttackTarget()) != null;
+                && ((target = attacker.getAttackTarget()) != null || pokemob.getTargetPos() != null);
     }
 
 }

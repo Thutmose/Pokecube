@@ -311,7 +311,7 @@ public class BerryGenManager
         List<ItemStack> options = berryLocations.get(toMatch);
         if (options == null || options.isEmpty()) return ItemStack.EMPTY;
         ItemStack ret = options.get(world.rand.nextInt(options.size())).copy();
-        int size = 1 + world.rand.nextInt(ret.getCount() + 10);
+        int size = 1 + world.rand.nextInt(ret.getCount() + 5);
         ret.setCount(size);
         return ret;
     }

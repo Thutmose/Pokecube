@@ -72,7 +72,8 @@ public class PokecubeAdv
     public final static String DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION;"
             + "after:thut_wearables;" + "after:thutessentials;" + "after:waila;" + "after:advancedrocketry;"
             + "after:thut_bling;" + "after:theoneprobe;" + "after:tesla;" + "after:lostcities;" + "after:ruins;"
-            + "after:ftbl;" + "after:journeymap;" + "after:reccomplex;" + "after:minefactoryreloaded;" + "after:immersiveengineering";
+            + "after:ftbl;" + "after:journeymap;" + "after:reccomplex;" + "after:minefactoryreloaded;"
+            + "after:immersiveengineering";
 
     public final static String UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
@@ -86,6 +87,7 @@ public class PokecubeAdv
     public static int          GUIAFA_ID          = 6;
     public static int          GUISPLICER_ID      = 7;
     public static int          GUIEXTRACTOR_ID    = 8;
+    public static int          GUICOMMANDER_ID    = 9;
 
     public static boolean      tesla              = false;
 

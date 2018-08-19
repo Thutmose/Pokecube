@@ -12,10 +12,10 @@ import pokecube.core.events.CommandAttackEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.network.pokemobs.PacketCommand.DefaultHandler;
 
-public class AttackEntityHandler implements IMobCommandHandler
+public class AttackEntityHandler extends DefaultHandler
 {
     public int targetId;
 
@@ -54,7 +54,7 @@ public class AttackEntityHandler implements IMobCommandHandler
                 ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
                         pokemob.getPokemonDisplayName(), target.getDisplayName(),
                         new TextComponentTranslation(moveName));
-                pokemob.displayMessageToOwner(mess);
+                if (fromOwner()) pokemob.displayMessageToOwner(mess);
                 pokemob.getEntity().setAttackTarget((EntityLivingBase) target);
                 if (target instanceof EntityLiving) ((EntityLiving) target).setAttackTarget(pokemob.getEntity());
             }
@@ -64,13 +64,14 @@ public class AttackEntityHandler implements IMobCommandHandler
     @Override
     public void writeToBuf(ByteBuf buf)
     {
+        super.writeToBuf(buf);
         buf.writeInt(targetId);
     }
 
     @Override
     public void readFromBuf(ByteBuf buf)
     {
+        super.readFromBuf(buf);
         targetId = buf.readInt();
     }
-
 }

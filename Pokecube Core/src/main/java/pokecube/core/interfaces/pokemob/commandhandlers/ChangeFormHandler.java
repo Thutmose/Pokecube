@@ -5,9 +5,9 @@ import net.minecraft.network.PacketBuffer;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
+import pokecube.core.network.pokemobs.PacketCommand.DefaultHandler;
 
-public class ChangeFormHandler implements IMobCommandHandler
+public class ChangeFormHandler extends DefaultHandler
 {
     String forme;
 
@@ -33,12 +33,14 @@ public class ChangeFormHandler implements IMobCommandHandler
     @Override
     public void writeToBuf(ByteBuf buf)
     {
+        super.writeToBuf(buf);
         new PacketBuffer(buf).writeString(forme);
     }
 
     @Override
     public void readFromBuf(ByteBuf buf)
     {
+        super.readFromBuf(buf);
         forme = new PacketBuffer(buf).readString(20);
     }
 

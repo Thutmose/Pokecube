@@ -114,7 +114,8 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     public static void sendMoveIndexPacket(IPokemob pokemob, int moveIndex)
     {
-        PacketCommand.sendCommand(pokemob, Command.CHANGEMOVEINDEX, new MoveIndexHandler((byte) moveIndex));
+        PacketCommand.sendCommand(pokemob, Command.CHANGEMOVEINDEX,
+                new MoveIndexHandler((byte) moveIndex).setFromOwner(true));
     }
 
     public static int[] applyTransform(String ref, int[] shift, int[] dims, float scale)
@@ -635,8 +636,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             int id = pokemob.getPokemonUID();
 
-            if (owner && !pokemob.getLogicState(LogicStates.SITTING)
-                    && !pokemob.getGeneralState(GeneralStates.STAYING) && !added.contains(id))
+            if (owner && !pokemob.getLogicState(LogicStates.SITTING) && !pokemob.getGeneralState(GeneralStates.STAYING)
+                    && !added.contains(id))
             {
                 ret.add(pokemob);
                 added.add(id);
@@ -758,21 +759,23 @@ public class GuiDisplayPokecubeInfo extends Gui
                     return;
                 }
                 GuiTeleport.instance().setState(false);
-                PacketCommand.sendCommand(pokemob, Command.TELEPORT, new TeleportHandler());
+                PacketCommand.sendCommand(pokemob, Command.TELEPORT, new TeleportHandler().setFromOwner(true));
                 return;
             }
         }
         if (target != null && !sameOwner && target instanceof EntityLivingBase)
         {
-            PacketCommand.sendCommand(pokemob, Command.ATTACKENTITY, new AttackEntityHandler(target.getEntityId()));
+            PacketCommand.sendCommand(pokemob, Command.ATTACKENTITY,
+                    new AttackEntityHandler(target.getEntityId()).setFromOwner(true));
         }
         else if (targetLocation != null)
         {
-            PacketCommand.sendCommand(pokemob, Command.ATTACKLOCATION, new AttackLocationHandler(targetLocation));
+            PacketCommand.sendCommand(pokemob, Command.ATTACKLOCATION,
+                    new AttackLocationHandler(targetLocation).setFromOwner(true));
         }
         else
         {
-            PacketCommand.sendCommand(pokemob, Command.ATTACKNOTHING, new AttackNothingHandler());
+            PacketCommand.sendCommand(pokemob, Command.ATTACKNOTHING, new AttackNothingHandler().setFromOwner(true));
         }
     }
 
@@ -820,7 +823,8 @@ public class GuiDisplayPokecubeInfo extends Gui
         if ((pokemob = getCurrentPokemob()) != null)
         {
             PacketCommand.sendCommand(pokemob, Command.STANCE,
-                    new StanceHandler(!pokemob.getLogicState(LogicStates.SITTING), StanceHandler.BUTTONTOGGLESIT));
+                    new StanceHandler(!pokemob.getLogicState(LogicStates.SITTING), StanceHandler.BUTTONTOGGLESIT)
+                            .setFromOwner(true));
         }
         else
         {
@@ -832,8 +836,9 @@ public class GuiDisplayPokecubeInfo extends Gui
             IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
             if (targetMob != null && targetMob.getPokemonOwner() == player)
             {
-                PacketCommand.sendCommand(targetMob, Command.STANCE, new StanceHandler(
-                        !targetMob.getLogicState(LogicStates.SITTING), StanceHandler.BUTTONTOGGLESIT));
+                PacketCommand.sendCommand(targetMob, Command.STANCE,
+                        new StanceHandler(!targetMob.getLogicState(LogicStates.SITTING), StanceHandler.BUTTONTOGGLESIT)
+                                .setFromOwner(true));
             }
         }
     }

@@ -36,16 +36,19 @@ public class TileEntityCommander extends TileEntityOwnable implements SimpleComp
     private UUID               pokeID         = null;
     private Command            command        = null;
     private IMobCommandHandler handler        = null;
+    public String              args           = "";
+    protected int              power          = 0;
 
     public TileEntityCommander()
     {
         super();
     }
 
-    @Override
-    public String getComponentName()
+    public void setCommand(Command command, String args) throws Exception
     {
-        return "poke_commander";
+        this.command = command;
+        this.args = args;
+        if (command != null) initCommand();
     }
 
     @Override
@@ -103,6 +106,8 @@ public class TileEntityCommander extends TileEntityOwnable implements SimpleComp
     {
         super.readFromNBT(nbt);
         if (nbt.hasKey("pokeIDMost")) pokeID = nbt.getUniqueId("pokeID");
+        if (nbt.hasKey("cmd")) this.command = Command.valueOf(nbt.getString("cmd"));
+        this.args = nbt.getString("args");
     }
 
     @Override
@@ -110,6 +115,8 @@ public class TileEntityCommander extends TileEntityOwnable implements SimpleComp
     {
         super.writeToNBT(nbt);
         if (getPokeID() != null) nbt.setUniqueId("pokeID", getPokeID());
+        nbt.setString("args", args);
+        if (this.command != null) nbt.setString("cmd", this.command.name());
         return nbt;
     }
 
@@ -126,6 +133,73 @@ public class TileEntityCommander extends TileEntityOwnable implements SimpleComp
     public Command getCommand()
     {
         return command;
+    }
+
+    protected void initCommand() throws Exception
+    {
+        setCommand(command, getArgs());
+    }
+
+    private Object[] getArgs() throws Exception
+    {
+        Class<? extends IMobCommandHandler> clazz = IHasCommands.COMMANDHANDLERS.get(command);
+        for (Constructor<?> c : clazz.getConstructors())
+        {
+            if (c.getParameterCount() != 0) { return getArgs(c); }
+        }
+        return null;
+    }
+
+    private Object[] getArgs(Constructor<?> constructor)
+    {
+        String[] args = this.args.split(",");
+        Class<?>[] argTypes = constructor.getParameterTypes();
+        int index = 0;
+        Object[] ret = new Object[argTypes.length];
+        for (int i = 0; i < ret.length; i++)
+        {
+            Class<?> type = argTypes[i];
+            if (type == Vector3.class)
+            {
+                Vector3 arg = Vector3.getNewVector();
+                arg.set(Double.parseDouble(args[index]) + getPos().getX(),
+                        Double.parseDouble(args[index + 1]) + getPos().getY(),
+                        Double.parseDouble(args[index + 2]) + getPos().getZ());
+                index += 3;
+                ret[i] = arg;
+            }
+            else if (type == float.class || type == Float.class)
+            {
+                float arg = (float) Double.parseDouble(args[index]);
+                index += 1;
+                ret[i] = arg;
+            }
+            else if (type == byte.class || type == Byte.class)
+            {
+                byte arg = (byte) Integer.parseInt(args[index]);
+                index += 1;
+                ret[i] = arg;
+            }
+            else if (type == int.class || type == Integer.class)
+            {
+                int arg = Integer.parseInt(args[index]);
+                index += 1;
+                ret[i] = arg;
+            }
+            else if (type == boolean.class || type == Boolean.class)
+            {
+                boolean arg = Boolean.parseBoolean(args[index]);
+                index += 1;
+                ret[i] = arg;
+            }
+            else if (type == String.class)
+            {
+                String arg = args[index];
+                index += 1;
+                ret[i] = arg;
+            }
+        }
+        return ret;
     }
 
     public void setCommand(Command command, Object... args) throws Exception
@@ -150,6 +224,7 @@ public class TileEntityCommander extends TileEntityOwnable implements SimpleComp
     {
         World w = getWorld();
         if (!(w instanceof WorldServer)) return;
+        if (this.command != null && handler == null) initCommand();
         if (handler == null) throw new Exception("No CommandHandler has been set");
         if (pokeID == null) throw new Exception("No Pokemob Set, please set a UUID first.");
         WorldServer world = (WorldServer) w;
@@ -164,6 +239,22 @@ public class TileEntityCommander extends TileEntityOwnable implements SimpleComp
             PokecubeMod.log(Level.SEVERE, "Error executing a command for a pokemob", e);
             throw new Exception("Error handling the command", e);
         }
+    }
+
+    ////////////////////////// Open computers stuff below
+
+    @Override
+    @Optional.Method(modid = "opencomputers")
+    public String getComponentName()
+    {
+        return "poke_commander";
+    }
+
+    @Callback(doc = "function(uuid:string) - gets the uuid of the pokemob to command.")
+    @Optional.Method(modid = "opencomputers")
+    public Object[] getPokeID(Context context, Arguments args) throws Exception
+    {
+        return new Object[] { pokeID };
     }
 
     @Callback(doc = "function(uuid:string) - Sets the uuid of the pokemob to command.")
@@ -276,6 +367,7 @@ public class TileEntityCommander extends TileEntityOwnable implements SimpleComp
         return new Object[] { true };
     }
 
+    @Optional.Method(modid = "opencomputers")
     private Object[] getArgs(Command command, Arguments args) throws Exception
     {
         Class<? extends IMobCommandHandler> clazz = IHasCommands.COMMANDHANDLERS.get(command);
@@ -286,6 +378,7 @@ public class TileEntityCommander extends TileEntityOwnable implements SimpleComp
         return null;
     }
 
+    @Optional.Method(modid = "opencomputers")
     private Object[] getArgs(Constructor<?> constructor, Arguments args) throws Exception
     {
         Class<?>[] argTypes = constructor.getParameterTypes();

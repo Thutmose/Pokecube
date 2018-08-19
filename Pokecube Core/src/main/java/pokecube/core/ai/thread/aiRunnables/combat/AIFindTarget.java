@@ -395,7 +395,7 @@ public class AIFindTarget extends AIBase implements IAICombat
      * @return if target was found. */
     protected boolean checkOwner()
     {
-        List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
+        List<Entity> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
         if (!list.isEmpty() && pokemob.getPokemonOwner() != null)
         {
             for (int j = 0; j < list.size(); j++)
@@ -424,12 +424,12 @@ public class AIFindTarget extends AIBase implements IAICombat
      * @return if a hunt target was found. */
     protected boolean checkHunt()
     {
-        List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
+        List<Entity> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
         if (!list.isEmpty())
         {
             for (int j = 0; j < list.size(); j++)
             {
-                Entity entity = (Entity) list.get(j);
+                Entity entity = list.get(j);
                 IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
                 if (mob != null && pokemob.getPokedexEntry().isFood(mob.getPokedexEntry())
                         && pokemob.getLevel() > mob.getLevel() && Vector3.isVisibleEntityFromEntity(entity, entity))

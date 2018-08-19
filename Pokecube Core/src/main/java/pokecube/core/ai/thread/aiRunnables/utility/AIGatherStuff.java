@@ -152,12 +152,12 @@ public class AIGatherStuff extends AIBase
         int distance = pokemob.getGeneralState(GeneralStates.TAMED) ? PokecubeMod.core.getConfig().tameGatherDistance
                 : PokecubeMod.core.getConfig().wildGatherDistance;
 
-        List<Object> list = getEntitiesWithinDistance(entity, distance, EntityItem.class);
+        List<Entity> list = getEntitiesWithinDistance(entity, distance, EntityItem.class);
         EntityItem newTarget = null;
         double closest = 1000;
 
         // Check for items to possibly gather.
-        for (Object o : list)
+        for (Entity o : list)
         {
             EntityItem e = (EntityItem) o;
             double dist = e.getDistanceSqToCenter(pokemob.getHome());

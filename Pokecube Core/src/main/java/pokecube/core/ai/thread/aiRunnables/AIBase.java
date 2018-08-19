@@ -431,15 +431,15 @@ public abstract class AIBase implements IAIRunnable
         return list;
     }
 
-    protected List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
+    protected List<Entity> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
     {
-        Vector<?> entities = AIThreadManager.worldEntities.get(source.dimension);
-        List<Object> list = new ArrayList<Object>();
+        Vector<Entity> entities = AIThreadManager.worldEntities.get(source.dimension);
+        List<Entity> list = new ArrayList<Entity>();
         double dsq = distance * distance;
         if (entities != null)
         {
-            List<?> temp = new ArrayList<Object>(entities);
-            for (Object o : temp)
+            List<Entity> temp = new ArrayList<Entity>(entities);
+            for (Entity o : temp)
             {
                 boolean correctClass = true;
                 for (Class<?> claz : targetClass)

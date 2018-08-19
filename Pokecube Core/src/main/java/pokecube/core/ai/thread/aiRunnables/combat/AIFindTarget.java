@@ -657,7 +657,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                     && ((IEntityOwnable) entityTarget).getOwner() == target
                     && pokemob.getGeneralState(GeneralStates.TAMED) && (entityTarget.getHealth() <= 0))
             {
-                PokecubeMod.log(Level.INFO, "Battle over, forgetting target. " + this.entity.ticksExisted);
+                if (PokecubeMod.debug) PokecubeMod.log(Level.INFO, "Battle is over.");
                 addTargetInfo(entity, null);
                 setCombatState(pokemob, CombatStates.ANGRY, false);
                 entityTarget = null;

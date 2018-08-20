@@ -221,7 +221,8 @@ public class TradeEntryLoader
         {
             for (String s : ItemGenerator.variants)
             {
-                if ((s.contains("mega") && !s.equals("megastone")) || s.contains("orb") || s.equals("shiny_charm")) continue;
+                if ((s.contains("mega") && !s.equals("megastone")) || s.contains("orb") || s.equals("shiny_charm"))
+                    continue;
 
                 ItemStack sell = PokecubeItems.getStack(s);
                 sell.setItemDamage(0);
@@ -284,6 +285,7 @@ public class TradeEntryLoader
                     ItemStack badge = PokecubeItems.getStack("badge_" + type);
                     if (CompatWrapper.isValid(badge))
                     {
+                        badge.setItemDamage(0);
                         Map<QName, String> values;
                         TrainerTrade recipe;
                         ItemStack buy1 = ItemStack.EMPTY;
@@ -314,6 +316,7 @@ public class TradeEntryLoader
                     ItemStack badge = PokecubeItems.getStack("badge_" + type);
                     if (CompatWrapper.isValid(badge))
                     {
+                        badge.setItemDamage(0);
                         Map<QName, String> values = trade.sell.values;
                         TrainerTrade recipe;
                         if (trade.sell.tag != null) values.put(new QName("tag"), trade.sell.tag);

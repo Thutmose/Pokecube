@@ -15,8 +15,6 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.Defa
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.Reward;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.items.ItemBadge;
-import pokecube.core.database.Database;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public class EntityLeader extends EntityTrainer
@@ -57,17 +55,7 @@ public class EntityLeader extends EntityTrainer
     @Override
     public void initTrainer(TypeTrainer type, int level)
     {
-        int alevel = Tools.xpToLevel(Database.getEntry(1).getEvolutionMode(), level);
-        level = Tools.levelToXp(Database.getEntry(1).getEvolutionMode(), alevel + 5);
-
-        pokemobsCap.setType(type);
-        byte genders = type.genders;
-        if (genders == 1) pokemobsCap.setGender((byte) 1);
-        if (genders == 2) pokemobsCap.setGender((byte) 2);
-        if (genders == 3) pokemobsCap.setGender((byte) (Math.random() < 0.5 ? 1 : 2));
-
-        TypeTrainer.getRandomTeam(pokemobsCap, this, level, getEntityWorld());
-        setTypes();
+        super.initTrainer(type, level);
         aiStates.setAIState(IHasNPCAIStates.TRADES, false);
     }
 

@@ -90,25 +90,36 @@ public class PAEventsHandler
     public static void randomizeTrainerTeam(Entity trainer, IHasPokemobs mobs)
     {
         Vector3 loc = Vector3.getNewVector().set(trainer);
+        // Set level based on what wild pokemobs have.
         int level = SpawnHandler.getSpawnLevel(trainer.getEntityWorld(), loc, Pokedex.getInstance().getFirstEntry());
-        if (trainer instanceof EntityLeader && ((EntityLeader) trainer).randomBadge())
+        if (trainer instanceof EntityLeader)
         {
-            IHasRewards rewardsCap = ((EntityLeader) trainer).rewardsCap;
-            PokeType type = PokeType.values()[new Random().nextInt(PokeType.values().length)];
-            Item item = Item.getByNameOrId(PokecubeAdv.ID + ":badge_" + type);
-            if (item != null)
+            // Gym leaders are 10 lvls higher than others.
+            level += 10;
+            // Randomize badge for leader.
+            if (((EntityLeader) trainer).randomBadge())
             {
-                ItemStack badge = new ItemStack(item);
-                if (!rewardsCap.getRewards().isEmpty()) rewardsCap.getRewards().set(0, new Reward(badge));
-                else rewardsCap.getRewards().add(new Reward(badge));
-                ((EntityLeader) trainer).setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0).stack);
+                IHasRewards rewardsCap = ((EntityLeader) trainer).rewardsCap;
+                PokeType type = PokeType.values()[new Random().nextInt(PokeType.values().length)];
+                Item item = Item.getByNameOrId(PokecubeAdv.ID + ":badge_" + type);
+                if (item != null)
+                {
+                    ItemStack badge = new ItemStack(item);
+                    if (!rewardsCap.getRewards().isEmpty()) rewardsCap.getRewards().set(0, new Reward(badge));
+                    else rewardsCap.getRewards().add(new Reward(badge));
+                    ((EntityLeader) trainer).setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0).stack);
+                }
             }
         }
+        // Randomize team.
         if (trainer instanceof EntityTrainer)
         {
             EntityTrainer t = (EntityTrainer) trainer;
             t.name = "";
+            // Reset their trades, as this will randomize them when trades are
+            // needed later.
             t.populateBuyingList(null);
+            // Init for trainers randomizes their teams
             if (mobs.getType() != null) t.initTrainer(mobs.getType(), level);
         }
         else if (mobs.getType() != null)

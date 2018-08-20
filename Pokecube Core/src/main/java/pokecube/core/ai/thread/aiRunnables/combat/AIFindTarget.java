@@ -578,7 +578,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                 if (!other.getPokedexEntry().areRelated(pokemob.getPokedexEntry())) return false;
                 // Same owner (owned or null), helps.
                 if ((other.getOwnerId() == null && pokemob.getOwnerId() == null)
-                        || other.getOwnerId().equals(pokemob.getOwnerId()))
+                        || (other.getOwnerId() != null && other.getOwnerId().equals(pokemob.getOwnerId())))
                     return true;
                 // Same team, helps.
                 if (TeamManager.sameTeam(input, entity)) return true;

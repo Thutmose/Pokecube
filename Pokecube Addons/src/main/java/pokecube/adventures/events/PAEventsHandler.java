@@ -96,7 +96,6 @@ public class PAEventsHandler
             IHasRewards rewardsCap = ((EntityLeader) trainer).rewardsCap;
             PokeType type = PokeType.values()[new Random().nextInt(PokeType.values().length)];
             Item item = Item.getByNameOrId(PokecubeAdv.ID + ":badge_" + type);
-            System.out.println(item);
             if (item != null)
             {
                 ItemStack badge = new ItemStack(item);

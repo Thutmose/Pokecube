@@ -30,12 +30,16 @@ import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.ItemBlockGeneric;
 import pokecube.core.blocks.pc.ContainerPC;
+import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.ItemGenerator;
 import pokecube.core.handlers.ItemGenerator.IMoveModifier;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokeType;
 
 public class ItemHandler
@@ -168,10 +172,24 @@ public class ItemHandler
 
     public static void handleLoot()
     {
-        ItemStack share = PokecubeItems.getStack("exp_share");
-        if (Config.instance.exp_shareLoot) LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
-                Loot.getEntryItem(share, 10, 1, "pokecube_adventures:exp_share"));
-        if (Config.instance.HMLoot)
+        if (Config.instance.loot_exp_share)
+        {
+            ItemStack share = PokecubeItems.getStack("exp_share");
+            LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
+                    Loot.getEntryItem(share, 10, 1, "pokecube_adventures:exp_share"));
+        }
+        if (Config.instance.loot_larvesta)
+        {
+            PokedexEntry larvesta = Database.getEntry("larvesta");
+            if (larvesta != null)
+            {
+                ItemStack stack = ItemPokemobEgg.getEggStack(larvesta);
+                LootHelpers.addLootEntry(LootTableList.CHESTS_DESERT_PYRAMID, null,
+                        Loot.getEntryItem(stack, 10, 1, "pokecube_adventures:exp_share"));
+            }
+            else PokecubeMod.log("No Larvesta Found, not adding loot for it :(");
+        }
+        if (Config.instance.loot_hms)
         {
             ItemStack cut = ItemTM.getTM(IMoveNames.MOVE_CUT);
             ItemStack flash = ItemTM.getTM(IMoveNames.MOVE_FLASH);
@@ -187,6 +205,5 @@ public class ItemHandler
             LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
                     Loot.getEntryItem(flash, 10, 1, "pokecube_adventures:flash"));
         }
-
     }
 }

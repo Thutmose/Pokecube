@@ -73,9 +73,11 @@ public class Config extends ConfigBase
             // @formatter:on
     };
     @Configure(category = world)
-    public boolean                      exp_shareLoot         = true;
+    public boolean                      loot_exp_share        = true;
     @Configure(category = world)
-    public boolean                      HMLoot                = true;
+    public boolean                      loot_hms              = true;
+    @Configure(category = world)
+    public boolean                      loot_larvesta         = true;
     @Configure(category = world)
     public boolean                      villagePokemarts      = true;
     @Configure(category = world)

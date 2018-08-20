@@ -480,18 +480,10 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
 
         boolean shouldUseEnergy = pokemob != null && ability != null;
         int levelFactor = 0;
-
         if (pokemob != null && ability != null)
         {
             shiny = false;
-            // Tick increase incase ability tracks this for update.
-            // Renderer can also then render it animated.
-            pokemob.getEntity().ticksExisted++;
-            levelFactor = pokemob.getLevel();
-            // Do not call ability update on client.
-            if (!world.isRemote) ability.onUpdate(pokemob);
         }
-        shouldUseEnergy = shouldUseEnergy || shiny;
 
         if (shouldUseEnergy)
         {
@@ -513,10 +505,23 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
                 if (energy < needed)
                 {
                     energy = 0;
+                    return;
                 }
                 else energy -= needed;
             }
         }
+
+        if (pokemob != null && ability != null)
+        {
+            shiny = false;
+            // Tick increase incase ability tracks this for update.
+            // Renderer can also then render it animated.
+            pokemob.getEntity().ticksExisted++;
+            levelFactor = pokemob.getLevel();
+            // Do not call ability update on client.
+            if (!world.isRemote) ability.onUpdate(pokemob);
+        }
+        shouldUseEnergy = shouldUseEnergy || shiny;
     }
 
     @Override

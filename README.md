@@ -1,22 +1,9 @@
 # Pokécube
 Pokémobs for Minecraft - page under construction.
 
+# Primary Development has been moved to: https://github.com/Pokecube-Development
+
 For the List of missing models, please see https://github.com/Thutmose/Pokecube-Models
-
-##How to setup devopment environment for Addons in eclipse
-
-Step 1
-
-Setup a forge environment in Addons, as well as one in Core, you can do this by placing the relevant gradle files from the forge MDK in the directory, then running the appropriate batch file, or running the gradle command for setup manually.
-
-Step2
-
-Make an eclipse project in Core, then via properties -> Java Build Path, link the source folders for Addons to the project.
-the compat package in Addons with display several errors, these can usually be ignored, but if you want them to go away, import the contents of the Addons libs directory to the project, as well as thaumcraft, which should be somewhere in your gradle stuff.
-
-Step 3
-
-To run/test, do everything via the project made in core.  To build, build from the Addons directory.
 
 ##Related/Contained projects
 
